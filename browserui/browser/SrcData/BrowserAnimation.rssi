@@ -1,0 +1,218 @@
+/*
+* Copyright (c) 2002-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*      Browser animation resources
+
+*
+*/
+
+
+//  INCLUDES
+#include "Browser.hrh"
+#include <browser.mbg>
+
+
+//  RESOURCE DEFINITIONS
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// IF RESOURCES NEEDS TO BE CHANGED :
+// IF NEW RESOURCE IS ADDED ONE r_browser_dummy_dialog_0..n
+// NEED TO BE REMOVED
+// IF NEW RESOURCE IS REMOVED ONE r_browser_dummy_dialog_0..n
+// NEED TO BE ADDED
+// THE RESOURCE ID OF THE ANIMATIONS CAN NOT BE CHANGED
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+//  RESOURCE DEFINITIONS
+
+//  Dummy resources to fix compatibility break
+RESOURCE DIALOG r_browser_dummy_dialog_0 
+    {
+    }
+
+RESOURCE DIALOG r_browser_dummy_dialog_1 
+    {
+    }
+
+// ---------------------------------------------------------
+//   
+//    r_browser_waiting_csd
+//
+// ---------------------------------------------------------
+//
+RESOURCE BMPANIM_DATA r_browser_waiting_csd // animation
+	{ 
+	frameinterval = 300; // in milliseconds
+	playmode = EAknBitmapAnimationPlayModeCycle; // play, cycle or bounce
+    bmpfile = "Z:"APP_RESOURCE_DIR"\\browser.mbm"; // bitmap file
+	frames = r_browser_waiting_csd_image_array; // link to an array
+	}
+
+// ---------------------------------------------------------
+//   
+//    r_browser_waiting_csd_image_array
+//
+// ---------------------------------------------------------
+//
+RESOURCE ARRAY r_browser_waiting_csd_image_array // array of frames
+	{
+	items={
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_csd_1;
+					maskid=EMbmBrowserQgn_indi_wait_wml_csd_1_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_csd_2;
+					maskid=EMbmBrowserQgn_indi_wait_wml_csd_2_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_csd_3;
+					maskid=EMbmBrowserQgn_indi_wait_wml_csd_3_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_csd_4;
+					maskid=EMbmBrowserQgn_indi_wait_wml_csd_4_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_csd_5;
+					maskid=EMbmBrowserQgn_indi_wait_wml_csd_5_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_csd_6;
+					maskid=EMbmBrowserQgn_indi_wait_wml_csd_6_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_csd_7;
+					maskid=EMbmBrowserQgn_indi_wait_wml_csd_7_mask;}
+		};
+	}
+
+// ---------------------------------------------------------
+//   
+//    r_browser_waiting_gprs
+//
+// ---------------------------------------------------------
+//
+RESOURCE BMPANIM_DATA r_browser_waiting_gprs // animation
+	{ 
+	frameinterval = 300; // in milliseconds
+	playmode = EAknBitmapAnimationPlayModeCycle; // play, cycle or bounce
+    bmpfile = "Z:"APP_RESOURCE_DIR"\\browser.mbm"; // bitmap file
+	frames = r_browser_waiting_gprs_image_array; // link to an array
+	}
+
+// ---------------------------------------------------------
+//   
+//    r_browser_waiting
+//
+// ---------------------------------------------------------
+//
+RESOURCE BMPANIM_DATA r_browser_waiting // animation
+	{ 
+	frameinterval = 300; // in milliseconds
+	playmode = EAknBitmapAnimationPlayModeCycle; // play, cycle or bounce
+    bmpfile = "Z:"APP_RESOURCE_DIR"\\browser.mbm"; // bitmap file
+	frames = r_browser_waiting_image_array; // link to an array
+	}
+// ---------------------------------------------------------
+//   
+//    r_browser_waiting_image_array
+//
+// ---------------------------------------------------------
+//
+RESOURCE ARRAY r_browser_waiting_image_array // array of frames
+	{
+	items={
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_02;
+					maskid=EMbmBrowserQgn_menu_wml_02_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_03;
+					maskid=EMbmBrowserQgn_menu_wml_03_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_04;
+					maskid=EMbmBrowserQgn_menu_wml_04_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_05;
+					maskid=EMbmBrowserQgn_menu_wml_05_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_06;
+					maskid=EMbmBrowserQgn_menu_wml_06_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_07;
+					maskid=EMbmBrowserQgn_menu_wml_07_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_08;
+					maskid=EMbmBrowserQgn_menu_wml_08_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_09;
+					maskid=EMbmBrowserQgn_menu_wml_09_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_10;
+					maskid=EMbmBrowserQgn_menu_wml_10_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_11;
+					maskid=EMbmBrowserQgn_menu_wml_11_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_12;
+					maskid=EMbmBrowserQgn_menu_wml_12_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_13;
+					maskid=EMbmBrowserQgn_menu_wml_13_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_14;
+					maskid=EMbmBrowserQgn_menu_wml_14_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_15;
+					maskid=EMbmBrowserQgn_menu_wml_15_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_menu_wml_16;
+					maskid=EMbmBrowserQgn_menu_wml_16_mask;}
+		};
+	}
+
+
+
+
+
+// ---------------------------------------------------------
+//   
+//    r_browser_waiting_gprs_image_array
+//
+// ---------------------------------------------------------
+//
+RESOURCE ARRAY r_browser_waiting_gprs_image_array // array of frames
+	{
+	items={
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_gprs_2;
+					maskid=EMbmBrowserQgn_indi_wait_wml_gprs_2_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_gprs_3;
+					maskid=EMbmBrowserQgn_indi_wait_wml_gprs_3_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_gprs_4;
+					maskid=EMbmBrowserQgn_indi_wait_wml_gprs_4_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_gprs_5;
+					maskid=EMbmBrowserQgn_indi_wait_wml_gprs_5_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_gprs_6;
+					maskid=EMbmBrowserQgn_indi_wait_wml_gprs_6_mask;}
+		};
+	}
+
+// ---------------------------------------------------------
+//   
+//    r_browser_waiting_hscsd
+//
+// ---------------------------------------------------------
+//
+RESOURCE BMPANIM_DATA r_browser_waiting_hscsd // animation
+	{ 
+	frameinterval = 300; // in milliseconds
+	playmode = EAknBitmapAnimationPlayModeCycle; // play, cycle or bounce
+    bmpfile = "Z:"APP_RESOURCE_DIR"\\browser.mbm"; // bitmap file
+	frames = r_browser_waiting_hscsd_image_array; // link to an array
+	}
+
+// ---------------------------------------------------------
+//   
+//    r_browser_waiting_hscsd_image_array
+//
+// ---------------------------------------------------------
+//
+RESOURCE ARRAY r_browser_waiting_hscsd_image_array // array of frames
+	{
+	items={
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_hscsd_2;
+					maskid=EMbmBrowserQgn_indi_wait_wml_hscsd_2_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_hscsd_3;
+					maskid=EMbmBrowserQgn_indi_wait_wml_hscsd_3_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_hscsd_4;
+					maskid=EMbmBrowserQgn_indi_wait_wml_hscsd_4_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_hscsd_5;
+					maskid=EMbmBrowserQgn_indi_wait_wml_hscsd_5_mask;},
+	BMPANIM_FRAME { bmpid=EMbmBrowserQgn_indi_wait_wml_hscsd_6;
+					maskid=EMbmBrowserQgn_indi_wait_wml_hscsd_6_mask;}
+		};
+	}
+
+// End of File

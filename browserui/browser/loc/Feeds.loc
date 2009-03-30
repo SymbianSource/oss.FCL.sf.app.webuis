@@ -1,0 +1,478 @@
+/*
+* Copyright (c) 2002-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Localized strings.
+*
+*/
+
+
+//  APPLICATION INFORMATION
+
+/*  Application related                                                 */
+/* -------------------------------------------------------------------- */
+//d:application name
+//l:cell_app_pane_t1
+//w:
+//r:3.0
+#define qtn_apps_feeds_grid      "Web Feeds"
+
+
+/*  Options Menu                                                        */
+/* -------------------------------------------------------------------- */
+//d: Menu text to update the selected feed.
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_feeds_update "Update"
+
+//d: Menu text to update all feed.
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_feeds_update_all "Update All"
+
+//d: Menu text for the manage sub-menu
+//l:list_single_pane_t1_cp2/opt3
+//w:
+//r:3.0
+#define qtn_feeds_manage "Manage"
+
+//d: Menu text to open the associated web page in the browser.
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.0
+#define qtn_feeds_open_full_story "Open Full Story"
+
+
+/*  Manage Sub-Menu                                                     */
+/* -------------------------------------------------------------------- */
+//d: Menu text to create a new feed.
+//l:list_single_popup_submenu_pane_t1
+//w:
+//r:3.0
+#define qtn_feeds_new_feed "Add feed"
+
+//d: Menu text to edit the current feed.
+//l:list_single_popup_submenu_pane_t1
+//w:
+//r:3.0
+#define qtn_feeds_edit "Edit feed"
+
+/*  Info Sub-Menu                                                       */
+/* -------------------------------------------------------------------- */
+//d: Menu text to view the about info.
+//l:list_single_popup_submenu_pane_t1
+//w:
+//r:3.0
+#define qtn_feeds_about "About"
+
+
+/*  Folder View                                                         */
+/* -------------------------------------------------------------------- */
+//d: The title of the folder-view when the top-level folder is showing.
+//l:title_pane_t2/opt9
+//w:
+//r:3.0
+#define qtn_feeds_folder_view_title "Web Feeds"
+
+/* -------------------------------------------------------------------- */
+//d: The text displayed in the folder view when there are no feeds or folders.
+//l:main_list_empty_pane
+//w:
+//r:3.1
+#define qtn_feeds_no_feeds "No Web Feeds"
+
+/*  Feeds View                                                          */
+/* -------------------------------------------------------------------- */
+//d: The text string at the end of a feed that's associated with the
+//d: item's full story -- the browser is launched when this text is selected.
+//l:None
+//w:
+//r:3.0
+#define qtn_feeds_feeds_view_see_full_story "See full story"
+
+/* -------------------------------------------------------------------- */
+//d: The default title of enclosures.  The title is used to display the
+//d: the enclosure in content area of the Feeds View.
+//l:None
+//w:
+//r:3.1
+#define qtn_feeds_feeds_view_enclosure "Podcast"
+
+
+// -----------------------------------------------------------------
+// Touch Toolbar Button strings
+// -----------------------------------------------------------------
+
+//---------------------------------
+// Feeds Folder View Toolbar Strings
+//---------------------------------
+// Update Selected Feed
+//l:popup_preview_text_window_t1
+//r:5.0
+//
+#define qtn_feeds_folder_update_selected_tt            "Update Selected Feed"
+
+// Update All Feed
+//l:popup_preview_text_window_t1
+//r:5.0
+//
+#define qtn_feeds_folder_update_all_tt                 "Update All Feeds"
+
+// Open into article listing view
+//l:popup_preview_text_window_t1
+//r:5.0
+//
+#define qtn_feeds_folder_open_tt                       "Open into article listing view"
+
+
+//---------------------------------
+// Feeds Topic View Toolbar Strings
+//---------------------------------
+// Update Feed
+//l:popup_preview_text_window_t1
+//r:5.0
+//
+#define qtn_feeds_topic_update_tt                      "Update Feed"
+
+// Back to Page
+//l:popup_preview_text_window_t1
+//r:5.0
+//
+#define qtn_feeds_topic_back_to_page_tt                "Back to Page"
+
+// Open into detail view
+//l:popup_preview_text_window_t1
+//r:5.0
+//
+#define qtn_feeds_topic_open_tt                        "Open into detail view"
+
+//---------------------------------
+// Feeds Feed View Toolbar Strings
+//---------------------------------
+// Previous Article
+//l:popup_preview_text_window_t1
+//r:5.0
+//
+#define qtn_feeds_feed_previous_article_tt             "Previous Article"
+
+// Show Full Story
+//l:popup_preview_text_window_t1
+//r:5.0
+//
+#define qtn_feeds_feed_show_full_story_tt              "Show Full Story"
+
+// Next Article
+//l:popup_preview_text_window_t1
+//r:5.0
+//
+#define qtn_feeds_feed_next_article_tt                 "Next Article"
+
+
+/*  Wait Dialog                                                         */
+/* -------------------------------------------------------------------- */
+//d: Information text when a feed is updating.
+//l:popup_note_wait_window
+//w:
+//r:3.0
+#define qtn_feeds_updating_wait_dialog_text "Updating"
+
+//d: Information text when a feed is opening.
+//l:popup_note_wait_window
+//w:
+//r:5.0
+#define qtn_feeds_opening_wait_dialog_text "Opening"
+/* -------------------------------------------------------------------- */
+//d: Information text when all feeds are updating.
+//l:popup_note_wait_window
+//w:
+//r:3.1
+#define qtn_feeds_updating_all_wait_dialog "Updating all feeds"
+
+
+/*  Delete Dialog                                                       */
+/* -------------------------------------------------------------------- */
+//d: Information text when the user chooses to delete a feed.
+//d: The text follows this form, "Delete %U?", where %U is
+//d: the name of the feed.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_feeds_delete_dialog_text "Delete %U?"
+
+//d: Information text when the user chooses to delete multiple feeds.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_feeds_delete_multiple_dialog_text "Delete selected feeds?"
+
+
+/*  Edit/Add Feed/Folder Dialog                                             */
+/* -------------------------------------------------------------------- */
+//d: Header test for the feed's name.
+//l:list_double_heading_pane_t1
+//w:
+//r:3.0
+#define qtn_feeds_name_dialog_text "Title"
+
+//d: Header test for the feed's url.
+//l:list_double_heading_pane_t1
+//w:
+//r:3.0
+#define qtn_feeds_url_dialog_text "Address"
+
+//d: Text displayed in the New feed dialog.
+//l:list_single_heading_pane_t1
+//w:
+//r:3.0
+#define qtn_feeds_new_feed_item "New feed"
+
+//d:Header text for Automatic updating of web feeds
+//l:list_setting_pane_t1
+//w:
+//r:7.1
+//
+#define qtn_feeds_autoupdating_text "Automatic updating"
+
+//d: Selectable text for the Automatic updating setting
+//d: If Off is selected, automatic updating does not occur
+//l: list_set_graphic_pane_t1
+//w:
+//r:7.1
+//
+#define qtn_feeds_autoupdating_off "Off"
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done every 15 minutes
+//l: list_set_graphic_pane_t1
+//w:
+//r:7.1
+//
+#define qtn_feeds_val_updating_interval_15min "Every 15 minutes"
+
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done every hour
+//l: list_set_graphic_pane_t1
+//w:
+//r:7.1
+//
+#define qtn_feeds_val_updating_interval_hourly "Every hour"
+
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done every 4 hours
+//l: list_set_graphic_pane_t1
+//w:
+//r:7.1
+//
+#define qtn_feeds_val_updating_interval_4hours "Every 4 hours"
+
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done daily
+//l: list_set_graphic_pane_t1
+//w:
+//r:7.1
+//
+#define qtn_feeds_val_updating_interval_daily "Every day"
+
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done weekly
+//l: list_set_graphic_pane_t1
+//w:
+//r:7.1
+//
+#define qtn_feeds_val_updating_interval_weekly "Every week"
+
+
+//d: When the user enables automatic updating of feeds, a confirmation query is displayed to the user
+//d: noting that turning the feature on may cost them money
+//l: popup_note_window
+//w:
+//r:7.1
+//
+#define qtn_feeds_new_feed_dataquery_autoupdatewarn "Enabling automatic updating may increase your monthly phone bill"
+
+
+/* Import/Export Feed Strings                                           */
+/* -------------------------------------------------------------------- */
+
+
+
+//d: Menu text to import selected or marked feeds from a file
+//l: list_single_popup_submenu_pane_t1
+//w:
+//r: 3.2
+#define qtn_options_import_feeds    "Import Feeds"
+
+//d: Popup waiting note when searching for feed files
+//d: stored on the phone
+//l: popup_note_wait_window
+//w:
+//r: 3.2
+#define qtn_wait_searching_for_feeds    "Searching for feeds..."
+
+//d: When the search for feeds has completed, a header
+//d: over the list of results
+//l: heading_pane_t1
+//w:
+//r: 3.2
+#define qtn_popup_title_feeds_files_found    "Feeds Files Found:"
+
+//d: When the search for feeds has completed, if no
+//d: feeds are found on the device, this error is shown
+//l: popup_note_window/opt1
+//w:
+//r: 3.2
+#define qtn_feeds_no_feeds_found_on_device    "No feeds found on device"
+
+//d: A wait screen for when the phone is importing a feed file
+//l: popup_note_wait_window
+//w:
+//r: 3.2
+#define qtn_wait_importing_feeds    "Importing Feeds..."
+
+//d: Menu text to export selected or marked feeds to a file
+//l: list_single_popup_submenu_pane_t1
+//w:
+//r: 3.2
+#define qtn_options_export_feeds    "Send"
+
+//d: When exporting some feeds to a file, header on a popup
+//d: asking the user to name the file
+//l: popup_query_data_window/opt1
+//w:
+//r: 3.2
+#define qtn_feeds_name_exported_file    "Name the file to be sent:"
+
+//d: When exporting some feeds to a file, if the
+//l: popup_note_window
+//w:
+//r: 3.2
+#define qtn_feeds_export_opml_title_needed  "You must enter a name for the file."
+
+//d: Wait window as feeds are exported into a file
+//l: popup_note_wait_window
+//w:
+//r: 3.2
+#define qtn_wait_processing "Processing..."
+
+//d: Confirmation to import feeds from an OPML file
+//d: that has been downloaded or received from another application
+//d: The %U referes to the filename of the OPML file
+//l: popup_note_window
+//w:
+//r: 3.2
+#define qtn_feeds_query_import_now  "Import feeds from %U now?"
+
+
+/*  Error Strings                                                       */
+/* -------------------------------------------------------------------- */
+//d: Information text for the error dialog.  Displayed when the user
+//d: doesn't include a title when editing or adding a feed.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_feeds_title_needed "Title needed"
+
+//d: Information text for the error dialog.  Displayed when the user
+//d: doesn't include a url when editing or adding a feed.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_feeds_address_needed "Address needed"
+
+//d: Information text for the error dialog.  Displayed when the user
+//d: enters a single quote character anywhere in the feed title.
+//l:popup_note_window
+//w:
+//r:7.0
+#define qtn_feeds_title_single_quote_not_allowed "Single quote character (’) is not allowed in the title"
+
+//d: Information text for the error dialog.  Displayed when the user
+//d: tries to add the same feed a second time.
+//d: %U is the name of the feed.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_feeds_duplicate_feed_error_dialog_text "%U already subscribed"
+
+//d: Information text for the error dialog.  Displayed when the user
+//d: tries to add/edit a feed that has a non-unique title.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_feeds_duplicate_title_error_dialog_text "Title must be unique"
+
+//d: Information text for the error dialog.  Displayed when a requested
+//d: feed is malformed(corrupted/empty).
+//l:popup_note_window
+//w:
+//r:5.0
+#define qtn_feeds_malformed_dialog_text "Feed cannot be processed"
+
+//d: Information text for the main pane.  Displayed when a requested
+//d: feed couldn't be fetched from the network.
+//l:list_double_graphic_pane_t2
+//w:
+//r:5.0
+#define qtn_feeds_network_error_main_pane_text "Couldn't update feed"
+
+//d: Information text for the main pane.  Displayed when a requested
+//d: feed is malformed.
+//l:list_double_graphic_pane_t2
+//w:
+//r:5.0
+#define qtn_feeds_malformed_main_pane_text "Can't process feed"
+
+//d: Information text for the main pane.  Displayed when a requested
+//d: feed is in an unsupported format.
+//l:list_double_graphic_pane_t2
+//w:
+//r:5.0
+#define qtn_feeds_unsupported_main_pane_text "Feed format is not supported"
+
+//d: Information text for the main pane.  Displayed when a requested
+//d: feed has invalid URL.
+//l:list_double_graphic_pane_t2
+//w:
+//r:5.0
+#define qtn_feeds_invalid_url_main_pane_text "Invalid web address"
+
+//d: Information text for the main pane.  Displayed when a requested
+//d: feed fails for some other reason.
+//l:list_double_graphic_pane_t2
+//w:
+//r:5.0
+#define qtn_feeds_general_error_main_pane_text "An unkown error occurred"
+
+//d: Information text for the error dialog.  Displayed when a requested
+//d: feed fails for some other reason.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_feeds_general_error_dialog_text "An unkown error occurred"
+
+
+/*  Misc Strings                                                        */
+/* -------------------------------------------------------------------- */
+//d: Text displayed in the Topic-View when an item's name isn't available.
+//l:list_single_heading_pane_t1
+//w:
+//r:3.0
+#define qtn_feeds_unnamed_item "Unnamed item"
+
+
+

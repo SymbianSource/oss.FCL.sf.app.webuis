@@ -1,0 +1,14 @@
+EXPORTS
+	??0CLauncherServerBase@@QAE@XZ @ 1 NONAME ; CLauncherServerBase::CLauncherServerBase(void)
+	??1CBrowserLauncher@@UAE@XZ @ 2 NONAME ; CBrowserLauncher::~CBrowserLauncher(void)
+	?Cancel@CBrowserLauncher@@QAEXXZ @ 3 NONAME ; void CBrowserLauncher::Cancel(void)
+	?LaunchBrowserEmbeddedL@CBrowserLauncher@@QAEXABVTDesC16@@PAVMDownloadedContentHandler@@PAVMAknServerAppExitObserver@@PAVTBrowserOverriddenSettings@@@Z @ 4 NONAME ; void CBrowserLauncher::LaunchBrowserEmbeddedL(class TDesC16 const &, class MDownloadedContentHandler *, class MAknServerAppExitObserver *, class TBrowserOverriddenSettings *)
+	?LaunchBrowserEmbeddedL@CBrowserLauncher@@QAEXHPAVMDownloadedContentHandler@@PAVMAknServerAppExitObserver@@PAVTBrowserOverriddenSettings@@@Z @ 5 NONAME ; void CBrowserLauncher::LaunchBrowserEmbeddedL(int, class MDownloadedContentHandler *, class MAknServerAppExitObserver *, class TBrowserOverriddenSettings *)
+	?LaunchBrowserSyncEmbeddedL@CBrowserLauncher@@QAEHABVTDesC16@@PAVMDownloadedContentHandler@@PAVTBrowserOverriddenSettings@@@Z @ 6 NONAME ; int CBrowserLauncher::LaunchBrowserSyncEmbeddedL(class TDesC16 const &, class MDownloadedContentHandler *, class TBrowserOverriddenSettings *)
+	?LaunchBrowserSyncEmbeddedL@CBrowserLauncher@@QAEHHPAVMDownloadedContentHandler@@PAVTBrowserOverriddenSettings@@@Z @ 7 NONAME ; int CBrowserLauncher::LaunchBrowserSyncEmbeddedL(int, class MDownloadedContentHandler *, class TBrowserOverriddenSettings *)
+	?NewL@CBrowserLauncher@@SAPAV1@H@Z @ 8 NONAME ; class CBrowserLauncher * CBrowserLauncher::NewL(int)
+	?NewL@CBrowserLauncher@@SAPAV1@XZ @ 9 NONAME ; class CBrowserLauncher * CBrowserLauncher::NewL(void)
+	?NewLC@CBrowserLauncher@@SAPAV1@H@Z @ 10 NONAME ; class CBrowserLauncher * CBrowserLauncher::NewLC(int)
+	?NewLC@CBrowserLauncher@@SAPAV1@XZ @ 11 NONAME ; class CBrowserLauncher * CBrowserLauncher::NewLC(void)
+	?ServiceL@CLauncherServerBase@@UAEXABVRMessage2@@@Z @ 12 NONAME ; void CLauncherServerBase::ServiceL(class RMessage2 const &)
+

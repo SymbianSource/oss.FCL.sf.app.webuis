@@ -1,0 +1,80 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file
+*
+*/
+
+
+
+#include <defaultcaps.hrh>
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+#include <platform/mw/Browser_platform_variant.hrh>
+
+
+TARGET             PushMtmCliSrv.dll
+TARGETTYPE   dll
+UID                     0x10004845 0x10008D42
+TARGETPATH      SHARED_LIB_DIR
+
+CAPABILITY      CAP_GENERAL_DLL
+
+VENDORID        VID_DEFAULT
+
+USERINCLUDE     ../MtmCliSrvInc
+USERINCLUDE     ../Inc
+USERINCLUDE     ../MtmUtilInc
+USERINCLUDE     ../MtmUiInc
+
+APP_LAYER_SYSTEMINCLUDE
+APP_LAYER_ECOM_SYSTEMINCLUDE
+APP_LAYER_PUSH_SYSTEMINCLUDE
+
+SOURCEPATH      ../MtmCliSrvSrc
+SOURCE          PushMtmClient.cpp
+SOURCE          PushMtmCliSrvPanic.cpp
+SOURCE          PushMtmGcOperation.cpp
+SOURCE          PushMtmServer.cpp
+
+// Define the following __TEST_LOG_MMP macro if logging is required.
+// Uncomment it if you want logging. This macro is used only in the mmp file.
+// In the source files use __TEST_LOG__.
+//#define __TEST_LOG_MMP
+
+#ifdef __TEST_LOG_MMP
+MACRO           __TEST_LOG__
+#endif
+
+LIBRARY         euser.lib
+LIBRARY         msgs.lib
+LIBRARY         PushMtmUtil.lib
+LIBRARY         SISLPushMsgUtils.lib
+
+#ifdef __TEST_LOG_MMP
+DEBUGLIBRARY         flogger.lib
+#endif
+
+
+#if defined(ARMCC)
+    DEFFILE ../EABI/PUSHMTMCLISRVU_EKA2.def
+#else
+    DEFFILE ../BWinsCw/PUSHMTMCLISRVU_EKA2.def
+#endif
+
+START RESOURCE  ../Data/PushRegistry.rss
+TARGET          PushRegistry.rsc
+TARGETPATH      MTM_INFO_FILE_DIR
+LANGUAGE_IDS
+END
+

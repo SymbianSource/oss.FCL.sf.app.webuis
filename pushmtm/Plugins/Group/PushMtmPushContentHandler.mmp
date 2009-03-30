@@ -1,0 +1,155 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include <platform/mw/Browser_platform_variant.hrh>
+
+TARGET          PushMtmPushContentHandler.dll
+TARGETTYPE      PLUGIN
+
+// UIDs - 2nd UID specifies an ECom dll,
+// 3rd UID is unique identifier
+// (EUidPushContentHandlerDll in PushContentHandlerDef.hrh).
+UID             0x10009D8D 0x101F854C
+
+CAPABILITY      CAP_ECOM_PLUGIN
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../PushContentHandler
+START RESOURCE      101F854C.rss
+LANGUAGE_IDS
+TARGET      PushMtmPushContentHandler.rsc
+END // RESOURCE
+
+USERINCLUDE     ../PushContentHandler
+USERINCLUDE     ../../Inc
+USERINCLUDE     ../../MtmUtilInc
+USERINCLUDE     ../../MtmUiInc
+
+APP_LAYER_SYSTEMINCLUDE
+APP_LAYER_ECOM_SYSTEMINCLUDE
+APP_LAYER_PUSH_SYSTEMINCLUDE
+APP_LAYER_HTTP_SYSTEMINCLUDE
+APP_LAYER_LIBC_SYSTEMINCLUDE
+
+SOURCEPATH      ../PushContentHandler
+SOURCE          CCOContentHandler.cpp
+SOURCE          CMultiPartMixedContentHandler.cpp
+SOURCE          CMultiPartRelAndAltContentHandler.cpp
+SOURCE          CPushContentHandlerBase.cpp
+SOURCE          CUnknownContentHandler.cpp
+SOURCE          CSIContentHandler.cpp
+SOURCE          CSLContentHandler.cpp
+SOURCE          PushContentHandlerGroupProxy.cpp
+SOURCE          PushContentHandlerPanic.cpp
+SOURCE          PushContentHandlerUtils.cpp
+#ifdef __SERIES60_PUSH_SL
+SOURCE          PushMtmAutoFetchOperation.cpp
+SOURCE          PushMtmFetchOperation.cpp
+SOURCE			PushMtmCacheSupply.cpp
+SOURCE			PushMtmCacheDataSupplier.cpp
+#endif // __SERIES60_PUSH_SL
+SOURCE          si_dict.c
+SOURCE          sl_dict.c
+SOURCE          StringResourceReader.cpp
+
+// Define the following __TEST_LOG_MMP macro if logging is required.
+// Uncomment it if you want logging. This macro is used only in the mmp file.
+// In the source files use __TEST_LOG__.
+//#define __TEST_LOG_MMP
+
+#if defined __TEST_LOG_MMP
+MACRO           __TEST_LOG__
+#endif
+
+#ifdef __SERIES60_PUSH_SL
+LIBRARY	apengine.lib
+#endif // __SERIES60_PUSH_SL
+
+#if defined(__SERIES60_PUSH_SP) || defined(__SERIES60_PUSH_SL)
+LIBRARY         apgrfx.lib
+LIBRARY         apmime.lib
+#endif // __SERIES60_PUSH_SP || __SERIES60_PUSH_SL
+
+LIBRARY         bafl.lib
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         Bifu.lib
+LIBRARY         BioDB.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         CharConv.lib
+
+#ifdef __SERIES60_PUSH_SL
+LIBRARY         commdb.lib
+#endif // __SERIES60_PUSH_SL
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         commonui.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         ECom.lib
+LIBRARY         efsrv.lib
+
+#ifdef __SERIES60_PUSH_SL
+LIBRARY         esock.lib
+#endif // __SERIES60_PUSH_SL
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         etext.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         euser.lib
+
+#ifdef __TEST_LOG_MMP
+DEBUGLIBRARY         flogger.lib
+#endif
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         gsmu.lib
+#endif // __SERIES60_PUSH_SP
+
+#ifdef __SERIES60_PUSH_SL
+LIBRARY         http.lib
+LIBRARY         BrowserCache.lib
+LIBRARY         HttpFilterCommon.lib
+LIBRARY         inetprotutil.lib
+#endif // __SERIES60_PUSH_SL
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         MiscPushMsgUtils.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         msgs.lib
+LIBRARY         PushMsgEntry.lib
+LIBRARY         PushMtmUtil.lib
+LIBRARY         SISLPushMsgUtils.lib
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         smcm.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         WapPushUtils.lib
+
+#ifdef __SERIES60_PUSH_SL
+LIBRARY			ws32.lib
+#endif // __SERIES60_PUSH_SL
+
+LIBRARY         cXmlParser.lib
+LIBRARY         CENTRALREPOSITORY.lib
+LIBRARY         featmgr.lib

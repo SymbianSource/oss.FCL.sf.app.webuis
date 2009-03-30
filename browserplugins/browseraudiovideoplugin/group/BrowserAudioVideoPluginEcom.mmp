@@ -1,0 +1,121 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is the .mmp for building Ecom style Browser Audio and
+*                 Video Plugin
+*
+*/
+
+ 
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+#include <bldvariant.hrh>
+#include <platform/mw/Browser_platform_variant.hrh>
+
+TARGET		npBrowserAudioVideoPlugin.dll
+TARGETTYPE	PLUGIN  
+
+UID         0x10009D8D 0x10282810
+
+EPOCALLOWDLLDATA
+CAPABILITY 	CAP_ECOM_PLUGIN
+VENDORID    VID_DEFAULT
+
+
+START RESOURCE  ../data/10282810.rss
+TARGET npBrowserAudioVideoPlugin.rsc
+END
+
+START RESOURCE  ../data/BrowserAudioVideoPlugin.rss
+HEADER
+TARGET      BrowserAudioVideoPlugin.rsc       
+TARGETPATH  RESOURCE_FILES_DIR 
+LANGUAGE_IDS
+END
+
+APP_LAYER_SYSTEMINCLUDE
+APP_LAYER_LIBC_SYSTEMINCLUDE
+APP_LAYER_ECOM_SYSTEMINCLUDE
+
+USERINCLUDE ../inc
+
+SOURCEPATH  ../src
+
+SOURCE      BavpMediaRecognizer.cpp
+SOURCE	    BavpController.cpp
+SOURCE	    BavpControllerAudio.cpp
+SOURCE	    BavpControllerVideo.cpp
+SOURCE 	    BavpPlugin.cpp
+SOURCE	    BavpNPObject.cpp
+SOURCE	    BavpApi.cpp
+SOURCE	    BavpView.cpp
+SOURCE	    BavpMain.cpp
+SOURCE	    BavpVolumeHandler.cpp
+SOURCE      BavpHwKeyEvents.cpp
+SOURCE	    BavpClipInfo.cpp
+SOURCE	    BavpLogger.cpp
+
+LIBRARY     euser.lib
+LIBRARY     efsrv.lib
+LIBRARY     CommonEngine.lib  	// RSharedData
+LIBRARY     eikcoctl.lib	    // EikBorderControl
+LIBRARY     cone.lib 		    // CoeControl
+LIBRARY     Avkon.lib
+LIBRARY     AknIcon.lib
+LIBRARY     fbscli.lib       	// Extended icon skinning
+LIBRARY     CdlEngine.lib    	// Scalable UI
+LIBRARY	    ws32.lib
+LIBRARY     bafl.lib
+LIBRARY     estlib.lib
+LIBRARY     RemConCoreApi.lib
+LIBRARY     RemConInterfaceBase.lib
+LIBRARY     drmhelper.lib
+LIBRARY     ecom.lib
+LIBRARY     charconv.lib 
+
+LIBRARY     MediaClientAudio.lib  
+LIBRARY     MediaClientVideo.lib
+LIBRARY     mmfcontrollerframework.lib
+LIBRARY     apgrfx.lib
+LIBRARY     apmime.lib
+
+LIBRARY     HWRMLightClient.lib
+LIBRARY     commdb.lib
+LIBRARY     apengine.lib
+LIBRARY     esock.lib
+LIBRARY     gdi.lib 
+LIBRARY	    hal.lib
+
+LIBRARY     ConnectionManager.lib
+LIBRARY     featmgr.lib
+
+LIBRARY	    InetProtUtil.lib 
+
+LIBRARY     bmpanim.lib 
+LIBRARY		Centralrepository.lib 
+LIBRARY		CenRepNotifHandler.lib
+
+#ifdef __S60_32__
+LIBRARY     JavaScriptCore.lib
+#else
+LIBRARY			npscript.lib
+#endif
+
+#ifdef BRDO_ASX_FF
+LIBRARY		asxparser.lib
+#endif // BRDO_ASX_FF
+ 
+DEBUGLIBRARY    flogger.lib
+
+deffile     npBrowserAudioVideoPlugin.def
+nostrictdef

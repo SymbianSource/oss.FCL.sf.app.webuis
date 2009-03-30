@@ -1,0 +1,10 @@
+EXPORTS
+	_ZN14CPushMtmClient4NewLER17CRegisteredMtmDllR11CMsvSession @ 1 NONAME
+	_ZN14CPushMtmServer4NewLER17CRegisteredMtmDllP15CMsvServerEntry @ 2 NONAME
+	_ZTI14CPushMtmClient @ 3 NONAME ; #<TI>#
+	_ZTI14CPushMtmServer @ 4 NONAME ; #<TI>#
+	_ZTI19CPushMtmGcOperation @ 5 NONAME ; #<TI>#
+	_ZTV14CPushMtmClient @ 6 NONAME ; #<VT>#
+	_ZTV14CPushMtmServer @ 7 NONAME ; #<VT>#
+	_ZTV19CPushMtmGcOperation @ 8 NONAME ; #<VT>#
+

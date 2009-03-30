@@ -1,0 +1,4 @@
+EXPORTS
+	?NewL@CPushMtmUi@@SAPAV1@AAVCBaseMtm@@AAVCRegisteredMtmDll@@@Z @ 1 NONAME ; class CPushMtmUi * CPushMtmUi::NewL(class CBaseMtm &, class CRegisteredMtmDll &)
+	?NewL@CPushMtmUiData@@SAPAV1@AAVCRegisteredMtmDll@@@Z @ 2 NONAME ; class CPushMtmUiData * CPushMtmUiData::NewL(class CRegisteredMtmDll &)
+

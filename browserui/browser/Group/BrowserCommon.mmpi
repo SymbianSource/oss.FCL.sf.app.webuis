@@ -1,0 +1,197 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*
+*/
+#include <platform_paths.hrh>
+#include <platform/mw/Browser_platform_variant.hrh>
+
+TARGETTYPE  exe
+
+EPOCSTACKSIZE 0x14000
+EPOCHEAPSIZE 0x5000 0x1000000
+VENDORID    VID_DEFAULT
+
+CAPABILITY CAP_APPLICATION NetworkControl -Location
+
+EpocAllowDllData
+
+MACRO AVERELL2_LOADERCLI_MISSING
+#define AVERELL2_LOADERCLI_MISSING
+
+MACRO HTTP_SECURITY_WARNINGS
+#define HTTP_SECURITY_WARNINGS
+
+SOURCEPATH .
+
+USERINCLUDE ../BrowserAppInc
+USERINCLUDE ../SrcData
+USERINCLUDE ../FavouritesInc
+USERINCLUDE ../SettingsInc
+USERINCLUDE ../launcher2/inc
+
+#ifdef __RSS_FEEDS
+USERINCLUDE ../FeedsInc
+#endif //__RSS_FEEDS
+
+APP_LAYER_SYSTEMINCLUDE
+
+APP_LAYER_LIBC_SYSTEMINCLUDE
+APP_LAYER_HTTP_SYSTEMINCLUDE
+APP_LAYER_ECOM_SYSTEMINCLUDE  // for schemeHandler
+
+#include "browserlogger.inc"
+
+SOURCE ../BrowserAppSrc/BrowserAppEntryPoint.cpp
+SOURCE ../BrowserAppSrc/BrowserApplication.cpp
+SOURCE ../BrowserAppSrc/BrowserAsyncExit.cpp
+SOURCE ../BrowserAppSrc/BrowserAppUi.cpp
+SOURCE ../BrowserAppSrc/BrowserAppDocument.cpp
+SOURCE ../BrowserAppSrc/BrowserAppViewBase.cpp
+SOURCE ../BrowserAppSrc/BrowserContentView.cpp
+SOURCE ../BrowserAppSrc/BrowserContentViewContainer.cpp
+SOURCE ../BrowserAppSrc/BrowserContentViewZoomModeTimer.cpp
+SOURCE ../BrowserAppSrc/BrowserContentViewToolbar.cpp
+SOURCE ../BrowserAppSrc/BrowserDownloadUtil.cpp
+
+SOURCE ../BrowserAppSrc/BrowserDialogs.cpp
+SOURCE ../BrowserAppSrc/BrowserPreferences.cpp
+SOURCE ../BrowserAppSrc/BrowserUtil.cpp
+SOURCE ../BrowserAppSrc/BrowserDisplay.cpp
+SOURCE ../BrowserAppSrc/BrowserCommsModel.cpp
+SOURCE ../BrowserAppSrc/BrowserGotoPane.cpp
+SOURCE ../BrowserAppSrc/BrowserProgressIndicator.cpp
+SOURCE ../BrowserAppSrc/BrowserBmOTABinSender.cpp
+SOURCE ../BrowserAppSrc/BrowserDownloadIndicatorTimer.cpp
+
+SOURCE ../BrowserAppSrc/BrowserAppServer.cpp
+SOURCE ../BrowserAppSrc/BrowserLauncherService.cpp
+
+SOURCE ../BrowserAppSrc/BrowserWindow.cpp
+SOURCE ../BrowserAppSrc/BrowserWindowManager.cpp
+
+SOURCE ../BrowserAppSrc/BrowserShortcutKeyMap.cpp
+
+SOURCE ../BrowserAppSrc/WlanObserver.cpp
+
+// Favourites View (common parts of Bookmarks View)
+SOURCE  ../FavouritesSrc/BrowserFavouritesView.cpp              
+SOURCE  ../FavouritesSrc/BrowserFavouritesContainer.cpp           
+SOURCE  ../FavouritesSrc/BrowserFavouritesModel.cpp           
+SOURCE  ../FavouritesSrc/BrowserFavouritesListbox.cpp         
+SOURCE  ../FavouritesSrc/BrowserFavouritesListboxState.cpp    
+SOURCE  ../FavouritesSrc/BrowserFavouritesListboxModel.cpp    
+SOURCE  ../FavouritesSrc/BrowserFavouritesFolderSelector.cpp  
+SOURCE  ../FavouritesSrc/BrowserFavouritesListboxView.cpp   
+SOURCE  ../FavouritesSrc/BrowserFavouritesListboxItemDrawer.cpp   
+SOURCE  ../FavouritesSrc/CommandVisibility.cpp                    
+SOURCE  ../FavouritesSrc/BrowserFavouritesListboxIconHandler.cpp    
+SOURCE  ../FavouritesSrc/BrowserFavouritesFolderListboxIconHandler.cpp    
+SOURCE  ../FavouritesSrc/BrowserFavouritesIncrementalDelete.cpp
+SOURCE  ../FavouritesSrc/BrowserFavouritesIncrementalMove.cpp
+SOURCE  ../FavouritesSrc/BrowserFavouritesIncrementalOp.cpp
+
+SOURCE  ../FavouritesSrc/BrowserFaviconScaler.cpp
+SOURCE  ../FavouritesSrc/BrowserFaviconHandler.cpp
+
+// Bookmarks View
+SOURCE  ../FavouritesSrc/BrowserBookmarksView.cpp             
+SOURCE  ../FavouritesSrc/BrowserBookmarksContainer.cpp            
+SOURCE  ../FavouritesSrc/BrowserBookmarksModel.cpp              
+SOURCE  ../FavouritesSrc/BrowserBookmarksEditDialog.cpp         
+SOURCE  ../FavouritesSrc/BrowserBookmarksGotoPane.cpp         
+SOURCE  ../FavouritesSrc/BrowserBookmarksEditFormApModel.cpp     
+SOURCE  ../FavouritesSrc/BrowserBookmarksListboxIconHandler.cpp
+SOURCE  ../FavouritesSrc/BrowserBookmarksOrder.cpp
+    
+// Settings View
+SOURCE  ../SettingsSrc/BrowserSettingsDlg.cpp
+SOURCE  ../SettingsSrc/SettingsContainer.cpp
+SOURCE  ../SettingsSrc/SettingsView.cpp
+
+SOURCE ../BrowserAppSrc/BrowserCommandLineParser.cpp
+
+SOURCE ../BrowserAppSrc/SessionAndSecurity.cpp
+
+//adaptive popup
+SOURCE  ../FavouritesSrc/BrowserAdaptiveListPopup.cpp
+
+SOURCE  ../BrowserAppSrc/BrowserLoadObserver.cpp
+SOURCE  ../BrowserAppSrc/BrowserSpecialLoadObserver.cpp
+SOURCE  ../BrowserAppSrc/BrowserSoftkeysObserver.cpp
+
+// Multiple Windows Support
+SOURCE ../BrowserAppSrc/BrowserDialogsProviderProxy.cpp
+SOURCE ../BrowserAppSrc/BrowserDialogsProviderBlocker.cpp
+SOURCE ../BrowserAppSrc/BrowserWindowFocusNotifier.cpp
+SOURCE ../BrowserAppSrc/BrowserPopupEngine.cpp
+
+// PushMtm Support
+SOURCE ../BrowserAppSrc/BrowserPushMtmObserver.cpp
+
+SOURCE ../BrowserAppSrc/Logger.cpp
+
+LIBRARY euser.lib apparc.lib cone.lib eikcore.lib egul.lib
+LIBRARY eikcoctl.lib avkon.lib eikdlg.lib
+LIBRARY eikctl.lib fbscli.lib bafl.lib
+LIBRARY apgrfx.lib
+LIBRARY CommonEngine.lib
+LIBRARY CommonUI.LIB
+LIBRARY apengine.lib
+LIBRARY favouritesengine.lib
+LIBRARY SYSUTIL.LIB
+LIBRARY ConnectionManager.lib
+LIBRARY APSETTINGSHANDLERUI.LIB
+LIBRARY FEPBASE.lib
+
+LIBRARY efsrv.lib
+LIBRARY sendui.lib
+LIBRARY esock.lib
+LIBRARY etext.lib
+
+
+LIBRARY Form.lib
+LIBRARY inetprotutil.lib
+LIBRARY AknSkins.lib // Skins support
+LIBRARY featmgr.lib // feature mannger support
+LIBRARY charconv.lib
+LIBRARY recenturlstore.lib
+LIBRARY cookiemanager.lib
+LIBRARY estor.lib
+LIBRARY CdlEngine.lib
+LIBRARY BrowserDialogsProvider.lib
+LIBRARY ecom.lib  // for schemeHandler
+LIBRARY ws32.lib  // window ordinalposition
+#if defined( WINS )
+LIBRARY     commdb.lib
+#endif
+LIBRARY apmime.lib
+
+#ifdef __SERIES60_HELP
+LIBRARY         hlplch.lib // for "Help" options menu
+#endif // __SERIES60_HELP
+
+#if defined( I__BROWSER_LOG_ENABLED) || defined (I__BROWSER_PERF_LOG_ENABLED )
+LIBRARY    flogger.lib
+#endif
+
+LIBRARY Centralrepository.lib
+LIBRARY BrowserLauncher.lib
+LIBRARY ServiceHandler.lib
+LIBRARY AknLayout2.lib
+LIBRARY BitmapTransforms.lib
+LIBRARY gdi.lib
+LIBRARY bitgdi.lib
+LIBRARY aknicon.lib
+LIBRARY memman.lib

@@ -1,0 +1,64 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file
+*
+*/
+
+#include <platform_paths.hrh>
+#include <platform/mw/Browser_platform_variant.hrh>
+
+TARGET          BrowserLauncher.dll
+TARGETTYPE      dll
+UID             0x1000008d 0x101F8559
+
+CAPABILITY      CAP_GENERAL_DLL
+VENDORID        VID_DEFAULT
+
+#if defined(ARMCC)
+    DEFFILE ../EABI/BROWSERLAUNCHERU_EKA2.def
+#elif defined( WINSCW )
+    DEFFILE ../BWinsCw/BROWSERLAUNCHERU_EKA2.def
+#endif
+
+APP_LAYER_SYSTEMINCLUDE
+USERINCLUDE     ../Inc
+USERINCLUDE     ../../BrowserAppInc
+USERINCLUDE     ../../SettingsInc 
+USERINCLUDE     ../../FeedsInc 
+USERINCLUDE     ../../SrcData
+
+#include "../../Group/BrowserLogger.inc"
+
+SOURCEPATH      ../Src
+SOURCE          BrowserLauncher.cpp
+SOURCE          BrowserLauncherExtension.cpp
+SOURCE          LauncherReceiveHandler.cpp
+SOURCE          LauncherServerBase.cpp
+SOURCE          LauncherClientService.cpp
+SOURCE          ../../BrowserAppSrc/Logger.cpp
+
+LIBRARY         euser.lib
+LIBRARY         avkon.lib
+LIBRARY         cone.lib
+LIBRARY         favouritesengine.lib
+LIBRARY         efsrv.lib
+LIBRARY         APPARC.lib
+LIBRARY         eikcore.lib
+LIBRARY         estor.lib
+LIBRARY         servicehandler.lib
+LIBRARY centralrepository.lib
+
+#if defined( I__BROWSER_LOG_ENABLED )
+LIBRARY    flogger.lib
+#endif

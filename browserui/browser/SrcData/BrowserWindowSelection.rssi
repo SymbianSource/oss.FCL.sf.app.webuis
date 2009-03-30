@@ -1,0 +1,96 @@
+/*
+* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*      Browser Window Selection resources
+*
+*
+*/
+
+
+#ifndef BROWSER_WINDOWSELECTION_RSSI
+#define BROWSER_WINDOWSELECTION_RSSI
+
+//  INCLUDES
+
+#include "Browser.hrh"
+#include <WmlBrowser.loc>
+#include <browser.mbg>
+#include <bldvariant.hrh>
+
+//  RESOURCE DEFINITIONS 
+
+//----------------------------------------------------
+//   
+//    r_browserwindowselection_view
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_browserwindowselection_view
+    {
+    menubar = r_browserwindowselection_menubar_view;  
+    cba = r_browserwindowselection_cba_options_close_select;   
+    }
+
+//----------------------------------------------------
+//   
+//    r_browserwindowselection_cba_options_exit
+//
+//----------------------------------------------------
+//
+RESOURCE CBA r_browserwindowselection_cba_options_close_select
+    {
+    flags = EAknCBAFlagRespondWhenInvisible;
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdWindowSelectionCancel; txt = text_softkey_cancel; },
+        CBA_BUTTON { id = EAknCmdOpen; txt = qtn_msk_select; }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_browserwindowselection_menubar_view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_browserwindowselection_menubar_view
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_browserwindowselection_view_menu; }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_browserwindowselection_view_menu
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_browserwindowselection_view_menu
+    {
+    items =
+        {
+        MENU_ITEM { command = EAknCmdOpen; txt = qtn_browser_list_select_window; },
+        MENU_ITEM { command = EWmlCmdCloseWindow; txt = qtn_browser_list_close_window; },
+        MENU_ITEM { command = EWmlCmdCloseAllWindowButThis; txt = qtn_browser_list_close_all_but_this; }
+        };
+    }
+
+RESOURCE TBUF r_browser_windowselection_view_title { buf = qtn_browser_view_title_windowselection; }
+
+#endif
+
+// End of File

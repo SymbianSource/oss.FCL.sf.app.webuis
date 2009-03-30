@@ -1,0 +1,104 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  VideoServices resource file
+*
+*/
+
+
+//  RESOURCE IDENTIFIER
+NAME    VIDS // For video Services
+
+//  INCLUDES
+
+#include <eikon.rh>
+#include "VideoServices.hrh"
+#include "VideoServices.loc"
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.mbg>
+#include <apcaptionfile.rh>
+#include <appinfo.rh>
+#include <data_caging_paths_strings.hrh>
+
+//  CONSTANTS 
+
+//  MACROS  
+
+//  RESOURCE DEFINITIONS 
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf="VideoServices"; }
+
+RESOURCE EIK_APP_INFO
+    {
+    hotkeys=r_videoservices_hotkeys;
+    menubar=r_videoservices_menubar;
+    cba=R_AVKON_SOFTKEYS_OPTIONS_EXIT;     
+    }
+
+
+//----------------------------------------------------
+//   
+//    r_videoservices_localisable_app_info
+//    ?description
+//
+//----------------------------------------------------
+//
+RESOURCE LOCALISABLE_APP_INFO r_videoservices_localisable_app_info
+    {
+    short_caption = qtn_apps_video_grid;
+    caption_and_icon = 
+    CAPTION_AND_ICON_INFO
+        {
+        caption = qtn_apps_video_list;
+	    number_of_icons = 1;
+	    icon_file = APP_RESOURCE_DIR"\\VideoServices_AIF.MIF";
+        };
+    }
+
+
+//----------------------------------------------------
+//   
+//    r_videoservices_hotkeys
+//    Hotkeys for video services
+//
+//----------------------------------------------------
+//
+RESOURCE HOTKEYS r_videoservices_hotkeys
+    {
+    control=
+        {
+        HOTKEY { command=EAknCmdExit; key='e'; }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_videoservices_menubar
+//    MenuBar for video services (only the exit item)
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_videoservices_menubar
+    {
+    titles=
+        {
+        MENU_TITLE { menu_pane=R_AVKON_MENUPANE_EXIT; }
+        };
+    }
+
+
+            
+// End of File

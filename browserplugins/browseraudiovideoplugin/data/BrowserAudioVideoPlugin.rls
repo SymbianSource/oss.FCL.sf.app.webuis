@@ -1,0 +1,25 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This file contains all the strings for resources of the BAVP.
+*
+*/
+
+
+rls_string STRING_r_browser_audio_video_plugin "npBrowserAudioVideoPlugin.dll;Audio Video - Real Player Plugin"
+rls_string STRING_r_browser_audio_video_plugin_desc "Audio Video Plugin for S60 Browser"
+
+rls_string STRING_r_mime_application "application/vnd.nokia.ringing-tone;rng,dm,dcf|application/vnd.nokia.ringing-tone;nrt,dm,dcf|application/sdp;sdp|application/vnd.rn-realmedia;rm";
+rls_string STRING_r_mime_audio "audio/*;3gp,3g2,amr,au,aac,awb,dcf,dm,mid,midi,mxmf,mp3,m4a,mp4,ra,ram,rpm,rmf,spmid,wav,wma";
+rls_string STRING_r_mime_video "video/*;3gp,mpeg,ram,rm,rv,wmv";
+rls_string STRING_r_mime_wax_wvx_asx "audio/x-ms-wax;wax|audio/x-ms-wvx;wvx|video/x-ms-asf;asx";

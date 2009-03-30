@@ -1,0 +1,24 @@
+EXPORTS
+	_ZN16CBrowserLauncher22LaunchBrowserEmbeddedLERK7TDesC16P25MDownloadedContentHandlerP25MAknServerAppExitObserverP26TBrowserOverriddenSettings @ 1 NONAME
+	_ZN16CBrowserLauncher22LaunchBrowserEmbeddedLEiP25MDownloadedContentHandlerP25MAknServerAppExitObserverP26TBrowserOverriddenSettings @ 2 NONAME
+	_ZN16CBrowserLauncher26LaunchBrowserSyncEmbeddedLERK7TDesC16P25MDownloadedContentHandlerP26TBrowserOverriddenSettings @ 3 NONAME
+	_ZN16CBrowserLauncher26LaunchBrowserSyncEmbeddedLEiP25MDownloadedContentHandlerP26TBrowserOverriddenSettings @ 4 NONAME
+	_ZN16CBrowserLauncher4NewLEi @ 5 NONAME
+	_ZN16CBrowserLauncher4NewLEv @ 6 NONAME
+	_ZN16CBrowserLauncher5NewLCEi @ 7 NONAME
+	_ZN16CBrowserLauncher5NewLCEv @ 8 NONAME
+	_ZN16CBrowserLauncher6CancelEv @ 9 NONAME
+	_ZN16CBrowserLauncherD0Ev @ 10 NONAME
+	_ZN16CBrowserLauncherD1Ev @ 11 NONAME
+	_ZN16CBrowserLauncherD2Ev @ 12 NONAME
+	_ZN19CLauncherServerBase8ServiceLERK9RMessage2 @ 13 NONAME
+	_ZN19CLauncherServerBaseC2Ev @ 14 NONAME
+	_ZTI19CLauncherServerBase @ 15 NONAME ; #<TI>#
+	_ZTI22RLauncherClientService @ 16 NONAME ; #<TI>#
+	_ZTI23CLauncherReceiveHandler @ 17 NONAME ; #<TI>#
+	_ZTI25CBrowserLauncherExtension @ 18 NONAME ; #<TI>#
+	_ZTV19CLauncherServerBase @ 19 NONAME ; #<VT>#
+	_ZTV22RLauncherClientService @ 20 NONAME ; #<VT>#
+	_ZTV23CLauncherReceiveHandler @ 21 NONAME ; #<VT>#
+	_ZTV25CBrowserLauncherExtension @ 22 NONAME ; #<VT>#
+

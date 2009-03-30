@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<html>
+<head>
+    <base href="file:///c:/" />
+    
+    <style>
+        body {font-family:serif; font-size:10pt; line-height:11pt;}
+        .header {}
+        .nav {font-size:13pt; font-weight:700; line-height:13pt; margin-top:1pt; margin-bottom:1pt;}
+        .title {font-size:14pt; font-weight:700; line-height:14pt; margin-top:1pt; margin-bottom:1pt;}
+        .weburl {font-size:14pt; font-weight:700; line-height:14pt; margin-top:1pt; margin-bottom:1pt;}
+        .date {font-size:8pt; font-weight:700; line-height:8pt; margin-top:1pt; margin-bottom:1pt;}
+        .description {font-size:12pt; line-height:12pt; margin-top:1pt; margin-bottom:1pt;}
+    </style>
+
+<title>#Title#</title>
+</head>
+
+<body>
+<table width="100%">
+    <tr><td class="header"><div class="title"><a class="weburl" href="#WebUrl#">#Title#</a></div><div class="date">#Date#</div></td></tr>
+    <tr><td class="description">#Description#</td></tr>
+    <tr><td class="description">#Enclosure#</td></tr>
+</table>
+</body>
+
+<script language="JavaScript" type="text/javascript">
+    // Add the "feeds" schema to all anchors.  This allows the FeedsView to correctly dispatch
+    // them to the client application.
+    var anchorTags = document.getElementsByTagName("a");
+
+    for (var i = 0; i < anchorTags.length ; i++)
+    {
+        anchorTags[i].href = "feeds:" + anchorTags[i].href;
+    }
+
+    // If need be hide the show full story link.
+    var webUrl = "#WebUrl#";
+    if (webUrl.length == 0)
+    {
+        var e = document.getElementById("showFullStory");
+        e.style.display = "none";
+    }        
+</script>
+</html>

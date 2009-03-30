@@ -1,0 +1,83 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Build specification file
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+../Inc/PushMtmCommands.hrh    APP_LAYER_PLATFORM_EXPORT_PATH(PushMtmCommands.hrh)
+../rom/PushMtm.iby            CORE_APP_LAYER_IBY_EXPORT_PATH(PushMtm.iby)
+../rom/PushMtmResources.iby   LANGUAGE_APP_LAYER_IBY_EXPORT_PATH(PushMtmResources.iby)
+../rom/S60SiSlWapPush.iby     CORE_APP_LAYER_IBY_EXPORT_PATH(S60SiSlWapPush.iby)
+#ifndef __S60_32__
+../rom/wappush.iby            CORE_APP_LAYER_IBY_EXPORT_PATH(wappush.iby)
+#endif
+../loc/PushMtmUi.loc          APP_LAYER_LOC_EXPORT_PATH(PushMtmUi.loc)
+../loc/PushViewer.loc         APP_LAYER_LOC_EXPORT_PATH(PushViewer.loc)
+
+../conf/pushmtm.confml        APP_LAYER_CONFML(pushmtm.confml)
+../conf/pushmtm_10008D42.crml APP_LAYER_CRML(pushmtm_10008D42.crml)
+
+#ifdef __SERIES60_32__
+
+PRJ_MMPFILES
+
+// MTM registry files
+//gnumakefile PushRegistry.mk
+gnumakefile PushMtmIcons.mk
+// Push Mtm Utility
+PushMtmUtil.mmp
+// Push Server Mtm, Client Mtm and Ui Mtm
+PushMtmCliSrv.mmp
+// Ui Data Mtm
+PushMtmUi.mmp
+// Push Viewer
+PushViewer.mmp
+
+#include "../Plugins/Group/Bld.inf"
+
+#else
+
+PRJ_EXTENSIONS
+START EXTENSION s60/mifconv
+OPTION TARGETFILE pushmtm.mif
+OPTION HEADERFILE pushmtm.mbg
+OPTION SOURCES -c8,1 qgn_prop_mce_push_unread -c8,1 qgn_prop_mce_push_read
+END
+
+PRJ_MMPFILES
+
+// MTM registry files
+// Push Mtm Utility
+PushMtmUtil.mmp
+// Push Server Mtm, Client Mtm and Ui Mtm
+PushMtmCliSrv.mmp
+// Ui Data Mtm
+PushMtmUi.mmp
+// Push Viewer
+PushViewer.mmp
+
+#include "../Plugins/Group/Bld.inf"
+
+#endif
+
+PRJ_TESTMMPFILES
+
+

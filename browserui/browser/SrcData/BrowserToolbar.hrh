@@ -1,0 +1,360 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     header file for browser toolbars' AVKON_BUTTON_STATE_EXTENSION
+*
+*
+*/
+
+
+#ifndef BROWSERTOOLBAR_HRH
+#define BROWSERTOOLBAR_HRH
+
+
+#include <AknsConstants.hrh>
+
+//----------------------------------------------------
+//
+// Button state extensions for toolbar and toolbar extension buttons.
+// These is required to support skinned graphics for the buttons.
+//
+//----------------------------------------------------
+//
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_blank
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbBlank;
+    //skin KAknsIIDQgnIndiBrowserTbBlank
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_bm
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbBm;
+    //skin KAknsIIDQgnIndiBrowserTbBm
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_feeds
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbFeeds;
+    //skin KAknsIIDQgnIndiBrowserTbFeeds
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_findkw
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbFindKw;
+    //skin KAknsIIDQgnIndiBrowserTbFindKw
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_goto
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbGoto;
+    //skin KAknsIIDQgnIndiBrowserTbGoto
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_help
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbHelp;
+    //skin KAknsIIDQgnIndiBrowserTbHelp
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_images
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbImages;
+    //skin KAknsIIDQgnIndiBrowserTbImages
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_keymap
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbKeyMap;
+    //skin KAknsIIDQgnIndiBrowserTbKeyMap
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_pages
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbPages;
+    //skin KAknsIIDQgnIndiBrowserTbPages
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_rotate
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbRotate;
+    //skin KAknsIIDQgnIndiBrowserTbRotate
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_rss
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbRss;
+    //skin KAknsIIDQgnIndiBrowserTbRss
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_savebm
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbSaveBm;
+    //skin KAknsIIDQgnIndiBrowserTbSaveBm
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_savepage
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbSavePage;
+    //skin KAknsIIDQgnIndiBrowserTbSavePage
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_sendurl
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbSendUrl;
+    //skin KAknsIIDQgnIndiBrowserTbSendUrl
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_settings
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbSettings;
+    //skin KAknsIIDQgnIndiBrowserTbSettings
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_switchwin
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbSwitchWin;
+    //skin KAknsIIDQgnIndiBrowserTbSwitchWin
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_tb
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbTb;
+    //skin KAknsIIDQgnIndiBrowserTbTb
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_urls
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbUrls;
+    //skin KAknsIIDQgnIndiBrowserTbUrls
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_zoomin
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbZoomIn;
+    //skin KAknsIIDQgnIndiBrowserTbZoomIn
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_zoomout
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbZoomOut;
+    //skin KAknsIIDQgnIndiBrowserTbZoomOut
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_back
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbBack;
+    //skin KAknsIIDQgnIndiBrowserTbBack
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_forward
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbForward;
+    //skin KAknsIIDQgnIndiBrowserTbForward
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_forwardinact
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbForwardInact;
+    //skin KAknsIIDQgnIndiBrowserTbForwardInact
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_go
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbGo;
+    //skin KAknsIIDQgnIndiBrowserTbGo
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_home
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbHome;
+    //skin KAknsIIDQgnIndiBrowserTbHome
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_reload
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbReload;
+    //skin KAknsIIDQgnIndiBrowserTbReload
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_stop
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbStop;
+    //skin KAknsIIDQgnIndiBrowserTbStop
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_viewimages
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbViewImages;
+    //skin KAknsIIDQgnIndiBrowserTbViewImages
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_viewpages
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbViewPages;
+    //skin KAknsIIDQgnIndiBrowserTbViewPages
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_websearch
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbWebsearch;
+    //skin KAknsIIDQgnIndiBrowserTbWebsearch
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_findkw_next
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbFindKwNext;
+    //skin KAknsIIDQgnIndiBrowserTbFindKwNext
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_findkw_prev
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbFindKwPrev;
+    //skin KAknsIIDQgnIndiBrowserTbFindKwPrev
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_send_url
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbSendUrl;
+    //skin KAknsIIDQgnIndiBrowserTbSendUrl
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_history_back
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbHistoryBack;
+    //skin KAknsIIDQgnIndiBrowserTbHistoryBack
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_history_fw
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbHistoryFw;
+    //skin KAknsIIDQgnIndiBrowserTbHistoryFw
+    }
+
+// BOOKMARKS
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_bm_tb_new
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserBmTbNew;
+    //skin KAknsIIDQgnIndiBrowserBmTbNew
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_delete
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbDelete;
+    //skin KAknsIIDQgnIndiBrowserTbDelete
+    }
+
+// FEEDS
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_feeds_tb_toweb
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserFeedsTbBackToWeb;
+    //skin KAknsIIDQgnIndiBrowserFeedsTbBackToWeb
+    }
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_feeds_tb_next
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserFeedsTbNext;
+    //skin KAknsIIDQgnIndiBrowserFeedsTbNext
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_feeds_tb_opendetail
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserFeedsTbOpenDetail;
+    //skin KAknsIIDQgnIndiBrowserFeedsTbOpenDetail
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_feeds_tb_openfull
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserFeedsTbOpenFull;
+    //skin KAknsIIDQgnIndiBrowserFeedsTbOpenFull
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_feeds_tb_opentopic
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserFeedsTbOpenTopic;
+    //skin KAknsIIDQgnIndiBrowserFeedsTbOpenTopic
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_feeds_tb_openprev
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserFeedsTbPrevious;
+    //skin KAknsIIDQgnIndiBrowserFeedsTbPrevious
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_feeds_tb_update
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserFeedsTbUpdate;
+    //skin KAknsIIDQgnIndiBrowserFeedsTbUpdate
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_feeds_tb_updateall
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserFeedsTbUpdateAll;
+    //skin KAknsIIDQgnIndiBrowserFeedsTbUpdateAll
+    }
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_switch_win
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbSwitchWin;
+    //skin KAknsIIDQgnIndiBrowserTbSwitchWin
+    }
+
+#endif // BROWSERTOOLBAR_HRH

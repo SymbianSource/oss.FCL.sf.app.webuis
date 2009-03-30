@@ -1,0 +1,86 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Push Content Handlers registration resources.
+*
+*/
+
+
+
+#include <RegistryInfo.rh>
+#include "PushContentHandlerDef.hrh"
+
+
+RESOURCE REGISTRY_INFO theInfo
+	{
+	dll_uid = EUidPushContentHandlerDll;
+	interfaces = 
+		{
+		INTERFACE_INFO
+			{
+			interface_uid = EUidPushContentHandlerBase;
+			implementations = 
+				{
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid = EUidPushUnknownContentHandler;
+					version_no = 2;
+					display_name = "";
+					default_data = "*";
+					opaque_data = "";
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid = EUidPushSIContentHandler;
+					version_no = 2;
+					display_name = "";
+					default_data = "text/vnd.wap.si||application/vnd.wap.sic";
+					opaque_data = "";
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid = EUidPushSLContentHandler;
+					version_no = 2;
+					display_name = "";
+					default_data = "text/vnd.wap.sl||application/vnd.wap.slc";
+					opaque_data = "";
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid = EUidPushCOContentHandler;
+					version_no = 2;
+					display_name = "";
+					default_data = "text/vnd.wap.co||application/vnd.wap.coc";
+					opaque_data = "";
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid = EUidPushMultiPartMixedContentHandler;
+					version_no = 2;
+					display_name = "";
+					default_data = "application/vnd.wap.multipart.mixed||multipart/mixed";
+					opaque_data = "";
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid = EUidPushMultiPartRelAndAltContentHandler;
+					version_no = 2;
+					display_name = "";
+					default_data = "application/vnd.wap.multipart.related||application/vnd.wap.multipart.alternative||multipart/related||multipart/alternative";
+					opaque_data = "";
+					}
+				};
+			}
+		};
+	}
+

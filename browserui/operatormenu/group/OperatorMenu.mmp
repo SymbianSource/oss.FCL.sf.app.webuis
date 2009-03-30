@@ -1,0 +1,73 @@
+/*
+* Copyright (c) 2003 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file for OperatorMenu
+*
+*/
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+#include <platform/mw/Browser_platform_variant.hrh>
+
+TARGET  OperatorMenu.exe
+TARGETTYPE  exe
+
+UID  0x100039CE 0x10008D5E
+TARGETPATH /system/apps/OperatorMenu
+
+epocstacksize 0x5000
+
+CAPABILITY	CAP_APPLICATION
+VENDORID        VID_DEFAULT
+
+SOURCEPATH ../src
+SOURCE  OperatorMenuApp.cpp 
+SOURCE  OperatorMenuAppUi.cpp
+SOURCE  OperatorMenuDocument.cpp
+
+START RESOURCE ../data/Operatormenu.rss
+HEADER
+TARGETPATH      APP_RESOURCE_DIR
+LANGUAGE_IDS
+END
+
+START RESOURCE ../data/Operatormenu_reg.rss
+DEPENDS operatormenu.rsg
+// Do not change the UID below.
+TARGETPATH /private/10003a3f/apps
+END
+
+USERINCLUDE . ../inc
+
+SYSTEMINCLUDE . 
+APP_LAYER_SYSTEMINCLUDE
+
+LIBRARY euser.lib 
+LIBRARY apparc.lib 
+LIBRARY cone.lib 
+LIBRARY eikcore.lib 
+LIBRARY avkon.lib
+LIBRARY browserlauncher.lib
+LIBRARY CentralRepository.lib
+LIBRARY FeatMgr.lib
+
+START WINS      
+// ?wins_specific_information
+END
+
+START MARM
+// ?marm_specific_information
+END
+
+// DEFFILE ?filename
+
