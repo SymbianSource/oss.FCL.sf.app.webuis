@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description: 
+* Description:
 *
 *
 *
@@ -35,10 +35,14 @@
 #include <Featmgr.h>
 #include <fepbase.h>
 #include <aknutils.h>
+#include <BrowserUiSDKCRKeys.h>
 
-#include <centralrepository.h> 
+#include <centralrepository.h>
+#include <AknLayout2ScalableDef.h>
 #include <AknFepInternalCRKeys.h>
+#include <aknlayoutfont.h>
 #include <PtiDefs.h>
+#include <aknlayoutscalable_avkon.cdl.h>
 
 #include "CommonConstants.h"
 #include "BrowserGotoPane.h"
@@ -50,6 +54,8 @@
 #include "BrowserContentView.h"
 
 #include "eikon.hrh"
+
+#include <StringLoader.h>
 
 
 // ---------------------------------------------------------------------------
@@ -80,7 +86,11 @@ CBrowserGotoPane* CBrowserGotoPane::NewL(
 void CBrowserGotoPane::MakeVisibleL( TBool aVisible )
     {
     if ( aVisible )
-    {
+        {
+        if ( iSearchEditor )
+            {
+            ConstructSearchPaneL();
+            }
         HandleFindSizeChanged();
         if ( AUTOCOMP ) //ask the feature manager
         {
@@ -91,9 +101,18 @@ void CBrowserGotoPane::MakeVisibleL( TBool aVisible )
         {
         //2.0 does put the http:// there
             SetTextL( KHttpString );
+            }
         }
-    }
-    if (AknLayoutUtils::PenEnabled())
+    else
+        {
+        // Clear the search text if goto is cancelled ( hidden ).
+        if ( iSearchEditor )
+            {
+            SetSearchTextL( KNullDesC );
+            }
+        }
+
+    if (AknLayoutUtils::PenEnabled() &&  ( !iSearchEditor )  )
         {
         SetPointerCapture(aVisible);
         if (aVisible)
@@ -106,6 +125,16 @@ void CBrowserGotoPane::MakeVisibleL( TBool aVisible )
 
     iGotoKeyHandled->Reset();
     iGotoKeyHandled->EnableL( aVisible );
+
+
+    if ( iSearchEditor )
+        {
+        SetTextModeItalicL();
+        }
+    // To avoid Flickring Effect when SearchInputFrame is
+    // re-created with new search provider icon.
+    DrawNow( );
+
     }
 
 // ---------------------------------------------------------------------------
@@ -127,11 +156,15 @@ CBrowserGotoPane::~CBrowserGotoPane()
         {
         iAvkonAppUi->RemoveFromStack( iGotoKeyHandled );
         }
+    delete iSearchEditor;
+    delete iSearchInputFrame;
+
     delete iGotoKeyHandled;
     delete iEditor;
     delete iInputFrame;
     delete iPrevKeyword;
     delete iBAdaptiveListPopup;
+    delete iDefaultSearchText;
     iContentView = NULL;
     CCoeEnv::Static()->RemoveFepObserver(static_cast<MCoeFepObserver &>(*this));
     }
@@ -143,8 +176,11 @@ CBrowserGotoPane::~CBrowserGotoPane()
 CBrowserGotoPane::CBrowserGotoPane( CBrowserContentView* aContentView, TBool aFindKeywordMode )
 :   iContentView( aContentView),
     iFindKeywordMode( aFindKeywordMode ),
-    iHandleFEPFind( ETrue )
-    ,iBAdaptiveListPopup( NULL )
+    iHandleFEPFind( ETrue ),
+    iBAdaptiveListPopup( NULL ),
+    iGotoPaneActive( ETrue ),
+    iSearchPaneActive( EFalse),
+    iSearchIconId( 0 )
     {
     }
 
@@ -197,18 +233,18 @@ void CBrowserGotoPane::ConstructL ( const CCoeControl* aParent, TInt aIconBitmap
         }
     TInt editorFlags =  ((iFindKeywordMode) ? EAknEditorFlagDefault : EAknEditorFlagLatinInputModesOnly) |EAknEditorFlagUseSCTNumericCharmap;
 #ifdef RD_INTELLIGENT_TEXT_INPUT
-    TInt physicalKeyboards = 0; 
+    TInt physicalKeyboards = 0;
     CRepository* aknFepRepository = CRepository::NewL( KCRUidAknFep );
-	User::LeaveIfNull( aknFepRepository );
+    User::LeaveIfNull( aknFepRepository );
 
     aknFepRepository->Get( KAknFepPhysicalKeyboards,  physicalKeyboards );
-    delete aknFepRepository; 
-        
-	if ( physicalKeyboards &&   EPtiKeyboardQwerty3x11 ) {
+    delete aknFepRepository;
+
+    if ( physicalKeyboards &&   EPtiKeyboardQwerty3x11 ) {
         editorFlags = (editorFlags | EAknEditorFlagNoT9);
-	}
-#endif 
-    iEditor->SetAknEditorFlags( editorFlags ); 
+    }
+#endif
+    iEditor->SetAknEditorFlags( editorFlags );
 
     iEditor->SetAknEditorPermittedCaseModes (   EAknEditorUpperCase |
                                                 EAknEditorLowerCase );
@@ -220,11 +256,18 @@ void CBrowserGotoPane::ConstructL ( const CCoeControl* aParent, TInt aIconBitmap
     iEditor->SetEdwinObserver( iGotoKeyHandled );
     iEditor->SetSkinBackgroundControlContextL(NULL);
 
-    //adaptive popuplist
+    TBool searchFeature = iContentView->ApiProvider().Preferences().SearchFeature();
+    if (  searchFeature && !iFindKeywordMode )
+        {
+        iDefaultSearchText = StringLoader::LoadL( R_IS_WEB_SEARCH );
+        ConstructSearchPaneL();
+        }
+
+      //adaptive popuplist
     if ( aPopupListStatus && AUTOCOMP )
         {
         iBAdaptiveListPopup =
-            new (ELeave) CBrowserAdaptiveListPopup( iEditor, this, EGotoPane );
+            new (ELeave) CBrowserAdaptiveListPopup( iEditor, this, EGotoPane, searchFeature );
         iBAdaptiveListPopup->ConstructL();
         iEditor->SetObserver( iBAdaptiveListPopup );
         if (iContentView)
@@ -257,18 +300,32 @@ void CBrowserGotoPane::SetOrdinalPosition( TInt aPos )
 //
 void CBrowserGotoPane::HandleFindSizeChanged()
     {
-
     if ( !AknLayoutUtils::PenEnabled() )
         {
-        TRect parentrect = iAvkonAppUi->ApplicationRect();
+        if ( iSearchEditor && !iFindKeywordMode)
+            {
+            TRect clientRect = CBrowserAppUi::Static()->ClientRect();
+            TAknWindowLineLayout findWindow = AknLayout::popup_find_window();
 
-        TAknLayoutRect lrect;
-        lrect.LayoutRect( parentrect,
+            TRect findWindowRect = AknLayoutUtils::RectFromCoords( clientRect,findWindow.il, findWindow.it,
+                    findWindow.ir, findWindow.ib, findWindow.iW, findWindow.iH);
+
+            // Now Increase the height of rect to make room for two editors (Goto + search)//
+            findWindowRect.iTl.iY -= ( findWindow.iH  );
+            SetRect( findWindowRect );
+            }
+        else
+            {
+            TRect parentrect = iAvkonAppUi->ApplicationRect();
+
+            TAknLayoutRect lrect;
+            lrect.LayoutRect( parentrect,
                         AknLayout::main_pane( CBrowserAppUi::Static()->ApplicationRect(), 0, 1, 1 )
                         );
-        AknLayoutUtils::LayoutControl ( this,
+            AknLayoutUtils::LayoutControl ( this,
                                         lrect.Rect(),
                                         AknLayout::popup_find_window() );
+            }
         }
     else
         {
@@ -350,17 +407,16 @@ void CBrowserGotoPane::HandleControlEventL ( CCoeControl* /*aControl*/,
 TKeyResponse CBrowserGotoPane::OfferKeyEventL
 ( const TKeyEvent& aKeyEvent, TEventCode aType )
     {
-    TKeyResponse resp;
+    TKeyResponse resp = EKeyWasNotConsumed;
 
-    if ( AknLayoutUtils::PenEnabled() &&
-         PopupList() &&
-         PopupList()->DrawableWindow()->OrdinalPosition() > 0)
+    if (    AknLayoutUtils::PenEnabled()
+         && PopupList()
+         && PopupList()->DrawableWindow()->OrdinalPosition() > 0 )
         {
         PopupList()->SetOrdinalPosition(0);
         }
 
-    // Escape key event handling
-    if ( aType == EEventKey && aKeyEvent.iCode == EKeyEscape )
+    if ( aType == EEventKey && aKeyEvent.iCode == EKeyEscape )  // Escape key event handling
         {
         CCoeEnv::Static()->AppUi()->RemoveFromStack( this );
         if ( PopupList() )
@@ -368,12 +424,9 @@ TKeyResponse CBrowserGotoPane::OfferKeyEventL
             PopupList()->SetDirectoryModeL( ETrue );
             PopupList()->HidePopupL();
             }
-
-        // Hide Goto pane
-        MakeVisible( EFalse );
+        MakeVisible( EFalse );                                  // Hide Goto pane
         SetFocus( EFalse );
-        // should set the focus of container to ETrue...how?
-        resp = EKeyWasConsumed;
+        resp = EKeyWasConsumed;                                 // should set the focus of container to ETrue...how?
         }
 
     if ( iFindKeywordMode )
@@ -384,43 +437,56 @@ TKeyResponse CBrowserGotoPane::OfferKeyEventL
             }
         else
             {
-            // Handle up and down arow keys to search for
-            // next and previous keywords.
-            if ( aType == EEventKey )
-                {
+            if ( aType == EEventKey )                           // Handle up and down arow keys to search for
+                {                                               //   next and previous keywords.
+
                 if (    aKeyEvent.iCode == EKeyLeftUpArrow      // Northwest
                      || aKeyEvent.iCode == EStdKeyDevice10      //   : Extra KeyEvent supports diagonal event simulator wedge
                      || aKeyEvent.iCode == EKeyUpArrow          // North
                      || aKeyEvent.iCode == EKeyRightUpArrow     // Northeast
                      || aKeyEvent.iCode == EStdKeyDevice11 )    //   : Extra KeyEvent supports diagonal event simulator wedge
-                    {
-                    // Find previous keyword
-                    iContentView->FindKeywordL( NULL, EFalse );
-                    iHandleFEPFind = EFalse;
-                    return EKeyWasConsumed;
+                    {                                           // Any of those? If so, then...
+                    iContentView->FindKeywordL( NULL, EFalse ); // Find previous keyword
+                    iHandleFEPFind = EFalse;                    //   :
+                    return EKeyWasConsumed;                     // And that consumes the key
                     }
+
                 if (    aKeyEvent.iCode == EKeyLeftDownArrow    // Southwest
                      || aKeyEvent.iCode == EStdKeyDevice13      //   : Extra KeyEvent supports diagonal event simulator wedge
                      || aKeyEvent.iCode == EKeyDownArrow        // South
                      || aKeyEvent.iCode == EKeyRightDownArrow   // Southeast
                      || aKeyEvent.iCode == EStdKeyDevice12 )    //   : Extra KeyEvent supports diagonal event simulator wedge
-                    {
-                    // Find next keyword
-                    iContentView->FindKeywordL( NULL, ETrue );
-                    iHandleFEPFind = EFalse;
-                    return EKeyWasConsumed;
+                    {                                           // Any of those? If so, then...
+                    iContentView->FindKeywordL( NULL, ETrue );  // Find next keyword
+                    iHandleFEPFind = EFalse;                    //   :
+                    return EKeyWasConsumed;                     // And that consumes the key
                     }
-                if ( aKeyEvent.iCode == EKeyDevice3 )
-                    {
-                    // ignore select key
-                    return EKeyWasConsumed;
+
+                if ( aKeyEvent.iCode == EKeyDevice3 )           // Select key?
+                    {                                           // If so, then...
+                    return EKeyWasConsumed;                     // Ignore select key
                     }
+
                 }
-            return iEditor->OfferKeyEventL( aKeyEvent, aType );
+            return iEditor->OfferKeyEventL( aKeyEvent, aType );  // Otherwise, just pass the key on to the editor
             }
         }
-    else
+
+    else                                                        // *NOT* iFindKeywordMode
         {
+
+        if (    aKeyEvent.iCode == EKeyRightUpArrow             // Northeast
+             || aKeyEvent.iCode == EStdKeyDevice11              //   : Extra KeyEvent supports diagonal event simulator wedge
+             || aKeyEvent.iCode == EKeyRightDownArrow           // Southeast
+             || aKeyEvent.iCode == EStdKeyDevice12              //   : Extra KeyEvent supports diagonal event simulator wedge
+             || aKeyEvent.iCode == EKeyLeftDownArrow            // Southwest
+             || aKeyEvent.iCode == EStdKeyDevice13              //   : Extra KeyEvent supports diagonal event simulator wedge
+             || aKeyEvent.iCode == EKeyLeftUpArrow              // Northwest
+             || aKeyEvent.iCode == EStdKeyDevice10 )            //   : Extra KeyEvent supports diagonal event simulator wedge
+            {                                                   // Any of those? If so, then...
+            return EKeyWasConsumed;                             // Ignore diagonal navigation events here
+            }
+
         if ( (aKeyEvent.iCode == EKeyOK ) && iGPObserver && IsFocused() )
             {
             if ( CBrowserAppUi::Static()->ContentView()->MenuBar()->MenuPane()->IsVisible() )
@@ -429,28 +495,63 @@ TKeyResponse CBrowserGotoPane::OfferKeyEventL
                 }
             else
                 {
-                // If there is an observer and we have the focus, enter key is
-                // consumed and observer is notified.
                 iGPObserver->HandleGotoPaneEventL
                                 ( this, MGotoPaneObserver::EEventEnterKeyPressed );
-                return EKeyWasConsumed;
-                }
+                return EKeyWasConsumed;                         // If there is an observer and we have the focus,
+		}                                               //   enter key is consumed and observer is notified.
             }
-        // For touch UI, handle enter key from VKB as a "GOTO"
+
         else if (AknLayoutUtils::PenEnabled() && aKeyEvent.iCode == EKeyEnter)
-            {
+            {                                                   // For touch UI, handle enter key from VKB as a "GOTO"
             CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneGoTo);
             return EKeyWasConsumed;
             }
 
-        resp = iEditor->OfferKeyEventL( aKeyEvent, aType );
+        if ( iSearchEditor && iSearchPaneActive )
+            {
+            resp = iSearchEditor->OfferKeyEventL( aKeyEvent, aType );
+            }
+        else
+            {
+            resp = iEditor->OfferKeyEventL( aKeyEvent, aType );
+            }
 
         if ((iBAdaptiveListPopup ) && (resp != EKeyWasConsumed))
+          {
+          resp = iBAdaptiveListPopup->OfferKeyEventL( aKeyEvent, aType );
+          }
+
+
+        if ( iSearchEditor )
             {
-            resp = iBAdaptiveListPopup->OfferKeyEventL( aKeyEvent, aType );
+            if (    ( iGotoPaneActive || iSearchPaneActive)
+                 && (resp != EKeyWasConsumed) )
+                {
+
+                if (  aKeyEvent.iCode == EKeyUpArrow )
+                    {
+                    resp = EKeyWasConsumed;
+                    if ( iSearchPaneActive )
+                        {
+                        SetGotoPaneActiveL();
+                        iEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB );
+                        }
+                    }
+                if ( aKeyEvent.iCode == EKeyDownArrow )
+                    {
+                    resp = EKeyWasConsumed;
+                    if ( iGotoPaneActive )
+                        {
+                        SetSearchPaneActiveL();
+                        iSearchEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB );
+                        }
+                    }
+                }
             }
-        return resp;
         }
+
+    return resp;
+
     }
 
 // ----------------------------------------------------------------------------
@@ -468,7 +569,38 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
     if (Rect().Contains(aPointerEvent.iPosition))
         {
         iGotoKeyHandled->EnableL(ETrue);
-        iEditor->HandlePointerEventL(aPointerEvent);
+        // If search feature exists, check and route to appropriate editor //
+        if ( iSearchEditor  )
+            {
+            if ( iSearchInputFrame->Rect().Contains(aPointerEvent.iPosition))
+                {
+                if ( iSearchPaneActive )
+                    {
+                    iSearchEditor->HandlePointerEventL(aPointerEvent);
+                    }
+                else
+                    {
+                    SetSearchPaneActiveL();
+                    }
+                iSearchEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB);
+                }
+            else
+                {
+                if ( iGotoPaneActive )
+                    {
+                    iEditor->HandlePointerEventL(aPointerEvent);
+                    }
+                else
+                    {
+                    SetGotoPaneActiveL();
+                    }
+                iEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB);
+                }
+            }
+        else
+            {
+            iEditor->HandlePointerEventL(aPointerEvent);
+            }
         iGotoKeyHandled->SetFirstKeyEvent(EFalse);
         }
     else
@@ -484,6 +616,10 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
 //
 TInt CBrowserGotoPane::CountComponentControls() const
     {
+    if ( iSearchEditor && !iFindKeywordMode )
+        {
+        return 4; // iEditor, input frame, SearchEditor and Searchinput frame.
+        }
     return 2;   // iEditor and input frame
     }
 
@@ -503,6 +639,15 @@ CCoeControl* CBrowserGotoPane::ComponentControl ( TInt aIndex ) const
             {
             return iEditor;
             }
+        case 2:
+            {
+            return iSearchInputFrame;
+            }
+        case 3:
+            {
+            return iSearchEditor;
+            }
+
         default:
             return NULL;
         }
@@ -514,7 +659,25 @@ CCoeControl* CBrowserGotoPane::ComponentControl ( TInt aIndex ) const
 //
 void CBrowserGotoPane::SizeChanged()
     {
-    iInputFrame->SetRect( Rect() );
+    if (iSearchEditor && !iFindKeywordMode )
+        {
+        // We need height and width of FindWindow
+        TAknWindowLineLayout findWindow = AknLayout::popup_find_window();
+        TRect findWindowRect = AknLayoutUtils::RectFromCoords( Rect(), findWindow.il,
+                findWindow.it, findWindow.ir, findWindow.ib, findWindow.iW, findWindow.iH);
+
+        TSize gotoSize( findWindowRect.Size() );
+        TRect gotoRect( TPoint( 0,0 ), gotoSize );
+        iInputFrame->SetRect( gotoRect );
+
+        // Now set SearchPane right below GoTo pane //
+        TRect searchRect( TPoint( 0, gotoRect.iBr.iY ), gotoSize );
+        iSearchInputFrame->SetRect( searchRect );
+        }
+    else
+        {
+        iInputFrame->SetRect( Rect() );
+        }
     }
 
 // ----------------------------------------------------------------------------
@@ -526,7 +689,30 @@ void CBrowserGotoPane::FocusChanged( TDrawNow aDrawNow )
     // this is a workaround
     TRAP_IGNORE( iGotoKeyHandled->EnableL( IsFocused() ) );
     CCoeControl::FocusChanged( aDrawNow );
-    iEditor->SetFocus( IsFocused() );
+    if ( iGotoPaneActive )
+        {
+        iEditor->SetFocus( IsFocused() );
+        }
+    else if ( iSearchEditor && !iFindKeywordMode && iSearchPaneActive )
+        {
+        iSearchEditor->SetFocus( IsFocused() );
+        }
+    }
+
+
+
+// ----------------------------------------------------------------------------
+// CBrowserGotoPane::TextLength
+// ----------------------------------------------------------------------------
+//
+TInt CBrowserGotoPane::SearchTextLength() const
+    {
+    TInt len = 0;
+    if ( iSearchEditor )
+        {
+        len = iSearchEditor->TextLength();
+        }
+    return len;
     }
 
 // ----------------------------------------------------------------------------
@@ -546,18 +732,57 @@ HBufC* CBrowserGotoPane::GetTextL() const
     {
     HBufC *retVal = NULL;
 
-    if ( TextLength() || iFindKeywordMode)
+    if ( TextLength()
+            || SearchTextLength()
+            || iFindKeywordMode)
         {
-        retVal = HBufC::NewL( TextLength() + 1 );
+        if ( iSearchEditor && iSearchPaneActive )
+            {
+            retVal = HBufC::NewL( SearchTextLength() + 1 );
+            }
+        else
+            {
+            retVal = HBufC::NewL( TextLength() + 1 );
+            }
         TPtr ptr = retVal->Des();
-        iEditor->GetText( ptr );
+        if ( iSearchEditor && iSearchPaneActive )
+            {
+            iSearchEditor->GetText( ptr );
+            }
+        else
+            {
+            iEditor->GetText( ptr );
+            }
         ptr.ZeroTerminate();
-        if (!iFindKeywordMode)
-           Util::EncodeSpaces(retVal);
-
+        if ( !iFindKeywordMode && !iSearchPaneActive )
+            {
+            Util::EncodeSpaces(retVal);
+            }
         }
 
     return retVal;
+    }
+
+
+// ----------------------------------------------------------------------------
+// CBrowserGotoPane::SetSearchTextL
+// ----------------------------------------------------------------------------
+//
+void CBrowserGotoPane::SetSearchTextL( const TDesC& aTxt )
+    {
+    // for search pane, no default text
+    if ( aTxt == KHttpString || aTxt == KWWWString)
+        {
+        iSearchEditor->SetTextL( &KNullDesC );
+        }
+    else
+        {
+        iSearchEditor->SetTextL( &aTxt );
+        }
+    TInt curPos = SearchTextLength();
+    // Cursor to end, no selection.
+    iSearchEditor->SetSelectionL( curPos, curPos );
+    iSearchEditor->DrawNow();
     }
 
 // ----------------------------------------------------------------------------
@@ -579,7 +804,14 @@ void CBrowserGotoPane::SetTextL( const TDesC& aTxt )
 //
 void CBrowserGotoPane::SelectAllL()
     {
-    iEditor->SelectAllL();
+    if ( iSearchEditor && iSearchPaneActive )
+        {
+        iSearchEditor->SelectAllL();
+        }
+    else
+        {
+        iEditor->SelectAllL();
+        }
     }
 
 // ----------------------------------------------------------------------------
@@ -799,16 +1031,28 @@ void CBrowserGotoPane::HandleCompletionOfTransactionL()
 // ----------------------------------------------------------------------------
 void CBrowserGotoPane::ActivateVKB()
     {
-    if (iEditor && iEditor->TextView())
+    if ( ( iEditor && iEditor->TextView() )
+            || ( iSearchEditor && iSearchEditor->TextView()) )
         {
         // make sure observer is set
         iCoeEnv->SyncNotifyFocusObserversOfChangeInFocus();
 
-        // simulate pointer event to force VKB
+           // simulate pointer event to force VKB
 
-        // first get point at cursor location
-        TInt pos = iEditor->CursorPos();
-        CTextView* textView = iEditor->TextView();
+           // first get point at cursor location
+        TInt pos = 0;
+        CTextView* textView = NULL;
+        if ( iSearchEditor && iSearchPaneActive )
+            {
+            pos = iSearchEditor->CursorPos();
+            textView = iSearchEditor->TextView();
+            }
+        else
+            {
+            pos = iEditor->CursorPos();
+            textView = iEditor->TextView();
+            }
+
         TPoint curPos;
         textView->DocPosToXyPosL(pos, curPos);
 
@@ -816,22 +1060,267 @@ void CBrowserGotoPane::ActivateVKB()
         pe.iPosition = curPos;
 
         pe.iType = TPointerEvent::EButton1Down;
+
         TInt err(KErrNone);
-        TRAP(err, iEditor->HandlePointerEventL(pe));
+        if ( iSearchEditor && iSearchPaneActive )
+            {
+            TRAP(err, iSearchEditor->HandlePointerEventL(pe));
+            }
+        else
+            {
+            TRAP(err, iEditor->HandlePointerEventL(pe));
+            }
+
         if (err != KErrNone)
             {
             return;
             }
 
-        // VKB will only activate is nothing selected
-        iEditor->SetSelectionL(pos,pos);
-
         pe.iType = TPointerEvent::EButton1Up;
-        if (KErrNone == err)
-           {
-           TRAP_IGNORE(iEditor->HandlePointerEventL(pe));
-           }
+
+        // VKB will only activate is nothing selected
+        if ( iSearchEditor && iSearchPaneActive )
+            {
+            iSearchEditor->SetSelectionL(pos,pos);
+            TRAP_IGNORE(iSearchEditor->HandlePointerEventL(pe));
+            }
+        else
+            {
+            iEditor->SetSelectionL(pos,pos);
+            TRAP_IGNORE(iEditor->HandlePointerEventL(pe));
+            }
         }
     }
+
+// ----------------------------------------------------------------------------
+// CBrowserGotoPane::ConstructSearchPaneL
+// ----------------------------------------------------------------------------
+void CBrowserGotoPane::ConstructSearchPaneL()
+    {
+
+    TFileName iconFile;
+    TInt iconId = iContentView->ApiProvider().Preferences().GetIntValue( KBrowserSearchIconId );
+    iContentView->ApiProvider().Preferences().GetStringValueL( KBrowserSearchIconPath, KMaxFileName, iconFile );
+
+    // If Icon File Path Changed or Icon Id Changed, Refresh the Icon for Search Pane.
+    // Comparing Icon File path as well, because it may be possible that two different
+    // Icon files have same icon id.
+    if ( iconId != iSearchIconId
+            || iSearchIconFilePath.Compare( iconFile ) != 0 )
+        {
+
+        TInt iconMaskId = iContentView->ApiProvider().Preferences().GetIntValue( KBrowserSearchIconMaskId );
+        // Save IconId
+        iSearchIconId = iconId;
+        // Save Icon File
+        iSearchIconFilePath = iconFile;
+
+        // No Icon file or IconId or IconMaskId set , then it means no search provider is still
+        // selected and set by search application, in that case we use the default icon for Search.
+        if ( ! iconFile.Length()
+                || iconId == -1
+                || iconMaskId == -1 )
+            {
+            iconId = EMbmAvkonQgn_indi_find_glass;
+            iconMaskId = EMbmAvkonQgn_indi_find_glass_mask;
+            iconFile = KAvkonBitmapFile;
+            }
+
+
+        if ( iSearchEditor )
+           {
+           delete iSearchEditor;
+           iSearchEditor = NULL;
+           }
+
+        if ( iSearchInputFrame )
+           {
+           delete iSearchInputFrame;
+           iSearchInputFrame = NULL;
+           }
+
+
+        // iSearchEditor != NULL, implies presence of Search Feature, which can be
+        // used to validate search feature exsistence, avoiding unecessary feature
+        // check calls and need of separate variable.
+        iSearchEditor = new (ELeave) CEikGlobalTextEditor;
+        iSearchInputFrame = CAknInputFrame::NewL(
+                iSearchEditor,
+                EFalse,
+                iconFile,
+                iconId,
+                iconMaskId,
+                CAknInputFrame::EPopupLayout );
+
+        iSearchInputFrame->SetContainerWindowL( *this);
+        AknEditUtils::ConstructEditingL (   iSearchEditor,
+                                              KFavouritesMaxUrlGotoPaneDefine,
+                                              1,
+                                              EAknEditorCharactersLowerCase,
+                                              EAknEditorAlignRight,
+                                              EFalse,
+                                              ETrue,
+                                              EFalse );
+
+        iSearchEditor->SetContainerWindowL( *this );
+        iSearchEditor->SetObserver( this );
+        iSearchEditor->SetBorder( TGulBorder::ENone );
+        iSearchEditor->SetAknEditorCase( EAknEditorLowerCase );
+        iSearchEditor->SetAknEditorInputMode( EAknEditorTextInputMode );
+
+        if (AVKONAPAC)
+            {
+            // Disallow chinese input.
+            iSearchEditor->SetAknEditorAllowedInputModes( EAknEditorTextInputMode |
+                    EAknEditorNumericInputMode );
+            }
+
+        //Search should use EAknEditorFlagDefault as search allows all types of input
+        iSearchEditor->SetAknEditorFlags
+            ( EAknEditorFlagDefault | EAknEditorFlagUseSCTNumericCharmap );
+
+        iSearchEditor->SetAknEditorPermittedCaseModes (   EAknEditorUpperCase |
+            EAknEditorLowerCase );
+
+        iSearchEditor->SetEdwinObserver( iGotoKeyHandled );
+        iSearchEditor->SetSkinBackgroundControlContextL(NULL);
+        iSearchEditor->MakeVisible( ETrue );
+        iSearchInputFrame->MakeVisible( ETrue );
+        // Set the default text if not active//
+        if ( ! iSearchPaneActive )
+            {
+            SetSearchTextL( *iDefaultSearchText );
+            }
+        iSearchInputFrame->ActivateL();
+        }
+
+    }
+
+// ----------------------------------------------------------------------------
+// CBrowserGotoPane::SetGotoPaneActive
+// ----------------------------------------------------------------------------
+void CBrowserGotoPane::SetGotoPaneActiveL()
+    {
+
+    iGotoPaneActive = ETrue;
+    iSearchPaneActive = EFalse;
+
+    if ( iSearchEditor )
+        {
+        iEditor->AddFlagToUserFlags( CEikEdwin::EAvkonDisableVKB );
+        // if searchpane is empty add default text
+        if ( !SearchTextLength() )
+            {
+            SetSearchTextL( *iDefaultSearchText );
+            }
+
+        // if gotopane is empty add default text
+        if ( !TextLength() )
+            {
+            SetTextL( KWWWString );
+            }
+
+        iSearchEditor->SetFocus( EFalse);
+        }
+
+    iEditor->SetFocus( ETrue );
+    CBrowserAppUi::Static()->UpdateCbaL();
+    SetTextModeItalicL();
+    iEditor->SetCursorPosL(iEditor->TextLength(), EFalse);
+    DrawDeferred();
+    }
+
+// ----------------------------------------------------------------------------
+// CBrowserGotoPane::SetSearchPaneActive
+// ----------------------------------------------------------------------------
+void CBrowserGotoPane::SetSearchPaneActiveL()
+    {
+
+    if ( iSearchEditor )
+        {
+        iSearchEditor->AddFlagToUserFlags( CEikEdwin::EAvkonDisableVKB );
+        // if gotopane is empty add default text
+        if ( !TextLength() )
+            {
+            SetTextL( KWWWString );
+            }
+
+        // if searchpane has default text remove it
+        HBufC* text = iSearchEditor->GetTextInHBufL();
+        if ( text )
+            {
+            CleanupStack::PushL( text );
+            if ( !text->Compare( iDefaultSearchText->Des() ) )
+                {
+                SetSearchTextL( KNullDesC );
+                }
+
+            CleanupStack::PopAndDestroy( text );
+            }
+
+        iSearchPaneActive = ETrue;
+        iGotoPaneActive = EFalse;
+        iEditor->SetFocus( EFalse );
+        if ( iBAdaptiveListPopup )
+            iBAdaptiveListPopup->HidePopupL();
+        iSearchEditor->SetFocus( ETrue );
+        iSearchEditor->SetCursorPosL(iSearchEditor->TextLength(), EFalse);
+        CBrowserAppUi::Static()->UpdateCbaL();
+
+        SetTextModeItalicL();
+        DrawDeferred();
+        }
+    }
+
+
+// ----------------------------------------------------------------------------
+// CBrowserBookmarksGotoPane::SetTextModeItalic
+// ----------------------------------------------------------------------------
+void CBrowserGotoPane::SetTextModeItalicL()
+    {
+
+    // Editor Control is laid in a scalable way, so we need to get the correct font
+    // specification for setting CharFormatLayer, We could have used GetNearestFontInTwips,
+    // as done above in SetTextL() but it does not provide correct fonts for editor.
+    // We do not need to set the FontPosture back to EPostureUpright ( Normal ), as it
+    // is automatically handled by AknLayoutUtils::LayoutEdwinScalable called by
+    // iInputFrame->SetRect(), which overwrites all the properties for Editor.
+    if ( iSearchEditor )
+        {
+        TAknTextComponentLayout   editorLayout;
+        TBool apac( AknLayoutUtils::Variant() == EApacVariant && ( CAknInputFrame::EShowIndicators ) );
+        editorLayout    = AknLayoutScalable_Avkon::input_popup_find_pane_t1( apac ? 2 : 0 );
+        TAknTextLineLayout lineLayout = editorLayout.LayoutLine();
+        TInt fontid =  lineLayout.FontId();
+        const CAknLayoutFont *font = AknLayoutUtils::LayoutFontFromId( fontid  );
+
+        TCharFormat charFormat;
+        TCharFormatMask charFormatMask;
+        charFormat.iFontSpec = font->FontSpecInTwips();
+        charFormat.iFontSpec.iFontStyle.SetPosture( EPostureItalic );
+        charFormatMask.SetAttrib(EAttFontTypeface);
+        charFormatMask.SetAttrib(EAttFontHeight);
+        charFormatMask.SetAttrib(EAttFontStrokeWeight);
+        charFormatMask.SetAttrib(EAttFontPosture);
+
+        // Owner ship of charFormatLayer is taken by Editor
+        CCharFormatLayer* charFormatLayerItalics = NULL;
+        CCharFormatLayer* charFormatLayerUpright = NULL;
+        charFormatLayerItalics = CCharFormatLayer::NewL(charFormat,charFormatMask);
+        charFormat.iFontSpec.iFontStyle.SetPosture( EPostureUpright );
+        charFormatLayerUpright = CCharFormatLayer::NewL(charFormat,charFormatMask);
+        if ( iSearchPaneActive   )
+            {
+            iSearchEditor->SetCharFormatLayer(charFormatLayerUpright);
+            iEditor->SetCharFormatLayer(charFormatLayerItalics);
+            }
+        else
+            {
+            iSearchEditor->SetCharFormatLayer(charFormatLayerItalics);
+            iEditor->SetCharFormatLayer(charFormatLayerUpright);
+            }
+        }
+   }
+
 
 //  END OF FILE

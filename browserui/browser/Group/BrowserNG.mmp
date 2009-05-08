@@ -65,6 +65,17 @@ END
 LIBRARY cmmanager.lib
 LIBRARY browserengine.lib
 LIBRARY       edbms.lib
+
+#ifdef BRDO_APP_GALLERY_SUPPORTED_FF
 LIBRARY   MGXMediaFileAPI.lib
+#endif
 
 LIBRARY   oommonitor.lib
+#ifdef RD_UI_TRANSITION_EFFECTS_LIST
+LIBRARY	 aknlistloadertfx.lib
+#endif //RD_UI_TRANSITION_EFFECTS_LIST
+LIBRARY aknpictograph.lib
+#ifdef RD_TACTILE_FEEDBACK
+LIBRARY         touchfeedback.lib
+#endif // RD_TACTILE_FEEDBACK
+LIBRARY         AknLayout2Scalable.lib

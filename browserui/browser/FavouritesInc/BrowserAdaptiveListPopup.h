@@ -77,7 +77,10 @@ class CBrowserAdaptiveListPopup :
         /**
 		*C++ Constructor
 		*/
-		CBrowserAdaptiveListPopup( CEikEdwin* aGotoPaneEdit, CCoeControl* aParent, TParentType aParentType);
+		CBrowserAdaptiveListPopup( CEikEdwin* aGotoPaneEdit, 
+		        CCoeControl* aParent, 
+		        TParentType aParentType,
+		        TBool aSearchFeature  = EFalse );
 			
 		/**
         * default constructor.
@@ -175,6 +178,8 @@ class CBrowserAdaptiveListPopup :
         HBufC* iUrlSuffixBuf;
         TBool iTouchSupported;
         TInt iMaxRecentUrlsToShow;
+        // shows whether search feature is enabled or not.
+        TBool iSearchFeature; 
     };
 
 #endif  // BROWSERADAPTIVELISTPOPUP_H

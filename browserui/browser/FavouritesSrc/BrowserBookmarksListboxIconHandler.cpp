@@ -58,7 +58,8 @@ enum
 	EIconIndexAdaptiveFolder = 9,      ///< Adaptive Bookmarks domain folder icon index
 	EIconIndexAdaptiveBookmark = 10,      ///< Adaptive Bookmarks bookmark icon index
 	EIconIndexDefaultBookmark = 11,      ///< Adaptive Bookmarks bookmark icon index
-	EIconIndexRSSFolder = 12	///< RSS Folder  icon index
+	EIconIndexRSSFolder = 12,	     ///< RSS Folder  icon index
+	EIconIndexService = 13             ///< service icon
     };
 
 // ================= MEMBER FUNCTIONS =======================
@@ -82,7 +83,12 @@ TInt TBrowserBookmarksListboxIconHandler::ItemIconIndex
         {
         return EIconIndexLastVisitedPage;
         }
-
+    //service icon
+    if( aItem.ContextId() == KFavouritesServiceContextId  )
+        {
+        return EIconIndexService;
+        }
+  
    	//seamless links folders have a different icon
    	if( CBrowserFavouritesView::IsSeamlessFolder( aItem.ContextId() ) )
    		{
@@ -193,7 +199,7 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
 
 	MAknsSkinInstance* skinInstance = AknsUtils::SkinInstance();
 	//EMbmAvkonQgn_indi_marked_add
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnIndiMarkedAdd,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -201,11 +207,12 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmAvkonQgn_indi_marked_add,
 										   EMbmAvkonQgn_indi_marked_add_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
     //EMbmAvkonQgn_prop_folder_small
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropFolderSmall,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -213,12 +220,13 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmAvkonQgn_prop_folder_small,
 										   EMbmAvkonQgn_prop_folder_small_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 	//"z:\\system\\apps\\browser\\Browser.mbm";
 	//EMbmBrowserQgn_prop_wml_home
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropWmlHome,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -226,11 +234,12 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_prop_wml_home,
 										   EMbmBrowserQgn_prop_wml_home_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 	//EMbmBrowserQgn_prop_wml_bm_last
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropWmlBmLast,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -238,11 +247,12 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_prop_wml_bm_last,
 										   EMbmBrowserQgn_prop_wml_bm_last_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 	//EMbmBrowserQgn_prop_wml_bm
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropWmlBm,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -250,11 +260,12 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_prop_wml_bm,
 										   EMbmBrowserQgn_prop_wml_bm_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 	//EMbmBrowserQgn_indi_wml_csd_add
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnIndiWmlCsdAdd,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -262,11 +273,12 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_indi_wml_csd_add,
 										   EMbmBrowserQgn_indi_wml_csd_add_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 	//EMbmBrowserQgn_indi_wml_hscsd_add
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnIndiWmlHscsdAdd,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -274,11 +286,12 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_indi_wml_hscsd_add,
 										   EMbmBrowserQgn_indi_wml_hscsd_add_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 	//EMbmBrowserQgn_indi_wml_gprs_add
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnIndiWmlGprsAdd,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -286,11 +299,12 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_indi_wml_gprs_add,
 										   EMbmBrowserQgn_indi_wml_gprs_add_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 	//EMbmBrowserQgn_prop_wml_folder_link_seamless
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropWmlFolderLinkSeamless,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -298,11 +312,12 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_prop_wml_folder_link_seamless,
 										   EMbmBrowserQgn_prop_wml_folder_link_seamless_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 	//EMbmBrowserQgn_prop_wml_folder_adap
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropWmlFolderAdap,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -310,12 +325,13 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_prop_wml_folder_adap,
 										   EMbmBrowserQgn_prop_wml_folder_adap_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 
 	//EMbmBrowserQgn_prop_wml_bm_adap
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropWmlBmAdap,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -323,13 +339,14 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_prop_wml_bm_adap,
 										   EMbmBrowserQgn_prop_wml_bm_adap_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 
 	//EMbmBrowserQgn_prop_psln_active
 
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropPslnActive,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -337,13 +354,14 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_prop_psln_active,
 										   EMbmBrowserQgn_prop_psln_active_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2); // newIconBmp, newIconMaskBmp (see CreateIconLC)
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 
 	//EMbmBrowserQgn_prop_folder_rss
 	
-	AknsUtils::CreateIconL( skinInstance,
+	AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropFolderRss,
                                            newIconBmp,
 										   newIconMaskBmp,
@@ -351,11 +369,26 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
                                            EMbmBrowserQgn_prop_folder_rss,
 										   EMbmBrowserQgn_prop_folder_rss_mask);    
 	newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2); // newIconBmp, newIconMaskBmp (see CreateIconLC)
 	CleanupStack::PushL(newIcon);
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 
+    //Browser service
 
+    AknsUtils::CreateIconLC( skinInstance,
+                                       KAknsIIDQgnPropBrowserInfoSmall,
+                                       newIconBmp,
+                                       newIconMaskBmp,
+                                       iconFileBrowser,
+                                       EMbmBrowserQgn_prop_browser_info_small,
+                                       EMbmBrowserQgn_prop_browser_info_small_mask );
+    newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp );
+    CleanupStack::Pop(2);
+    CleanupStack::PushL(newIcon);
+    icons->AppendL( newIcon );
+    CleanupStack::Pop(newIcon);
+    
     CleanupStack::Pop();    // POP Icon
 	return icons;
 }

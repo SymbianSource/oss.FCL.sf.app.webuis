@@ -258,9 +258,7 @@ void CBrowserLoadObserver::HandleLoadEventOtherL(
                 !iApiProvider->ExitInProgress() )
                 {
                 // Go back to bookmarks and close the content view
-                iApiProvider->SetViewToReturnOnClose( 
-                                                KUidBrowserBookmarksViewId );
-                iApiProvider->CloseContentViewL();
+				iApiProvider->ExitBrowser( ETrue );
                 }
             // No content to be shown, go back to where we came from
             else if ( !iRestoreContentFlag  )

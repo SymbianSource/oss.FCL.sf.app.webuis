@@ -116,6 +116,8 @@ void CFeedsClientUtilities::ConstructL()
     TPtr ptr( iMimeTypes->Des() );
     ptr.Append( KSupportedMimeTypes() );
     ptr.ZeroTerminate();
+	      
+    iWaitDialog = CFeedsWaitDialog::NewL(*this);
     }
 
 // -----------------------------------------------------------------------------
@@ -622,11 +624,9 @@ void CFeedsClientUtilities::FolderItemRequestCompletedL(TInt aStatus, CTransacti
         iCanceledRequest = CTransaction::ENone;
         return;
         }
-    // Close the wait dialog.
-    if (iWaitDialog)
-        {
-        iWaitDialog->Close();
-        }
+
+    iWaitDialog->Close();
+ 
     iIsWaitDialogDisplayed = EFalse;
     	
     // Show the view if everything went ok.
@@ -1517,11 +1517,7 @@ void CFeedsClientUtilities::LazyInitL(TBool aGetRootFolder)
 	    iAppUI.AddViewL( iFolderView ); // transfer ownership to CAknViewAppUi
 		}
 		
-    // Create the WaitDialog
-    if (iWaitDialog == NULL)
-        {        
-        iWaitDialog = CFeedsWaitDialog::NewL(*this);
-        }
+
     
     // Connect to the server.
     ConnectToServerL(aGetRootFolder);

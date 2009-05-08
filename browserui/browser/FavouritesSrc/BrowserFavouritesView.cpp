@@ -310,6 +310,11 @@ TInt CBrowserFavouritesView::GetSeamlessFolderResourceID( TInt aContextID )
             resId = R_BROWSERBM_FOLDER_DOWNLOAD_MUSIC;
             break;
             }
+        case KFavouritesServiceContextId:
+            {
+            resId = R_IS_RECOMMENDATIONS;
+            break;
+            }
         default:
             {
             break; // not a seamless link folder.
@@ -1168,15 +1173,30 @@ void CBrowserFavouritesView::FillListboxL( TInt aFolder, TBool aKeepState )
     TInt contextId;
     TInt resId = 0;
     HBufC* name;
-    for (int i=0; i<items->Count(); i++)
+ 
+    TBool browserService = ApiProvider().Preferences().ServiceFeature();
+    TBool firstBoot = ApiProvider().Preferences().GetIntValue( KBrowserFirstBoot );
+    TInt serviceUid = KErrNotFound;
+    
+    for(int i=0; i<items->Count(); i++)
         {
-        if (!items->At(i)->IsHidden())
+	    if (!items->At(i)->IsHidden())
             {
             contextId = items->At(i)->ContextId();
-            resId = CBrowserFavouritesView::GetSeamlessFolderResourceID(
-                        contextId );
-
-            if (resId)
+        
+            if ( firstBoot && browserService )
+                {
+                //This is the first boot and we need to move Service top of the bookmarks.
+                //Here we save uid for Service item.
+                if ( contextId == KFavouritesServiceContextId )
+                    {
+                    serviceUid = items->IndexToUid( i );
+                    }
+                }
+        
+            resId = CBrowserFavouritesView::GetSeamlessFolderResourceID( 
+        			contextId );
+            if(resId)
                 {
                 name = iCoeEnv->AllocReadResourceLC( resId );
                 items->At(i)->SetNameL(name->Des());
@@ -1188,6 +1208,47 @@ void CBrowserFavouritesView::FillListboxL( TInt aFolder, TBool aKeepState )
             items->Delete(i);
             i--;
             }
+        }
+    
+    if ( firstBoot && browserService && serviceUid != KErrNotFound )
+        {
+        //get current order array
+        CBrowserBookmarksOrder* currentOrder = CBrowserBookmarksOrder::NewLC();
+        CArrayFixFlat<TInt>* orderArray = new (ELeave) CArrayFixFlat<TInt>( KGranularityHigh );
+        CleanupStack::PushL( orderArray );
+
+        iModel->Database().GetData( KFavouritesRootUid, *currentOrder );
+        orderArray->AppendL( &( currentOrder->GetBookMarksOrder()[0] ), currentOrder->GetBookMarksOrder().Count());
+        
+        //First sort UI. Move Service
+        CFavouritesItem* serviceCopy = CFavouritesItem::NewLC();
+        const CFavouritesItem* serviceItem = items->ItemByUid( serviceUid );
+        if ( serviceItem )
+            {
+            *serviceCopy = *serviceItem;
+            items->Delete( serviceUid );
+            items->InsertL( 0, serviceCopy ); //ownership transfered
+            CleanupStack::Pop( serviceCopy );
+            }
+        else
+            {
+            User::Leave( KErrNotFound );
+            }
+
+        //Next change order in db. Move Service
+        orderArray->InsertL( 0, orderArray->At( serviceUid ) );
+        orderArray->Delete( serviceUid+1 );
+        
+        //save changes to db
+        currentOrder->SetBookMarksOrderL( *orderArray );
+        iModel->Database().SetData( KFavouritesRootUid, *currentOrder );
+        
+        CleanupStack::PopAndDestroy( 2 ); //orderArray, currentOrder
+        //service moved to top of the bookmark list. We can set firstboot value to false
+        // so now we can set firstboot value to false.
+        CRepository* repository = CRepository::NewLC( KCRUidBrowser );
+        User::LeaveIfError( repository->Set(KBrowserFirstBoot, EFalse) );
+        CleanupStack::PopAndDestroy( repository );
         }
 
     CleanupStack::Pop();    // items: passing ownership to listbox.

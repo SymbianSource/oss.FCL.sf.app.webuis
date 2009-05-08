@@ -87,6 +87,8 @@ enum TBrowserCommands
     EWmlCmdServiceOptions,
     EWmlCmdFavourites,
     EWmlCmdGoToAddress,
+    EWmlCmdGoToAddressAndSearch,
+    EIsCmdSearchWeb,	// launch search pane  
     EWmlCmdSaveAsBookmark,
     EWmlCmdReload,
     EWmlCmdBack,
@@ -470,6 +472,8 @@ enum TWmlBrowserSettingsItems
     EWmlSettingsPopupBlocking,
     // Download Open Support
     EWmlSettingsDownloadsOpen, 
+    // Search provider support
+    EWmlSettingsSearchProvider,
     
     // toolbar buttons
     EWmlSettingsToolbarOnOff,

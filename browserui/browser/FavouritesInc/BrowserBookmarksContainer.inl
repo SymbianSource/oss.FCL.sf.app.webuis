@@ -42,6 +42,23 @@ TBool CBrowserBookmarksContainer::GotoPaneActive() const
     return iGotoPaneActive;
     }
 
+// ---------------------------------------------------------
+// CBrowserBookmarksContainer::SearchPane
+// ---------------------------------------------------------
+//
+CBrowserBookmarksGotoPane* CBrowserBookmarksContainer::SearchPane() const
+    {
+    return iSearchPane;
+    }
+
+// ---------------------------------------------------------
+// CBrowserBookmarksContainer::SearchPaneActive
+// ---------------------------------------------------------
+//
+TBool CBrowserBookmarksContainer::SearchPaneActive() const
+    {
+    return iSearchPaneActive;
+    }
 
 #endif
 

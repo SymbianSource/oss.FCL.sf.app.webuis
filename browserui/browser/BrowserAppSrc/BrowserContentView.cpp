@@ -305,9 +305,17 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
             UpdateTitleL( iApiProvider );
             break;
             }
-
-        case EWmlCmdGoToAddress:
+		// Set search pane active and then launch editor.	
+        case EIsCmdSearchWeb:
             {
+            iContainer->GotoPane()->SetSearchPaneActiveL();
+            LaunchGotoAddressEditorL();
+            break;
+            }
+        case EWmlCmdGoToAddress:
+		case EWmlCmdGoToAddressAndSearch:
+            {
+			iContainer->GotoPane()->SetGotoPaneActiveL();
             LaunchGotoAddressEditorL();
             break;
             }
@@ -343,7 +351,10 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
         case EWmlCmdGotoPaneGoTo:
             {
             HBufC* input = iContainer->GotoPane()->GetTextL();
-            if ((input) && (input->CompareF(KWWWString)))
+	    CleanupStack::PushL( input );
+	    if( iContainer->GotoPane()->GotoPaneActive() )
+	        {
+            if ((input) && (input->CompareF(KWWWString)) && input->Length() )
                 {
                 if (iPenEnabled)
                     {
@@ -363,7 +374,31 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
                     MakeCbaVisible( EFalse );
                     }
                 }
-            if (iPenEnabled)
+	        }
+	    else 
+	        {
+	        // Search Editor was active, So launch Search application with 
+	        // search parameters and cancel editing of search and goto.
+	        if ( (input) && input->Length()  )
+               {
+                if (iPenEnabled)
+                  {
+                  Toolbar()->SetDimmed(EFalse);
+                  Toolbar()->DrawNow();
+                  }
+                      
+                CCoeEnv::Static()->AppUi()->RemoveFromStack( iContainer->GotoPane() );
+                if ( iContainer->GotoPane() )
+                    {
+                    iContainer->ShutDownGotoURLEditorL();
+                    LaunchSearchApplicationL( *input );
+                    }
+                UpdateCbaL();
+                UpdateFullScreenL();
+               }
+	        }
+	        CleanupStack::PopAndDestroy( input );
+			if (iPenEnabled)
               	{
                	StartAutoFullScreenTimer();
                 }
@@ -1146,22 +1181,29 @@ TInt CBrowserContentView::CommandSetResourceIdL()
         // when goto pane is up there is no focusable element or active fetching
         // process in place
         {
-        //check wheter there is an active popuplist
-        if( (iContainer->GotoPane()->PopupList() != NULL) &&
-                   ( iContainer->GotoPane()->PopupList()->IsOpenDirToShow() ))
+        if( iContainer->GotoPane()->SearchPaneActive() )
             {
-            result = R_BROWSER_BOOKMARKS_CBA_GOTO_PANE_OPENDIR_CANCEL;
-            }
-        else if(iContainer->GotoPane()->PopupList() &&
-                iContainer->GotoPane()->PopupList()->IsPoppedUp() &&
-                !iPenEnabled)
-            {
-            // LSK Select is only for non-touch devices
-            result =  R_BROWSER_BOOKMARKS_CBA_GOTO_PANE_SELECT_CANCEL;
+            result = R_BROWSER_BOOKMARKS_CBA_SEARCH_PANE_SEARCH_CANCEL;
             }
         else
             {
-            result =  R_BROWSER_BOOKMARKS_CBA_GOTO_PANE_GOTO_CANCEL;
+            //check wheter there is an active popuplist
+            if( (iContainer->GotoPane()->PopupList() != NULL) &&
+                       ( iContainer->GotoPane()->PopupList()->IsOpenDirToShow() ))
+                {
+                result = R_BROWSER_BOOKMARKS_CBA_GOTO_PANE_OPENDIR_CANCEL;
+                }
+            else if(iContainer->GotoPane()->PopupList() &&
+                    iContainer->GotoPane()->PopupList()->IsPoppedUp() &&
+                    !iPenEnabled)
+                {
+                // LSK Select is only for non-touch devices
+                result =  R_BROWSER_BOOKMARKS_CBA_GOTO_PANE_SELECT_CANCEL;
+                }
+            else
+                {
+                result =  R_BROWSER_BOOKMARKS_CBA_GOTO_PANE_GOTO_CANCEL;
+                }
             }
         }
     else if ( iContainer->FindKeywordPane()->IsVisible() )
@@ -1333,6 +1375,11 @@ void CBrowserContentView::DynInitMenuPaneL( TInt aResourceId,
 
         // home
         aMenuPane->SetItemDimmed( EWmlCmdLaunchHomePage, ApiProvider().IsLaunchHomePageDimmedL() );
+        //search 
+         if ( ! ApiProvider().Preferences().SearchFeature() )
+             {
+             aMenuPane->SetItemDimmed( EIsCmdSearchWeb, ETrue );
+             }
         }
     else if ( aResourceId == R_PAGEACTIONS_SUBMENU )
         {

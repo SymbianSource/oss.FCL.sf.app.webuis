@@ -134,6 +134,8 @@ struct TPreferencesValues
 	TUint32							iZoomLevelMax;
 	TUint32							iZoomLevelDefault;
 	TInt							iMaxRecentUrlsToShow;
+    TBool                           iSearch;                // Search Feature
+    TBool                           iService;               // Service Feature
     };
 
 /**
@@ -804,6 +806,31 @@ class MPreferences
 		* Maximum Recent URLs to show
         */
         virtual TInt MaxRecentUrls() const = 0;
+
+        /**
+        * Search Feature Enabled or Disabled. 
+        */
+        virtual inline TBool SearchFeature() const = 0;
+        
+        /**
+        * Service Feature Enabled or Disabled. 
+        */
+        virtual inline TBool ServiceFeature() const = 0;
+                
+        /**
+        * To access an int value key in ini file
+        * @param aKey the ini file key to read
+        * @return the value of the given key
+        */
+        virtual TInt GetIntValue( TUint32 aKey) const = 0;
+
+        /**
+        * To access an string value key in ini file
+        * @param aKey the ini file key to read
+        * @return the value of the given key
+        */
+        virtual TInt GetStringValueL ( TUint32 aKey, TInt aMaxBufSize, TDes& aBuf ) const = 0;
+
         
     public:     // observer support
 

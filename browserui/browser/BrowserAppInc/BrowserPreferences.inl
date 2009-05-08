@@ -653,6 +653,24 @@ TInt CBrowserPreferences::MaxRecentUrls() const
     return iAllPreferences.iMaxRecentUrlsToShow;    	
     }
 
+// ----------------------------------------------------------------------------
+// CBrowserPreferences::SearchFeature
+// ----------------------------------------------------------------------------
+//
+TInt CBrowserPreferences::SearchFeature() const
+    {
+    return iAllPreferences.iSearch;        
+    }
+
+// ----------------------------------------------------------------------------
+// CBrowserPreferences::ServiceFeature
+// ----------------------------------------------------------------------------
+//
+TInt CBrowserPreferences::ServiceFeature() const
+    {
+    return iAllPreferences.iService;        
+    }
+
 #endif
 
 // End of File

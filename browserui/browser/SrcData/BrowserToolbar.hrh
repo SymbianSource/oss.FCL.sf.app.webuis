@@ -357,4 +357,10 @@ RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_switch_w
     //skin KAknsIIDQgnIndiBrowserTbSwitchWin
     }
 
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_goto_and_search
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbGotoAndSearch;
+    //skin KAknsIIDQgnIndiBrowserTbGotoAndSearch
+    }
 #endif // BROWSERTOOLBAR_HRH

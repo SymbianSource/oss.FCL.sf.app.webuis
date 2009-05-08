@@ -225,6 +225,8 @@ CBrowserPreferences::CBrowserPreferences( MCommsModel& aCommsModel,
     iAllPreferences.iShortCutFuncZoomIn = NULL;
     iAllPreferences.iShortCutFuncZoomOut = NULL;
     iAllPreferences.iShortCutFuncZoomMode = NULL;
+	iAllPreferences.iSearch = EFalse;
+    iAllPreferences.iService = EFalse;
     }
 
 // ----------------------------------------------------------------------------
@@ -716,6 +718,8 @@ void CBrowserPreferences::RestoreSettingsL()
             
     iAllPreferences.iMaxRecentUrlsToShow = GetIntValue( KBrowserNGMaxRecentUrls );
 
+    iAllPreferences.iSearch = GetIntValue( KBrowserSearch );
+    iAllPreferences.iService = GetIntValue( KBrowserServices );
     }
 
 

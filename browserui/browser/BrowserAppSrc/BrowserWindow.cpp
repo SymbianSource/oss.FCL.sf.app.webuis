@@ -949,6 +949,8 @@ BROWSER_LOG( ( _L( "Activating window no. %d" ), WindowId() ) );
     if( aDraw )
         {
         iBrCtlInterface->DrawNow();
+        CBrowserContentView* cv = iWindowManager->ContentView();
+        cv->UpdateFullScreenL();
         TRAP_IGNORE(Display().StopProgressAnimationL());//also updates title
         }       
     WindowMgr().NotifyObserversL( EWindowActivate, WindowId() );

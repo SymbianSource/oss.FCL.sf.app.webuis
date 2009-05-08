@@ -105,6 +105,14 @@ class CBrowserAppUi : public CAknViewAppUi,
     public:
 
         /**
+        * Handling the system Event.
+        * @since Series 60 1.2
+        * @param aEvent The System event passed.
+        */
+                
+        void HandleSystemEventL(const TWsEvent& aEvent);
+        
+        /**
         * Get the active view.
 		* @since Series 60 1.2
         * @return The current view.
@@ -768,6 +776,13 @@ class CBrowserAppUi : public CAknViewAppUi,
         * @param none
         */
 		void ShowNameAndVersionL();
+		
+		/**
+		* There's a homepage to be launched so start in content view
+		* [Convenience function that gets used in 2 places]
+        * @param none
+        */		
+		void StartFetchHomePageL();		
 
 		
 	protected:
@@ -947,6 +962,7 @@ class CBrowserAppUi : public CAknViewAppUi,
 		TBool iPgNotFound;
         TBool iSuppressAlwaysAsk;
         TBool iFlashPresent;
+        TBool iSpecialSchemeinAddress;
         
         RFavouritesSession iFavouritesSess;
 

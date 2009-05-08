@@ -485,6 +485,7 @@ RESOURCE MENU_PANE r_goto_submenu
     items =
         {
         MENU_ITEM { command = EWmlCmdGoToAddress; txt = qtn_browser_list_new_web_page; },
+        MENU_ITEM { command = EIsCmdSearchWeb; txt = qtn_is_list_search; },
         MENU_ITEM { command = EWmlCmdBackToPage; txt = qtn_wml_list_ret_page; },
         MENU_ITEM { command = EWmlCmdFavourites;  txt = qtn_wml_faves; },
         MENU_ITEM { command = EWmlCmdOpenFeedsFolder; txt = qtn_browser_list_web_feeds;},
@@ -915,4 +916,20 @@ RESOURCE TBUF r_browser_keymap_text_full_screen             { buf = qtn_browser_
 //RESOURCE TBUF r_update_tim                          { buf = "update infonote!"; }
 //RESOURCE TBUF r_about_tim                           { buf = "version infonote!"; }
 
+//=============================================================================
+//
+//  Service
+//
+//=============================================================================
+RESOURCE TBUF r_is_recommendations { buf = qtn_is_recommendations; }
+RESOURCE TBUF r_is_recommendations_title { buf = qtn_is_recommendations_title; }
+
+//=============================================================================
+//
+//  Search
+//
+//=============================================================================
+RESOURCE TBUF r_browsers_sett_web_search_provider { buf = qtn_browsers_sett_web_search_provider; }
+RESOURCE TBUF r_is_web_search { buf = qtn_is_web_search; }
+RESOURCE TBUF r_is_label_not_selected { buf = qtn_is_label_not_selected; } 
 

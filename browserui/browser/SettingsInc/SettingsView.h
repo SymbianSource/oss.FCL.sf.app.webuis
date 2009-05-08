@@ -122,6 +122,11 @@ class CBrowserSettingsView: public CBrowserViewBase,
         * @see CAknView
         */
 		void HandleClientRectChange();
+		
+		/**
+		* @see CAknView
+		*/
+		void  HandleForegroundEventL (TBool aForeground);
 
 	private: // MEikMenuObserver
 

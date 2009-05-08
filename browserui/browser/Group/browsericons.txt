@@ -95,4 +95,6 @@
 -c8,8 qgn_prop_folder_rss_error
 -c8,8 qgn_prop_file_rss_error
 -c8,8 qgn_indi_browser_tb_send_url
+-c8,8 qgn_indi_browser_tb_goto_and_search.svg
+-c8,8 qgn_prop_browser_info_small.svg
 

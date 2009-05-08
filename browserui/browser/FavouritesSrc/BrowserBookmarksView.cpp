@@ -119,6 +119,8 @@ LOG_ENTERFN("CBrowserBookmarksView::~CBrowserBookmarksView");
     if ( container )
         {
         container->GotoPane()->SetGPObserver( NULL );
+        if( ApiProvider().Preferences().SearchFeature() )
+            container->SearchPane()->SetGPObserver( NULL );
         }
     delete iDomainFolderName;
     delete iItemsToMove;
@@ -248,7 +250,9 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
                 {
                 ProcessCommandL(EWmlCmdMoveCancel);
                 }
-            else if ( TheContainer() && TheContainer()->GotoPane()->IsEditing() )
+			else if( TheContainer() 
+			        && ( TheContainer()->GotoPane()->IsEditing() 
+			        || TheContainer()->SearchPane()->IsEditing()))
                 {
                 ProcessCommandL(EWmlCmdGotoPaneCancel);
                 }
@@ -314,19 +318,43 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
         // CBA commands.
         case EWmlCmdGotoPaneGoTo:
             {
-            if (TheContainer()->GotoPane()->Editor()->TextLength()!= 0)
+            if( TheContainer()->GotoPaneActive() )
                 {
-                // Cancel editing and sets Goto Pane text back.
-                if (TheContainer()->GotoPane()->PopupList() != NULL)
+                if (TheContainer()->GotoPane()->Editor()->TextLength()!= 0)
                     {
-                    TheContainer()->GotoPane()->PopupList()->SetDirectoryModeL( ETrue );
-                    TheContainer()->GotoPane()->PopupList()->HidePopupL();
+                    // Cancel editing and sets Goto Pane text back.
+                    if (TheContainer()->GotoPane()->PopupList() != NULL)
+                        {
+                        TheContainer()->GotoPane()->PopupList()->SetDirectoryModeL( ETrue );
+                        TheContainer()->GotoPane()->PopupList()->HidePopupL();
+                        }
+                    GotoUrlInGotoPaneL();
                     }
-                GotoUrlInGotoPaneL();
+                }
+            else // it was from searchpane 
+                {
+                if (TheContainer()->SearchPane()->Editor()->TextLength()!= 0)
+                    {
+                    // Launch Search application with search parameters
+                    // and cancel editing of search and goto.
+                    // Dim Toolbar buttons
+                    DimToolbarButtons(EFalse);
+                    HBufC* searchString = TheContainer()->SearchPane()->GetTextL();
+                    CleanupStack::PushL( searchString );
+                    if( searchString )
+                        {
+                        UpdateCbaL();
+                        // Set GoTo/Search Inactive
+                        TheContainer()->SetGotoInactiveL();
+                        LaunchSearchApplicationL( *searchString );
+                        }
+                    CleanupStack::PopAndDestroy( searchString );
+                    }
+                // set LSK to GOTO now
+                UpdateCbaL();
                 }
             break;
             }
-
         case EWmlCmdGotoPaneSelect:
             {
             if (TheContainer()->GotoPane()->Editor()->TextLength()!= 0)
@@ -461,6 +489,7 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
             break;
             }
 
+        case EWmlCmdGoToAddressAndSearch:    
         case EWmlCmdGoToAddress: // MSK for Recent Url page
         case EWmlCmdSwitchToGotoActive:
             {
@@ -469,6 +498,12 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
             break;
             }
 
+        case EIsCmdSearchWeb:
+        	{
+        	DimToolbarButtons(ETrue);
+        	TheContainer()->SetSearchActiveL();
+        	break;
+        	}
 
         case EWmlCmdEditBookmark:
             {
@@ -813,6 +848,12 @@ void CBrowserBookmarksView::CommandSetResourceDynL(TSKPair& aLsk, TSKPair& aRsk,
 void CBrowserBookmarksView::SetLSKDynL(TSKPair& aLsk,
     CBrowserBookmarksGotoPane* aGotoPane)
 {
+    CBrowserBookmarksContainer* theContainer = TheContainer();
+    CBrowserBookmarksGotoPane* searchPane = NULL;
+    if( theContainer )
+        {
+        searchPane = theContainer->SearchPane();
+        }
     // Default lsk is option
     aLsk.setPair(EAknSoftkeyOptions, R_BROWSER_BOOKMARKS_DYN_SK_TEXT_SOFTKEY_OPTION);
 
@@ -843,7 +884,11 @@ void CBrowserBookmarksView::SetLSKDynL(TSKPair& aLsk,
             // LSK Select is only for non-touch devices
             aLsk.setPair(EWmlCmdGotoPaneSelect, R_BROWSER_BOOKMARKS_DYN_SK_TEXT_SOFTKEY_SELECT);
             }
-        }
+		}
+	else if(  searchPane && searchPane->IsEditing()  )
+		{
+        aLsk.setPair(EWmlCmdGotoPaneGoTo, R_BROWSER_BOOKMARKS_DYN_SK_QTN_IS_SOFTK_SEARCH);
+	    }
 }
 
 // ----------------------------------------------------------------------------
@@ -854,11 +899,17 @@ void CBrowserBookmarksView::SetLSKDynL(TSKPair& aLsk,
 void CBrowserBookmarksView::SetRSKDynL(TSKPair& aRsk,
     CBrowserBookmarksGotoPane* aGotoPane)
 {
+    CBrowserBookmarksContainer* theContainer = TheContainer();
+    CBrowserBookmarksGotoPane* searchPane = NULL;
+    if( theContainer )
+        {
+        searchPane = theContainer->SearchPane();
+        }
     if ( iManualItemMovingGoingOn )
         {
         aRsk.setPair(EBrowserBookmarksCmdCancel, R_BROWSER_BOOKMARKS_DYN_SK_TEXT_SOFTKEY_CANCEL);
         }
-    else if ( aGotoPane && aGotoPane->IsEditing() )
+	else if( (aGotoPane && aGotoPane->IsEditing()) || (searchPane && searchPane->IsEditing()) )
         {
         // default for goto is cancel
         aRsk.setPair(EBrowserBookmarksCmdCancel, R_BROWSER_BOOKMARKS_DYN_SK_TEXT_SOFTKEY_CANCEL);
@@ -921,10 +972,21 @@ void CBrowserBookmarksView::SetMSKDynL(TSKPair& aMsk, const TSKPair aLsk,
         aMsk.setPair(EBrowserBookmarksCmdOpen, R_BROWSER_BOOKMARKS_DYN_SK_TEXT_SOFTKEY_OPEN);
         }
 
+	CBrowserBookmarksContainer* theContainer = TheContainer();
+    CBrowserBookmarksGotoPane* searchPane = NULL;
+	if( theContainer )
+	    {
+	    searchPane = theContainer->SearchPane();
+	    }
     //
     // UNDER these special conditions, the msk is set differently:
     //
     if ( aGotoPane && aGotoPane->IsEditing() )
+	    {
+		// follow whatever the lsk is set to
+		aMsk = aLsk;
+	    }
+	else if(  searchPane && searchPane->IsEditing() )
         {
         // follow whatever the lsk is set to
         aMsk = aLsk;
@@ -974,7 +1036,8 @@ void CBrowserBookmarksView::HandleBookmarksGotoPaneEventL
         )
     {
 #ifdef _DEBUG
-    __ASSERT_DEBUG( aGotoPane == TheContainer()->GotoPane(), \
+    __ASSERT_DEBUG( aGotoPane == TheContainer()->GotoPane() ||
+            aGotoPane == TheContainer()->SearchPane(), \
         Util::Panic( Util::EFavouritesInternal ) );
 #endif
 
@@ -1072,7 +1135,14 @@ BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
         {
         Toolbar()->SetToolbarObserver(this);
         }
-
+    if ( ApiProvider().Preferences().SearchFeature() )
+        {
+        Toolbar()->HideItem( EWmlCmdGoToAddress, ETrue, ETrue );
+        }
+    else
+        {
+        Toolbar()->HideItem( EWmlCmdGoToAddressAndSearch, ETrue, EFalse );
+        }
     }
 
 // ----------------------------------------------------------------------------
@@ -1208,7 +1278,11 @@ void CBrowserBookmarksView::DynInitMenuPaneL
 
             // home
             aMenuPane->SetItemDimmed( EWmlCmdLaunchHomePage, ETrue );
-
+            //search 
+            if ( ! ApiProvider().Preferences().SearchFeature() )
+                {
+                aMenuPane->SetItemDimmed( EIsCmdSearchWeb, ETrue );
+                }
             break;
             }
         case R_BMACTIONS_SUBMENU:
@@ -1472,6 +1546,8 @@ CBrowserFavouritesContainer* CBrowserBookmarksView::CreateContainerL()
     CBrowserBookmarksContainer* container =
         CBrowserBookmarksContainer::NewL( ClientRect(), *this );
     container->GotoPane()->SetGPObserver( this );
+    if(  ApiProvider().Preferences().SearchFeature() )
+        container->SearchPane()->SetGPObserver( this );
     return container;
     }
 

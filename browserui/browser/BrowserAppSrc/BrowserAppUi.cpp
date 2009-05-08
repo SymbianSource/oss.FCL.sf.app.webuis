@@ -19,6 +19,7 @@
 
 
 // INCLUDES
+#include <platform/mw/Browser_platform_variant.hrh>
 #include <BrowserNG.rsg>
 #include <uri16.h>
 #include <uri8.h>
@@ -39,8 +40,12 @@
 #include <AiwGenericParam.h>
 #include <AknDef.h>
 #include <DocumentHandler.h>
+
+#ifdef BRDO_APP_GALLERY_SUPPORTED_FF
 #include <MGXFileManagerFactory.h>
 #include <CMGXFileManager.h>
+#endif
+
 #include <BrowserPluginInterface.h>
 #include <oommonitorplugin.h>
 
@@ -1268,10 +1273,50 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
 
 		err = KErrNone;
 		BROWSER_LOG( ( _L( "Load the URL" ) ) );
-        LoadObserver().DoStartLoad( aUrlType );
+		
+		if ( iPreferences->SearchFeature() || iPreferences->ServiceFeature())
+		    {
+    		iSpecialSchemeinAddress = EFalse;
+            
+            HBufC* searchScheme = HBufC::NewLC( KMaxHomePgUrlLength );  // cleanupstack
+            TPtr searchSchemePtr( searchScheme->Des() );
+            ++toPop;
+            
+            HBufC* serviceScheme = HBufC::NewLC( KMaxHomePgUrlLength );  // cleanupstack
+            TPtr serviceSchemePtr( serviceScheme->Des() );
+            ++toPop;
+            
+            iPreferences->GetStringValueL( KBrowserSearchProviderUrl, KMaxHomePgUrlLength, searchSchemePtr );
+            iPreferences->GetStringValueL( KBrowserServiceUrl, KMaxHomePgUrlLength, serviceSchemePtr );
+                    
+            TInt err = uriParser.Parse(searchSchemePtr);
+            if (!err)
+                searchSchemePtr = uriParser.Extract( EUriScheme );
+            
+            err = uriParser.Parse(serviceSchemePtr);
+            if (!err)
+                serviceSchemePtr = uriParser.Extract( EUriScheme );
+            
+            if( scheme.Length() != 0 )
+                {
+                if( !scheme.Compare(serviceSchemePtr) || !scheme.Compare(searchSchemePtr) )
+                	{
+                	iSpecialSchemeinAddress = ETrue;
+                	TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
+                	}
+                else
+                	{
+                	LoadObserver().DoStartLoad( aUrlType );
+                    TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
+                	}            
+                }
+	        }
+	    else
+	        {
+	        LoadObserver().DoStartLoad( aUrlType );
+            TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
+	        }
         
-        TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
-
 		CleanupStack::PopAndDestroy(toPop); //resultUrlBuf and url if needed
 		BROWSER_LOG( ( _L( "No AP 4 %d" ), err  ) );
 		if ( err != KErrNone )
@@ -1778,29 +1823,53 @@ TBool CBrowserAppUi::ProcessCommandParametersL( TApaCommand aCommand,
 
    	    if ( LastActiveViewId() == KUidBrowserNullViewId )
 	        {
+	        TBool specialSchemeInHomePageAddress = EFalse;
+	        
 	        if (NoHomePageToBeLaunchedL())
 	            {
 	            // No homepage to be launched so start browser in bookmarks view
     	        SetLastActiveViewId(KUidBrowserBookmarksViewId);
 	            }
-    	    else
+    	    else if ( iPreferences->SearchFeature() || iPreferences->ServiceFeature())
     	        {
-    	        // There's a homepage to be launched so start in content view
-    	        SetLastActiveViewId(KUidBrowserContentViewId);  
-    	          
-               	//wait for contentview to initialize itself
-        	    WaitCVInit();
+    	        
+    	        HBufC* buf = HBufC::NewLC( KMaxHomePgUrlLength );  // cleanupstack
+    	        TPtr ptr( buf->Des() );
+    	        TInt pgFound( KErrNotFound );
+    	        pgFound = Preferences().HomePageUrlL( ptr );
+    	        
+    			HBufC* searchScheme = HBufC::NewLC( KMaxHomePgUrlLength );  // cleanupstack
+    			TPtr searchSchemePtr( searchScheme->Des() );
+    			
+    			HBufC* serviceScheme = HBufC::NewLC( KMaxHomePgUrlLength );  // cleanupstack
+    			TPtr serviceSchemePtr( serviceScheme->Des() );
+    			
+    	        iPreferences->GetStringValueL( KBrowserSearchProviderUrl, KMaxHomePgUrlLength, searchSchemePtr );
+    	        iPreferences->GetStringValueL( KBrowserServiceUrl, KMaxHomePgUrlLength, serviceSchemePtr );
 
-                TInt error( KErrNone );
-                TRAP( error, FetchHomePageL() );
-                if( error != KErrNone )
-                    {
-                    CloseContentViewL();
-                    }
-                }
-            ActivateLocalViewL( LastActiveViewId() );
-        	}
-
+    			
+	            if( !ptr.Compare(serviceSchemePtr) || !ptr.Compare(searchSchemePtr) )
+	            	{    
+	            	specialSchemeInHomePageAddress = ETrue;
+	            	SetLastActiveViewId(KUidBrowserBookmarksViewId);
+	            	TRAPD( err, FetchL( ptr, CBrowserLoadObserver::ELoadUrlTypeOther ) );
+	            	}
+	            else
+	                {
+                    StartFetchHomePageL();
+	            	}
+    	        CleanupStack::PopAndDestroy( 3,buf );
+    	        }
+            else
+            	{
+                StartFetchHomePageL();
+            	}
+           
+	        if( !specialSchemeInHomePageAddress )
+	            {
+	        	ActivateLocalViewL( LastActiveViewId() );
+	            }
+        	}        	   	  
         }
     else if ( aCommand == EApaCommandViewActivate )
     // Get when activated from soft notification (Downloads List).
@@ -2155,6 +2224,8 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                                 }
                             case KFolderId:
                                 {
+                                SetCalledFromAnotherApp( EFalse );
+                                iIsForeground = IsForeground();
                                 CloseContentViewL();
                                 SetLastActiveViewId( KUidBrowserBookmarksViewId );
                                 break;
@@ -2179,7 +2250,10 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                 // Sender Uid was not readable
                 User::Leave( err );
                 }
-            SetViewToBeActivatedIfNeededL( LastActiveViewId() );
+            if( !iSpecialSchemeinAddress )
+            	{              
+            	SetViewToBeActivatedIfNeededL( LastActiveViewId() );
+            	}
             break;
             }
 
@@ -3801,6 +3875,9 @@ void CBrowserAppUi::SaveFocusedImageToGalleryL()
 
     TFileName fName;
     User::LeaveIfError(docHandler->GetPath(fName));
+    
+    #ifdef BRDO_APP_GALLERY_SUPPORTED_FF
+    
     CMGXFileManager* mgFileManager = MGXFileManagerFactory::NewFileManagerL(CEikonEnv::Static()->FsSession());
     CleanupStack::PushL(mgFileManager);
     if( fName.Length() > 0 )
@@ -3811,7 +3888,11 @@ void CBrowserAppUi::SaveFocusedImageToGalleryL()
         {
         TRAP_IGNORE( mgFileManager->UpdateL() );
         }
-    CleanupStack::PopAndDestroy(2); // imageCarrier, mgFileManager
+    CleanupStack::PopAndDestroy(1); // mgFileManager
+    
+    #endif
+    
+    CleanupStack::PopAndDestroy(1); // imageCarrier
     }
 
 // ---------------------------------------------------------
@@ -3957,17 +4038,7 @@ void CBrowserAppUi::HandleWsEventL(const TWsEvent& aEvent,
            {
            case EEventPointerExit:
                {
-               CCoeControl* ctrl = &(BrCtlInterface());
-               CCoeControl* parent = ctrl->Parent();
 
-               if (aDestination == parent) 
-                   {
-                   TPointerEvent  event;
-                   event.iType = TPointerEvent::EButton1Up;
-                   event.iModifiers = 0;
-                   event.iPosition = TPoint(0, 0);
-                   parent->HandlePointerEventL(event);
-                   }
                break;
                }
                
@@ -3995,4 +4066,49 @@ void CBrowserAppUi::HandleWsEventL(const TWsEvent& aEvent,
        }
    CAknViewAppUi::HandleWsEventL(aEvent, aDestination);
 }
+
+// ---------------------------------------------------------
+// CBrowserAppUi::HandleSystemEventL
+// ---------------------------------------------------------
+
+void CBrowserAppUi::HandleSystemEventL(const TWsEvent& aEvent)
+   {
+   
+   /**
+    * We need a special handling for System events to handle the situation 
+    * like when the shut down is done while download is going on.
+    */
+   
+   switch (*(TApaSystemEvent*)(aEvent.EventData()))
+     {
+     case EApaSystemEventShutdown:    
+       // do things here
+        ExitBrowser ( IsAppShutterActive() );  
+       break;
+     default:
+       break;
+     }
+   // call base class implementation
+   CAknAppUi::HandleSystemEventL(aEvent);
+   }
+
+// ---------------------------------------------------------
+// CBrowserAppUi::StartFetchHomePageL
+// ---------------------------------------------------------
+void CBrowserAppUi::StartFetchHomePageL(void)
+    {
+    
+    // There's a homepage to be launched so start in content view
+    SetLastActiveViewId(KUidBrowserContentViewId);      	    	          
+   	//wait for contentview to initialize itself
+    WaitCVInit();
+    
+    TInt error( KErrNone );
+    TRAP( error, FetchHomePageL() );
+    if( error != KErrNone )
+        {
+        CloseContentViewL();
+        }                
+    }
+
 // End of File

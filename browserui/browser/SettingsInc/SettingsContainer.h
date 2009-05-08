@@ -151,6 +151,12 @@ class CSettingsContainer : public CCoeControl, public MEikListBoxObserver
         *
         */
         void HandleListBoxEventL(CEikListBox* aListBox,TListBoxEvent aEventType);
+        
+        /**
+        * HandleGainingForegroundL
+        * Handles Foreground Event.
+        */
+        void HandleGainingForegroundL();
 
     /**
     * New functions
@@ -257,6 +263,9 @@ class CSettingsContainer : public CCoeControl, public MEikListBoxObserver
                                 TBuf<KWmlSettingsItemMaxLength>& aItemText );
 
         void AppendDownloadsOpenL( CDesCArray*& aItemArray,
+                                TBuf<KWmlSettingsItemMaxLength>& aItemText );
+                                
+        void AppendSearchProviderL( CDesCArray*& aItemArray,
                                 TBuf<KWmlSettingsItemMaxLength>& aItemText );
         //---------------------------------------------------------------------
         // Page Settings
@@ -378,6 +387,11 @@ class CSettingsContainer : public CCoeControl, public MEikListBoxObserver
 		*  Query user to select fromm user defined AP
 		*/
         void SelectUserDefinedAPL( TUint32& id );
+        
+        /**
+        *  Launch Search Application Settings View.
+        */
+        void RunSearchSettingsL();
 
 #ifdef __SERIES60_HELP
         /**

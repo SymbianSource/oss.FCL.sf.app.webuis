@@ -63,11 +63,19 @@ class CBrowserBookmarksContainer : public CBrowserFavouritesContainer
         void SetGotoActiveL();
         
         /**
-        * Deactivate Goto Mode
+        * Activate Search Pane
+        */
+        void SetSearchActiveL();
+        /**
+        * Deactivate Goto Pane
         */
 
 		void SetGotoInactiveL();
 
+		/**
+        * Deactivate Search Pane
+        */
+		void SetSearchInactiveL();
     public:     // access to components
 
          /**
@@ -75,13 +83,24 @@ class CBrowserBookmarksContainer : public CBrowserFavouritesContainer
         * @return The Goto Pane.
         */
         inline CBrowserBookmarksGotoPane* GotoPane() const;
-
-
+		
+        /**
+        * Get the Search Pane.
+        * @return The Search Pane.
+        */
+        inline CBrowserBookmarksGotoPane* SearchPane() const;
+		
         /**
         * Check if we are in Goto Mode
         * @return ETrue if we are in Goto Mode; EFalse otherwise.
         */
         inline TBool GotoPaneActive() const;
+		
+        /**
+        * Check if we are in Search Mode
+        * @return ETrue if we are in Search Mode; EFalse otherwise.
+        */
+        inline TBool SearchPaneActive() const;
         
     public:	    // from CBrowserFavouritesContainer
 
@@ -123,6 +142,11 @@ class CBrowserBookmarksContainer : public CBrowserFavouritesContainer
         TBool IsEditing();
 
         /**
+        * Check if some editing is in progress for Search Pane. 
+        */
+        TBool IsEditingSearch();
+		
+        /**
         * Get tab index belonging to this view.
         * @return The tab index.
         */
@@ -154,6 +178,12 @@ class CBrowserBookmarksContainer : public CBrowserFavouritesContainer
         */
         void HandlePointerEventL(const TPointerEvent& /*aPointerEvent*/);
 
+        /**
+        * HandleResourceChange
+        * From CCoeControl
+        */
+        void HandleResourceChange(TInt aType);
+        
     protected:  // Construct / destruct
 
         /**
@@ -172,6 +202,12 @@ class CBrowserBookmarksContainer : public CBrowserFavouritesContainer
             const TRect& aRect,
             CBrowserFavouritesView& aView );
         
+		/**
+        * Called by ConstructComponentControlsL. 
+        * Leaves on failure.
+        */
+		virtual void ConstructSearchPaneL();
+		
 	protected:  // from CBrowserFavouritesContainer
 
         /**
@@ -196,15 +232,42 @@ class CBrowserBookmarksContainer : public CBrowserFavouritesContainer
         * Goto Pane.
         */
         CBrowserBookmarksGotoPane* iGotoPane;
-        
-        
+		
+        /**
+        * Owned. 
+        * Search Pane.
+        */
+        CBrowserBookmarksGotoPane* iSearchPane;
+		
         /**
         * ETrue if Goto pane is active, EFalse by default
         */
         TBool iGotoPaneActive;
+		
+        /**
+        * ETrue if Search pane is active, EFalse by default
+        */
+        TBool iSearchPaneActive;
         
         TBool iSelectionKeyDownPressed;
         TBool iSelectionKeyLongPress;
+		
+        /**
+        * Default text in search editor
+        */
+        HBufC* iDefaultSearchText;
+        
+        /**
+        * Saves Search Provider Icon Id, 
+        * used for tracking changes to Icon.
+        */
+        TInt iSearchIconId;
+        
+        /**
+        * Saves Search Icon File Path 
+        * used for tracking changes to Icon.
+        */
+        TFileName iSearchIconFilePath;
 	};
 
 #include "BrowserBookmarksContainer.inl"

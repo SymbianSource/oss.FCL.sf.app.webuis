@@ -292,39 +292,11 @@ void CWmlBrowserBmOTABinSender::SendAddressL( )
     body->Des().Append( lend );
 #endif  // _BOOKMARK_SENT_ASCII
 
-	if ( capa.iFlags & TSendingCapabilities::ESupportsAttachments )
-	  	{
-	    // connect to file session
-	    RFs fsSession;
-	    User::LeaveIfError( fsSession.Connect() );
-	    CleanupClosePushL<RFs>( fsSession );
-	    CFileMan* fman = CFileMan::NewL( fsSession );
-	    CleanupStack::PushL( fman );
-	    // try to avoid inserting any 'leave' code 
-	    // between WriteMessageBodyIntoFile()
-	    // and CreateAndSendMessageL, or
-	    // you have to take care of deleting 
-	    // temporary file
-	    error = WriteMessageBodyIntoFileL( fsSession, *body );
-	        
-	    if( error == KErrNone )
-	        {
-	        // send attachment
-	        // this function has to be trapped
-	        // because I have to be sure that the 
-	        // temproray file is removed!
-	        msgData->AppendAttachmentL( KAttachmentFilename );            
-	        TRAP( error, iSendUi->CreateAndSendMessageL( service, 
-	                                                     msgData ) );
-	        }
-	    // delete temporary file
-	    fman->Delete( KAttachmentFilename );
-	    // close file session        
-	    fsSession.Close();
+	// The issue is because of the deletion of the temp file .
+	// As we are sending address only , we can just create a buffer & send it in message
+	// body.
 
-	    CleanupStack::PopAndDestroy( 2 ); // fsSession, fman
-	  	}
-	else if ( capa.iFlags & TSendingCapabilities::ESupportsBodyText )
+	if ( capa.iFlags & (TSendingCapabilities::ESupportsBodyText || TSendingCapabilities::ESupportsAttachments))
 		{
 		CRichText* text = 
 		        CRichText::NewL(CEikonEnv::Static()->SystemParaFormatLayerL(),

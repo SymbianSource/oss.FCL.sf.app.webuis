@@ -794,7 +794,7 @@ RESOURCE TBUF r_browser_query_current_page_url	{ buf = qtn_browser_query_current
 //
 
 RESOURCE TBUF r_wml_settings_access_point_user_defined	{ buf = qtn_wml_settings_access_point_user_defined; }
-RESOURCE TBUF r_wml_settings_access_point_always_ask	{ buf = qtn_wml_settings_access_point_always_ask; }
+RESOURCE TBUF r_wml_settings_access_point_ask_when_needed	{ buf = qtn_wml_settings_access_point_ask_when_needed; }
 
 #endif
 

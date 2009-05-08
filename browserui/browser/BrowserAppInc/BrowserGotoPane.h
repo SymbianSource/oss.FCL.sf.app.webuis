@@ -20,8 +20,13 @@
 #define WML_GOTO_PANE_BASE_H
 
 // DEFINES
-#define GOTOPANE_POPUPLIST_DISABLE 0
-#define GOTOPANE_POPUPLIST_ENABLE 1
+#ifndef GOTOPANE_POPUPLIST_DISABLE
+#define GOTOPANE_POPUPLIST_DISABLE EFalse
+#endif
+
+#ifndef GOTOPANE_POPUPLIST_ENABLE
+#define GOTOPANE_POPUPLIST_ENABLE ETrue
+#endif
 
 // INCLUDE FILES
 #include <coecntrl.h>
@@ -206,6 +211,28 @@ class CBrowserGotoPane:
         */
         void EnableKeyEventHandlerL( TBool aEnable );
 
+        /**
+        * Activate GoTo Pane.
+        */
+        void SetGotoPaneActiveL();
+
+        /**
+        * Activate Search Pane.
+        */
+        void SetSearchPaneActiveL();
+        
+        /**
+        * Check if we are in Goto Mode
+        * @return ETrue if we are in Goto Mode; EFalse otherwise.
+        */
+        inline TBool GotoPaneActive() const { return iGotoPaneActive; }
+        
+        /**
+        * Check if we are in Search Mode
+        * @return ETrue if we are in Search Mode; EFalse otherwise.
+        */
+        inline TBool SearchPaneActive() const { return iSearchPaneActive; }
+        
     public:	// from MCoeControlObserver
 
         /**
@@ -235,6 +262,13 @@ class CBrowserGotoPane:
         *
         */
         void HandlePointerEventL(const TPointerEvent& /*aPointerEvent*/);
+        
+        /**
+        * HandleResourceChange
+        * From CCoeControl
+        */
+        void HandleResourceChange(TInt aType);
+        
 
     public:     // from CCoeControl
 
@@ -262,7 +296,13 @@ class CBrowserGotoPane:
     public:     // Text manipulation
 
         /**
-        * Lengt of the text in the editor.
+        * Length of the Search text in the editor.
+        * @return The text length
+        */
+        TInt SearchTextLength() const;
+
+        /**
+        * Length of the text in the editor.
         * @since Series60 1.2
         * @return The text length
         */
@@ -283,6 +323,18 @@ class CBrowserGotoPane:
         */
         virtual void SetTextL( const TDesC& aTxt );
 
+        /**
+        * Set Editor Font Posture to Italic.
+        */
+        void SetTextModeItalicL( );
+        
+        /**
+        * Set Search text.
+        * @param aTxt Text to set
+        * appended if needed.
+        */
+        void SetSearchTextL( const TDesC& aTxt );
+        
         /**
         * Selects all text in the editor.
         * See CEikEdwin's SelectAllL();
@@ -323,11 +375,6 @@ class CBrowserGotoPane:
         * Gives back a pointer to adaptivepopuplist
         */
         CBrowserAdaptiveListPopup* PopupList();
-
-         /**
-        * Handles resource change
-        */        
-		void HandleResourceChange( TInt aType );
 		
          /**
         * Handles the completion of a FEP transaction
@@ -352,6 +399,11 @@ class CBrowserGotoPane:
         */
         void ConstructL( const CCoeControl* aParent, TInt aIconBitmapId, TInt aIconMaskId, TBool aPopupListStatus );
 
+        /**
+        * Constructs Search Pane.
+        */
+        void ConstructSearchPaneL();
+        
     protected:  // from CCoeControl
 
         /**
@@ -396,6 +448,12 @@ class CBrowserGotoPane:
         // Input frame. Owned.
         CAknInputFrame* iInputFrame;
         
+        // Search Editor. Owned.
+        CEikEdwin* iSearchEditor;  
+        
+        // Search Input frame. Owned.
+        CAknInputFrame* iSearchInputFrame;
+                
         // Observer (may be NULL). Not owned.
         MGotoPaneObserver* iGPObserver;
 		
@@ -404,6 +462,19 @@ class CBrowserGotoPane:
 
         /// adaptive popuplist
         CBrowserAdaptiveListPopup* iBAdaptiveListPopup;
+        
+        // Represents Active Editors 
+        TBool iGotoPaneActive;
+        TBool iSearchPaneActive;
+        
+        // Default text in Search Editor.Owned.
+        HBufC* iDefaultSearchText;
+        
+        // Search Input Frame Icon Id, used for tracking the Search Icon Changes.
+        TInt iSearchIconId;
+        
+        // Stores the Search Icon File Path.
+        TFileName iSearchIconFilePath;
     };
 
 #endif

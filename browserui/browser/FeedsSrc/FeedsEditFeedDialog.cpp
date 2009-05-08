@@ -166,7 +166,6 @@ TBool CFeedsEditFeedDialog::OkToExitL( TInt aButtonId  )
 //
 void CFeedsEditFeedDialog::HandleFreqCmdL()
     {
-    TBuf<32> title(_L("Auto update"));
     TInt currentlySelected = KAutoUpdatingOff;
 
     // options array
@@ -219,7 +218,10 @@ void CFeedsEditFeedDialog::HandleFreqCmdL()
             break;
         }
 
-    currentlySelected = ShowRadioButtonSettingPageL(title,values,currentlySelected);
+    HBufC* title;
+    title=iCoeEnv->AllocReadResourceLC(R_FEEDS_AUTOUPDATING_FEED);
+    currentlySelected = ShowRadioButtonSettingPageL(*title,values,currentlySelected);
+    CleanupStack::PopAndDestroy();  // title
 
     if(!iActionCancelled)
         {
@@ -428,8 +430,7 @@ TBool CFeedsEditFeedDialog::SaveFormDataL()
                     HBufC* note = StringLoader::LoadLC( R_FEEDS_DATAQUERY_AUTOUPDATEWARN );
                     if(iPreviousFreq == 0)
                         {
-                      //  ShowInfoDialogwithOkSoftKeyL( note->Des() );    
-                        ShowInfoDialogwithOkSoftKeyL( _L("Enabling automatic updating may increase your monthly phone bill") );    
+                        ShowInfoDialogwithOkSoftKeyL(note->Des());
                         }
                     CleanupStack::PopAndDestroy(); // note
                     iPreviousFreq = iFreq;

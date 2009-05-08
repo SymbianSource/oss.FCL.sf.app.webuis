@@ -67,6 +67,16 @@ void CBrowserContentViewToolbar::ConstructL()
     iBrowserContentView->Toolbar()->ToolbarExtension()->HideItemL( EWmlCmdFavourites, (embeddedMode || embeddedOperatorMenu) );
     iBrowserContentView->Toolbar()->ToolbarExtension()->HideItemL( EWmlCmdSaveAsBookmark, embeddedOperatorMenu );
     iBrowserContentView->Toolbar()->ToolbarExtension()->HideItemL( EWmlCmdLaunchHomePage, (embeddedMode || embeddedOperatorMenu) );
+    
+    if ( iBrowserContentView->ApiProvider().Preferences().SearchFeature() )
+        {
+        iBrowserContentView->Toolbar()->HideItem( EWmlCmdGoToAddress, ETrue, EFalse );
+        }
+    else
+        {
+        iBrowserContentView->Toolbar()->HideItem( EWmlCmdGoToAddressAndSearch, ETrue, EFalse );
+        }
+    
 #endif
     }
 
@@ -104,6 +114,7 @@ void CBrowserContentViewToolbar::UpdateButtonsStateL()
     TBool contentDisplayed = iBrowserContentView->ApiProvider().ContentDisplayed();
     TBool wmlMode = iBrowserContentView->ApiProvider().WindowMgr().CurrentWindow()->WMLMode();
     TBool DimHomePage = iBrowserContentView->ApiProvider().IsLaunchHomePageDimmedL();
+    TBool searchMode = iBrowserContentView->ApiProvider().Preferences().SearchFeature();
 
     
     // Extended Toolbar
@@ -111,11 +122,24 @@ void CBrowserContentViewToolbar::UpdateButtonsStateL()
             (pageOverview), ETrue );
     iBrowserContentView->Toolbar()->HideItem( EWmlCmdToolbarExtensionContentView, 
             (historyView || findKeywordPane), ETrue );
+    
+    // Goto Url & search
+    if ( searchMode )
+        {
+        iBrowserContentView->Toolbar()->SetItemDimmed( EWmlCmdGoToAddressAndSearch, 
+                 (pageOverview), ETrue );
+        iBrowserContentView->Toolbar()->HideItem( EWmlCmdGoToAddressAndSearch, 
+                (historyView || findKeywordPane), ETrue );
+        }
     // Goto Url
-    iBrowserContentView->Toolbar()->SetItemDimmed( EWmlCmdGoToAddress, 
-            (pageOverview), ETrue );
-    iBrowserContentView->Toolbar()->HideItem( EWmlCmdGoToAddress, 
-            (historyView || findKeywordPane), ETrue );
+    else
+        {
+        iBrowserContentView->Toolbar()->SetItemDimmed( EWmlCmdGoToAddress, 
+                    (pageOverview), ETrue );
+        iBrowserContentView->Toolbar()->HideItem( EWmlCmdGoToAddress, 
+                (historyView || findKeywordPane), ETrue );
+        }
+    
 
     // Zoom Slider button
     iBrowserContentView->Toolbar()->SetItemDimmed( EWmlCmdZoomSliderShow, 

@@ -268,6 +268,18 @@ void CBrowserSettingsView::HandleClientRectChange()
         }
 	}
 
+// ---------------------------------------------------------
+// CBrowserSettingsView::HandleForegroundEventL
+// ---------------------------------------------------------
+//
+void CBrowserSettingsView::HandleForegroundEventL (TBool aForeground)
+	{
+	if(aForeground)
+		{
+		iContainer->HandleGainingForegroundL();
+		}
+	}
+
 // ---------------------------------------------------------------------------
 // CBrowserSettingsView::DynInitMenuPaneL
 // ---------------------------------------------------------------------------

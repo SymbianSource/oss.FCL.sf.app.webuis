@@ -206,8 +206,10 @@ void CBrowserPopupList::Draw(const TRect& /*aRect*/) const
 // CBrowserAdaptiveListPopup::CBrowserAdaptiveListPopup()
 // ---------------------------------------------------------
 //
-CBrowserAdaptiveListPopup::CBrowserAdaptiveListPopup( CEikEdwin* aGotoPaneEdit, CCoeControl* aParent, TParentType aParentType):
-    iEditor( aGotoPaneEdit ), iParent( aParent ), iParentType( aParentType )
+CBrowserAdaptiveListPopup::CBrowserAdaptiveListPopup( CEikEdwin* aGotoPaneEdit, 
+        CCoeControl* aParent, TParentType aParentType, TBool aSearchFeature): 
+        iEditor( aGotoPaneEdit ), iParent( aParent ),
+        iParentType( aParentType ), iSearchFeature( aSearchFeature )
     {
     iTouchSupported = AknLayoutUtils::PenEnabled();
     }
@@ -767,6 +769,14 @@ TKeyResponse CBrowserAdaptiveListPopup::OfferKeyEventL
                 }
             else
                 {
+                if(  iSearchFeature )
+                    {
+                    if( iList->CurrentItemIndex() == 0 )
+                        {
+                        resp = EKeyWasConsumed;
+                        return resp;
+                        }
+                    }
                 resp=iList->OfferKeyEventL( aKeyEvent, aType );
                 }
             if ( currIndex > -1 )
@@ -839,6 +849,17 @@ TKeyResponse CBrowserAdaptiveListPopup::OfferKeyEventL
                   || aKeyEvent.iCode == EStdKeyDevice12 )    //   : Extra KeyEvent supports diagonal event simulator wedge
             {
             resp = EKeyWasConsumed;
+            if(  iSearchFeature )
+                {
+                if ( iPrevItem <= 0 )
+                    {
+                    if(! iList->HighLightEnabled() )
+                        {
+                        resp = EKeyWasNotConsumed;
+                        return resp;
+                        }
+                    }
+                }
             //it was the last item
             if ( iPrevItem == 0 )
                 {
@@ -1139,7 +1160,7 @@ void CBrowserAdaptiveListPopup::SetIconsL()
     CleanupStack::PopAndDestroy(fp);
 
     MAknsSkinInstance* skinInstance = AknsUtils::SkinInstance();
-    AknsUtils::CreateIconL( skinInstance,
+    AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropWmlFolderAdap,
                                            newIconBmp,
                                            newIconMaskBmp,
@@ -1147,10 +1168,11 @@ void CBrowserAdaptiveListPopup::SetIconsL()
                                            EMbmBrowserQgn_prop_wml_folder_adap,
                                            EMbmBrowserQgn_prop_wml_folder_adap_mask);
     newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
     CleanupStack::PushL(newIcon);
     icons->AppendL( newIcon );
     CleanupStack::Pop(newIcon);
-    AknsUtils::CreateIconL( skinInstance,
+    AknsUtils::CreateIconLC( skinInstance,
                                            KAknsIIDQgnPropWmlBmAdap,
                                            newIconBmp,
                                            newIconMaskBmp,
@@ -1158,6 +1180,7 @@ void CBrowserAdaptiveListPopup::SetIconsL()
                                            EMbmBrowserQgn_prop_wml_bm_adap,
                                            EMbmBrowserQgn_prop_wml_bm_adap_mask);
     newIcon = CGulIcon::NewL( newIconBmp, newIconMaskBmp);
+    CleanupStack::Pop(2);
     CleanupStack::PushL(newIcon);
     icons->AppendL( newIcon );
     CleanupStack::Pop(newIcon);

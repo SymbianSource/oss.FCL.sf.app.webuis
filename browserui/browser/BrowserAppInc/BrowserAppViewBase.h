@@ -184,6 +184,7 @@ class CBrowserViewBase : public CAknView
 		*/
 		virtual TUid Id() const = 0;
                 
+		virtual void LaunchSearchApplicationL( const TDesC& aSearchString );
     //private:
 	protected:
 

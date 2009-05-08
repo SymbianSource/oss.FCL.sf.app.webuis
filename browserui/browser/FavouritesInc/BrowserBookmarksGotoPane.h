@@ -34,6 +34,17 @@ class CAknsListBoxBackgroundControlContext;
 class CAknsFrameBackgroundControlContext;
 class CBrowserFavouritesView;
 
+
+// DEFINES
+#ifndef GOTOPANE_POPUPLIST_DISABLE
+#define GOTOPANE_POPUPLIST_DISABLE EFalse
+#endif
+
+#ifndef GOTOPANE_POPUPLIST_ENABLE
+#define GOTOPANE_POPUPLIST_ENABLE ETrue
+#endif
+
+
 // class CBrowserAdaptiveListPopup;
 // CLASS DECLARATION
 
@@ -77,14 +88,28 @@ class CBrowserBookmarksGotoPane: public CCoeControl
 
         /**
         * Two-phased constructor. Leaves on failure.
+        * @param aView Pointer to Favourites View 
         * @param aParent Parent control.
-        * @param aIcon Icon to display. If NULL, a default is used.
-        * @param aTextLimit Maximum length of text.
-        * @return The constructed Goto Pane control.
+        * @param aBitmapfile Icon File Path
+        * @param aIconBitmapId Icon to display. 
+        * @param aIconMaskId Icon Mask
+        * @param aPopupListStatus True if the pane uses popuplist,
+        *                         otherwise false.
+        * @param aSearchPaneMode Set true if the pane is a Search pane.
+        * @return The constructed Goto Pane control
         */
         static CBrowserBookmarksGotoPane* NewL
-            ( const CCoeControl& aParent, CBrowserFavouritesView* aView );
+                   ( 
+                   const CCoeControl& aParent,
+                   CBrowserFavouritesView* aView,
+                   const TDesC& aBitmapfile,
+                   TInt aIconBitmapId , 
+                   TInt aIconMaskId , 
+                   TBool aPopupListStatus = GOTOPANE_POPUPLIST_ENABLE,
+                   TBool aSearchPaneMode = EFalse
+                   );
 
+        
         /**
         * Destructor.
         */
@@ -126,6 +151,11 @@ class CBrowserBookmarksGotoPane: public CCoeControl
         */
         void SetTextL( const TDesC& aText, TBool aClipToFit = ETrue, TBool aCancelEditing = ETrue );
 
+        /**
+        * Set Editor Font Posture to Italic.
+        */
+        void SetTextModeItalicL( );
+        
         /**
         * Get text; ownership passed. The returned buffer is zero-terminated.
 		* @since 1.2
@@ -217,20 +247,26 @@ class CBrowserBookmarksGotoPane: public CCoeControl
         *
         */
         void HandlePointerEventL(const TPointerEvent& /*aPointerEvent*/);
+		
+        /**
+        * Sets/Unsets Virtual Keyboard Flag.
+        * @param aVKBFlag - ETrue sets the flag, Unsets the flag if EFalse. 
+        */
+        void SetVKBFlag( TBool aVKBFlag );
        
     protected:  // Construct / destruct
 
         /**
         * Constructor.
         */
-        CBrowserBookmarksGotoPane(CBrowserFavouritesView* aView);
+        CBrowserBookmarksGotoPane(CBrowserFavouritesView* aView, TBool aSearchPaneMode );
 
         /**
         * Second-phase constructor. Leaves on failure.
         * @param aParent Parent control.
         */
-        void ConstructL
-            ( const CCoeControl& aParent );
+        void ConstructL( const CCoeControl& aParent, const TDesC& aBitmapfile, TInt aIconBitmapId, 
+                TInt aIconMaskId, TBool aPopupListStatus );
 
     protected:  // from CCoeControl
 
@@ -247,7 +283,10 @@ class CBrowserBookmarksGotoPane: public CCoeControl
         */
         inline void SetEditingL( TBool aEditing );
 
-        void ActivateVKB();
+        /**
+        * Activates Virtual Keyboard.
+        */
+        void ActivateVkbL();
 
     private:    // data
 		CBrowserFavouritesView* iView; //Not owned.
@@ -268,6 +307,10 @@ class CBrowserBookmarksGotoPane: public CCoeControl
         CBrowserAdaptiveListPopup* iBAdaptiveListPopup;
         CAknsListBoxBackgroundControlContext* iSkinContext;
         CAknsFrameBackgroundControlContext* iInputContext;
+        // If the control is in Search Pane Mode.
+        TBool iSearchPaneMode;
+        // Default text in search editor. Owned
+        HBufC* iDefaultSearchText;
     };
 
 #include "BrowserBookmarksGotoPane.inl"

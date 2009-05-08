@@ -661,7 +661,8 @@ void CBrowserFavouritesListbox::ConstructL
 //
 TInt CBrowserFavouritesListbox::ListboxFlags()
     {
-    return EAknListBoxMarkableList;
+    return AknLayoutUtils::PenEnabled() ?  
+         EAknListBoxStylusMarkableList :  EAknListBoxMarkableList;
     }
 
 // ---------------------------------------------------------

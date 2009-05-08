@@ -227,6 +227,17 @@ RESOURCE CBA r_browser_bookmarks_cba_goto_pane_goto_cancel   // TEMP
   	    CBA_BUTTON { id = EWmlCmdGotoPaneGoTo; txt = qtn_wml_softk_go; }
 	    };
     }
+// No need for separate search command, active search editor is checked.
+RESOURCE CBA r_browser_bookmarks_cba_search_pane_search_cancel   
+    {
+    flags = EAknCBAFlagRespondWhenInvisible;
+    buttons =
+        {
+        CBA_BUTTON { id = EWmlCmdGotoPaneGoTo; txt = qtn_is_softkey_search; },
+        CBA_BUTTON { id = EWmlCmdGotoPaneCancel; txt = text_softkey_cancel; },
+        CBA_BUTTON { id = EWmlCmdGotoPaneGoTo; txt = qtn_is_softkey_search; }
+        };
+    }
 
 //adaptive popuplist needs it
 RESOURCE CBA r_browser_bookmarks_cba_goto_pane_opendir_cancel   // TEMP
@@ -516,6 +527,9 @@ RESOURCE TBUF r_browser_bookmarks_dyn_sk_qtn_msk_open
 RESOURCE TBUF r_browser_bookmarks_dyn_sk_qtn_wml_softk_go
         { buf = qtn_wml_softk_go; }
 
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_qtn_is_softk_search
+        { buf = qtn_is_softkey_search; }
+	
 RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_back
         { buf = text_softkey_back; }
 

@@ -292,6 +292,7 @@ void CFeedsFolderView::DoActivateL(const TVwsViewId& /*aPrevViewId*/,
 
 	iApiProvider.SetLastActiveViewId(Id());
     iContainer->UpdateTitleL();
+    iContainer->UpdateNavigationPaneL();
     iContainer->UpdateListBoxL(iInitialItem);
 
 	iContainer->UpdateCbaL();	

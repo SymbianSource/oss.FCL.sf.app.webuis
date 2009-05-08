@@ -638,6 +638,14 @@ void CBrowserContentViewContainer::HandleResourceChange(TInt aType)
             }
 
         SetRect(iView->ClientRect());
+        
+        if( iApiProvider.Preferences().SearchFeature() )
+          {
+          iGotoPane->SetTextModeItalicL();
+          // To Avoid Flickring, only when layout changed. 
+          iGotoPane->DrawNow();
+          }
+        
         DrawDeferred();
 
         // For Touch only-If find pane open, force toolbar to show since avkon disables

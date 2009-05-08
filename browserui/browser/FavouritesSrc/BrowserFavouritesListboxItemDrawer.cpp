@@ -55,12 +55,24 @@ TListItemProperties CBrowserFavouritesListboxItemDrawer::Properties(
         }
     TListItemProperties properties =
         CColumnListBoxItemDrawer::Properties( aItemIndex );
-    if ( STATIC_CAST( CBrowserFavouritesListboxModel*, iModel ) ->
-        Items()->At( aItemIndex )->IsFolder() )
-        {
-        // If this is a folder, set "hidden selection" true.
-        properties.SetHiddenSelection( ETrue );
-        }
+
+    // SEARCH CUSTOM:  Updated below for Italics in bookmarks view    
+    // Selection of Folders is allowed, so no need to set it as Hidden.
+    // if ( STATIC_CAST( CBrowserFavouritesListboxModel*, iModel ) ->
+    //    Items()->At( aItemIndex )->IsFolder() )
+    //    {
+    //    // If this is a folder, set "hidden selection" true.
+    //    properties.SetHiddenSelection( ETrue );
+    //    }
+
+        
+     //Better solution would be adding italics properties to CFavouritesItem, but it requires changes in FavouritesEngine API
+     CFavouritesItem* fi = STATIC_CAST( CBrowserFavouritesListboxModel*, iModel ) ->
+        Items()->At( aItemIndex );
+    if ( fi->ContextId() == KFavouritesServiceContextId )
+    	{
+    	properties.SetItalics(ETrue);
+    	}
     return properties;
     }
 

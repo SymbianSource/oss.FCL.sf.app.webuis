@@ -1510,6 +1510,10 @@
 //l:list_set_graphic_pane_t1
 #define qtn_wml_settings_access_point_always_ask "Always ask"
 
+//d:Browser settings selectable item texts
+//l:list_set_graphic_pane_t1
+#define qtn_wml_settings_access_point_ask_when_needed "Ask when needed"
+
 //d:Browser gotopane default text
 //l:query_popup_data_pane_t1/opt4
 #define qtn_browser_goto_text_enter_address  "Enter address"

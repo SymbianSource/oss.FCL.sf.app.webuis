@@ -81,6 +81,7 @@ const TInt KSettingCategoryMaxLength = 50;
 _LIT( KSettingsCategoryListBoxItemNoIcon, " " );
 const TInt KDoesntExist = -1;
 const TInt KGranularity = 1;
+const TInt KMaxTitleLength = 512;
 
 
 _LIT( KWmlSettingsListBoxItemPrefix, " \t" );
@@ -418,6 +419,11 @@ void CSettingsContainer::DisplayGeneralSettingsL()
     	{
     	AppendDownloadsOpenL( itemArray, itemText );
     	}
+    
+    if( ApiProvider().Preferences().SearchFeature() )
+    	{
+    	AppendSearchProviderL( itemArray, itemText );
+    	}
 
     RestoreListBoxIndexL();
     iSettingListBox->DrawNow();
@@ -686,7 +692,7 @@ void CSettingsContainer::AppendDefaultAccessPointL( CDesCArray*& aItemArray,
         	{
 		    CreateItemFromTwoStringsL( 
 		    R_WMLBROWSER_SETTINGS_DEFAULT_AP, 
-		    R_WML_SETTINGS_ACCESS_POINT_ALWAYS_ASK, 
+		    R_WML_SETTINGS_ACCESS_POINT_ASK_WHEN_NEEDED, 
 		    aItemText );
 		        
 		    break;	
@@ -722,7 +728,7 @@ void CSettingsContainer::AppendDefaultAccessPointL( CDesCArray*& aItemArray,
                     }   
                 }
             
-            HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ALWAYS_ASK );
+            HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ASK_WHEN_NEEDED );
             aItemText.Append( *name );
             CleanupStack::PopAndDestroy(); // name
                 
@@ -754,7 +760,7 @@ void CSettingsContainer::AppendDefaultAccessPointL( CDesCArray*& aItemArray,
                 }
             else
                 {
-                HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ALWAYS_ASK );
+                HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ASK_WHEN_NEEDED );
                 aItemText.Append( *name );
                 CleanupStack::PopAndDestroy(); // name
                 
@@ -1087,6 +1093,40 @@ void CSettingsContainer::AppendDownloadsOpenL(
     iSettingIndex->AppendL( EWmlSettingsDownloadsOpen );
     }
 
+
+
+// -----------------------------------------------------------------------------
+// CSettingsContainer::AppendSearchProviderL
+// -----------------------------------------------------------------------------
+void CSettingsContainer::AppendSearchProviderL(
+                                                      CDesCArray*& aItemArray,
+                                                      TBuf<KWmlSettingsItemMaxLength>& aItemText)
+	{
+	aItemText.Zero();
+    aItemText.Append( KWmlSettingsListBoxItemPrefix );
+    HBufC* settingTitle = iCoeEnv->AllocReadResourceLC( R_BROWSERS_SETT_WEB_SEARCH_PROVIDER );
+    aItemText.Append( *settingTitle );
+    CleanupStack::PopAndDestroy(); // settingTitle
+    aItemText.Append( KWmlSettingsListBoxItemPostfix );
+    
+    HBufC* searchProvider = HBufC::NewLC( KMaxTitleLength );
+    TPtr searchProviderPtr = searchProvider->Des();
+    
+    ApiProvider().Preferences().GetStringValueL( KBrowserSearchProviderTitle,
+            KMaxTitleLength , searchProviderPtr);
+    
+    if(searchProvider->Compare(KNullDesC()) == 0)
+    	{
+    	CleanupStack::PopAndDestroy(searchProvider);
+    	searchProvider = iCoeEnv->AllocReadResourceLC( R_IS_LABEL_NOT_SELECTED );
+    	}
+    
+    aItemText.Append( *searchProvider );
+    CleanupStack::PopAndDestroy( searchProvider );
+    
+    aItemArray->AppendL( aItemText );
+    iSettingIndex->AppendL( EWmlSettingsSearchProvider );
+	}
 
 // -----------------------------------------------------------------------------
 // CSettingsContainer::AppendAutoLoadContentL
@@ -2515,6 +2555,12 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
             DisplayGeneralSettingsL();
             break;
     		}
+    		
+        case EWmlSettingsSearchProvider:
+        	{
+ 			RunSearchSettingsL();
+        	break;
+        	}
 
 
 
@@ -3252,6 +3298,7 @@ TKeyResponse CSettingsContainer::OfferKeyEventL( const TKeyEvent& aKeyEvent, TEv
             	case EWmlSettingsShortCutKey0Cmd:
             	case EWmlSettingsShortCutKeyStarCmd:
             	case EWmlSettingsShortCutKeyHashCmd:
+            	case EWmlSettingsSearchProvider:
                 {
                 	ChangeItemL( ETrue );
                     ret = EKeyWasConsumed;
@@ -3281,6 +3328,11 @@ TKeyResponse CSettingsContainer::OfferKeyEventL( const TKeyEvent& aKeyEvent, TEv
     return ret;
     }
 
+
+// -----------------------------------------------------------------------------
+// CSettingsContainer::HandleListBoxEventL
+// -----------------------------------------------------------------------------
+//
 void CSettingsContainer::HandleListBoxEventL(CEikListBox* aListBox,TListBoxEvent aEventType)
     {
     if (iPenEnabled)
@@ -3309,6 +3361,22 @@ void CSettingsContainer::HandleListBoxEventL(CEikListBox* aListBox,TListBoxEvent
         }
     }
 
+
+// -----------------------------------------------------------------------------
+// CSettingsContainer::HandleGainingForegroundL
+// -----------------------------------------------------------------------------
+//
+void CSettingsContainer::HandleGainingForegroundL()
+	{
+	switch(iCurrentSettingCategory)
+		{
+		case EGeneral:
+			DisplayGeneralSettingsL();
+			break;
+		default: // do nothing
+			break;
+		}
+	}
 
 // -----------------------------------------------------------------------------
 // CSettingsContainer::CreateItemFromTwoStringsL
@@ -3643,5 +3711,20 @@ void CSettingsContainer::SelectUserDefinedAPL( TUint32& id )
         id =  KWmlNoDefaultAccessPoint;
         }
     }
+
+// -----------------------------------------------------------------------------
+// CSettingsContainer::RunSearchSettingsL
+// -----------------------------------------------------------------------------
+//
+void CSettingsContainer::RunSearchSettingsL()
+    {
+    // Get Search application UID from CenRep 
+    TInt id = ApiProvider().Preferences().GetIntValue( KBrowserSearchAppUid );
+    TUid searchAppId( TUid::Uid( id ) );
+    id = ApiProvider().Preferences().GetIntValue( KBrowserSearchProviderSettingViewId );
+    TUid settingViewId( TUid::Uid( id ) );
+    TVwsViewId viewToOpen(searchAppId, settingViewId);
+    CBrowserAppUi::Static()->ActivateViewL(viewToOpen);
+    } 
 
 // End of File

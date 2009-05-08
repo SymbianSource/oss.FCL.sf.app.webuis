@@ -135,6 +135,22 @@ class CBrowserPreferences : public CBase,
         */
         const TPreferencesValues& AllPreferencesL();
         
+        /**
+        * To access an int value key in ini file
+        * @param aKey the ini file key to read
+        * @return the value of the given key
+        * @since Series60 2.0
+        */
+        TInt GetIntValue( TUint32 aKey) const;
+
+        /**
+        * To access an string value key in ini file
+        * @param aKey the ini file key to read
+        * @return the value of the given key
+        * @since Series60 2.0
+        */
+        TInt GetStringValueL ( TUint32 aKey, TInt aMaxBufSize, TDes& aBuf ) const;
+		
     private:    // New functions
         
         /**
@@ -144,14 +160,6 @@ class CBrowserPreferences : public CBase,
         void RestoreSettingsL();
         
     private:    //Utility functions for accessing shared data
-
-        /**
-        * To access an int value key in ini file
-        * @param aKey the ini file key to read
-        * @return the value of the given key
-        * @since Series60 2.0
-        */
-        TInt GetIntValue( TUint32 aKey) const;
 
         /**
         * To set an int value key in ini file
@@ -169,15 +177,7 @@ class CBrowserPreferences : public CBase,
         * @since Series60 2.0
         */
         HBufC* GetStringValueL ( TUint32 aKey ) const;
-        
-        /**
-        * To access an string value key in ini file
-        * @param aKey the ini file key to read
-        * @return the value of the given key
-        * @since Series60 2.0
-        */
-        TInt GetStringValueL ( TUint32 aKey, TInt aMaxBufSize, TDes& aBuf ) const;
-
+		
         /**
         * To set an int value key in ini file
         * @param aKey the ini file key to write
@@ -960,7 +960,16 @@ class CBrowserPreferences : public CBase,
         */
         inline TInt MaxRecentUrls() const;
 
-        
+        /** 
+        * To get Search Feature Flag.
+        */
+        inline TInt SearchFeature() const;
+
+        /** 
+        * To get Service Feature Flag.
+        */
+        inline TInt ServiceFeature() const;
+
     private:
 
         /**
