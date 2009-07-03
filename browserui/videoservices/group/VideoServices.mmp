@@ -40,7 +40,11 @@ START RESOURCE ../data/VideoServices.rss
 HEADER
 TARGETPATH      APP_RESOURCE_DIR
 
-LANGUAGE_IDS
+#ifdef __S60_32__
+LANG sc 
+#else
+LANGUAGE_IDS 
+#endif
 END
 
 START RESOURCE ../data/VideoServices_reg.rss

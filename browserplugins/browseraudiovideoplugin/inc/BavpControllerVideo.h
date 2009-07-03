@@ -207,6 +207,8 @@ class CBavpControllerVideo : public CBavpController,
         * @return void
         */
         void HandleCommandL( TBavpCommandIds aCommand );
+        
+        TBool HandleGesture(RT_GestureHelper::TGestureEvent *gesture); 
 
     public: // From MBavpController
 

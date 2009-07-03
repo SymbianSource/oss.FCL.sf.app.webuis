@@ -32,7 +32,11 @@ VENDORID        VID_DEFAULT
 
 SOURCEPATH      ../PushContentHandler
 START RESOURCE      101F854C.rss
-LANGUAGE_IDS
+#ifdef __S60_32__
+LANG sc 
+#else
+LANGUAGE_IDS 
+#endif
 TARGET      PushMtmPushContentHandler.rsc
 END // RESOURCE
 

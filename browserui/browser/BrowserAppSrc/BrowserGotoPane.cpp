@@ -487,7 +487,15 @@ TKeyResponse CBrowserGotoPane::OfferKeyEventL
             return EKeyWasConsumed;                             // Ignore diagonal navigation events here
             }
 
-        if ( (aKeyEvent.iCode == EKeyOK ) && iGPObserver && IsFocused() )
+        // For touch UI, handle enter key from VKB as a "GOTO"
+        if (AknLayoutUtils::PenEnabled() && aKeyEvent.iCode == EKeyEnter)
+            {
+            CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneGoTo);
+            return EKeyWasConsumed;
+            }
+        else if ( ((aKeyEvent.iCode == EKeyOK ) || (aKeyEvent.iCode == EKeyEnter))
+             && iGPObserver 
+             && IsFocused() )
             {
             if ( CBrowserAppUi::Static()->ContentView()->MenuBar()->MenuPane()->IsVisible() )
                 {
@@ -495,17 +503,13 @@ TKeyResponse CBrowserGotoPane::OfferKeyEventL
                 }
             else
                 {
+                // If there is an observer and we have the focus, enter key is
+                // consumed and observer is notified.
                 iGPObserver->HandleGotoPaneEventL
                                 ( this, MGotoPaneObserver::EEventEnterKeyPressed );
-                return EKeyWasConsumed;                         // If there is an observer and we have the focus,
-		}                                               //   enter key is consumed and observer is notified.
-            }
-
-        else if (AknLayoutUtils::PenEnabled() && aKeyEvent.iCode == EKeyEnter)
-            {                                                   // For touch UI, handle enter key from VKB as a "GOTO"
-            CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneGoTo);
-            return EKeyWasConsumed;
-            }
+                return EKeyWasConsumed;
+                }
+            }        
 
         if ( iSearchEditor && iSearchPaneActive )
             {

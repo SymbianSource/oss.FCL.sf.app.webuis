@@ -1249,6 +1249,9 @@ void CBrowserFavouritesView::FillListboxL( TInt aFolder, TBool aKeepState )
         CRepository* repository = CRepository::NewLC( KCRUidBrowser );
         User::LeaveIfError( repository->Set(KBrowserFirstBoot, EFalse) );
         CleanupStack::PopAndDestroy( repository );
+        
+        // Set Search item to italics font
+        iContainer->Listbox()->ItalicizeRowItemL(0);
         }
 
     CleanupStack::Pop();    // items: passing ownership to listbox.

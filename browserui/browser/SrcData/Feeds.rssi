@@ -758,8 +758,9 @@ RESOURCE TBUF r_feeds_network_error             { buf = qtn_feeds_network_error_
 RESOURCE TBUF r_feeds_general_error             { buf = qtn_feeds_general_error_dialog_text; }
 RESOURCE TBUF r_feeds_general_error_main_pane   { buf = qtn_feeds_general_error_main_pane_text; }
 RESOURCE TBUF r_feeds_name_already_in_use       { buf = qtn_feeds_duplicate_title_error_dialog_text; }
-RESOURCE TBUF r_feeds_invalid_url				{ buf = qtn_feeds_invalid_url_main_pane_text; }
-RESOURCE TBUF r_feeds_opening_wait				{ buf = qtn_feeds_opening_wait_dialog_text; }
+RESOURCE TBUF r_feeds_invalid_url               { buf = qtn_feeds_invalid_url_main_pane_text; }
+RESOURCE TBUF r_feeds_opening_wait              { buf = qtn_feeds_opening_wait_dialog_text; }
+RESOURCE TBUF r_feeds_file_not_found_error      { buf = qtn_feeds_file_not_found_dialog_text; }
 
 // Automatic updating
 RESOURCE TBUF r_feeds_autoupdating_feeds_off  	              { buf = qtn_feeds_autoupdating_off; }

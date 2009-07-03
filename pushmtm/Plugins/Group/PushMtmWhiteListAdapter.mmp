@@ -34,7 +34,11 @@ VENDORID   VID_DEFAULT
 // RESOURCES
 
 START RESOURCE      ../Data/10008D3E.rss
-LANGUAGE_IDS
+#ifdef __S60_32__
+LANG sc 
+#else
+LANGUAGE_IDS 
+#endif
 TARGET      PushMtmWhiteListAdapter.rsc
 END // RESOURCE
 

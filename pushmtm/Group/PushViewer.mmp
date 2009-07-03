@@ -81,7 +81,11 @@ DEBUGLIBRARY         flogger.lib
 
 START RESOURCE  ../Data/PushViewer.rss
 HEADER
-LANGUAGE_IDS
+#ifdef __S60_32__
+LANG sc 
+#else
+LANGUAGE_IDS 
+#endif
 TARGETPATH   APP_RESOURCE_DIR
 END // RESOURCE
 

@@ -803,6 +803,11 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
   	        CApListItem* apItem = iCommsModel.AccessPointsL()->ItemForUid( aDefaultAccessPoint );
 	        if (apItem == NULL)
 		        {
+                if( iVpnEngine->IsVpnApL( aDefaultAccessPoint ) )
+                {
+                  BROWSER_LOG( ( _L( " This is VPN AP which has a snap in it" ) ) );
+                  break;
+                } 
     	    	aDefaultAccessPoint = KWmlNoDefaultAccessPoint;
     	    	aAssocVpn = KWmlNoDefaultAccessPoint;
     	    	delete iAllPreferences.iDefaultAPDetails;

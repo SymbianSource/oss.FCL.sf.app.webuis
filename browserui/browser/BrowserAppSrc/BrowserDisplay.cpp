@@ -220,8 +220,9 @@ PERFLOG_STOPWATCH_START
     iTitle = temp;
     CAknIndicatorContainer* indicContainerEditing = SelectIndicContainerEditing();
     // Checking to see if we are in contentview so that title is updated for other views like
-    // Bookmarks and Settings
-    if((indicContainerEditing) && (ApiProvider().LastActiveViewId() == KUidBrowserContentViewId ))
+    // Bookmarks and Settings. In landscape mode title could be updated all the time regardless of progress bar. 
+    if ( !Layout_Meta_Data::IsLandscapeOrientation() && 
+           (indicContainerEditing) && (ApiProvider().LastActiveViewId() == KUidBrowserContentViewId ))
         {
 		//Under full screen mode, the progress bar is at the bottom and the title should be updated
 		//all the time.

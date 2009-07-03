@@ -203,10 +203,14 @@ TKeyResponse CBrowserContentViewContainer::OfferKeyEventL(const TKeyEvent& aKeyE
         }
 
     TKeyEvent keyEvent( aKeyEvent );
+    TBrCtlDefs::TBrCtlElementType elementtype =
+        iApiProvider.BrCtlInterface().FocusedElementType();
 
     // Don't allow virtual keyboard backspace key event to close the window
+    // And don't close window if editing in an input box
     if ( !AknLayoutUtils::PenEnabled() && aType == EEventKey
-        && keyEvent.iCode == EKeyBackspace )
+        && keyEvent.iCode == EKeyBackspace
+        && elementtype != TBrCtlDefs::EElementActivatedInputBox )
         {
         if ( iApiProvider.Preferences().UiLocalFeatureSupported(
                                                     KBrowserMultipleWindows ) )
@@ -275,8 +279,7 @@ TKeyResponse CBrowserContentViewContainer::OfferKeyEventL(const TKeyEvent& aKeyE
         {
         if ( keyEvent.iRepeats && iSelectionKeyPressed )
             {
-            TBrCtlDefs::TBrCtlElementType elementtype =
-                iApiProvider.BrCtlInterface().FocusedElementType();
+
             TInt command( KErrNotFound );
             switch( elementtype )
                 {

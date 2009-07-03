@@ -107,6 +107,12 @@ CBrowserFavouritesListbox::~CBrowserFavouritesListbox()
     delete iIconIndexes;
     delete iItems;
     delete iNewState;
+    
+    if ( iFontItalic )
+        {
+        CWsScreenDevice& screenDev = *( CEikonEnv::Static()->ScreenDevice() );
+        screenDev.ReleaseFont( iFontItalic );
+        }
     }
 
 // ---------------------------------------------------------
@@ -653,6 +659,19 @@ void CBrowserFavouritesListbox::ConstructL
                                 listBoxGraphicSize );
 
     ItemDrawer()->ColumnData()->EnableMarqueeL( ETrue );
+
+
+    // Setup italicized font for use later    
+    const CFont* logicalFont = AknLayoutUtils::FontFromId(EAknLogicalFontPrimaryFont);
+    
+    // Note: This font is owned by the application's system font array (where it 
+    // is likely already to have been created) and does not need to be
+    // released. It can just go out of scope.// Extract font information
+    TFontSpec fontSpec = logicalFont->FontSpecInTwips();// Desired height, weight, and posture already set in locals
+    fontSpec.iFontStyle.SetPosture( EPostureItalic );// Obtain new font
+    CWsScreenDevice& screenDev = *( CEikonEnv::Static()->ScreenDevice() );
+    screenDev.GetNearestFontInTwips( ( CFont*& )iFontItalic, fontSpec );
+ 
     }
 
 // ---------------------------------------------------------
@@ -1111,5 +1130,16 @@ void CBrowserFavouritesListbox::SetSkinUpdated(TBool aSkinUpdated)
     iSkinUpdated = aSkinUpdated;
     }
 
+// ---------------------------------------------------------
+// CBrowserFavouritesListbox::ItalicizeRowItemL
+// ---------------------------------------------------------
+//
+void CBrowserFavouritesListbox::ItalicizeRowItemL(TInt aRowIndex)
+    {
+    if (ItemDrawer() && ItemDrawer()->ColumnData() && iFontItalic)
+        {
+        ItemDrawer()->ColumnData()->SetColumnFontForRowL( aRowIndex, 1, iFontItalic );
+        }
+    }
 
 //  End of File

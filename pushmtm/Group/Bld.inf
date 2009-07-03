@@ -21,6 +21,9 @@
 PRJ_PLATFORMS
 DEFAULT
 
+// Help exports
+#include "../help/group/bld.inf"
+
 PRJ_EXPORTS
 ../Inc/PushMtmCommands.hrh    APP_LAYER_PLATFORM_EXPORT_PATH(PushMtmCommands.hrh)
 ../rom/PushMtm.iby            CORE_APP_LAYER_IBY_EXPORT_PATH(PushMtm.iby)

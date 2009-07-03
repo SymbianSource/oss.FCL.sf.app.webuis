@@ -40,6 +40,7 @@
 
 #include "eikon.hrh"
 
+using namespace RT_GestureHelper;
 
 // CONSTANTS
 const TInt KBavpMaxLinkFileSize = 5120; // 5kB
@@ -321,12 +322,12 @@ void CBavpController::SetLoopFromAttribute( TInt aLoopValue, TBool aInfiniteFlag
 }
 
 // -----------------------------------------------------------------------------
-// CBavpControllerAudioo::RefreshRectCoordinates
+// CBavpControllerAudioo::RefreshRectCoordinatesL
 // Refresh the coordinates of rect for display
 // -----------------------------------------------------------------------------
-void CBavpController::RefreshRectCoordinates()
+void CBavpController::RefreshRectCoordinatesL()
     {
-    Log( EFalse, _L("CBavpController::RefreshRectCoordinates()") );
+    Log( EFalse, _L("CBavpController::RefreshRectCoordinatesL()") );
     }
 
 // -----------------------------------------------------------------------------
@@ -866,4 +867,14 @@ void CBavpController::BavpHwKeyCommand( TBavpCommandIds aCommand )
     HandleCommandL( aCommand );
     }
 */
+
+// -----------------------------------------------------------------------------
+// HandleGesture(TGestureEvent *gesture)
+// -----------------------------------------------------------------------------
+TBool CBavpController::HandleGesture(TGestureEvent* /*gesture*/)
+    {
+    // should be implemented in derrived class.    
+    return EFalse;
+    }
+
 //  End of File

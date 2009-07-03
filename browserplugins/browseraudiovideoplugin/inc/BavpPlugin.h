@@ -28,6 +28,7 @@
 #include <DRMCommon.h>
 #include <CEcomBrowserPluginInterface.h>
 #include "BavpNPObject.h"
+#include <rt_gesturehelper.h>
 
 // FORWARD DECLARATIONS
 class CBavpView;
@@ -215,6 +216,10 @@ class CBavpPlugin : public CBase,
         void SetMimeType(NPMIMEType type);
         
         NPP  getNPP() {return iNPP;}
+        
+        NPNetscapeFuncs* getNPNFuncs();
+        
+        TBool HandleGesture(void* aEvent);
     private:
 
         /**

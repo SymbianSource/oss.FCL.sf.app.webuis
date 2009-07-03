@@ -1572,6 +1572,15 @@ void CFeedsClientUtilities::ShowServerError(TInt aStatus, CTransaction::TTransac
                	labelId = R_FEEDS_MALFORMED_FEED_ERROR;
                 break;
                 }
+
+        case KErrNotFound:
+            // A pop up error note should be displayed if import is requested,
+            // else will be handled in default case.
+            if (aRequestType == CTransaction::EImportOPML)
+                {
+                labelId = R_FEEDS_FILE_NOT_FOUND_ERROR;
+                break;
+                }
         default:
 			if (aStatus > 0) // All network errors
                 {

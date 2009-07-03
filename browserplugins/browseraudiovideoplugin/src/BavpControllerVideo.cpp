@@ -29,6 +29,8 @@
 #include <mmf/common/mmfcontrollerframework.h> 
 #include <MMFScalingCustomCommandConstants.h>
 
+using namespace RT_GestureHelper;
+
 // CONSTANTS
 // One second represented in microseconds
 const TInt KBavpOneSecond = 1000000;
@@ -1343,5 +1345,27 @@ void CBavpControllerVideo::HandleInComingCallL()
       {
       RevertToNormalScreenL();
       }	
+}
+
+// -----------------------------------------------------------------------------
+// CBavpControllerVideo::HandleGesture
+// -----------------------------------------------------------------------------
+TBool CBavpControllerVideo::HandleGesture(TGestureEvent *gesture)
+{
+    TBool ret = EFalse;
+    TGestureCode gtype =  gesture->Code(EAxisBoth); 
+    switch(gtype)
+        {
+        case EGestureTap:
+            {
+                if (IsClipFullScreen())
+                    {
+                    ToggleScreen();
+                    ret = ETrue;
+                    }
+                break;
+            }
+        }
+    return ret;
 }
 //  End of File

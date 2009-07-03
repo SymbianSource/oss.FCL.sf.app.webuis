@@ -48,7 +48,11 @@ SOURCE  ../BrowserAppSrc/BrowserInitialView.cpp
 START RESOURCE ../SrcData/BrowserNG.rss
 TARGETPATH APP_RESOURCE_DIR
 HEADER
-LANGUAGE_IDS
+#ifdef __S60_32__
+LANG sc 
+#else
+LANGUAGE_IDS 
+#endif
 END
 
 START RESOURCE ../SrcData/BrowserNG_reg.rss

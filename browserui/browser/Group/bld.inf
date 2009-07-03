@@ -23,8 +23,15 @@ PRJ_PLATFORMS
 
 DEFAULT
 
+// Help exports
+#include "../help/group/bld.inf"
+
 PRJ_EXPORTS
-../rom/browser_stub.sis                 /epoc32/release/armv5/urel/browser_stub.sis
+#ifdef __S60_32__
+../rom/browser_stub_32.sis		     /epoc32/release/armv5/urel/browser_stub.sis
+#else
+../rom/browser_stub.sis		     /epoc32/release/armv5/urel/browser_stub.sis
+#endif
 ../SrcData/feeds_view_template.html     /epoc32/winscw/c/feeds_view_template.html
 ../SrcData/feeds_view_template.html     /epoc32/data/c/feeds_view_template.html
 

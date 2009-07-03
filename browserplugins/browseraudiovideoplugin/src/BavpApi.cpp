@@ -401,11 +401,25 @@ void BavpPrint( NPP /*instance*/,
 // -----------------------------------------------------------------------------
 // BavpEvent        NOT SUPPORTED
 // -----------------------------------------------------------------------------
-int16 BavpEvent( NPP /*instance*/,
-                 void* /*event*/ )      
+int16 BavpEvent( NPP instance,
+                 void* event )      
     {
-    // Not implemented
-    return NPERR_NO_ERROR;
+    TInt ret = EFalse;
+    if (instance)
+        {
+        CBavpPlugin *plugin = static_cast<CBavpPlugin*>(instance->pdata);
+        NPEvent *ev = static_cast<NPEvent*>(event);
+    
+        if (plugin)
+            {
+            if (ev->event == ENppEventPointer)
+                {
+                NPEventPointer *evp =static_cast<NPEventPointer*> (ev->param);
+                ret = plugin->HandleGesture(evp->reserved);
+                }
+            }
+        }
+    return ret;
     }
 
 // -----------------------------------------------------------------------------

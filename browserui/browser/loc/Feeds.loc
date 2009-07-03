@@ -465,6 +465,13 @@
 //r:3.0
 #define qtn_feeds_general_error_dialog_text "An unkown error occurred"
 
+//d: Information text for the error dialog. Displayed when an OPML file
+//d: somehow gets deleted after it is found and displayed in the list, and the 
+//d: user then tries to select and import it.
+//l:popup_note_window
+//w:
+//r:7.1
+#define qtn_feeds_file_not_found_dialog_text "File Not Found"
 
 /*  Misc Strings                                                        */
 /* -------------------------------------------------------------------- */

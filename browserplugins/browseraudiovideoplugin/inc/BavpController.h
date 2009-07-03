@@ -31,7 +31,7 @@
 #include "BavpVolumeHandler.h"
 #include "BavpHwKeyEvents.h"            // Hardware Key Events
 #include "BavpClipInfo.h"               // Clip info
-
+#include <rt_gesturehelper.h>
 
 // FORWARD DECLARATIONS
 class RFs;
@@ -226,6 +226,8 @@ class CBavpController : public CActive,
         * @return none
         */
         virtual void BavpFocusChanged( TBool aFocus );
+        
+        virtual TBool HandleGesture(RT_GestureHelper::TGestureEvent *gesture); 
 
     public: // New methods
 
@@ -253,7 +255,7 @@ class CBavpController : public CActive,
         * @param none
         * @return void
         */
-        virtual void RefreshRectCoordinates();
+        virtual void RefreshRectCoordinatesL();
 
         /**
         * Sets original file name (used for scripting functionality)

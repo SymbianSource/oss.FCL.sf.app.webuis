@@ -205,6 +205,8 @@ class CBavpView : public CCoeControl,
         * @return TKeyResponse
         */
 		TKeyResponse OfferKeyEventL( const TKeyEvent& aKeyEvent, TEventCode aType );
+		
+		void HandlePointerEventL(const TPointerEvent &aPointerEvent);
 
 	protected:  // Methods from CCoeControl
 

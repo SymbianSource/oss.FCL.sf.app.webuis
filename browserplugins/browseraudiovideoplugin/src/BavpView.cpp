@@ -32,6 +32,7 @@
 #include "BavpView.h"
 #include "BrCtlDefs.h"
 #include "BavpController.h"
+#include "BavpPlugin.h"
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -225,7 +226,7 @@ void CBavpView::SizeChanged()
 	if ( iBavpController )
 		{
 		iRect = Rect();
-		iBavpController->RefreshRectCoordinates();
+		iBavpController->RefreshRectCoordinatesL();
 		}
     }
 
@@ -740,6 +741,32 @@ void CBavpView::RunAnimation( CAknBitmapAnimation* aAnimation,
         );
 		}
 
+    }
+
+
+void CBavpView::HandlePointerEventL(const TPointerEvent &aPointerEvent)
+    {
+    /*
+     * Plugin is sending all pointer events to the browser.
+     * Browser will process them to gesture and return back using
+     * event() function. (see PluginWin::HandleGesture(), BavpEvent() and
+     * CBavpPlugin::HandleGesture().
+     * Browser expects event position to be in absolute co-ordinates,
+     * so we convert position of the pointer event here.
+     */
+    TPoint point(aPointerEvent.iPosition  + PositionRelativeToScreen());
+    TPointerEvent tmpEvent(aPointerEvent);
+    tmpEvent.iPosition = point;
+    
+    NPNetscapeFuncs* funcs = iBavPlugin->getNPNFuncs();
+    
+    
+    if(funcs && funcs->setvalue)
+        {
+        (funcs->setvalue)(iBavPlugin->getNPP(), 
+                            (NPPVariable) NPPVPluginPointerEvent,
+                            (void*) &(tmpEvent));
+        }
     }
 
 //  End of File

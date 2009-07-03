@@ -129,10 +129,7 @@ TKeyResponse CFeedsEditFeedDialog::OfferKeyEventL(const TKeyEvent& aKeyEvent,
 //
 void CFeedsEditFeedDialog::HandlePointerEventL(const TPointerEvent& aPointerEvent) 
     {
-    if ((iSelectedDlgLine == EFeedsEditAutomaticUpdatingId) && (aPointerEvent.iType == TPointerEvent::EButton1Up))
-        HandleFreqCmdL();
-    else 
-        CAknForm::HandlePointerEventL(aPointerEvent);
+    CAknForm::HandlePointerEventL(aPointerEvent);
     }
 
 // ---------------------------------------------------------
@@ -316,6 +313,7 @@ void CFeedsEditFeedDialog::LineChangedL( TInt aControlId )
         {
         // make the 'Change' Button visible
         cba.MakeCommandVisible(EAknSoftkeyChange, ETrue);
+        HandleFreqCmdL();
         }
     else
         {

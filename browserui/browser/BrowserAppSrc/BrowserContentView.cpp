@@ -3066,7 +3066,8 @@ void CBrowserContentView::HideKeymap()
     {
     delete(iShortcutKeyMap);
     iShortcutKeyMap = NULL;
-    UpdateCbaL();
+    TRAP_IGNORE(UpdateCbaL());
+    TRAP_IGNORE(UpdateFullScreenL());
     }
 
 // ---------------------------------------------------------------------------
@@ -3153,7 +3154,7 @@ void CBrowserContentView::ShowFsStatusPane(TBool aShow)
         {
 #ifdef RD_SCALABLE_UI_V2
         if ( Layout_Meta_Data::IsLandscapeOrientation() )
-           StatusPane()->SwitchLayoutL(R_AVKON_WIDESCREEN_PANE_LAYOUT_IDLE_FLAT_NO_SOFTKEYS);
+           StatusPane()->SwitchLayoutL(R_AVKON_WIDESCREEN_PANE_LAYOUT_USUAL_FLAT_NO_SOFTKEYS);
 #endif
         StatusPane()->MakeVisible( ETrue );
         iContainer->SetRect(ClientRect());
@@ -3289,7 +3290,6 @@ void CBrowserContentView::ActivateAutoFullScreenMode()
 		 	&& !iOptionsMenuActive
 		 	&& !ApiProvider().IsDisplayingMenuOrDialog()
 			&& !ApiProvider().WindowMgr().CurrentWindow()->WMLMode()
-			&& !IsEditMode()
 			&& !iIsPluginFullScreenMode)
     		{
 			EnableFullScreenModeL( ETrue);

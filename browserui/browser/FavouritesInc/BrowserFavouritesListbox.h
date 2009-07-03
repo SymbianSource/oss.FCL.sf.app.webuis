@@ -280,6 +280,14 @@ class CBrowserFavouritesListbox : 	public CAknSingleGraphicStyleListBox
 		    { return iSkinUpdated; }
 		    
 		void SetSkinUpdated(TBool aSkinUpdated);
+		
+        /**
+        * Italicizes listbox row at index aRowIndex
+        *
+        * @param aRowIndex - index of row to be italicized 
+        */
+		void ItalicizeRowItemL(TInt aRowIndex);
+
 
     protected:  // Construct / destruct
 
@@ -441,6 +449,12 @@ class CBrowserFavouritesListbox : 	public CAknSingleGraphicStyleListBox
         CBrowserFavouritesListboxState* 		iNewState;
 		TBrowserFavouritesListboxDefaultDatas 	iDefaultDatas;
 		CBrowserFaviconHandler* 				iFaviconHandler;
+		
+        /**
+        * Italicized font for setting listbox rows to italics font.
+        */
+        CFbsFont *iFontItalic;
+
 
     };
 

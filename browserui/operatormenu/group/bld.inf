@@ -24,6 +24,9 @@ PRJ_PLATFORMS
 
 DEFAULT
 
+// Help exports
+#include "../help/group/bld.inf"
+
 PRJ_EXPORTS
 ../rom/operatormenu.iby  					CORE_APP_LAYER_IBY_EXPORT_PATH(operatormenu.iby)
 ../rom/OperatorMenuResources.iby  LANGUAGE_APP_LAYER_IBY_EXPORT_PATH(OperatorMenuResources.iby)

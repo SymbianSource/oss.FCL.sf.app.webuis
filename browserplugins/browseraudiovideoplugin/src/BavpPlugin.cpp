@@ -29,6 +29,7 @@
 #include "BavpControllerVideo.h"
 
 #include <npscript.h>
+using namespace RT_GestureHelper;
 
 // CONSTANTS
 _LIT( KBrowserAVPluginRscFileZ, "z:BrowserAudioVideoPlugin.rsc" );
@@ -365,5 +366,26 @@ void CBavpPlugin::SetMimeType( NPMIMEType type )
     iMimeType = type.Alloc();
     }
     
+// -----------------------------------------------------------------------------
+// CBavpPlugin::HandleGesture
+// -----------------------------------------------------------------------------
+TBool CBavpPlugin::HandleGesture(void* aEvent)
+    {
+    TBool ret = EFalse;
+    TGestureEvent *gesture = static_cast<TGestureEvent*>(aEvent);
+    ret = iBavpController->HandleGesture(gesture);
+    
+    return ret;
+    }
+
+// -----------------------------------------------------------------------------
+// CBavpPlugin::getNPNFuncs
+// -----------------------------------------------------------------------------
+NPNetscapeFuncs* CBavpPlugin::getNPNFuncs()
+    {
+    CBavpPluginEcomMain* npm = (CBavpPluginEcomMain*)Dll::Tls();
+    return npm ? npm->Funcs() : NULL;
+    }
+
 
 //  End of File
