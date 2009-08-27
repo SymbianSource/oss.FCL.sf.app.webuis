@@ -1344,6 +1344,7 @@ void CBavpControllerVideo::HandleInComingCallL()
 	if ( IsClipFullScreen() )
       {
       RevertToNormalScreenL();
+      iBavpView->ControllerStateChangedL();
       }	
 }
 

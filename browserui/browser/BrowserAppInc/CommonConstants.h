@@ -91,6 +91,8 @@ const TUint KCharacterSetIdentifierKoi8_r      = 0x101f8778;     // Russian
 const TUint KCharacterSetIdentifierKoi8_u      = 0x101f8761;     // Ukrainian
 const TUint KCharacterSetIdentifierIscii	   = 0x1027508E;
 
+const TUint KCharacterSetIdentifierEucKr       = 0x2000E526;     // Korean
+const TUint KCharacterSetIdentifierKsc5601     = 0x200113CD;     // Korean
 const TUint KCharacterSetIdentifierAutomatic   = 0x00;
 const TUint KCharacterSetIdentifierUCS2        = 0xffffffff;     // dummy value this id is never checked
 

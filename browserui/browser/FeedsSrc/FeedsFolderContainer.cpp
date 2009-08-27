@@ -15,7 +15,6 @@
 *
 */
 
-
 #include <AknNavi.h>
 #include <AknNaviDe.h>
 #include <AknNaviLabel.h>
@@ -410,7 +409,6 @@ void CFeedsFolderContainer::UpdateToolbarButtonsState()
     TBool isFeed = EFalse;
     TBool feedInFocus = EFalse;
  
-    __ASSERT_DEBUG( (iCurrentFolder != NULL), Util::Panic( Util::EUninitializedData ));
 
     if (iMoveActive || !iCurrentFolder)
         {
@@ -650,9 +648,9 @@ void CFeedsFolderContainer::UpdateTitleL()
 
 	TPtrC title;
     // Set the view's title.
-    if (iCurrentFolder != iRootFolder)
+    if (iCurrentFolder != NULL && iCurrentFolder != iRootFolder)
         {
-        if (iCurrentFolder->GetStringValue(EFeedAttributeTitle,title) != KErrNotFound && title.Length() != 0)
+        if (iCurrentFolder->GetStringValue(EFolderAttributeTitle,title) != KErrNotFound && title.Length() != 0)
             {
             iApiProvider.Display().SetTitleL(title);
             }
@@ -2224,3 +2222,4 @@ void CFeedsFolderContainer::UpdateNavigationPaneL()
     // it to top and draws.
     naviPane->PushL(*iNaviDecorator);
     }
+

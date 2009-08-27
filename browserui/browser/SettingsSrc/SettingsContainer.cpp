@@ -252,18 +252,18 @@ void CSettingsContainer::DisplaySettingCategoriesL()
     
     if (!iPenEnabled)
     {
-	    // Toolbar Category item
+        // Toolbar Category item
         AddCategoryListBoxItemL( R_SETTINGS_CATEGORY_TOOLBAR, *itemArray );
         iSettingIndex->AppendL( EWmlSettingsToolbar );
 
         // Shortcut Keys Category item
         if(!ApiProvider().Preferences().ShortcutKeysForQwerty())
-    	    {
-    	    AddCategoryListBoxItemL( R_SETTINGS_CATEGORY_SHORTCUTS, *itemArray );
-    	    iSettingIndex->AppendL( EWmlSettingsShortcuts );    	
-    	    }
+            {
+            AddCategoryListBoxItemL( R_SETTINGS_CATEGORY_SHORTCUTS, *itemArray );
+            iSettingIndex->AppendL( EWmlSettingsShortcuts );        
+            }
     }
-	    
+        
 
     RestoreListBoxIndexL();
     
@@ -379,29 +379,29 @@ void CSettingsContainer::DisplayGeneralSettingsL()
         AppendHomePageL( itemArray, itemText );
         }
 
-	// Minimap not supported on touch devices
+    // Minimap not supported on touch devices
     if (!iPenEnabled)
-	    {
-		//MiniMap feature is determined by the PageScaler dll, not by the preference setting.
-		//We should query webkit for the feature.
-		if(ApiProvider().WindowMgr().CurrentWindow()->IsPageOverviewSupportedL()) 
-			{
-			// Page Overview
-			AppendPageOverviewL( itemArray, itemText );
-			}	    	
-	    }
+        {
+        //MiniMap feature is determined by the PageScaler dll, not by the preference setting.
+        //We should query webkit for the feature.
+        if(ApiProvider().WindowMgr().CurrentWindow()->IsPageOverviewSupportedL()) 
+            {
+            // Page Overview
+            AppendPageOverviewL( itemArray, itemText );
+            }           
+        }
 
 
-	if(	iApiProvider.Preferences().UiLocalFeatureSupported( KBrowserGraphicalHistory ))
-		{
-		// Back List
-	    AppendBackListL( itemArray, itemText );
-		}
+    if( iApiProvider.Preferences().UiLocalFeatureSupported( KBrowserGraphicalHistory ))
+        {
+        // Back List
+        AppendBackListL( itemArray, itemText );
+        }
 
-	if (!ApiProvider().IsEmbeddedModeOn())
-		{
-		AppendURLSuffixListL(itemArray, itemText);
-		}
+    if (!ApiProvider().IsEmbeddedModeOn())
+        {
+        AppendURLSuffixListL(itemArray, itemText);
+        }
     // Http Security Warnings
     if ( !ApiProvider().Preferences().HttpSecurityWarningsStatSupressed() )
         {
@@ -411,19 +411,19 @@ void CSettingsContainer::DisplayGeneralSettingsL()
     // Ecma
     AppendEcmaL( itemArray, itemText );
 
-	// Script Logging
+    // Script Logging
     AppendScriptLogL( itemArray, itemText );
 
     // Downloads open settings 
     if( PROGRESSIVE_DOWNLOAD )
-    	{
-    	AppendDownloadsOpenL( itemArray, itemText );
-    	}
+        {
+        AppendDownloadsOpenL( itemArray, itemText );
+        }
     
     if( ApiProvider().Preferences().SearchFeature() )
-    	{
-    	AppendSearchProviderL( itemArray, itemText );
-    	}
+        {
+        AppendSearchProviderL( itemArray, itemText );
+        }
 
     RestoreListBoxIndexL();
     iSettingListBox->DrawNow();
@@ -513,11 +513,11 @@ void CSettingsContainer::DisplayPrivacySettingsL()
         AppendAdaptiveBookmarksL( itemArray, itemText );
         }
 
- 	if (iApiProvider.Preferences().UiLocalFeatureSupported(KBrowserAutoFormFill) )
- 		{
-	    // Form Data Saving
-	    AppendFormDataSavingL( itemArray, itemText );
- 		}
+    if (iApiProvider.Preferences().UiLocalFeatureSupported(KBrowserAutoFormFill) )
+        {
+        // Form Data Saving
+        AppendFormDataSavingL( itemArray, itemText );
+        }
 
     // Cookies
     AppendCookiesL( itemArray, itemText );
@@ -685,60 +685,69 @@ TBool CSettingsContainer::SettingsError()
 void CSettingsContainer::AppendDefaultAccessPointL( CDesCArray*& aItemArray,
                                                     TBuf<KWmlSettingsItemMaxLength>& aItemText )
     {
-  	//get the connection identifier based on the connection type
+    //get the connection identifier based on the connection type
     switch (ApiProvider().Preferences().AccessPointSelectionMode())
         {
         case EAlwaysAsk:
-        	{
-		    CreateItemFromTwoStringsL( 
-		    R_WMLBROWSER_SETTINGS_DEFAULT_AP, 
-		    R_WML_SETTINGS_ACCESS_POINT_ASK_WHEN_NEEDED, 
-		    aItemText );
-		        
-		    break;	
-        	}
-        	
+            {
+            #if !defined(BRDO_BROWSER_50_FF)        
+                CreateItemFromTwoStringsL( 
+                R_WMLBROWSER_SETTINGS_DEFAULT_AP, 
+                R_WML_SETTINGS_ACCESS_POINT_ALWAYS_ASK, 
+                aItemText );
+            #else
+                CreateItemFromTwoStringsL( 
+                R_WMLBROWSER_SETTINGS_DEFAULT_AP, 
+                R_WML_SETTINGS_ACCESS_POINT_ASK_WHEN_NEEDED, 
+                aItemText );
+            #endif //BRDO_BROWSER_50_FF
+            break;  
+            }
+            
         //get the destination identifyer based on the snap Id
         case EDestination:
-        	{
-        	aItemText.Zero();
-		    aItemText.Append( KWmlSettingsListBoxItemPrefix );
-		    HBufC* defaultAp = iCoeEnv->AllocReadResourceLC( 
-		                            R_WMLBROWSER_SETTINGS_DEFAULT_AP );
-		    aItemText.Append( *defaultAp );
-		    CleanupStack::PopAndDestroy(); // defaultAp
-		    aItemText.Append( KWmlSettingsListBoxItemPostfix );
-		    
-		    RCmManager        cmManager;
-		    cmManager.OpenL();
+            {
+            aItemText.Zero();
+            aItemText.Append( KWmlSettingsListBoxItemPrefix );
+            HBufC* defaultAp = iCoeEnv->AllocReadResourceLC( 
+                                    R_WMLBROWSER_SETTINGS_DEFAULT_AP );
+            aItemText.Append( *defaultAp );
+            CleanupStack::PopAndDestroy(); // defaultAp
+            aItemText.Append( KWmlSettingsListBoxItemPostfix );
+            
+            RCmManager        cmManager;
+            cmManager.OpenL();
 
             TInt snapId = ApiProvider().Preferences().DefaultSnapId();
             if (snapId != KWmlNoDefaultSnapId)   
                 {            
-    			TRAPD(err, RCmDestination dest = cmManager.DestinationL( snapId ));
-    			if (err == KErrNone)
-    			    {
-        			RCmDestination dest = cmManager.DestinationL( snapId );					
-        			CleanupClosePushL( dest );					
-        			HBufC* destName = dest.NameLC();				       					
-        			aItemText.Append(*destName);
-        			CleanupStack::PopAndDestroy( 2 ); // destName, dest
-        			cmManager.Close();
-        			break;
+                TRAPD(err, RCmDestination dest = cmManager.DestinationL( snapId ));
+                if (err == KErrNone)
+                    {
+                    RCmDestination dest = cmManager.DestinationL( snapId );                 
+                    CleanupClosePushL( dest );                  
+                    HBufC* destName = dest.NameLC();                                        
+                    aItemText.Append(*destName);
+                    CleanupStack::PopAndDestroy( 2 ); // destName, dest
+                    cmManager.Close();
+                    break;
                     }   
                 }
-            
-            HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ASK_WHEN_NEEDED );
+            #if !defined(BRDO_BROWSER_50_FF)
+                HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ALWAYS_ASK );
+            #else
+                HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ASK_WHEN_NEEDED );
+            #endif // BRDO_BROWSER_50_FF
             aItemText.Append( *name );
             CleanupStack::PopAndDestroy(); // name
                 
             ApiProvider().Preferences().SetAccessPointSelectionModeL( EAlwaysAsk );
-		    cmManager.Close();
+            cmManager.Close();
 
-			break;
-        	}
-        	
-        	//if connecting with Iap Id
+            break;
+            }
+            
+            //if connecting with Iap Id
         case EConnectionMethod:
             {
             aItemText.Zero();
@@ -760,20 +769,24 @@ void CSettingsContainer::AppendDefaultAccessPointL( CDesCArray*& aItemArray,
                 }
             else
                 {
-                HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ASK_WHEN_NEEDED );
+                #if !defined(BRDO_BROWSER_50_FF)
+                    HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ALWAYS_ASK );
+                #else
+                    HBufC* name = iCoeEnv->AllocReadResourceLC( R_WML_SETTINGS_ACCESS_POINT_ASK_WHEN_NEEDED );
+                #endif // BRDO_BROWSER_50_FF
                 aItemText.Append( *name );
                 CleanupStack::PopAndDestroy(); // name
                 
                 ApiProvider().Preferences().SetAccessPointSelectionModeL( EAlwaysAsk  );
                 }
 
-		    break;	
-        	}
+            break;  
+            }
 
         default:
-        	{
-        	User::Leave( KErrNotSupported);	
-        	}
+            {
+            User::Leave( KErrNotSupported); 
+            }
         }
     
     aItemArray->AppendL( aItemText );
@@ -852,16 +865,16 @@ void CSettingsContainer::AppendPageOverviewL( CDesCArray*& aItemArray,
     if ( iApiProvider.Preferences().PageOverview() )
         {
         CreateItemFromTwoStringsL(
-	    R_WMLBROWSER_SETTINGS_PAGEOVERVIEW,
-	    R_WMLBROWSER_SETTINGS_PAGEOVERVIEW_ON,
-	    aItemText );
+        R_WMLBROWSER_SETTINGS_PAGEOVERVIEW,
+        R_WMLBROWSER_SETTINGS_PAGEOVERVIEW_ON,
+        aItemText );
         }
     else
         {
         CreateItemFromTwoStringsL(
-	        R_WMLBROWSER_SETTINGS_PAGEOVERVIEW,
-	        R_WMLBROWSER_SETTINGS_PAGEOVERVIEW_OFF,
-	        aItemText );
+            R_WMLBROWSER_SETTINGS_PAGEOVERVIEW,
+            R_WMLBROWSER_SETTINGS_PAGEOVERVIEW_OFF,
+            aItemText );
         }
     aItemArray->AppendL( aItemText );
     iSettingIndex->AppendL( EWmlSettingsPageOverview );
@@ -878,16 +891,16 @@ void CSettingsContainer::AppendToolbarOnOffL( CDesCArray*& aItemArray,
     if ( iApiProvider.Preferences().ShowToolbarOnOff() )
         {
         CreateItemFromTwoStringsL(
-	    R_BROWSER_SETTING_TOOLBAR_ON_OFF,
-	    R_BROWSER_SETTING_TOOLBAR_ON,
-	    aItemText );
+        R_BROWSER_SETTING_TOOLBAR_ON_OFF,
+        R_BROWSER_SETTING_TOOLBAR_ON,
+        aItemText );
         }
     else
         {
         CreateItemFromTwoStringsL(
-	        R_BROWSER_SETTING_TOOLBAR_ON_OFF,
-	        R_BROWSER_SETTING_TOOLBAR_OFF,
-	        aItemText );
+            R_BROWSER_SETTING_TOOLBAR_ON_OFF,
+            R_BROWSER_SETTING_TOOLBAR_OFF,
+            aItemText );
         }
     aItemArray->AppendL( aItemText );
     iSettingIndex->AppendL( EWmlSettingsToolbarOnOff );
@@ -906,16 +919,16 @@ void CSettingsContainer::AppendBackListL( CDesCArray*& aItemArray,
    if ( iApiProvider.Preferences().BackList() )
         {
         CreateItemFromTwoStringsL(
-	    R_WMLBROWSER_SETTINGS_BACK_LIST,
-	    R_WMLBROWSER_SETTINGS_BACK_LIST_ON,
-	    aItemText );
+        R_WMLBROWSER_SETTINGS_BACK_LIST,
+        R_WMLBROWSER_SETTINGS_BACK_LIST_ON,
+        aItemText );
         }
     else
         {
         CreateItemFromTwoStringsL(
-	        R_WMLBROWSER_SETTINGS_BACK_LIST,
-	        R_WMLBROWSER_SETTINGS_BACK_LIST_OFF,
-	        aItemText );
+            R_WMLBROWSER_SETTINGS_BACK_LIST,
+            R_WMLBROWSER_SETTINGS_BACK_LIST_OFF,
+            aItemText );
         }
     aItemArray->AppendL( aItemText );
     iSettingIndex->AppendL( EWmlSettingsBackList );
@@ -1101,8 +1114,8 @@ void CSettingsContainer::AppendDownloadsOpenL(
 void CSettingsContainer::AppendSearchProviderL(
                                                       CDesCArray*& aItemArray,
                                                       TBuf<KWmlSettingsItemMaxLength>& aItemText)
-	{
-	aItemText.Zero();
+    {
+    aItemText.Zero();
     aItemText.Append( KWmlSettingsListBoxItemPrefix );
     HBufC* settingTitle = iCoeEnv->AllocReadResourceLC( R_BROWSERS_SETT_WEB_SEARCH_PROVIDER );
     aItemText.Append( *settingTitle );
@@ -1116,17 +1129,17 @@ void CSettingsContainer::AppendSearchProviderL(
             KMaxTitleLength , searchProviderPtr);
     
     if(searchProvider->Compare(KNullDesC()) == 0)
-    	{
-    	CleanupStack::PopAndDestroy(searchProvider);
-    	searchProvider = iCoeEnv->AllocReadResourceLC( R_IS_LABEL_NOT_SELECTED );
-    	}
+        {
+        CleanupStack::PopAndDestroy(searchProvider);
+        searchProvider = iCoeEnv->AllocReadResourceLC( R_IS_LABEL_NOT_SELECTED );
+        }
     
     aItemText.Append( *searchProvider );
     CleanupStack::PopAndDestroy( searchProvider );
     
     aItemArray->AppendL( aItemText );
     iSettingIndex->AppendL( EWmlSettingsSearchProvider );
-	}
+    }
 
 // -----------------------------------------------------------------------------
 // CSettingsContainer::AppendAutoLoadContentL
@@ -1233,12 +1246,23 @@ void CSettingsContainer::AppendAutomaticUpdatingAPL(
     aItemText.Append( *defaultAp );
     CleanupStack::PopAndDestroy(); // defaultAp
     aItemText.Append( KWmlSettingsListBoxItemPostfix );
-
-    TBuf< KCommsDbSvrMaxFieldLength > name;
-    CApUtils* au = CApUtils::NewLC( ApiProvider().CommsModel().CommsDb() );
-    TRAP_IGNORE(au->NameL( id, name ));
-    aItemText.Append( name );
-    CleanupStack::PopAndDestroy();  // au
+    
+    if ( id == -1 )
+        {
+        // If user hasn't selected an AP, show a blank list entry. Once user
+        // selects an AP, it will be displayed.  Note: The browser's default AP
+        // is used, until user makes a different AP selection.
+        aItemText.Append( KNullDesC );
+        }
+    else
+        {
+        // User (or configuration) has already selected an AP, display its name
+        TBuf< KCommsDbSvrMaxFieldLength > name;
+        CApUtils* au = CApUtils::NewLC( ApiProvider().CommsModel().CommsDb() );
+        TRAP_IGNORE(au->NameL( id, name ));
+        aItemText.Append( name );
+        CleanupStack::PopAndDestroy();  // au
+        }
 
     aItemArray->AppendL( aItemText );
     iSettingIndex->AppendL( EWmlSettingsAutomaticUpdatingAP );
@@ -1256,16 +1280,16 @@ void CSettingsContainer::AppendAutomaticUpdatingWhileRoamingL(
     if ( iApiProvider.Preferences().AutomaticUpdatingWhileRoaming() )
         {
         CreateItemFromTwoStringsL(
-	    R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING,
-	    R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING_ON,
-	    aItemText );
+        R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING,
+        R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING_ON,
+        aItemText );
         }
     else
         {
         CreateItemFromTwoStringsL(
-	        R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING,
-	        R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING_OFF,
-	        aItemText );
+            R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING,
+            R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING_OFF,
+            aItemText );
         }
     aItemArray->AppendL( aItemText );
     
@@ -1346,9 +1370,9 @@ void CSettingsContainer::AppendEncodingL(
         if( iEncodingArray->At(i).iSystemId == iEncoding )
             {
             CreateItemFromTwoStringsL(
-            		    R_WMLBROWSER_SETTINGS_ENCODING,
-            		    iEncodingArray->At(i).iResId,
-            		    aItemText );
+                        R_WMLBROWSER_SETTINGS_ENCODING,
+                        iEncodingArray->At(i).iResId,
+                        aItemText );
             currentEncodingFound = ETrue;
             break;
             }
@@ -1400,16 +1424,16 @@ void CSettingsContainer::AppendAutoRefreshL(
     if ( iApiProvider.Preferences().AutoRefresh() )
         {
         CreateItemFromTwoStringsL(
-	    R_WMLBROWSER_SETTINGS_AUTO_REFRESH,
-	    R_WMLBROWSER_SETTINGS_AUTO_REFRESH_ON,
-	    aItemText );
+        R_WMLBROWSER_SETTINGS_AUTO_REFRESH,
+        R_WMLBROWSER_SETTINGS_AUTO_REFRESH_ON,
+        aItemText );
         }
     else
         {
         CreateItemFromTwoStringsL(
-	        R_WMLBROWSER_SETTINGS_AUTO_REFRESH,
-	        R_WMLBROWSER_SETTINGS_AUTO_REFRESH_OFF,
-	        aItemText );
+            R_WMLBROWSER_SETTINGS_AUTO_REFRESH,
+            R_WMLBROWSER_SETTINGS_AUTO_REFRESH_OFF,
+            aItemText );
         }
     aItemArray->AppendL( aItemText );
     iSettingIndex->AppendL( EWmlSettingsAutoRefresh );
@@ -1436,9 +1460,9 @@ void CSettingsContainer::AppendAdaptiveBookmarksL(
         case EWmlSettingsAdaptiveBookmarksHideFolder:
             {
             CreateItemFromTwoStringsL(
-	                R_WMLBROWSER_SETTINGS_ADAPTIVE_BOOKMARKS,
-	                R_WMLBROWSER_SETTINGS_ADAPTIVE_BOOKMARKS_VALUE_HIDE_FOLDER,
-	                aItemText );
+                    R_WMLBROWSER_SETTINGS_ADAPTIVE_BOOKMARKS,
+                    R_WMLBROWSER_SETTINGS_ADAPTIVE_BOOKMARKS_VALUE_HIDE_FOLDER,
+                    aItemText );
             break;
             }
         case EWmlSettingsAdaptiveBookmarksOff:
@@ -1468,29 +1492,29 @@ void CSettingsContainer::AppendFormDataSavingL(
     switch ( ApiProvider().Preferences().FormDataSaving() )
         {
         case EWmlSettingsFormDataPlusPassword:
-        	{
-        	CreateItemFromTwoStringsL(
-	            R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING,
-	            R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_ON,
-	            aItemText );
-	        break;
-        	}
+            {
+            CreateItemFromTwoStringsL(
+                R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING,
+                R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_ON,
+                aItemText );
+            break;
+            }
         case EWmlSettingsFormDataOnly:
-        	{
-        	CreateItemFromTwoStringsL(
-	            R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING,
-	            R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_ONLY,
-	            aItemText );
-	        break;
-        	}
+            {
+            CreateItemFromTwoStringsL(
+                R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING,
+                R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_ONLY,
+                aItemText );
+            break;
+            }
         case EWmlSettingsFormDataOff:
-        	{
-        	CreateItemFromTwoStringsL(
-	            R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING,
-	            R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_OFF,
-	            aItemText );
-	        break;
-        	}
+            {
+            CreateItemFromTwoStringsL(
+                R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING,
+                R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_OFF,
+                aItemText );
+            break;
+            }
 
         default:
             break;
@@ -1512,17 +1536,17 @@ void CSettingsContainer::AppendCookiesL(
         case EWmlSettingsCookieAllow:
             {
             CreateItemFromTwoStringsL(
-	              R_WMLBROWSER_SETTINGS_COOKIES,
-	              R_WMLBROWSER_SETTINGS_C_VALUE_ALLOW,
-	              aItemText );
+                  R_WMLBROWSER_SETTINGS_COOKIES,
+                  R_WMLBROWSER_SETTINGS_C_VALUE_ALLOW,
+                  aItemText );
             break;
             }
         case EWmlSettingsCookieReject:
             {
             CreateItemFromTwoStringsL(
-	              R_WMLBROWSER_SETTINGS_COOKIES,
-	              R_WMLBROWSER_SETTINGS_C_VALUE_REJECT,
-	              aItemText );
+                  R_WMLBROWSER_SETTINGS_COOKIES,
+                  R_WMLBROWSER_SETTINGS_C_VALUE_REJECT,
+                  aItemText );
             break;
             }
         default:
@@ -1633,7 +1657,7 @@ TInt CSettingsContainer::GetFontSizeString()
 // -----------------------------------------------------------------------------
 //
 void CSettingsContainer::AppendToolbarButtonsL( CDesCArray*& aItemArray,
-                                         		TBuf<KWmlSettingsItemMaxLength>& aItemText)
+                                                TBuf<KWmlSettingsItemMaxLength>& aItemText)
     {
    
     CreateItemFromTwoStringsL(
@@ -1693,7 +1717,7 @@ void CSettingsContainer::AppendToolbarButtonsL( CDesCArray*& aItemArray,
 // -----------------------------------------------------------------------------
 //
 void CSettingsContainer::AppendShortcutKeysL( CDesCArray*& aItemArray,
-                                         		TBuf<KWmlSettingsItemMaxLength>& aItemText)
+                                                TBuf<KWmlSettingsItemMaxLength>& aItemText)
     {
    
     CreateItemFromTwoStringsL(
@@ -1892,133 +1916,133 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
         case EWmlSettingsAccesspoint:
             {
             TInt err(KErrNone);
-	        TInt retVal( KErrNone );
-	        //start the connection  dialog
-	        CCmApplicationSettingsUi* settings = CCmApplicationSettingsUi::NewL();
-	        CleanupStack::PushL( settings );
-	        
-	        TCmSettingSelection selection;
-	        
-	        //
-	        // In Avkon tradition,
-	        // set the id of selection from the existing setting in preferences
-	        // so it is shown that way in the selection dialog box.
-	        //
-	        // Note the CCmApplicationSettingsUi API should ensure that if
-	        // "Connection Method" was previously selected, it should show up as
-	        // "Uncategorized" being shown selected
-	        //
-	        switch (preferences.AccessPointSelectionMode())
-		        {	
-		        case EAlwaysAsk:
-		            {		                
-		            selection.iResult = EAlwaysAsk;
-		            selection.iId = preferences.DefaultSnapId();
-		            break;
-		            }
-		        case EDestination:
-		            {		                
-		            selection.iResult = EDestination;
-		            selection.iId = preferences.DefaultSnapId();
-		            break;
-		            }
-		        case EConnectionMethod:
-		            {
-		            selection.iResult = EConnectionMethod;
-		            selection.iId = Util::IapIdFromWapIdL( ApiProvider(), preferences.DefaultAccessPoint() );
-		            break;
-		            }
-		        default:
-		            // default case, set it to nothing
-		            selection.iResult = EDefaultConnection;
-		            break;
-		        }
-	        	        
+            TInt retVal( KErrNone );
+            //start the connection  dialog
+            CCmApplicationSettingsUi* settings = CCmApplicationSettingsUi::NewL();
+            CleanupStack::PushL( settings );
+            
+            TCmSettingSelection selection;
+            
+            //
+            // In Avkon tradition,
+            // set the id of selection from the existing setting in preferences
+            // so it is shown that way in the selection dialog box.
+            //
+            // Note the CCmApplicationSettingsUi API should ensure that if
+            // "Connection Method" was previously selected, it should show up as
+            // "Uncategorized" being shown selected
+            //
+            switch (preferences.AccessPointSelectionMode())
+                {   
+                case EAlwaysAsk:
+                    {                       
+                    selection.iResult = EAlwaysAsk;
+                    selection.iId = preferences.DefaultSnapId();
+                    break;
+                    }
+                case EDestination:
+                    {                       
+                    selection.iResult = EDestination;
+                    selection.iId = preferences.DefaultSnapId();
+                    break;
+                    }
+                case EConnectionMethod:
+                    {
+                    selection.iResult = EConnectionMethod;
+                    selection.iId = Util::IapIdFromWapIdL( ApiProvider(), preferences.DefaultAccessPoint() );
+                    break;
+                    }
+                default:
+                    // default case, set it to nothing
+                    selection.iResult = EDefaultConnection;
+                    break;
+                }
+                        
             // empty filter array because no filtering is wanted
             TBearerFilterArray filterArray;
-	        TRAP ( err, retVal = settings->RunApplicationSettingsL( selection, 
+            TRAP ( err, retVal = settings->RunApplicationSettingsL( selection, 
                                                 EShowAlwaysAsk | EShowDestinations | EShowConnectionMethods,
                                                 // turn off SNAP
 //                                                EShowAlwaysAsk | EShowConnectionMethods,
                                                 filterArray ) );
-	        CleanupStack::PopAndDestroy();//settings
-        	
-	        //if something has been selected
-	        if (retVal)	
-	            {
-	            //set the selection mode
+            CleanupStack::PopAndDestroy();//settings
+            
+            //if something has been selected
+            if (retVal) 
+                {
+                //set the selection mode
                 preferences.SetAccessPointSelectionModeL( 
                         STATIC_CAST( TCmSettingSelectionMode, selection.iResult ) );
 
-	            //based on the chosen connection type, store the connection identifier(iapid, snap id, always ask)
-	            //in the preferences list
-	            switch (preferences.AccessPointSelectionMode())
-		            {			
-		            case EConnectionMethod:
-			            {
-			            BROWSER_LOG( ( _L( "CSettingsContainer::ChangeItemL CApSettingsHandler" ) ) );
-            			    
-			            TUint32 id = preferences.DefaultAccessPoint();
+                //based on the chosen connection type, store the connection identifier(iapid, snap id, always ask)
+                //in the preferences list
+                switch (preferences.AccessPointSelectionMode())
+                    {           
+                    case EConnectionMethod:
+                        {
+                        BROWSER_LOG( ( _L( "CSettingsContainer::ChangeItemL CApSettingsHandler" ) ) );
+                            
+                        TUint32 id = preferences.DefaultAccessPoint();
                         // CMManager gives us IAPid, need to translate to WAPid
-			            if (selection.iId != 0)
-			                {                   		
-			                id = Util::WapIdFromIapIdL( ApiProvider(), selection.iId ); 
-			                }			    			    
-			            preferences.SetDefaultAccessPointL( id );
-			            BROWSER_LOG( ( _L( " SetDefaultAccessPointL OK" ) ) );
-			            // Requested AP is preset for PushMtm
-			            ApiProvider().SetRequestedAP( preferences.DefaultAccessPoint() );
-			            break;	
-			            }
+                        if (selection.iId != 0)
+                            {                           
+                            id = Util::WapIdFromIapIdL( ApiProvider(), selection.iId ); 
+                            }                               
+                        preferences.SetDefaultAccessPointL( id );
+                        BROWSER_LOG( ( _L( " SetDefaultAccessPointL OK" ) ) );
+                        // Requested AP is preset for PushMtm
+                        ApiProvider().SetRequestedAP( preferences.DefaultAccessPoint() );
+                        break;  
+                        }
 
-		            case EDestination:
-			            {
-			            TUint32 snapId = preferences.DefaultSnapId();
-			            if (selection.iId != 0)
-			                {                   		
-			                snapId = selection.iId;
-			                }			        
-			            preferences.SetDefaultSnapId( snapId );
+                    case EDestination:
+                        {
+                        TUint32 snapId = preferences.DefaultSnapId();
+                        if (selection.iId != 0)
+                            {                           
+                            snapId = selection.iId;
+                            }                   
+                        preferences.SetDefaultSnapId( snapId );
 
-			            break;	
-			            }
+                        break;  
+                        }
 
-		            case EAlwaysAsk:
-			            {
-			            break;	
-			            }
+                    case EAlwaysAsk:
+                        {
+                        break;  
+                        }
 
-		            default:
-			            {
-			            LOG_ENTERFN(" Wrong value in CSettingsContainer::ChangeItemL");
-			            }
-		            }			
-	            }
+                    default:
+                        {
+                        LOG_ENTERFN(" Wrong value in CSettingsContainer::ChangeItemL");
+                        }
+                    }           
+                }
 
-	        DisplayGeneralSettingsL();
-	        BROWSER_LOG( ( _L( "DisplayGeneralSettingsL OK" ) ) );
+            DisplayGeneralSettingsL();
+            BROWSER_LOG( ( _L( "DisplayGeneralSettingsL OK" ) ) );
 
             break;
-	        }
+            }
 
         case EWmlSettingsAutoLoadContent:
-    		{
-       		if(iFlashPluginPresent)
-    		    {
-    		    value = 2 - preferences.AutoLoadContent();
-    		    
-    		    values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_ALL );              // 2
-    	    	values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_IMAGES_NO_FLASH );  // 1
-    		    values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_TEXT );             // 0
-    		    
-        	    value = 2 - (ShowRadioButtonSettingPageL(R_WMLBROWSER_SETTINGS_AUTOLOAD_CONTENT,
+            {
+            if(iFlashPluginPresent)
+                {
+                value = 2 - preferences.AutoLoadContent();
+                
+                values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_ALL );              // 2
+                values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_IMAGES_NO_FLASH );  // 1
+                values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_TEXT );             // 0
+                
+                value = 2 - (ShowRadioButtonSettingPageL(R_WMLBROWSER_SETTINGS_AUTOLOAD_CONTENT,
                                                             values,
                                                             value ));
-    		    }
-		    else
-		        {
-		        // Below is cenrep values for Load Content for cenrep key KBrowserNGImagesEnabled
-		        // Load Content 
+                }
+            else
+                {
+                // Below is cenrep values for Load Content for cenrep key KBrowserNGImagesEnabled
+                // Load Content 
                 // Valid values: 
                 // If flash plugin is present: 0 = Text only, 1 = Images,No flash, 2 = All
                 // If flash plugin is not present 0 = Text only, 1 = All
@@ -2027,7 +2051,7 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
                 // in case where the flash plugin is not present.
 
 
-    		    value = 1 - preferences.AutoLoadContent();
+                value = 1 - preferences.AutoLoadContent();
 
                 if ( value < 0 )
                     {
@@ -2036,10 +2060,10 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
                     value = 0; 
                     }
                     
-    		    values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_ALL );  // 1 (translated from 2 when flash plugin is present)
-    		    values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_TEXT ); // 0
-    		    
-        	    value = 1 - (ShowRadioButtonSettingPageL(R_WMLBROWSER_SETTINGS_AUTOLOAD_CONTENT,
+                values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_ALL );  // 1 (translated from 2 when flash plugin is present)
+                values->AppendL( R_WMLBROWSER_SETTINGS_AUTOLOAD_TEXT ); // 0
+                
+                value = 1 - (ShowRadioButtonSettingPageL(R_WMLBROWSER_SETTINGS_AUTOLOAD_CONTENT,
                                                               values,
                                                               value ));                
                                                               
@@ -2048,12 +2072,12 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
                     {
                     value = EWmlSettingsAutoloadAll;
                     }
-		        }
+                }
 
-    		preferences.SetAutoLoadContentL( value );
+            preferences.SetAutoLoadContentL( value );
                 DisplayPageSettingsL();
-    		break;
-    		}
+            break;
+            }
 
         case EWmlSettingsFontSize:
              {
@@ -2092,79 +2116,79 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
              }
 
         case EWmlSettingsPageOverview:
-    		{
- 		    if( ApiProvider().WindowMgr().CurrentWindow()->IsPageOverviewSupportedL() )
+            {
+            if( ApiProvider().WindowMgr().CurrentWindow()->IsPageOverviewSupportedL() )
                 {
-     		    values->AppendL( R_WMLBROWSER_SETTINGS_PAGEOVERVIEW_OFF );
-     		    values->AppendL( R_WMLBROWSER_SETTINGS_PAGEOVERVIEW_ON );
-     		    value = preferences.PageOverview();
-     		    value = aSelectKeyWasPressed ?
-     		    1 - value :
-     		    ShowRadioButtonSettingPageL(
-     			    R_WMLBROWSER_SETTINGS_PAGEOVERVIEW,
-     			    values,
-     			    value );
-     		    preferences.SetPageOverviewL( value );
+                values->AppendL( R_WMLBROWSER_SETTINGS_PAGEOVERVIEW_OFF );
+                values->AppendL( R_WMLBROWSER_SETTINGS_PAGEOVERVIEW_ON );
+                value = preferences.PageOverview();
+                value = aSelectKeyWasPressed ?
+                1 - value :
+                ShowRadioButtonSettingPageL(
+                    R_WMLBROWSER_SETTINGS_PAGEOVERVIEW,
+                    values,
+                    value );
+                preferences.SetPageOverviewL( value );
                 DisplayGeneralSettingsL();
                 }
-    		break;
-    		}
+            break;
+            }
 
-    	case EWmlSettingsBackList:
-    		{
-    		values->AppendL( R_WMLBROWSER_SETTINGS_BACK_LIST_OFF );
-    		values->AppendL( R_WMLBROWSER_SETTINGS_BACK_LIST_ON );
-    		value = preferences.BackList();
-    		value = aSelectKeyWasPressed ?
-    		1 - value :
-    		ShowRadioButtonSettingPageL(
-    			R_WMLBROWSER_SETTINGS_BACK_LIST,
-    			values,
-    			value );
-    		preferences.SetBackListL( value );
+        case EWmlSettingsBackList:
+            {
+            values->AppendL( R_WMLBROWSER_SETTINGS_BACK_LIST_OFF );
+            values->AppendL( R_WMLBROWSER_SETTINGS_BACK_LIST_ON );
+            value = preferences.BackList();
+            value = aSelectKeyWasPressed ?
+            1 - value :
+            ShowRadioButtonSettingPageL(
+                R_WMLBROWSER_SETTINGS_BACK_LIST,
+                values,
+                value );
+            preferences.SetBackListL( value );
                 DisplayGeneralSettingsL();
-    		break;
-    		}
-    	case EWmlSettingsUrlSuffix:
-        	{
-	        TInt ret;
+            break;
+            }
+        case EWmlSettingsUrlSuffix:
+            {
+            TInt ret;
 
-	        HBufC* suffixBuf = iApiProvider.Preferences().URLSuffixList();
-	        HBufC* suffixToPass = HBufC::NewLC( KMaxSearchPgUrlLength );
-	        suffixToPass = suffixBuf;
-	        TPtr ptr = suffixToPass->Des();
+            HBufC* suffixBuf = iApiProvider.Preferences().URLSuffixList();
+            HBufC* suffixToPass = HBufC::NewLC( KMaxSearchPgUrlLength );
+            suffixToPass = suffixBuf;
+            TPtr ptr = suffixToPass->Des();
 
-	        TInt resource = R_URL_SUFFIX_PAGE;
+            TInt resource = R_URL_SUFFIX_PAGE;
 
-	        CAknSettingPage* dlg = new ( ELeave ) CAknTextSettingPage( 
-	                resource, ptr, CAknTextSettingPage::EZeroLengthAllowed );
+            CAknSettingPage* dlg = new ( ELeave ) CAknTextSettingPage( 
+                    resource, ptr, CAknTextSettingPage::EZeroLengthAllowed );
 
-	        ret = dlg->ExecuteLD( CAknSettingPage::EUpdateWhenChanged );
+            ret = dlg->ExecuteLD( CAknSettingPage::EUpdateWhenChanged );
 
-	        if ( ret )
-	            {
-	            iApiProvider.Preferences().SetURLSuffixList(suffixToPass);
-	            }
-	        
-	        CleanupStack::PopAndDestroy(); // suffixToPass
+            if ( ret )
+                {
+                iApiProvider.Preferences().SetURLSuffixList(suffixToPass);
+                }
+            
+            CleanupStack::PopAndDestroy(); // suffixToPass
             DisplayGeneralSettingsL();
-	        break;
-        	}
-    	case EWmlSettingsAutoRefresh:
-    		{
-    		values->AppendL( R_WMLBROWSER_SETTINGS_AUTO_REFRESH_OFF );
-    		values->AppendL( R_WMLBROWSER_SETTINGS_AUTO_REFRESH_ON );
-    		value = preferences.AutoRefresh();
-    		value = aSelectKeyWasPressed ?
-    		1 - value :
-    		ShowRadioButtonSettingPageL(
-    			R_WMLBROWSER_SETTINGS_AUTO_REFRESH,
-    			values,
-    			value );
-    		preferences.SetAutoRefreshL( value );
+            break;
+            }
+        case EWmlSettingsAutoRefresh:
+            {
+            values->AppendL( R_WMLBROWSER_SETTINGS_AUTO_REFRESH_OFF );
+            values->AppendL( R_WMLBROWSER_SETTINGS_AUTO_REFRESH_ON );
+            value = preferences.AutoRefresh();
+            value = aSelectKeyWasPressed ?
+            1 - value :
+            ShowRadioButtonSettingPageL(
+                R_WMLBROWSER_SETTINGS_AUTO_REFRESH,
+                values,
+                value );
+            preferences.SetAutoRefreshL( value );
                 DisplayPageSettingsL();
-    		break;
-    		}
+            break;
+            }
 
     case EWmlSettingsEncoding:
         {
@@ -2225,9 +2249,9 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
 
             value = 2-preferences.AdaptiveBookmarks();
             value = ShowRadioButtonSettingPageL(
-            	R_WMLBROWSER_SETTINGS_ADAPTIVE_BOOKMARKS,
-            	values,
-            	value );
+                R_WMLBROWSER_SETTINGS_ADAPTIVE_BOOKMARKS,
+                values,
+                value );
             preferences.SetAdaptiveBookmarksL(
                                 ( TWmlSettingsAdaptiveBookmarks )(2-value) );
             DisplayPrivacySettingsL();
@@ -2235,56 +2259,56 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
             }
 
         case EWmlSettingsFormDataSaving:
-    	    {
-    	    values->AppendL( R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_OFF );
+            {
+            values->AppendL( R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_OFF );
             values->AppendL( R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_ONLY );
             values->AppendL( R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING_ON );
 
             value = preferences.FormDataSaving();
             TInt origValue(value);
             value = ShowRadioButtonSettingPageL(
-    	            R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING,
-    	            values,
-    	            value );
+                    R_WMLBROWSER_SETTINGS_FORM_DATA_SAVING,
+                    values,
+                    value );
             preferences.SetFormDataSavingL( (TWmlSettingsFormData) value );
 
             if (origValue > value)
-            	{
-            	// query to see if we need to delete stored form data
-            	if (origValue == EWmlSettingsFormDataPlusPassword && value == EWmlSettingsFormDataOnly)
-            		{
-            		// delete password data?
-            		ShowFormDataDeletePasswordQueryDialogL();
-            		}
-            	else if (origValue == EWmlSettingsFormDataPlusPassword && value == EWmlSettingsFormDataOff)
-            		{
-            		// delete password and form data
-            		ShowFormDataDeleteAllQueryDialogL();
-            		}
-            	else if (origValue == EWmlSettingsFormDataOnly && value == EWmlSettingsFormDataOff)
-            		{
-            		// delete form data
-            		ShowFormDataDeleteAllQueryDialogL();
-            		}
-            	}
+                {
+                // query to see if we need to delete stored form data
+                if (origValue == EWmlSettingsFormDataPlusPassword && value == EWmlSettingsFormDataOnly)
+                    {
+                    // delete password data?
+                    ShowFormDataDeletePasswordQueryDialogL();
+                    }
+                else if (origValue == EWmlSettingsFormDataPlusPassword && value == EWmlSettingsFormDataOff)
+                    {
+                    // delete password and form data
+                    ShowFormDataDeleteAllQueryDialogL();
+                    }
+                else if (origValue == EWmlSettingsFormDataOnly && value == EWmlSettingsFormDataOff)
+                    {
+                    // delete form data
+                    ShowFormDataDeleteAllQueryDialogL();
+                    }
+                }
 
             DisplayPrivacySettingsL();
-    	    break;
-    	    }
+            break;
+            }
 
         case EWmlSettingsFullScreen:
             {
             
             values->AppendL( R_WMLBROWSER_SETTINGS_SOFTKEYS_OFF );
- 		    values->AppendL( R_WMLBROWSER_SETTINGS_SOFTKEYS_ON );
+            values->AppendL( R_WMLBROWSER_SETTINGS_SOFTKEYS_ON );
             value = preferences.FullScreen(); 
- 		    value = aSelectKeyWasPressed ?
- 		    1 - value :
- 		    ShowRadioButtonSettingPageL(
- 			    R_WMLBROWSER_SETTINGS_SOFTKEYS,
- 			    values,
- 			    value );
- 		    preferences.SetFullScreenL( ( TWmlSettingsFullScreen )( value ) );
+            value = aSelectKeyWasPressed ?
+            1 - value :
+            ShowRadioButtonSettingPageL(
+                R_WMLBROWSER_SETTINGS_SOFTKEYS,
+                values,
+                value );
+            preferences.SetFullScreenL( ( TWmlSettingsFullScreen )( value ) );
             DisplayPageSettingsL();
             break;
             }
@@ -2312,18 +2336,18 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
            {
            value = preferences.HomePageType();
            if( !useCurrent )
-           		{
-	            // 'Use current' is not shown as current item
-           		if( (TWmlSettingsHomePage)value == EWmlSettingsHomePageUseCurrent )
-           			{
-		            value = EWmlSettingsHomePageAddress;
-           			}
-           		// items behind UseCurrent must be shifted below
-           		else if( (TWmlSettingsHomePage)value > EWmlSettingsHomePageUseCurrent )
-           			{
-           			--value;
-           			}
-           		}
+                {
+                // 'Use current' is not shown as current item
+                if( (TWmlSettingsHomePage)value == EWmlSettingsHomePageUseCurrent )
+                    {
+                    value = EWmlSettingsHomePageAddress;
+                    }
+                // items behind UseCurrent must be shifted below
+                else if( (TWmlSettingsHomePage)value > EWmlSettingsHomePageUseCurrent )
+                    {
+                    --value;
+                    }
+                }
            // sanity check
            if( value >= 7 + useCurrent )
                {
@@ -2397,8 +2421,8 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
        break;
        }
 
-	case EWmlSettingsAutomaticUpdatingAP:
-		{
+    case EWmlSettingsAutomaticUpdatingAP:
+        {
         TUint32 id = preferences.AutomaticUpdatingAP();
         SelectUserDefinedAPL( id );
 
@@ -2406,79 +2430,79 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
         BROWSER_LOG( ( _L( "EWmlSettingsAutomaticUpdatingAP SetAutomaticUpdatingApL()" ) ) );
 
         DisplayWebFeedsSettingsL();
-	    BROWSER_LOG( ( _L( "EWmlSettingsAutomaticUpdatingAP DisplayWebFeedsSettingsL()" ) ) );
-		break;
-		}
+        BROWSER_LOG( ( _L( "EWmlSettingsAutomaticUpdatingAP DisplayWebFeedsSettingsL()" ) ) );
+        break;
+        }
 
-	case EWmlSettingsMediaVolume:
-		{
-		// Add option list items
-		values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_4 );
-		values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_3 );
-		values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_2 );
-		values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_1 );
-		values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_MUTED );
+    case EWmlSettingsMediaVolume:
+        {
+        // Add option list items
+        values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_4 );
+        values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_3 );
+        values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_2 );
+        values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_1 );
+        values->AppendL( R_WMLBROWSER_SETTINGS_MEDIA_VOLUME_MUTED );
 
-		TInt itemcount = values->Count();
+        TInt itemcount = values->Count();
 
-		// Get Media Volume Value
-		value = preferences.MediaVolume();
+        // Get Media Volume Value
+        value = preferences.MediaVolume();
 
-		// Convert volume to list index
-		switch ( value )
-			{
-			case EWmlSettingsVolumeMuted:
-				value = EVolumeMute;
-				break;
-			case EWmlSettingsVolume1:
-				value = EVolumeLevel1;
-				break;
-			case EWmlSettingsVolume2:
-				value = EVolumeLevel2;
-				break;
-			case EWmlSettingsVolume3:
-				value = EVolumeLevel3;
-				break;
-			case EWmlSettingsVolume4:
-				value = EVolumeLevel4;
-				break;
-			default:
-				break;
-			}
+        // Convert volume to list index
+        switch ( value )
+            {
+            case EWmlSettingsVolumeMuted:
+                value = EVolumeMute;
+                break;
+            case EWmlSettingsVolume1:
+                value = EVolumeLevel1;
+                break;
+            case EWmlSettingsVolume2:
+                value = EVolumeLevel2;
+                break;
+            case EWmlSettingsVolume3:
+                value = EVolumeLevel3;
+                break;
+            case EWmlSettingsVolume4:
+                value = EVolumeLevel4;
+                break;
+            default:
+                break;
+            }
 
-		// Open Volume Option List Page
-		value = ShowRadioButtonSettingPageL(
-					R_WMLBROWSER_SETTINGS_MEDIA_VOLUME,	values,
-						( itemcount - 1 ) - value );
+        // Open Volume Option List Page
+        value = ShowRadioButtonSettingPageL(
+                    R_WMLBROWSER_SETTINGS_MEDIA_VOLUME, values,
+                        ( itemcount - 1 ) - value );
 
-		// Reconvert list index to volume
-		value = ( itemcount - 1 ) - value;
-		switch ( value )
-			{
-			case EVolumeMute:
-				value = EWmlSettingsVolumeMuted;
-				break;
-			case EVolumeLevel1:
-				value = EWmlSettingsVolume1;
-				break;
-			case EVolumeLevel2:
-				value = EWmlSettingsVolume2;
-				break;
-			case EVolumeLevel3:
-				value = EWmlSettingsVolume3;
-				break;
-			case EVolumeLevel4:
-				value = EWmlSettingsVolume4;
-				break;
-			default:
-				break;
-			}
+        // Reconvert list index to volume
+        value = ( itemcount - 1 ) - value;
+        switch ( value )
+            {
+            case EVolumeMute:
+                value = EWmlSettingsVolumeMuted;
+                break;
+            case EVolumeLevel1:
+                value = EWmlSettingsVolume1;
+                break;
+            case EVolumeLevel2:
+                value = EWmlSettingsVolume2;
+                break;
+            case EVolumeLevel3:
+                value = EWmlSettingsVolume3;
+                break;
+            case EVolumeLevel4:
+                value = EWmlSettingsVolume4;
+                break;
+            default:
+                break;
+            }
 
-		// Save Media Volume Value
-		preferences.SetMediaVolumeL( value );
+        // Save Media Volume Value
+        preferences.SetMediaVolumeL( value );
         DisplayPageSettingsL();
-		break;
-		}
+        break;
+        }
 
         case EWmlSettingsCookies:
             {
@@ -2486,9 +2510,9 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
             values->AppendL( R_WMLBROWSER_SETTINGS_C_VALUE_ALLOW );
             value = preferences.Cookies();
             value = aSelectKeyWasPressed ? 1 - value : ShowRadioButtonSettingPageL(
-            	R_WMLBROWSER_SETTINGS_COOKIES,
-            	values,
-            	value );
+                R_WMLBROWSER_SETTINGS_COOKIES,
+                values,
+                value );
             preferences.SetCookiesL( ( TWmlSettingsCookies )value );
             DisplayPrivacySettingsL();
             break;
@@ -2508,25 +2532,25 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
             break;
             }
 
-		case EWmlSettingsScriptLog:
-			{
-    		value = 3 - preferences.ScriptLog();
-    		
-    		values->AppendL( R_WMLBROWSER_SETTINGS_SCRIPTLOG_VALUE_TO_CONSOLE_FILE );
+        case EWmlSettingsScriptLog:
+            {
+            value = 3 - preferences.ScriptLog();
+            
+            values->AppendL( R_WMLBROWSER_SETTINGS_SCRIPTLOG_VALUE_TO_CONSOLE_FILE );
             values->AppendL( R_WMLBROWSER_SETTINGS_SCRIPTLOG_VALUE_TO_CONSOLE );
-    	    values->AppendL( R_WMLBROWSER_SETTINGS_SCRIPTLOG_VALUE_TO_FILE );
-    		values->AppendL( R_WMLBROWSER_SETTINGS_SCRIPTLOG_VALUE_DISABLE );
-    		
-        	value = 3 - (ShowRadioButtonSettingPageL(R_WMLBROWSER_SETTINGS_SCRIPTLOG,
+            values->AppendL( R_WMLBROWSER_SETTINGS_SCRIPTLOG_VALUE_TO_FILE );
+            values->AppendL( R_WMLBROWSER_SETTINGS_SCRIPTLOG_VALUE_DISABLE );
+            
+            value = 3 - (ShowRadioButtonSettingPageL(R_WMLBROWSER_SETTINGS_SCRIPTLOG,
                                                         values,
                                                         value ));
-			preferences.SetScriptLogL( value );
+            preferences.SetScriptLogL( value );
             DisplayGeneralSettingsL();
 
-			break;
-			}
+            break;
+            }
 
-	    case EWmlSettingsDownloadsOpen:
+        case EWmlSettingsDownloadsOpen:
             {
             values->AppendL( R_WMLBROWSER_SETTINGS_DOWNLOAD_OPEN_YES );
             values->AppendL( R_WMLBROWSER_SETTINGS_DOWNLOAD_OPEN_NO );
@@ -2541,8 +2565,8 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
             break;
             }
 
-    	case EWmlSettingsHttpSecurityWarnings:
-    		{
+        case EWmlSettingsHttpSecurityWarnings:
+            {
             values->AppendL( R_WMLBROWSER_SETTINGS_WRN_VALUE_SHOW );
             values->AppendL( R_WMLBROWSER_SETTINGS_WRN_VALUE_HIDE );
             value = preferences.HttpSecurityWarnings();
@@ -2554,166 +2578,166 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
             preferences.SetHttpSecurityWarningsL( 1 - value ); // show=1, hide=0 in preferences
             DisplayGeneralSettingsL();
             break;
-    		}
-    		
+            }
+            
         case EWmlSettingsSearchProvider:
-        	{
- 			RunSearchSettingsL();
-        	break;
-        	}
+            {
+            RunSearchSettingsL();
+            break;
+            }
 
 
 
-    	case EWmlSettingsIMEINotification:
-    		{
-    		if ( IMEI_NOTIFICATION )
-    			{
-    			values->AppendL( R_WMLBROWSER_SETTINGS_IMEI_VALUE_DISABLED );
-    			values->AppendL( R_WMLBROWSER_SETTINGS_IMEI_VALUE_ENABLED );
-    			value = preferences.IMEINotification();
-    			//items need to be appended in reverse order
-    			value = aSelectKeyWasPressed ? 1 - value :
-            			        ShowRadioButtonSettingPageL(
-                                				R_WMLBROWSER_SETTINGS_IMEI,
-                                				values,
-                                				value );
-    			preferences.SetIMEINotificationL( ( TWmlSettingsIMEI ) value );
+        case EWmlSettingsIMEINotification:
+            {
+            if ( IMEI_NOTIFICATION )
+                {
+                values->AppendL( R_WMLBROWSER_SETTINGS_IMEI_VALUE_DISABLED );
+                values->AppendL( R_WMLBROWSER_SETTINGS_IMEI_VALUE_ENABLED );
+                value = preferences.IMEINotification();
+                //items need to be appended in reverse order
+                value = aSelectKeyWasPressed ? 1 - value :
+                                ShowRadioButtonSettingPageL(
+                                                R_WMLBROWSER_SETTINGS_IMEI,
+                                                values,
+                                                value );
+                preferences.SetIMEINotificationL( ( TWmlSettingsIMEI ) value );
                 DisplayPrivacySettingsL();
-    			}
-    		break;
-    		}
+                }
+            break;
+            }
 
         case EWmlSettingsSendReferrer:
-    		{
-    		values->AppendL( R_WMLBROWSER_SETTINGS_SEND_REFERRER_OFF );
-    		values->AppendL( R_WMLBROWSER_SETTINGS_SEND_REFERRER_ON );
-    		value = preferences.SendReferrer();
-    		value = aSelectKeyWasPressed ? 1 - value : ShowRadioButtonSettingPageL(
-    		  R_WMLBROWSER_SETTINGS_SEND_REFERRER,
-    		  values,
-    		  value );
+            {
+            values->AppendL( R_WMLBROWSER_SETTINGS_SEND_REFERRER_OFF );
+            values->AppendL( R_WMLBROWSER_SETTINGS_SEND_REFERRER_ON );
+            value = preferences.SendReferrer();
+            value = aSelectKeyWasPressed ? 1 - value : ShowRadioButtonSettingPageL(
+              R_WMLBROWSER_SETTINGS_SEND_REFERRER,
+              values,
+              value );
             DisplayPrivacySettingsL();
-    		break;
-		}
+            break;
+        }
 
         case EWmlSettingsPopupBlocking:
-    	    {
-    	    values->AppendL( R_WMLBROWSER_SETTINGS_POPUP_BLOCKING_OFF );
-    	    values->AppendL( R_WMLBROWSER_SETTINGS_POPUP_BLOCKING_ON );
-    	    value = preferences.PopupBlocking();
-    	    value = aSelectKeyWasPressed ? 1 - value : ShowRadioButtonSettingPageL(
-    	            R_WMLBROWSER_SETTINGS_POPUP_BLOCKING,
-    	            values,
-    	            value );
-    	    preferences.SetPopupBlockingL( value );
+            {
+            values->AppendL( R_WMLBROWSER_SETTINGS_POPUP_BLOCKING_OFF );
+            values->AppendL( R_WMLBROWSER_SETTINGS_POPUP_BLOCKING_ON );
+            value = preferences.PopupBlocking();
+            value = aSelectKeyWasPressed ? 1 - value : ShowRadioButtonSettingPageL(
+                    R_WMLBROWSER_SETTINGS_POPUP_BLOCKING,
+                    values,
+                    value );
+            preferences.SetPopupBlockingL( value );
             DisplayPageSettingsL();
-    	    break;
-    	    }
+            break;
+            }
 
 
-    	case EWmlSettingsAutomaticUpdatingWhileRoaming:
-    		{
-    		values->AppendL( R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING_OFF );
-    		values->AppendL( R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING_ON );
+        case EWmlSettingsAutomaticUpdatingWhileRoaming:
+            {
+            values->AppendL( R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING_OFF );
+            values->AppendL( R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING_ON );
 
-    		value = preferences.AutomaticUpdatingWhileRoaming();
-    		value = aSelectKeyWasPressed ?
-    		1 - value :
-    		ShowRadioButtonSettingPageL(
-    			R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING,
-    			values,
-    			value );
-    		preferences.SetAutomaticUpdatingWhileRoamingL( value );    		
+            value = preferences.AutomaticUpdatingWhileRoaming();
+            value = aSelectKeyWasPressed ?
+            1 - value :
+            ShowRadioButtonSettingPageL(
+                R_WMLBROWSER_SETTINGS_AUTOUPDATING_ROAMING,
+                values,
+                value );
+            preferences.SetAutomaticUpdatingWhileRoamingL( value );         
 
-			DisplayWebFeedsSettingsL();
-    		break;
-    		}
+            DisplayWebFeedsSettingsL();
+            break;
+            }
 
 
-    	case EWmlSettingsToolbarOnOff:
-    		{
-    		values->AppendL( R_BROWSER_SETTING_TOOLBAR_OFF );
-    		values->AppendL( R_BROWSER_SETTING_TOOLBAR_ON );
+        case EWmlSettingsToolbarOnOff:
+            {
+            values->AppendL( R_BROWSER_SETTING_TOOLBAR_OFF );
+            values->AppendL( R_BROWSER_SETTING_TOOLBAR_ON );
 
-    		value = preferences.ShowToolbarOnOff();
-    		value = aSelectKeyWasPressed ?
-    		1 - value :
-    		ShowRadioButtonSettingPageL(
-    			R_BROWSER_SETTING_TOOLBAR_ON_OFF,
-    			values,
-    			value );
-    		preferences.SetToolbarOnOffL( value );    		
+            value = preferences.ShowToolbarOnOff();
+            value = aSelectKeyWasPressed ?
+            1 - value :
+            ShowRadioButtonSettingPageL(
+                R_BROWSER_SETTING_TOOLBAR_ON_OFF,
+                values,
+                value );
+            preferences.SetToolbarOnOffL( value );          
 
             DisplayToolbarSettingsL();
-    		break;
-    		}
+            break;
+            }
 
 
-    	case EWmlSettingsToolbarButton1Cmd:
+        case EWmlSettingsToolbarButton1Cmd:
             {
             value = preferences.ShowToolbarButton1Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetToolbarButtonValues(values, value, valueDisplayMapping);
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON1,
- 			                                        values,
- 			                                        value );
- 			                                            
- 		    preferences.SetToolbarButton1CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON1,
+                                                    values,
+                                                    value );
+                                                        
+            preferences.SetToolbarButton1CmdL( valueDisplayMapping->At(value) );
             DisplayToolbarSettingsL();
             break;
             }
 
-    	case EWmlSettingsToolbarButton2Cmd:
+        case EWmlSettingsToolbarButton2Cmd:
             {
             value = preferences.ShowToolbarButton2Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetToolbarButtonValues(values, value, valueDisplayMapping);            
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON2,
- 			                                        values,
- 			                                        value );
- 			                                        
- 		    preferences.SetToolbarButton2CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON2,
+                                                    values,
+                                                    value );
+                                                    
+            preferences.SetToolbarButton2CmdL( valueDisplayMapping->At(value) );
             DisplayToolbarSettingsL();
             break;
             }
 
-    	case EWmlSettingsToolbarButton3Cmd:
+        case EWmlSettingsToolbarButton3Cmd:
             {
             value = preferences.ShowToolbarButton3Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetToolbarButtonValues(values, value, valueDisplayMapping);             
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON3,
- 			                                        values,
- 			                                        value );
- 			                                        
- 		    preferences.SetToolbarButton3CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON3,
+                                                    values,
+                                                    value );
+                                                    
+            preferences.SetToolbarButton3CmdL( valueDisplayMapping->At(value) );
             DisplayToolbarSettingsL();
             break;
             }
 
-    	case EWmlSettingsToolbarButton4Cmd:
+        case EWmlSettingsToolbarButton4Cmd:
             {
             value = preferences.ShowToolbarButton4Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetToolbarButtonValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON4,
- 			                                        values,
- 			                                        value );
- 			                                        
- 		    preferences.SetToolbarButton4CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON4,
+                                                    values,
+                                                    value );
+                                                    
+            preferences.SetToolbarButton4CmdL( valueDisplayMapping->At(value) );
             DisplayToolbarSettingsL();
             break;
             }
 
-    	case EWmlSettingsToolbarButton5Cmd:
+        case EWmlSettingsToolbarButton5Cmd:
             {
             value = preferences.ShowToolbarButton5Cmd();
             // set toolbar values will build values into an array to be displayed to the user
@@ -2721,16 +2745,16 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
             // fixed array of commands as well as the current value from settings
             value = SetToolbarButtonValues(values, value, valueDisplayMapping); 
              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON5,
- 			                                        values,
- 			                                        value );
- 			                                        
- 		    preferences.SetToolbarButton5CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON5,
+                                                    values,
+                                                    value );
+                                                    
+            preferences.SetToolbarButton5CmdL( valueDisplayMapping->At(value) );
             DisplayToolbarSettingsL();
             break;
             }
 
-    	case EWmlSettingsToolbarButton6Cmd:
+        case EWmlSettingsToolbarButton6Cmd:
             {
             value = preferences.ShowToolbarButton6Cmd();
             // set toolbar values will build values into an array to be displayed to the user
@@ -2738,16 +2762,16 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
             // fixed array of commands as well as the current value from settings
             value = SetToolbarButtonValues(values, value, valueDisplayMapping); 
              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON6,
- 			                                        values,
- 			                                        value );
- 			                                        
- 		    preferences.SetToolbarButton6CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON6,
+                                                    values,
+                                                    value );
+                                                    
+            preferences.SetToolbarButton6CmdL( valueDisplayMapping->At(value) );
             DisplayToolbarSettingsL();
             break;
             }
 
-    	case EWmlSettingsToolbarButton7Cmd:
+        case EWmlSettingsToolbarButton7Cmd:
             {
             value = preferences.ShowToolbarButton7Cmd();
             // set toolbar values will build values into an array to be displayed to the user
@@ -2755,200 +2779,200 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
             // fixed array of commands as well as the current value from settings
             value = SetToolbarButtonValues(values, value, valueDisplayMapping); 
              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON7,
- 			                                        values,
- 			                                        value );
- 			                                        
- 		    preferences.SetToolbarButton7CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_TOOLBAR_BUTTON7,
+                                                    values,
+                                                    value );
+                                                    
+            preferences.SetToolbarButton7CmdL( valueDisplayMapping->At(value) );
             DisplayToolbarSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey1Cmd:
+        case EWmlSettingsShortCutKey1Cmd:
             {
             value = preferences.ShortcutKey1Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping); 
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY1,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey1CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY1,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey1CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey2Cmd:
+        case EWmlSettingsShortCutKey2Cmd:
             {
             value = preferences.ShortcutKey2Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY2,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey2CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY2,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey2CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey3Cmd:
+        case EWmlSettingsShortCutKey3Cmd:
             {
             value = preferences.ShortcutKey3Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY3,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey3CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY3,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey3CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey4Cmd:
+        case EWmlSettingsShortCutKey4Cmd:
             {
             value = preferences.ShortcutKey4Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);             
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY4,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey4CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY4,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey4CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey5Cmd:
+        case EWmlSettingsShortCutKey5Cmd:
             {
             value = preferences.ShortcutKey5Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY5,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey5CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY5,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey5CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey6Cmd:
+        case EWmlSettingsShortCutKey6Cmd:
             {
             value = preferences.ShortcutKey6Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY6,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey6CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY6,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey6CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey7Cmd:
+        case EWmlSettingsShortCutKey7Cmd:
             {
             value = preferences.ShortcutKey7Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY7,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey7CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY7,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey7CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey8Cmd:
+        case EWmlSettingsShortCutKey8Cmd:
             {
             value = preferences.ShortcutKey8Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping); 
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY8,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey8CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY8,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey8CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey9Cmd:
+        case EWmlSettingsShortCutKey9Cmd:
             {
             value = preferences.ShortcutKey9Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY9,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey9CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY9,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey9CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKey0Cmd:
+        case EWmlSettingsShortCutKey0Cmd:
             {
             value = preferences.ShortcutKey0Cmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY0,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKey0CmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEY0,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKey0CmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKeyStarCmd:
+        case EWmlSettingsShortCutKeyStarCmd:
             {
             value = preferences.ShortcutKeyStarCmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEYSTAR,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKeyStarCmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEYSTAR,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKeyStarCmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-    	case EWmlSettingsShortCutKeyHashCmd:
+        case EWmlSettingsShortCutKeyHashCmd:
             {
             value = preferences.ShortcutKeyHashCmd();
             // set toolbar values will build values into an array to be displayed to the user
             // this may mean filtering out some items, so we have to know the mapping between our 
             // fixed array of commands as well as the current value from settings
             value = SetShortcutKeysValues(values, value, valueDisplayMapping);              
- 		    value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEYHASH,
- 			                                        values,
- 			                                        value );
- 		    preferences.SetShortcutKeyHashCmdL( valueDisplayMapping->At(value) );
+            value = ShowRadioButtonSettingPageL(    R_BROWSER_SETTING_SHORTCUT_KEYHASH,
+                                                    values,
+                                                    value );
+            preferences.SetShortcutKeyHashCmdL( valueDisplayMapping->At(value) );
             DisplayShortcutsSettingsL();
             break;
             }
 
-		default:
-        	break;
-	    }
-	CleanupStack::PopAndDestroy(2); // values, valueDisplayMapping
-	}
+        default:
+            break;
+        }
+    CleanupStack::PopAndDestroy(2); // values, valueDisplayMapping
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -3076,14 +3100,14 @@ TBool CSettingsContainer::IsSettingModifiable() const
 // -----------------------------------------------------------------------------
 //
 TInt CSettingsContainer::ShowRadioButtonSettingPageL(
-													 TInt aTitle,
-													 CArrayFixFlat<TInt>* aValues,
-													 TInt aCurrentItem )
+                                                     TInt aTitle,
+                                                     CArrayFixFlat<TInt>* aValues,
+                                                     TInt aCurrentItem )
     {
     // title of the dialog
     HBufC* title = iCoeEnv->AllocReadResourceLC( aTitle );
 
-	__ASSERT_DEBUG( (aValues != NULL), Util::Panic( Util::EUninitializedData ));
+    __ASSERT_DEBUG( (aValues != NULL), Util::Panic( Util::EUninitializedData ));
 
 
     // options array
@@ -3109,7 +3133,7 @@ TInt CSettingsContainer::ShowRadioButtonSettingPageL(
     //dlg->ConstructL();
     //dlg->ListBoxControl()->SetCurrentItemIndex( newItem );
     CleanupStack::Pop(); // dlg
-	iActionCancelled = EFalse;
+    iActionCancelled = EFalse;
     if ( !dlg->ExecuteLD( CAknSettingPage::EUpdateWhenChanged ) )
         {
         // Changes confirmed
@@ -3129,15 +3153,15 @@ TInt CSettingsContainer::ShowRadioButtonSettingPageL(
 // -----------------------------------------------------------------------------
 //
 TBool CSettingsContainer::ShowRadioButtonSettingPageBoolL(
-													 TInt aTitle,
-													 CArrayFixFlat<TInt>* aValues,
-													 TInt* aCurrentItem )
+                                                     TInt aTitle,
+                                                     CArrayFixFlat<TInt>* aValues,
+                                                     TInt* aCurrentItem )
     {
     // title of the dialog
     HBufC* title = iCoeEnv->AllocReadResourceLC( aTitle );
 
-	__ASSERT_DEBUG( (aValues != NULL), Util::Panic( Util::EUninitializedData ));
-	__ASSERT_DEBUG( (aCurrentItem != NULL), Util::Panic( Util::EUninitializedData ));
+    __ASSERT_DEBUG( (aValues != NULL), Util::Panic( Util::EUninitializedData ));
+    __ASSERT_DEBUG( (aCurrentItem != NULL), Util::Panic( Util::EUninitializedData ));
 
 
     // options array
@@ -3182,7 +3206,7 @@ void CSettingsContainer::SaveChangesL()
 
     if ( iFontSize != preferences.FontSize() )
         {
-	preferences.SetFontSizeL( iFontSize );
+    preferences.SetFontSizeL( iFontSize );
         }
 
     if ( iEncoding != preferences.Encoding() )
@@ -3194,9 +3218,9 @@ void CSettingsContainer::SaveChangesL()
         {
         preferences.SetTextWrapL( iTextWrap );
         }
-	preferences.FlushSD();
+    preferences.FlushSD();
 
-	preferences.NotifyObserversL( EPreferencesDeactivate, TBrCtlDefs::ESettingsUnknown );
+    preferences.NotifyObserversL( EPreferencesDeactivate, TBrCtlDefs::ESettingsUnknown );
     }
 
 
@@ -3205,53 +3229,53 @@ void CSettingsContainer::SaveChangesL()
 // -----------------------------------------------------------------------------
 //
 TKeyResponse CSettingsContainer::OfferKeyEventL( const TKeyEvent& aKeyEvent, TEventCode aType )
-	{
-	TKeyResponse ret = EKeyWasNotConsumed;
-	TKeyEvent keyEvent(aKeyEvent);
-	
-	// Special case for MSK enabled mode - turn MSK KeyUp to MSK KeyEvent to process Settings toggle function
+    {
+    TKeyResponse ret = EKeyWasNotConsumed;
+    TKeyEvent keyEvent(aKeyEvent);
+    
+    // Special case for MSK enabled mode - turn MSK KeyUp to MSK KeyEvent to process Settings toggle function
     // This is what is done in BookmarksContainer::OfferKeyEventL
     if (( keyEvent.iScanCode == EStdKeyDevice3 ) || (keyEvent.iScanCode == EStdKeyEnter))
         {
         if( aType == EEventKeyDown )
-    	    {
+            {
             iSelectionKeyDownPressed = ETrue;
-    		ret = EKeyWasConsumed;
-    	    }
+            ret = EKeyWasConsumed;
+            }
         else if( aType == EEventKeyUp )
-	        {
-	        if( iSelectionKeyDownPressed )
-	            {
+            {
+            if( iSelectionKeyDownPressed )
+                {
                 keyEvent.iCode = EKeyOK;
                 ret = EKeyWasNotConsumed;
                 iSelectionKeyDownPressed = EFalse;
-    	        }
-    	    else
-    	        {
-    	        // long press of Selection key was already processed
+                }
+            else
+                {
+                // long press of Selection key was already processed
                 ret = EKeyWasConsumed;
                 }
-    	    }
+            }
         }
 
 
-	switch ( keyEvent.iCode )
-		{
+    switch ( keyEvent.iCode )
+        {
         // Open List Box item
-		case EKeyEnter:
-			{
+        case EKeyEnter:
+            {
             switch ( iSettingIndex->At( iSettingListBox->CurrentItemIndex() ) )
-            	{
-               	case EWmlSettingsGeneral:
+                {
+                case EWmlSettingsGeneral:
                 case EWmlSettingsPrivacy:
                 case EWmlSettingsPage:
                 case EWmlSettingsWebFeeds:
-            	case EWmlSettingsToolbar:
-            	case EWmlSettingsShortcuts:
+                case EWmlSettingsToolbar:
+                case EWmlSettingsShortcuts:
                 {
-                	DisplayCorrectSettingCategoryListL();
+                    DisplayCorrectSettingCategoryListL();
                     break;
-            	}
+                }
                 
                 // Individual Settings
                 case EWmlSettingsAccesspoint:
@@ -3259,7 +3283,7 @@ TKeyResponse CSettingsContainer::OfferKeyEventL( const TKeyEvent& aKeyEvent, TEv
                 case EWmlSettingsBackList:
                 case EWmlSettingsHttpSecurityWarnings:
                 case EWmlSettingsEcma:
-				case EWmlSettingsScriptLog:
+                case EWmlSettingsScriptLog:
                 case EWmlSettingsDownloadsOpen:
                 case EWmlSettingsAutoLoadContent:
                 case EWmlSettingsFullScreen:
@@ -3276,50 +3300,50 @@ TKeyResponse CSettingsContainer::OfferKeyEventL( const TKeyEvent& aKeyEvent, TEv
                 case EWmlSettingsCookies:
                 case EWmlSettingsIMEINotification:
                 case EWmlSettingsAutomaticUpdatingAP:
-				case EWmlSettingsAutomaticUpdatingWhileRoaming:
-	            case EWmlSettingsUrlSuffix:
+                case EWmlSettingsAutomaticUpdatingWhileRoaming:
+                case EWmlSettingsUrlSuffix:
                 case EWmlSettingsFontSize:
-            	case EWmlSettingsToolbarButton1Cmd:
-            	case EWmlSettingsToolbarButton2Cmd:
-            	case EWmlSettingsToolbarButton3Cmd:
-            	case EWmlSettingsToolbarButton4Cmd:
-            	case EWmlSettingsToolbarButton5Cmd:
-            	case EWmlSettingsToolbarButton6Cmd:
-            	case EWmlSettingsToolbarButton7Cmd:
-            	case EWmlSettingsShortCutKey1Cmd:
-            	case EWmlSettingsShortCutKey2Cmd:
-            	case EWmlSettingsShortCutKey3Cmd:
-            	case EWmlSettingsShortCutKey4Cmd:
-            	case EWmlSettingsShortCutKey5Cmd:
-            	case EWmlSettingsShortCutKey6Cmd:
-            	case EWmlSettingsShortCutKey7Cmd:
-            	case EWmlSettingsShortCutKey8Cmd:
-            	case EWmlSettingsShortCutKey9Cmd:
-            	case EWmlSettingsShortCutKey0Cmd:
-            	case EWmlSettingsShortCutKeyStarCmd:
-            	case EWmlSettingsShortCutKeyHashCmd:
-            	case EWmlSettingsSearchProvider:
+                case EWmlSettingsToolbarButton1Cmd:
+                case EWmlSettingsToolbarButton2Cmd:
+                case EWmlSettingsToolbarButton3Cmd:
+                case EWmlSettingsToolbarButton4Cmd:
+                case EWmlSettingsToolbarButton5Cmd:
+                case EWmlSettingsToolbarButton6Cmd:
+                case EWmlSettingsToolbarButton7Cmd:
+                case EWmlSettingsShortCutKey1Cmd:
+                case EWmlSettingsShortCutKey2Cmd:
+                case EWmlSettingsShortCutKey3Cmd:
+                case EWmlSettingsShortCutKey4Cmd:
+                case EWmlSettingsShortCutKey5Cmd:
+                case EWmlSettingsShortCutKey6Cmd:
+                case EWmlSettingsShortCutKey7Cmd:
+                case EWmlSettingsShortCutKey8Cmd:
+                case EWmlSettingsShortCutKey9Cmd:
+                case EWmlSettingsShortCutKey0Cmd:
+                case EWmlSettingsShortCutKeyStarCmd:
+                case EWmlSettingsShortCutKeyHashCmd:
+                case EWmlSettingsSearchProvider:
                 {
-                	ChangeItemL( ETrue );
+                    ChangeItemL( ETrue );
                     ret = EKeyWasConsumed;
                     break;
                 }
                 default:
                     break;
                 }
-			break;
-			}
-			
-		case EKeyOK:
+            break;
+            }
+            
+        case EKeyOK:
             {
             // MSK command handles the commands - no need for key handling
             ret = EKeyWasConsumed;
             break; 
             }
-			
+            
           default:
-          	break;
-		}
+            break;
+        }
 
     if ( iSettingListBox && ( ret == EKeyWasNotConsumed || iSettingListBox ) )
         {
@@ -3367,16 +3391,16 @@ void CSettingsContainer::HandleListBoxEventL(CEikListBox* aListBox,TListBoxEvent
 // -----------------------------------------------------------------------------
 //
 void CSettingsContainer::HandleGainingForegroundL()
-	{
-	switch(iCurrentSettingCategory)
-		{
-		case EGeneral:
-			DisplayGeneralSettingsL();
-			break;
-		default: // do nothing
-			break;
-		}
-	}
+    {
+    switch(iCurrentSettingCategory)
+        {
+        case EGeneral:
+            DisplayGeneralSettingsL();
+            break;
+        default: // do nothing
+            break;
+        }
+    }
 
 // -----------------------------------------------------------------------------
 // CSettingsContainer::CreateItemFromTwoStringsL
@@ -3426,10 +3450,10 @@ void CSettingsContainer::RemoveUnsupportedEncodingsL()
     CleanupClosePushL<RFs>( fsSession );
 
     CCnvCharacterSetConverter* charConv;
-	charConv = CCnvCharacterSetConverter::NewLC();
+    charConv = CCnvCharacterSetConverter::NewLC();
 
     CArrayFix<CCnvCharacterSetConverter::SCharacterSet>* charSets;
-	charSets = charConv->CreateArrayOfCharacterSetsAvailableLC(fsSession);
+    charSets = charConv->CreateArrayOfCharacterSetsAvailableLC(fsSession);
 
     TInt lastIndex = iEncodingArray->Count()-1;
 
@@ -3484,15 +3508,17 @@ void CSettingsContainer::CreateEncodingArrayL()
     AddEncodingL( KCharacterSetIdentifierWindows1253,   R_WMLBROWSER_SETTINGS_ENCODING_WINDOWS_1253 );
     AddEncodingL( KCharacterSetIdentifierWindows1254,   R_WMLBROWSER_SETTINGS_ENCODING_WINDOWS_1254 );
     AddEncodingL( KCharacterSetIdentifierWindows1257,   R_WMLBROWSER_SETTINGS_ENCODING_WINDOWS_1257 );
-	AddEncodingL( KCharacterSetIdentifierWindows1258,   R_WMLBROWSER_SETTINGS_ENCODING_WINDOWS_1258 );
-	AddEncodingL( KCharacterSetIdentifierTis620,        R_WMLBROWSER_SETTINGS_ENCODING_TIS_620 );		// Thai
-	AddEncodingL( KCharacterSetIdentifierWindows874,	R_WMLBROWSER_SETTINGS_ENCODING_WINDOWS_874 );	// Thai
-	AddEncodingL( KCharacterSetIdentifierEucJpPacked,	R_WMLBROWSER_SETTINGS_ENCODING_EUC_JP );
-	AddEncodingL( KCharacterSetIdentifierJis,			R_WMLBROWSER_SETTINGS_ENCODING_ISO_2022_JP );
-	AddEncodingL( KCharacterSetIdentifierShiftJis,	    R_WMLBROWSER_SETTINGS_ENCODING_SHIFT_JIS );
+    AddEncodingL( KCharacterSetIdentifierWindows1258,   R_WMLBROWSER_SETTINGS_ENCODING_WINDOWS_1258 );
+    AddEncodingL( KCharacterSetIdentifierTis620,        R_WMLBROWSER_SETTINGS_ENCODING_TIS_620 );       // Thai
+    AddEncodingL( KCharacterSetIdentifierWindows874,    R_WMLBROWSER_SETTINGS_ENCODING_WINDOWS_874 );   // Thai
+    AddEncodingL( KCharacterSetIdentifierEucJpPacked,   R_WMLBROWSER_SETTINGS_ENCODING_EUC_JP );
+    AddEncodingL( KCharacterSetIdentifierJis,           R_WMLBROWSER_SETTINGS_ENCODING_ISO_2022_JP );
+    AddEncodingL( KCharacterSetIdentifierShiftJis,      R_WMLBROWSER_SETTINGS_ENCODING_SHIFT_JIS );
     AddEncodingL( KCharacterSetIdentifierKoi8_r,        R_WMLBROWSER_SETTINGS_ENCODING_KOI8_R );
     AddEncodingL( KCharacterSetIdentifierKoi8_u,        R_WMLBROWSER_SETTINGS_ENCODING_KOI8_U );
 	AddEncodingL( KCharacterSetIdentifierIscii,			R_WMLBROWSER_SETTINGS_ENCODING_ISCII);
+    AddEncodingL( KCharacterSetIdentifierEucKr,         R_WMLBROWSER_SETTINGS_ENCODING_EUC_KR );
+    AddEncodingL( KCharacterSetIdentifierKsc5601,       R_WMLBROWSER_SETTINGS_ENCODING_KSC_5601 );
     AddEncodingL( KCharacterSetIdentifierAutomatic,     R_WMLBROWSER_SETTINGS_ENCODING_AUTOMATIC );
     }
 
@@ -3507,16 +3533,16 @@ void CSettingsContainer::GetHelpContext( TCoeHelpContext& aContext ) const
     /*
     context is dependent on what Category we are in
     enum TSettingCategory
-	        {
-	        EMain = 0,
-	        EGeneral,
-	        EPrivacy,
-	        EPage,
-	        EWebFeeds,
-	        EToolbar,
-	        EShortCuts,
-	        ENone
-	        };
+            {
+            EMain = 0,
+            EGeneral,
+            EPrivacy,
+            EPage,
+            EWebFeeds,
+            EToolbar,
+            EShortCuts,
+            ENone
+            };
     */
     switch ( iCurrentSettingCategory )
         {
@@ -3584,12 +3610,12 @@ CCoeControl* CSettingsContainer::ComponentControl( TInt aIndex ) const
 // -----------------------------------------------------------------------------
 //
 void CSettingsContainer::SizeChanged()
-	{
-	if ( iSettingListBox )
-	    {
-	    iSettingListBox->SetRect( Rect() );
-	    }
-	}
+    {
+    if ( iSettingListBox )
+        {
+        iSettingListBox->SetRect( Rect() );
+        }
+    }
 
 
 // ----------------------------------------------------------------------------
@@ -3695,10 +3721,10 @@ void CSettingsContainer::SelectUserDefinedAPL( TUint32& id )
     CApSelect* ApSel = CApSelect::NewLC(
                 iApiProvider.CommsModel().CommsDb(),
                 KEApIspTypeAll, //KEApIspTypeWAPMandatory,
-		        EApBearerTypeAll,
-			    KEApSortNameAscending,
-		        EIPv4 | EIPv6 );
-	TInt apSelCount = ApSel->Count();
+                EApBearerTypeAll,
+                KEApSortNameAscending,
+                EIPv4 | EIPv6 );
+    TInt apSelCount = ApSel->Count();
     BROWSER_LOG( ( _L( " ApSel->Count(): %d" ), apSelCount ) );
     CleanupStack::PopAndDestroy( ApSel ); //ApSel
 

@@ -802,12 +802,17 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
             // if it doesn't, reset access point to always ask and homepage to blank access point home page.
   	        CApListItem* apItem = iCommsModel.AccessPointsL()->ItemForUid( aDefaultAccessPoint );
 	        if (apItem == NULL)
-		        {
-                if( iVpnEngine->IsVpnApL( aDefaultAccessPoint ) )
                 {
-                  BROWSER_LOG( ( _L( " This is VPN AP which has a snap in it" ) ) );
-                  break;
-                } 
+                TBool isVpn = EFalse; 
+                TRAPD(leaveCode, isVpn = iVpnEngine->IsVpnApL( aDefaultAccessPoint )) 
+                if ( leaveCode == KErrNone )
+                {
+                    if ( isVpn ) 
+                        {
+                        BROWSER_LOG( ( _L( " This is VPN AP which has a snap in it" ) ) );
+                        break;               
+                        }    	    	
+                }
     	    	aDefaultAccessPoint = KWmlNoDefaultAccessPoint;
     	    	aAssocVpn = KWmlNoDefaultAccessPoint;
     	    	delete iAllPreferences.iDefaultAPDetails;

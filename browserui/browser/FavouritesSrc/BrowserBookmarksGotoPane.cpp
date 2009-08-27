@@ -19,6 +19,7 @@
 
 
 // INCLUDE FILES
+#include <Browser_Platform_Variant.hrh>
 
 #include <akninfrm.h>
 #include <eikedwin.h>
@@ -360,10 +361,9 @@ TKeyResponse CBrowserBookmarksGotoPane::OfferKeyEventL
 
     if ( iEditing && response != EKeyWasConsumed)
         {
-
-        switch ( aKeyEvent.iCode )              // Already editing; most keys simply forwarded to the editor.
+        // Editing; most keys simply forwarded to the editor.
+        switch ( aKeyEvent.iCode )
             {
-
             case EKeyOK:
                 {
                 response = EKeyWasConsumed;     // MSK is now handled through HandleCommand in BrowserBookmarksView
@@ -383,7 +383,8 @@ TKeyResponse CBrowserBookmarksGotoPane::OfferKeyEventL
                 break;
                 }
 
-            case EKeyEnter:                     // Handle EnterKey as "GOTO" for Touch, VKB's enter key
+            case EKeyEnter:
+                // Handle EnterKey as "GOTO" for Touch, VKB's enter key
                 if ( AknLayoutUtils::PenEnabled() )
                         {
                         CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneGoTo);
@@ -393,7 +394,9 @@ TKeyResponse CBrowserBookmarksGotoPane::OfferKeyEventL
                             response = EKeyWasConsumed;
                             }
                         break;
-                        }                       // Else *FALL THROUGH* to default in case Pen is not enabled.
+                        }
+
+            // Else *FALL THROUGH* to default in case Pen is not enabled.
             default:
                 {
                 response = iEditor->OfferKeyEventL(aKeyEvent, aType );
@@ -411,9 +414,9 @@ TKeyResponse CBrowserBookmarksGotoPane::OfferKeyEventL
              response = EKeyWasConsumed;
              }
         }
-    else if ( response != EKeyWasConsumed )     // Key consumed yet? If not, process onwards...
+    else if ( response != EKeyWasConsumed )
         {
-
+        // Key consumed yet? If not, process onwards...
         if ( (aKeyEvent.iScanCode == EStdKeyHash)  ||
                 ( aKeyEvent.iModifiers &
                 ( EModifierShift | EModifierLeftShift | EModifierRightShift |
@@ -427,7 +430,8 @@ TKeyResponse CBrowserBookmarksGotoPane::OfferKeyEventL
 
         //
         // Not currently editing the GoTo pane.
-        // Catch alpha and numeric to pop up the GoTo pane
+        // Catch alpha and numeric to pop
+        // up goto pane
         //
         // Only popup the GoTo Pane with a KeyDown event.
         // Otherwise, if browser is pushed to the backround (but still active)
@@ -447,27 +451,33 @@ TKeyResponse CBrowserBookmarksGotoPane::OfferKeyEventL
         //
         else if (    !iFrozen
                   && aType == EEventKeyDown
-                  && iInputChar.IsAlphaDigit()
-                  && iInputChar != EStdKeyYes
-                  && iInputChar != EStdKeyNo
-                  && iInputChar != EKeyRightUpArrow     // Northeast
+                  && iInputChar.IsAlphaDigit()          // We want alpha numeric keys to popup goto pane
+                  && iInputChar != EStdKeyYes           // Ignore Send (green key)
+                  && iInputChar != EStdKeyNo            // Ignore End (red key)
+                  && iInputChar != EKeyRightUpArrow     // Ignore Northeast
                   && iInputChar != EStdKeyDevice11      //   : Extra KeyEvent supports diagonal event simulator wedge
-                  && iInputChar != EKeyRightDownArrow   // Southeast
+                  && iInputChar != EKeyRightDownArrow   // Ignore Southeast
                   && iInputChar != EStdKeyDevice12      //   : Extra KeyEvent supports diagonal event simulator wedge
-                  && iInputChar != EKeyLeftDownArrow    // Southwest
+                  && iInputChar != EKeyLeftDownArrow    // Ignore Southwest
                   && iInputChar != EStdKeyDevice13      //   : Extra KeyEvent supports diagonal event simulator wedge
-                  && iInputChar != EKeyLeftUpArrow      // Northwest
+                  && iInputChar != EKeyLeftUpArrow      // Ignore Northwest
                   && iInputChar != EStdKeyDevice10 )    //   : Extra KeyEvent supports diagonal event simulator wedge
-            {                                           // Most other alphanumeric keys activate the Goto Pane...
-            response = EKeyWasConsumed;                 // We'll consume the key event so it ends here
+            {
+            // These keys activate the Goto Pane.
+            // We'll consume the key event so it ends here
+            response = EKeyWasConsumed;
+
             BeginEditingL();
+
             iEditor->SetCursorPosL( iEditor->TextLength(), EFalse );
             iCoeEnv->SyncNotifyFocusObserversOfChangeInFocus();
             iCoeEnv->SimulateKeyEventL( aKeyEvent, aType );
             }
         else
-            {                                           // Other keys do not activate the Goto Pane.
-            response = EKeyWasNotConsumed;              // Let someone else take the key event
+            {
+            // Other keys do not activate the Goto Pane.
+            // Let someone else take the key event
+            response = EKeyWasNotConsumed;
             }
         }
     return response;
@@ -829,6 +839,7 @@ void CBrowserBookmarksGotoPane::SetTextModeItalicL( )
 // ----------------------------------------------------------------------------
 void CBrowserBookmarksGotoPane::SetVKBFlag( TBool aVKBFlag )
     {
+#if defined(BRDO_SEARCH_INTEGRATION_FF)
     if( aVKBFlag )
         {
         iEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB );
@@ -837,5 +848,6 @@ void CBrowserBookmarksGotoPane::SetVKBFlag( TBool aVKBFlag )
         {
         iEditor->AddFlagToUserFlags( CEikEdwin::EAvkonDisableVKB );
         }
+#endif
     }
 // End of File

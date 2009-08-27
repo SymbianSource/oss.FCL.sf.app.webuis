@@ -240,7 +240,7 @@ CBrowserFavouritesView::CBrowserFavouritesView( MApiProvider& aApiProvider,
           iIsActivated( EFalse ),
           iLastSelection( 0 ),
           iUpdatePending( EFalse ),
-          iRefresh( ETrue )
+          iRefresh( EFalse )
     {
     }
 
@@ -258,13 +258,12 @@ void CBrowserFavouritesView::ConstructL( TInt aViewResourceId )
     }
 
 // ---------------------------------------------------------
-// CBrowserFavouritesView::GetItemsLC
+// CBrowserFavouritesView::GetItemsL
 // ---------------------------------------------------------
 //
-CFavouritesItemList* CBrowserFavouritesView::GetItemsLC( TInt aFolder )
+CFavouritesItemList* CBrowserFavouritesView::GetItemsL( TInt aFolder )
     {
     CFavouritesItemList* items = new (ELeave) CFavouritesItemList();
-    CleanupStack::PushL( items );
     iModel->Database().GetAll( *items, aFolder );
     iModel->SortL( *items );
     return items;
@@ -412,6 +411,8 @@ void CBrowserFavouritesView::RefreshL( TBool aDbErrorNote /*=EFalse*/ )
     // not activated (and tries to refresh); but this "activated-check" is
     // made here, not in Bookmarks View, because it makes things more safe and
     // "future-proof".)
+    //Making iRefresh ETrue
+    iRefresh = ETrue;
     if ( iIsActivated )
         {
         iUpdatePending = ETrue;
@@ -483,7 +484,6 @@ void CBrowserFavouritesView::DoActivateL(
                 iLastSelection = 0;
                 }
             iContainer->Listbox()->SetCurrentItemIndex( iLastSelection );
-            UpdateGotoPaneL();
             }
 
         iContainer->Listbox()->View()->SetDisableRedraw( redrawDisabled );
@@ -772,7 +772,16 @@ void CBrowserFavouritesView::DeleteMarkedItemsL()
 
         if (count ==1)
             {
-            CFavouritesItemList* allItems = GetItemsLC( KFavouritesRootUid );
+            CFavouritesItemList* allItems=NULL;
+            if(iRefresh)
+                {
+                allItems = GetItemsL( KFavouritesRootUid );
+                CleanupStack::PushL(allItems);
+                }
+            else 
+                {
+                allItems = iBookmarkitems;
+                }
             item = items->At(0);
             iPreferredHighlightUid = item->Uid();
             TInt index = allItems->UidToIndex(iPreferredHighlightUid);
@@ -1167,8 +1176,16 @@ void CBrowserFavouritesView::FillListboxL( TInt aFolder, TBool aKeepState )
     listbox->View()->SetDisableRedraw( ETrue );
 
     // Change the data.
-    CFavouritesItemList* items = GetItemsLC( aFolder );
-
+    CFavouritesItemList* items = NULL; 
+    if (iRefresh)
+        {
+        items = GetItemsL( aFolder );
+        CleanupStack::PushL(items);
+        }
+    else
+        {
+        items = iBookmarkitems;
+        }
     // Next take localized item names for seamless links.
     TInt contextId;
     TInt resId = 0;
@@ -1253,8 +1270,10 @@ void CBrowserFavouritesView::FillListboxL( TInt aFolder, TBool aKeepState )
         // Set Search item to italics font
         iContainer->Listbox()->ItalicizeRowItemL(0);
         }
-
-    CleanupStack::Pop();    // items: passing ownership to listbox.
+    if(iRefresh)
+        {
+        CleanupStack::Pop();    // items: passing ownership to listbox.
+        }
     iContainer->Listbox()->SetDataL
         ( items, /*ApiProvider().CommsModel(),*/ aKeepState );
     CAknColumnListBoxView *aknview = STATIC_CAST(CAknColumnListBoxView*, iContainer->Listbox()->View() );

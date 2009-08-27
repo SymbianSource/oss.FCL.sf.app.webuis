@@ -373,7 +373,10 @@ TBool CBavpPlugin::HandleGesture(void* aEvent)
     {
     TBool ret = EFalse;
     TGestureEvent *gesture = static_cast<TGestureEvent*>(aEvent);
-    ret = iBavpController->HandleGesture(gesture);
+    // Fix crash when iBavpController is null for bug EGUY-7TYHDC
+    if (iBavpController) {
+        ret = iBavpController->HandleGesture(gesture);
+    }
     
     return ret;
     }

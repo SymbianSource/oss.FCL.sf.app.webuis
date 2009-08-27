@@ -25,7 +25,7 @@
 #include "Browser.hrh"               // Data definitions
 #include <wmlbrowser.loc>              // Localization constants
 #include <avkon.loc>
-
+#include <Browser_platform_variant.hrh>     //Browser feature flags
 
 //-----------------------------------------------------------------------------
 // CBAs
@@ -78,12 +78,12 @@ RESOURCE AVKON_VIEW r_browser_settings_settings_view
 // ---------------------------------------------------------
 //
 RESOURCE MENU_BAR r_browser_settings_settings_menubar
-	{
+ {
     titles=
-		{
+  {
         MENU_TITLE { menu_pane=r_browser_settings_settings_menu; txt="App"; }
-	    };
-	}
+     };
+ }
 
 
 // ---------------------------------------------------------
@@ -94,15 +94,15 @@ RESOURCE MENU_BAR r_browser_settings_settings_menubar
 // ---------------------------------------------------------
 //
 RESOURCE MENU_PANE r_browser_settings_settings_menu
-	{
+ {
     items=
-		{
-		MENU_ITEM { command=EWmlCmdSettingsOpen; txt=qtn_options_open; },
+  {
+  MENU_ITEM { command=EWmlCmdSettingsOpen; txt=qtn_options_open; },
         MENU_ITEM { command=EWmlCmdSettingsChange; txt=qtn_wmls_local_set_opt_change; },
-	MENU_ITEM {cascade = r_help_submenu; txt=qtn_options_help;},
+ MENU_ITEM {cascade = r_help_submenu; txt=qtn_options_help;},
         MENU_ITEM { command=EWmlCmdUserExit; txt=qtn_options_exit; }
-		};
-	}
+  };
+ }
 
 
 //-----------------------------------------------------------------------------
@@ -117,9 +117,9 @@ RESOURCE MENU_PANE r_browser_settings_settings_menu
 // ---------------------------------------------------------
 //
 RESOURCE LISTBOX r_browser_setting_categories_listbox
-	{	
-	flags = EAknListBoxSelectionList;
-	} 
+ { 
+ flags = EAknListBoxSelectionList;
+ } 
 // ---------------------------------------------------------
 //   
 //   r_browser_settings_listbox 
@@ -128,9 +128,9 @@ RESOURCE LISTBOX r_browser_setting_categories_listbox
 // ---------------------------------------------------------
 //
 RESOURCE LISTBOX r_browser_settings_settings_listbox
-	{
-	flags = EAknListBoxSelectionList;
-	}
+ {
+ flags = EAknListBoxSelectionList;
+ }
 
 //-----------------------------------------------------------------------------
 // Arrays for listboxes
@@ -147,11 +147,11 @@ RESOURCE LISTBOX r_browser_settings_settings_listbox
 // ---------------------------------------------------------
 //
 RESOURCE AVKON_SETTING_PAGE r_radio_button_setting_page
-	{ 
-	softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
-	type =  EAknSetListBox;
-	editor_resource_id= r_setting_app_listbox;
-	}
+ { 
+ softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+ type =  EAknSetListBox;
+ editor_resource_id= r_setting_app_listbox;
+ }
 
 // ---------------------------------------------------------
 //   
@@ -161,9 +161,9 @@ RESOURCE AVKON_SETTING_PAGE r_radio_button_setting_page
 // ---------------------------------------------------------
 //
 RESOURCE LISTBOX r_setting_app_listbox 
-	{
-	flags = EEikListBoxMultipleSelection;
-	}
+ {
+ flags = EEikListBoxMultipleSelection;
+ }
 
 
 //  RESOURCE DEFINITIONS 
@@ -174,23 +174,23 @@ RESOURCE LISTBOX r_setting_app_listbox
 // ---------------------------------------------------------
 //
 RESOURCE DIALOG r_settings_query_lines
-	{
-	flags=EGeneralQueryFlags;
-	buttons=R_AVKON_SOFTKEYS_YES_NO__YES;
-   	 items=
-		{
-		DLG_LINE
-			{
-			type=EAknCtQuery;
-			id=EGeneralQuery;
-			control= AVKON_CONFIRMATION_QUERY 
-				{ 
-					layout = EConfirmationLayout;
-					label = "dummy";
-				};
-			}
-		};
-	}
+ {
+ flags=EGeneralQueryFlags;
+ buttons=R_AVKON_SOFTKEYS_YES_NO__YES;
+     items=
+  {
+  DLG_LINE
+   {
+   type=EAknCtQuery;
+   id=EGeneralQuery;
+   control= AVKON_CONFIRMATION_QUERY 
+    { 
+     layout = EConfirmationLayout;
+     label = "dummy";
+    };
+   }
+  };
+ }
 
 
 //----------------------------------------------------
@@ -220,7 +220,7 @@ RESOURCE DIALOG r_browser_session_info
                     {
                     };
                 }
-		    };
+      };
         }
 
 //----------------------------------------------------
@@ -250,7 +250,7 @@ RESOURCE DIALOG r_browser_security_info
                     {
                     };
                 }
-		    };
+      };
         }
 
 //----------------------------------------------------
@@ -264,7 +264,7 @@ RESOURCE DIALOG r_browser_page_info
         items=
             {
             DLG_LINE
-			                 {
+                    {
                 type = EAknCtPopupHeadingPane;
                 id = EAknMessageQueryHeaderId;
                 control = AVKON_HEADING
@@ -280,7 +280,7 @@ RESOURCE DIALOG r_browser_page_info
                     {
                     };
                 }
-		    };
+      };
         }
 
 //----------------------------------------------------
@@ -294,7 +294,7 @@ RESOURCE DIALOG r_browser_page_version
         items=
             {
             DLG_LINE
-			                 {
+                    {
                 type = EAknCtPopupHeadingPane;
                 id = EAknMessageQueryHeaderId;
                 control = AVKON_HEADING
@@ -310,7 +310,7 @@ RESOURCE DIALOG r_browser_page_version
                     {
                     };
                 }
-		    };
+      };
         }
 
 //----------------------------------------------------
@@ -368,79 +368,79 @@ RESOURCE TBUF r_settings_category_shortcuts   { buf = qtn_browser_setting_group_
 
 
 // Default Access Point
-RESOURCE TBUF r_wmlbrowser_settings_default_ap		{ buf = qtn_wmls_local_set_default_ap; }
+RESOURCE TBUF r_wmlbrowser_settings_default_ap  { buf = qtn_wmls_local_set_default_ap; }
 
 // Autoload Images and Objects
-RESOURCE TBUF r_wmlbrowser_settings_image_autoload		{ buf = qtn_browsers_sett_autoload_objects; }
+RESOURCE TBUF r_wmlbrowser_settings_image_autoload  { buf = qtn_browsers_sett_autoload_objects; }
 
 // Autoload Content
-RESOURCE TBUF r_wmlbrowser_settings_autoload_content	{ buf = qtn_browser_sett_autoload_objects; }
+RESOURCE TBUF r_wmlbrowser_settings_autoload_content { buf = qtn_browser_sett_autoload_objects; }
 
 // Page overview
-RESOURCE TBUF r_wmlbrowser_settings_pageoverview		{ buf = qtn_wmls_local_set_pageoverview; }
+RESOURCE TBUF r_wmlbrowser_settings_pageoverview  { buf = qtn_wmls_local_set_pageoverview; }
 
-RESOURCE TBUF r_wmlbrowser_settings_pageoverview_on		{ buf = qtn_browsers_sett_pageoverview_on; }
-RESOURCE TBUF r_wmlbrowser_settings_pageoverview_off	{ buf = qtn_browsers_sett_pageoverview_off; }
+RESOURCE TBUF r_wmlbrowser_settings_pageoverview_on  { buf = qtn_browsers_sett_pageoverview_on; }
+RESOURCE TBUF r_wmlbrowser_settings_pageoverview_off { buf = qtn_browsers_sett_pageoverview_off; }
 
 // Back list
-RESOURCE TBUF r_wmlbrowser_settings_back_list			{ buf = qtn_browsers_sett_back_list; }
+RESOURCE TBUF r_wmlbrowser_settings_back_list   { buf = qtn_browsers_sett_back_list; }
 
-RESOURCE TBUF r_wmlbrowser_settings_back_list_on		{ buf = qtn_browsers_sett_val_back_list_on; }
-RESOURCE TBUF r_wmlbrowser_settings_back_list_off		{ buf = qtn_browsers_sett_val_back_list_off; }
+RESOURCE TBUF r_wmlbrowser_settings_back_list_on  { buf = qtn_browsers_sett_val_back_list_on; }
+RESOURCE TBUF r_wmlbrowser_settings_back_list_off  { buf = qtn_browsers_sett_val_back_list_off; }
 
 // Autorefresh
-RESOURCE TBUF r_wmlbrowser_settings_auto_refresh		{ buf = qtn_browsers_sett_auto_refresh; }
+RESOURCE TBUF r_wmlbrowser_settings_auto_refresh  { buf = qtn_browsers_sett_auto_refresh; }
 
-RESOURCE TBUF r_wmlbrowser_settings_auto_refresh_on		{ buf = qtn_browsers_sett_val_auto_refresh_on; }
-RESOURCE TBUF r_wmlbrowser_settings_auto_refresh_off	{ buf = qtn_browsers_sett_val_auto_refresh_off; }
+RESOURCE TBUF r_wmlbrowser_settings_auto_refresh_on  { buf = qtn_browsers_sett_val_auto_refresh_on; }
+RESOURCE TBUF r_wmlbrowser_settings_auto_refresh_off { buf = qtn_browsers_sett_val_auto_refresh_off; }
 
 // Font Size
-RESOURCE TBUF r_wmlbrowser_settings_font_size 		    { buf = qtn_wmls_pref_fontsize; }
+RESOURCE TBUF r_wmlbrowser_settings_font_size       { buf = qtn_wmls_pref_fontsize; }
 
 // Adaptive Bookmarks
-RESOURCE TBUF r_wmlbrowser_settings_adaptive_bookmarks	{ buf = qtn_browsers_sett_adaptive_bookmarks;}
+RESOURCE TBUF r_wmlbrowser_settings_adaptive_bookmarks { buf = qtn_browsers_sett_adaptive_bookmarks;}
 
 // Full Screen
-RESOURCE TBUF r_wmlbrowser_settings_fullscreen			{ buf = qtn_browsers_sett_full_screen; }
+RESOURCE TBUF r_wmlbrowser_settings_fullscreen   { buf = qtn_browsers_sett_full_screen; }
 
 // Search Web
-RESOURCE TBUF r_wmlbrowser_settings_search_web		    { buf = qtn_browsers_sett_search; }
+RESOURCE TBUF r_wmlbrowser_settings_search_web      { buf = qtn_browsers_sett_search; }
 
 // Url Suffix
-RESOURCE TBUF r_wmlbrowser_settings_url_suffix		    { buf = qtn_browsers_sett_url_suffix; }
+RESOURCE TBUF r_wmlbrowser_settings_url_suffix      { buf = qtn_browsers_sett_url_suffix; }
 
 // Cookies
-RESOURCE TBUF r_wmlbrowser_settings_cookies			{ buf = qtn_wmls_sett_cookies; }
+RESOURCE TBUF r_wmlbrowser_settings_cookies   { buf = qtn_wmls_sett_cookies; }
 
 // ECMA Script
-RESOURCE TBUF r_wmlbrowser_settings_ecma			{ buf = qtn_browsers_sett_scripting; }
+RESOURCE TBUF r_wmlbrowser_settings_ecma   { buf = qtn_browsers_sett_scripting; }
 
 // HTTP Security Warnings
-RESOURCE TBUF r_wmlbrowser_settings_http_sec_wrns	{ buf = qtn_browser_sett_security; }
+RESOURCE TBUF r_wmlbrowser_settings_http_sec_wrns { buf = qtn_browser_sett_security; }
 
 // Open downloads
-RESOURCE TBUF r_wmlbrowser_settings_download_open	{ buf = qtn_browsers_sett_open_loading; }
+RESOURCE TBUF r_wmlbrowser_settings_download_open { buf = qtn_browsers_sett_open_loading; }
 
 // IMEI
-RESOURCE TBUF r_wmlbrowser_settings_imei		    { buf = qtn_wmls_local_set_imei_notif; }
+RESOURCE TBUF r_wmlbrowser_settings_imei      { buf = qtn_wmls_local_set_imei_notif; }
 
 // Wallet
 RESOURCE TBUF r_wmlbrowser_settings_ewallet_auto    { buf = qtn_wmls_set_wallet_auto; }
 
 // Save Receipt
-RESOURCE TBUF r_wmlbrowser_settings_save_receipt	{ buf = qtn_wmls_save_receipt; }
+RESOURCE TBUF r_wmlbrowser_settings_save_receipt { buf = qtn_wmls_save_receipt; }
 
 // Default Encoding
-RESOURCE TBUF r_wmlbrowser_settings_encoding		{ buf = qtn_brow_sett_defenc; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding  { buf = qtn_brow_sett_defenc; }
 
 // Query Exit
-RESOURCE TBUF r_wmlbrowser_settings_query_exit		{ buf = qtn_wml_setting_exit_confirm; }
+RESOURCE TBUF r_wmlbrowser_settings_query_exit  { buf = qtn_wml_setting_exit_confirm; }
 
 // Send Referrer header
-RESOURCE TBUF r_wmlbrowser_settings_send_referrer	{ buf = qtn_wml_setting_referrer; }  
+RESOURCE TBUF r_wmlbrowser_settings_send_referrer { buf = qtn_wml_setting_referrer; }  
 
 // Media Volume
-RESOURCE TBUF r_wmlbrowser_settings_media_volume	{ buf = qtn_browsers_sett_media_volume; }
+RESOURCE TBUF r_wmlbrowser_settings_media_volume { buf = qtn_browsers_sett_media_volume; }
 
 // Homepage
 RESOURCE TBUF r_wmlbrowser_settings_homepage        { buf = qtn_browsers_sett_homepage; }
@@ -463,8 +463,8 @@ RESOURCE TBUF r_wmlbrowser_settings_autoupdating_ap     { buf = qtn_browsers_set
 // Automatic updating
 RESOURCE TBUF r_wmlbrowser_settings_autoupdating_roaming     { buf = qtn_browsers_sett_autoupdating_roaming; }
 
-RESOURCE TBUF r_wmlbrowser_settings_autoupdating_roaming_on		{ buf = qtn_browsers_sett_val_autoupdating_roaming_on; }
-RESOURCE TBUF r_wmlbrowser_settings_autoupdating_roaming_off	{ buf = qtn_browsers_sett_val_autoupdating_roaming_off; }
+RESOURCE TBUF r_wmlbrowser_settings_autoupdating_roaming_on  { buf = qtn_browsers_sett_val_autoupdating_roaming_on; }
+RESOURCE TBUF r_wmlbrowser_settings_autoupdating_roaming_off { buf = qtn_browsers_sett_val_autoupdating_roaming_off; }
 
 
 // Automatic updating info note ( if AP = Always Ask and automatic updating is off.)
@@ -481,43 +481,43 @@ RESOURCE TBUF r_wmlbrowser_settings_dataquery_autoupdatewarn          { buf = qt
 //
 
 // Autoload Images and Objects
-RESOURCE TBUF r_wmlbrowser_settings_ai_value_on		{ buf = qtn_wmls_local_var_image_on; }
-RESOURCE TBUF r_wmlbrowser_settings_ai_value_off	{ buf = qtn_wmls_local_var_image_off; }
+RESOURCE TBUF r_wmlbrowser_settings_ai_value_on  { buf = qtn_wmls_local_var_image_on; }
+RESOURCE TBUF r_wmlbrowser_settings_ai_value_off { buf = qtn_wmls_local_var_image_off; }
 
 // Autoload Content
 
-RESOURCE TBUF r_wmlbrowser_settings_autoload_text	        { buf = qtn_browser_sett_autoload_text; }
-RESOURCE TBUF r_wmlbrowser_settings_autoload_images_no_flash	        { buf = qtn_browser_sett_autoload_images_no_flash; }
-RESOURCE TBUF r_wmlbrowser_settings_autoload_all        	{ buf = qtn_browser_sett_autoload_all; }
+RESOURCE TBUF r_wmlbrowser_settings_autoload_text         { buf = qtn_browser_sett_autoload_text; }
+RESOURCE TBUF r_wmlbrowser_settings_autoload_images_no_flash         { buf = qtn_browser_sett_autoload_images_no_flash; }
+RESOURCE TBUF r_wmlbrowser_settings_autoload_all         { buf = qtn_browser_sett_autoload_all; }
 
 
 
 // Expanded View (Text Wrapping)
-RESOURCE TBUF r_wmlbrowser_settings_ev_value_on		{ buf = qtn_wmls_local_var_expand_on; }
-RESOURCE TBUF r_wmlbrowser_settings_ev_value_off	{ buf = qtn_wmls_local_var_expand_off; }
+RESOURCE TBUF r_wmlbrowser_settings_ev_value_on  { buf = qtn_wmls_local_var_expand_on; }
+RESOURCE TBUF r_wmlbrowser_settings_ev_value_off { buf = qtn_wmls_local_var_expand_off; }
 
 // Default Encoding
-RESOURCE TBUF r_wmlbrowser_settings_encoding_gb2312  		{ buf = qtn_brow_sett_defenc_gb2312; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_1 		{ buf = qtn_brow_sett_defenc_latin1; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_big5		    { buf = qtn_brow_sett_defenc_big5; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_utf8			{ buf = qtn_brow_sett_defenc_utf8; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_2		{ buf = qtn_brow_sett_charenc_iso_8859_2; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_4		{ buf = qtn_brow_sett_charenc_iso_8859_4; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_5		{ buf = qtn_brow_sett_charenc_iso_8859_5; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_7		{ buf = qtn_brow_sett_charenc_iso_8859_7; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_9		{ buf = qtn_brow_sett_charenc_iso_8859_9; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_6		{ buf = qtn_wmls_sett_defenc_iso_88596; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_8		{ buf = qtn_wmls_sett_defenc_iso_88598; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_8i		{ buf = qtn_wmls_sett_defenc_iso_88598_i; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1256	{ buf = qtn_wmls_sett_defenc_windows_1256; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1255	{ buf = qtn_wmls_sett_defenc_windows_1255; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1250	{ buf = qtn_wmls_sett_defenc_windows_1250; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1251	{ buf = qtn_wmls_sett_defenc_windows_1251; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1253	{ buf = qtn_wmls_sett_defenc_windows_1253; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1254	{ buf = qtn_wmls_sett_defenc_windows_1254; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1257	{ buf = qtn_wmls_sett_defenc_windows_1257; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1258	{ buf = qtn_wmls_sett_defenc_windows_1258; }
-RESOURCE TBUF r_wmlbrowser_settings_encoding_tis_620	    { buf = qtn_wmls_sett_defenc_tis_620; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_gb2312    { buf = qtn_brow_sett_defenc_gb2312; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_1   { buf = qtn_brow_sett_defenc_latin1; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_big5      { buf = qtn_brow_sett_defenc_big5; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_utf8   { buf = qtn_brow_sett_defenc_utf8; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_2  { buf = qtn_brow_sett_charenc_iso_8859_2; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_4  { buf = qtn_brow_sett_charenc_iso_8859_4; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_5  { buf = qtn_brow_sett_charenc_iso_8859_5; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_7  { buf = qtn_brow_sett_charenc_iso_8859_7; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_9  { buf = qtn_brow_sett_charenc_iso_8859_9; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_6  { buf = qtn_wmls_sett_defenc_iso_88596; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_8  { buf = qtn_wmls_sett_defenc_iso_88598; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_iso8859_8i  { buf = qtn_wmls_sett_defenc_iso_88598_i; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1256 { buf = qtn_wmls_sett_defenc_windows_1256; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1255 { buf = qtn_wmls_sett_defenc_windows_1255; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1250 { buf = qtn_wmls_sett_defenc_windows_1250; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1251 { buf = qtn_wmls_sett_defenc_windows_1251; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1253 { buf = qtn_wmls_sett_defenc_windows_1253; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1254 { buf = qtn_wmls_sett_defenc_windows_1254; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1257 { buf = qtn_wmls_sett_defenc_windows_1257; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_1258 { buf = qtn_wmls_sett_defenc_windows_1258; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_tis_620     { buf = qtn_wmls_sett_defenc_tis_620; }
 RESOURCE TBUF r_wmlbrowser_settings_encoding_windows_874    { buf = qtn_wmls_sett_defenc_windows_874;}
 RESOURCE TBUF r_wmlbrowser_settings_encoding_shift_jis	   	{ buf = qtn_wmls_sett_defenc_shift_jis; }
 RESOURCE TBUF r_wmlbrowser_settings_encoding_euc_jp	   		{ buf = qtn_wmls_sett_defenc_euc_jp; }
@@ -526,21 +526,23 @@ RESOURCE TBUF r_wmlbrowser_settings_encoding_ucs_2			{ buf = qtn_wmls_sett_defen
 RESOURCE TBUF r_wmlbrowser_settings_encoding_koi8_r			{ buf = qtn_wmls_sett_defenc_shift_koi8_r; }
 RESOURCE TBUF r_wmlbrowser_settings_encoding_koi8_u			{ buf = qtn_wmls_sett_defenc_shift_koi8_u; }
 RESOURCE TBUF r_wmlbrowser_settings_encoding_iscii			{ buf = qtn_wmls_sett_defenc_iscii; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_euc_kr         { buf = qtn_wmls_sett_defenc_euc_kr; }
+RESOURCE TBUF r_wmlbrowser_settings_encoding_ksc_5601       { buf = "Korean (Euc-Kr)"; }
 RESOURCE TBUF r_wmlbrowser_settings_encoding_automatic	    { buf = qtn_wmls_sett_defenc_automatic; }
 
 // Media Volume
-RESOURCE TBUF r_wmlbrowser_settings_media_volume_muted  	{ buf = qtn_browsers_sett_volume_muted; }
-RESOURCE TBUF r_wmlbrowser_settings_media_volume_1	    	{ buf = qtn_browsers_sett_volume_1; }
-RESOURCE TBUF r_wmlbrowser_settings_media_volume_2	    	{ buf = qtn_browsers_sett_volume_2; }
-RESOURCE TBUF r_wmlbrowser_settings_media_volume_3	    	{ buf = qtn_browsers_sett_volume_3; }
-RESOURCE TBUF r_wmlbrowser_settings_media_volume_4	    	{ buf = qtn_browsers_sett_volume_4; }
+RESOURCE TBUF r_wmlbrowser_settings_media_volume_muted   { buf = qtn_browsers_sett_volume_muted; }
+RESOURCE TBUF r_wmlbrowser_settings_media_volume_1      { buf = qtn_browsers_sett_volume_1; }
+RESOURCE TBUF r_wmlbrowser_settings_media_volume_2      { buf = qtn_browsers_sett_volume_2; }
+RESOURCE TBUF r_wmlbrowser_settings_media_volume_3      { buf = qtn_browsers_sett_volume_3; }
+RESOURCE TBUF r_wmlbrowser_settings_media_volume_4      { buf = qtn_browsers_sett_volume_4; }
 
 // Font Size
-RESOURCE TBUF r_wmlbrowser_settings_fs_value_all_small		{ buf = qtn_xhtml_settings_all_small; }
-RESOURCE TBUF r_wmlbrowser_settings_fs_value_smaller		{ buf = qtn_xhtml_settings_smaller; }
-RESOURCE TBUF r_wmlbrowser_settings_fs_value_normal		    { buf = qtn_xhtml_settings_normal; }
-RESOURCE TBUF r_wmlbrowser_settings_fs_value_larger		    { buf = qtn_xhtml_settings_larger; }
-RESOURCE TBUF r_wmlbrowser_settings_fs_value_all_large		{ buf = qtn_xhtml_settings_all_large; }
+RESOURCE TBUF r_wmlbrowser_settings_fs_value_all_small  { buf = qtn_xhtml_settings_all_small; }
+RESOURCE TBUF r_wmlbrowser_settings_fs_value_smaller  { buf = qtn_xhtml_settings_smaller; }
+RESOURCE TBUF r_wmlbrowser_settings_fs_value_normal      { buf = qtn_xhtml_settings_normal; }
+RESOURCE TBUF r_wmlbrowser_settings_fs_value_larger      { buf = qtn_xhtml_settings_larger; }
+RESOURCE TBUF r_wmlbrowser_settings_fs_value_all_large  { buf = qtn_xhtml_settings_all_large; }
 
 // Adaptive Bookmarks
 RESOURCE TBUF r_wmlbrowser_settings_adaptive_bookmarks_value_on             {buf =qtn_browsers_sett_adaptive_bookmarks_on;}
@@ -548,54 +550,54 @@ RESOURCE TBUF r_wmlbrowser_settings_adaptive_bookmarks_value_hide_folder    {buf
 RESOURCE TBUF r_wmlbrowser_settings_adaptive_bookmarks_value_off            {buf =qtn_browsers_sett_adaptive_bookmarks_off;}
 
 // Full Screen
-RESOURCE TBUF r_wmlbrowser_settings_fullscreen_value_normal			{ buf = qtn_browsers_sett_full_screen_normal; }
-RESOURCE TBUF r_wmlbrowser_settings_fullscreen_value_softkeysonly	{ buf = qtn_browsers_sett_full_screen_normal; }
-RESOURCE TBUF r_wmlbrowser_settings_fullscreen_value_fullscreen		{ buf = qtn_browsers_sett_full_screen_full_screen;}
+RESOURCE TBUF r_wmlbrowser_settings_fullscreen_value_normal   { buf = qtn_browsers_sett_full_screen_normal; }
+RESOURCE TBUF r_wmlbrowser_settings_fullscreen_value_softkeysonly { buf = qtn_browsers_sett_full_screen_normal; }
+RESOURCE TBUF r_wmlbrowser_settings_fullscreen_value_fullscreen  { buf = qtn_browsers_sett_full_screen_full_screen;}
 
 // Display Softkeys
-RESOURCE TBUF r_wmlbrowser_settings_softkeys		{ buf = qtn_browsers_sett_softkeys; }
-RESOURCE TBUF r_wmlbrowser_settings_softkeys_on		{ buf = qtn_browsers_sett_softkeys_on; }
-RESOURCE TBUF r_wmlbrowser_settings_softkeys_off	{ buf = qtn_browsers_sett_softkeys_off; }
+RESOURCE TBUF r_wmlbrowser_settings_softkeys  { buf = qtn_browsers_sett_softkeys; }
+RESOURCE TBUF r_wmlbrowser_settings_softkeys_on  { buf = qtn_browsers_sett_softkeys_on; }
+RESOURCE TBUF r_wmlbrowser_settings_softkeys_off { buf = qtn_browsers_sett_softkeys_off; }
 
 // Cookies
-RESOURCE TBUF r_wmlbrowser_settings_c_value_allow			{ buf = qtn_wmls_sett_cookie_allow; }
-RESOURCE TBUF r_wmlbrowser_settings_c_value_reject			{ buf = qtn_wmls_sett_cookie_reject; }
+RESOURCE TBUF r_wmlbrowser_settings_c_value_allow   { buf = qtn_wmls_sett_cookie_allow; }
+RESOURCE TBUF r_wmlbrowser_settings_c_value_reject   { buf = qtn_wmls_sett_cookie_reject; }
 
 // ECMA
-RESOURCE TBUF r_wmlbrowser_settings_ecma_value_enable		{ buf = qtn_browsers_sett_scripting_enable; }
-RESOURCE TBUF r_wmlbrowser_settings_ecma_value_disable		{ buf = qtn_browsers_sett_scripting_disable; }
+RESOURCE TBUF r_wmlbrowser_settings_ecma_value_enable  { buf = qtn_browsers_sett_scripting_enable; }
+RESOURCE TBUF r_wmlbrowser_settings_ecma_value_disable  { buf = qtn_browsers_sett_scripting_disable; }
 
 // HTTP Security Warnings
-RESOURCE TBUF r_wmlbrowser_settings_wrn_value_show			{ buf = qtn_browser_sett_item_show_all; }
-RESOURCE TBUF r_wmlbrowser_settings_wrn_value_hide			{ buf = qtn_browser_sett_item_hide_all; }
+RESOURCE TBUF r_wmlbrowser_settings_wrn_value_show   { buf = qtn_browser_sett_item_show_all; }
+RESOURCE TBUF r_wmlbrowser_settings_wrn_value_hide   { buf = qtn_browser_sett_item_hide_all; }
 
 // Download Open Selection
-RESOURCE TBUF r_wmlbrowser_settings_download_open_yes			{ buf = qtn_brow_sett_open_downloads_yes; }
-RESOURCE TBUF r_wmlbrowser_settings_download_open_no			{ buf = qtn_brow_sett_open_downloads_no; }
+RESOURCE TBUF r_wmlbrowser_settings_download_open_yes   { buf = qtn_brow_sett_open_downloads_yes; }
+RESOURCE TBUF r_wmlbrowser_settings_download_open_no   { buf = qtn_brow_sett_open_downloads_no; }
 
 // IMEI
-RESOURCE TBUF r_wmlbrowser_settings_imei_value_enabled			{ buf = qtn_wmls_local_set_imei_notif_enabled; }
-RESOURCE TBUF r_wmlbrowser_settings_imei_value_disabled			{ buf = qtn_wmls_local_set_imei_notif_disabled; }
+RESOURCE TBUF r_wmlbrowser_settings_imei_value_enabled   { buf = qtn_wmls_local_set_imei_notif_enabled; }
+RESOURCE TBUF r_wmlbrowser_settings_imei_value_disabled   { buf = qtn_wmls_local_set_imei_notif_disabled; }
 
 // DTMF
-RESOURCE TBUF r_wmlbrowser_settings_sdtmf_value_always_confirm	{ buf = qtn_wmls_wtai_dtmf_alcon; }
-RESOURCE TBUF r_wmlbrowser_settings_sdtmf_value_confirm_once	{ buf = qtn_wmls_wtai_dtmf_one; }
+RESOURCE TBUF r_wmlbrowser_settings_sdtmf_value_always_confirm { buf = qtn_wmls_wtai_dtmf_alcon; }
+RESOURCE TBUF r_wmlbrowser_settings_sdtmf_value_confirm_once { buf = qtn_wmls_wtai_dtmf_one; }
 
 // Save Receipt
-RESOURCE TBUF r_wmlbrowser_settings_sr_value_to_notepad		    { buf = qtn_wmls_save_to_notepad; }
-RESOURCE TBUF r_wmlbrowser_settings_sr_value_never		    	{ buf = qtn_wmls_save_not; }
+RESOURCE TBUF r_wmlbrowser_settings_sr_value_to_notepad      { buf = qtn_wmls_save_to_notepad; }
+RESOURCE TBUF r_wmlbrowser_settings_sr_value_never       { buf = qtn_wmls_save_not; }
 
 // Wallet
-RESOURCE TBUF r_wmlbrowser_settings_wallet_auto_on	        	{ buf = qtn_wmls_wall_auto_on; }
-RESOURCE TBUF r_wmlbrowser_settings_wallet_auto_off	        	{ buf = qtn_wmls_wall_auto_off; }
+RESOURCE TBUF r_wmlbrowser_settings_wallet_auto_on          { buf = qtn_wmls_wall_auto_on; }
+RESOURCE TBUF r_wmlbrowser_settings_wallet_auto_off          { buf = qtn_wmls_wall_auto_off; }
 
 // Query Exit
-RESOURCE TBUF r_wmlbrowser_settings_query_exit_on	        	{ buf = qtn_wml_setting_exit_on; }
-RESOURCE TBUF r_wmlbrowser_settings_query_exit_off	        	{ buf = qtn_wml_setting_exit_off; }
+RESOURCE TBUF r_wmlbrowser_settings_query_exit_on          { buf = qtn_wml_setting_exit_on; }
+RESOURCE TBUF r_wmlbrowser_settings_query_exit_off          { buf = qtn_wml_setting_exit_off; }
 
 // Send Referrer header
-RESOURCE TBUF r_wmlbrowser_settings_send_referrer_on	    	{ buf = qtn_wml_setting_refer_on; }
-RESOURCE TBUF r_wmlbrowser_settings_send_referrer_off		    { buf = qtn_wml_setting_refer_off; }
+RESOURCE TBUF r_wmlbrowser_settings_send_referrer_on      { buf = qtn_wml_setting_refer_on; }
+RESOURCE TBUF r_wmlbrowser_settings_send_referrer_off      { buf = qtn_wml_setting_refer_off; }
 
 // Home Page
 RESOURCE TBUF r_wmlbrowser_settings_homepage_access_point     { buf = qtn_browsers_sett_ap_home_page; }
@@ -607,8 +609,8 @@ RESOURCE TBUF r_wmlbrowser_settings_homepage_bookmarks        { buf = qtn_browse
 RESOURCE TBUF r_wmlbrowser_settings_searchpage_new_address  { buf = qtn_browsers_sett_search; }
 
 // Enable Popup Blocking (Multiple Windows)
-RESOURCE TBUF r_wmlbrowser_settings_popup_blocking_on      	{ buf = qtn_brow_sett_pop_up_blocking_on; }
-RESOURCE TBUF r_wmlbrowser_settings_popup_blocking_off     	{ buf = qtn_brow_sett_pop_up_blocking_off; }
+RESOURCE TBUF r_wmlbrowser_settings_popup_blocking_on       { buf = qtn_brow_sett_pop_up_blocking_on; }
+RESOURCE TBUF r_wmlbrowser_settings_popup_blocking_off      { buf = qtn_brow_sett_pop_up_blocking_off; }
 
 // Form Data Saving
 RESOURCE TBUF r_wmlbrowser_settings_form_data_saving_on  { buf = qtn_brow_sett_form_data_saving_on; }
@@ -621,8 +623,8 @@ RESOURCE TBUF r_wmlbrowser_settings_form_data_delete_password { buf = qtn_browse
 
 // SCRIPT LOG
 RESOURCE TBUF r_wmlbrowser_settings_scriptlog                   { buf = qtn_browsers_sett_scriptlog; }
-RESOURCE TBUF r_wmlbrowser_settings_scriptlog_value_disable	    { buf = qtn_browsers_sett_scriptlog_disable; }
-RESOURCE TBUF r_wmlbrowser_settings_scriptlog_value_to_file	    { buf = qtn_browsers_sett_scriptlog_to_file; }
+RESOURCE TBUF r_wmlbrowser_settings_scriptlog_value_disable     { buf = qtn_browsers_sett_scriptlog_disable; }
+RESOURCE TBUF r_wmlbrowser_settings_scriptlog_value_to_file     { buf = qtn_browsers_sett_scriptlog_to_file; }
 RESOURCE TBUF r_wmlbrowser_settings_scriptlog_value_to_console  { buf = qtn_browsers_sett_scriptlog_to_console; }
 RESOURCE TBUF r_wmlbrowser_settings_scriptlog_value_to_console_file  { buf = qtn_browsers_sett_scriptlog_to_console_file; }
 
@@ -703,10 +705,10 @@ RESOURCE TBUF r_browser_setting_shortcut_keyhash     { buf = qtn_browser_setting
 //
 // ---------------------------------------------------------
 //
-RESOURCE TBUF r_wml_session_view_title	{ buf=qtn_wmls_session_info; }
-RESOURCE TBUF r_wml_session_view_ap		{ buf = qtn_wmls_ses_view_ap; }
-RESOURCE TBUF r_wml_session_view_bt		{ buf = qtn_wmls_ses_view_bearer_type; }
-RESOURCE TBUF r_wml_session_view_cs		{ buf = qtn_wmls_ses_view_max_speed; }
+RESOURCE TBUF r_wml_session_view_title { buf=qtn_wmls_session_info; }
+RESOURCE TBUF r_wml_session_view_ap  { buf = qtn_wmls_ses_view_ap; }
+RESOURCE TBUF r_wml_session_view_bt  { buf = qtn_wmls_ses_view_bearer_type; }
+RESOURCE TBUF r_wml_session_view_cs  { buf = qtn_wmls_ses_view_max_speed; }
 
 // ---------------------------------------------------------
 //   
@@ -715,16 +717,16 @@ RESOURCE TBUF r_wml_session_view_cs		{ buf = qtn_wmls_ses_view_max_speed; }
 //
 // ---------------------------------------------------------
 //
-RESOURCE TBUF r_wml_security_view_title 	{ buf=qtn_wmlsec_security_info; }
-RESOURCE TBUF r_wml_certificate_details		{ buf = qtn_wmlsec_cert_details; }
-RESOURCE TBUF r_wml_security_conn_type		{ buf = qtn_wmlsec_ses_info_contype; }
-RESOURCE TBUF r_wml_security_server_aut		{ buf = qtn_wmlsec_ses_info_server; }
-RESOURCE TBUF r_wml_security_info_issuer	{ buf = qtn_wmlsec_ses_info_issuer; }
-RESOURCE TBUF r_wml_security_cert_owner		{ buf = qtn_wmlsec_ses_info_cert_owner; }
-RESOURCE TBUF r_wml_security_valid_from		{ buf = qtn_wmlsec_ses_info_valid_from; }
-RESOURCE TBUF r_wml_security_valid_to		{ buf = qtn_wmlsec_ses_info_valid_to; }
-RESOURCE TBUF r_wml_security_fingerprint	{ buf = qtn_wmlsec_ses_info_fingerprint; }
-RESOURCE TBUF r_wml_security_serialno	 	{ buf = qtn_wmlsec_ses_info_serialno; }
+RESOURCE TBUF r_wml_security_view_title  { buf=qtn_wmlsec_security_info; }
+RESOURCE TBUF r_wml_certificate_details  { buf = qtn_wmlsec_cert_details; }
+RESOURCE TBUF r_wml_security_conn_type  { buf = qtn_wmlsec_ses_info_contype; }
+RESOURCE TBUF r_wml_security_server_aut  { buf = qtn_wmlsec_ses_info_server; }
+RESOURCE TBUF r_wml_security_info_issuer { buf = qtn_wmlsec_ses_info_issuer; }
+RESOURCE TBUF r_wml_security_cert_owner  { buf = qtn_wmlsec_ses_info_cert_owner; }
+RESOURCE TBUF r_wml_security_valid_from  { buf = qtn_wmlsec_ses_info_valid_from; }
+RESOURCE TBUF r_wml_security_valid_to  { buf = qtn_wmlsec_ses_info_valid_to; }
+RESOURCE TBUF r_wml_security_fingerprint { buf = qtn_wmlsec_ses_info_fingerprint; }
+RESOURCE TBUF r_wml_security_serialno   { buf = qtn_wmlsec_ses_info_serialno; }
 
 // ---------------------------------------------------------
 //   
@@ -733,8 +735,8 @@ RESOURCE TBUF r_wml_security_serialno	 	{ buf = qtn_wmlsec_ses_info_serialno; }
 //
 // ---------------------------------------------------------
 //
-RESOURCE TBUF r_wml_security_conn_secure 	{ buf=qtn_wmlsec_ses_info_con_secur; }
-RESOURCE TBUF r_wml_security_conn_unsecure 	{ buf=qtn_wmlsec_ses_info_con_unsec; }
+RESOURCE TBUF r_wml_security_conn_secure  { buf=qtn_wmlsec_ses_info_con_secur; }
+RESOURCE TBUF r_wml_security_conn_unsecure  { buf=qtn_wmlsec_ses_info_con_unsec; }
 
 // ---------------------------------------------------------
 //   
@@ -744,11 +746,11 @@ RESOURCE TBUF r_wml_security_conn_unsecure 	{ buf=qtn_wmlsec_ses_info_con_unsec;
 // ---------------------------------------------------------
 //
 
-RESOURCE TBUF r_wml_bearer_data_call 	{ buf=qtn_set_bearer_data_call; }
-RESOURCE TBUF r_wml_bearer_packet_data 	{ buf=qtn_set_bearer_packet_data; }
-RESOURCE TBUF r_wml_bearer_hscsd		{ buf=qtn_browser_set_bearer_hscsd; }
+RESOURCE TBUF r_wml_bearer_data_call  { buf=qtn_set_bearer_data_call; }
+RESOURCE TBUF r_wml_bearer_packet_data  { buf=qtn_set_bearer_packet_data; }
+RESOURCE TBUF r_wml_bearer_hscsd  { buf=qtn_browser_set_bearer_hscsd; }
 
-RESOURCE TBUF r_wml_conn_speed_ad		{ buf=qtn_set_auto_detect; }
+RESOURCE TBUF r_wml_conn_speed_ad  { buf=qtn_set_auto_detect; }
 
 // ---------------------------------------------------------
 //   
@@ -757,12 +759,12 @@ RESOURCE TBUF r_wml_conn_speed_ad		{ buf=qtn_set_auto_detect; }
 //
 // ---------------------------------------------------------
 //
-RESOURCE TBUF r_wmlbrowser_settings_title			        { buf = qtn_wmls_browser_opt_sett; }
+RESOURCE TBUF r_wmlbrowser_settings_title           { buf = qtn_wmls_browser_opt_sett; }
 
-RESOURCE TBUF r_wmlbrowser_settings_title_general			{ buf = qtn_browsers_title_general; }
-RESOURCE TBUF r_wmlbrowser_settings_title_page	                        { buf = qtn_browsers_title_page; }
-RESOURCE TBUF r_wmlbrowser_settings_title_privacy			{ buf = qtn_browsers_title_privacy; }
-RESOURCE TBUF r_wmlbrowser_settings_title_webfeeds			{ buf = qtn_browsers_fldr_feeds; }
+RESOURCE TBUF r_wmlbrowser_settings_title_general   { buf = qtn_browsers_title_general; }
+RESOURCE TBUF r_wmlbrowser_settings_title_page                         { buf = qtn_browsers_title_page; }
+RESOURCE TBUF r_wmlbrowser_settings_title_privacy   { buf = qtn_browsers_title_privacy; }
+RESOURCE TBUF r_wmlbrowser_settings_title_webfeeds   { buf = qtn_browsers_fldr_feeds; }
 
 // ---------------------------------------------------------
 //   
@@ -771,7 +773,7 @@ RESOURCE TBUF r_wmlbrowser_settings_title_webfeeds			{ buf = qtn_browsers_fldr_f
 //
 // ---------------------------------------------------------
 //
-RESOURCE TBUF r_wml_settings_default_access_point_none		{ buf = qtn_selec_sett_val_field_none; }
+RESOURCE TBUF r_wml_settings_default_access_point_none  { buf = qtn_selec_sett_val_field_none; }
 
 
 // ---------------------------------------------------------
@@ -782,8 +784,8 @@ RESOURCE TBUF r_wml_settings_default_access_point_none		{ buf = qtn_selec_sett_v
 // ---------------------------------------------------------
 //
 
-RESOURCE TBUF r_browser_query_current_page	{ buf = qtn_browser_query_current_page; }
-RESOURCE TBUF r_browser_query_current_page_url	{ buf = qtn_browser_query_current_page_url; }
+RESOURCE TBUF r_browser_query_current_page { buf = qtn_browser_query_current_page; }
+RESOURCE TBUF r_browser_query_current_page_url { buf = qtn_browser_query_current_page_url; }
 
 // ---------------------------------------------------------
 //   
@@ -793,8 +795,12 @@ RESOURCE TBUF r_browser_query_current_page_url	{ buf = qtn_browser_query_current
 // ---------------------------------------------------------
 //
 
-RESOURCE TBUF r_wml_settings_access_point_user_defined	{ buf = qtn_wml_settings_access_point_user_defined; }
-RESOURCE TBUF r_wml_settings_access_point_ask_when_needed	{ buf = qtn_wml_settings_access_point_ask_when_needed; }
+RESOURCE TBUF r_wml_settings_access_point_user_defined { buf = qtn_wml_settings_access_point_user_defined; }
+#if !defined(BRDO_BROWSER_50_FF)
+    RESOURCE TBUF r_wml_settings_access_point_always_ask { buf = qtn_wml_settings_access_point_always_ask; }
+#else
+    RESOURCE TBUF r_wml_settings_access_point_ask_when_needed { buf = qtn_wml_settings_access_point_ask_when_needed; }
+#endif // BRDO_BROWSER_50_FF
 
 #endif
 

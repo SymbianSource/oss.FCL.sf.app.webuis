@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-
+#include <Browser_Platform_Variant.hrh>
 #include <ApListItem.h>
 #include <ApListItemList.h>
 #include <ApEngineConsts.h>
@@ -374,6 +374,7 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
 	icons->AppendL( newIcon );
 	CleanupStack::Pop(newIcon);
 
+#if defined(BRDO_SEARCH_INTEGRATION_FF)
     //Browser service
 
     AknsUtils::CreateIconLC( skinInstance,
@@ -388,6 +389,7 @@ CAknIconArray* TBrowserBookmarksListboxIconHandler::LoadIconsL() const
     CleanupStack::PushL(newIcon);
     icons->AppendL( newIcon );
     CleanupStack::Pop(newIcon);
+#endif
     
     CleanupStack::Pop();    // POP Icon
 	return icons;

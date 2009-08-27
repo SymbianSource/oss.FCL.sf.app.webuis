@@ -457,7 +457,7 @@ void CFeedsFolderView::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPan
         // Create Folder
         iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsNewFolder, R_OPTIONS_ORG_NEW_FOLDER);
         }
-    else if(aResourceId == R_FEEDS_OPTIONS_MARKUNMARK_SUBMENU)
+    else if( (aResourceId == R_FEEDS_OPTIONS_MARKUNMARK_SUBMENU) || (aResourceId == R_FEEDS_FOLDER_VIEW_MARK_UNMARK_MENU ) )
         {
         // Mark (or unmark)
         if(IsCurrentItemMarked())
@@ -482,7 +482,22 @@ void CFeedsFolderView::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPan
         {
         
         
-        }     
+        }
+    else if(aResourceId == R_FEEDS_FOLDER_MENU_PANE_CONTEXT_MENU) 
+        {
+            aMenuPane->SetItemDimmed(EFeedsMoveToFolder,ETrue);
+
+            if (!(item->GetType() == EFolder))
+                {            
+                TInt folderCount = 0;
+                iContainer->CountFolderFolders(iContainer->iRootFolder, folderCount);
+                
+                if(iContainer && (folderCount> 0) && !iContainer->IsMarkedItemFolder())
+                    {   
+                    aMenuPane->SetItemDimmed(EFeedsMoveToFolder,EFalse);
+                    }            
+                }
+        }
     iApiProvider.FeedsClientUtilities().DynInitMenuPaneL(aResourceId, aMenuPane );
     }
 

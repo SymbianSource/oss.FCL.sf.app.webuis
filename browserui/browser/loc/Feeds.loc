@@ -21,6 +21,11 @@
 /*  Application related                                                 */
 /* -------------------------------------------------------------------- */
 //d:application name
+//l:list_single_large_graphic_pane_t1
+//w:
+//r:3.0
+#define qtn_apps_feeds_list      "Web Feeds"
+//d:application name
 //l:cell_app_pane_t1
 //w:
 //r:3.0
@@ -467,6 +472,14 @@
 
 //d: Information text for the error dialog. Displayed when an OPML file
 //d: somehow gets deleted after it is found and displayed in the list, and the 
+#define qtn_feeds_malformed_dialog_text "Can't process feed"
+
+//d: Information text for the error dialog.  Displayed when a requested
+//d: feed is in an unsupported format.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_feeds_unsupported_dialog_text "Feed format is not supported"
 //d: user then tries to select and import it.
 //l:popup_note_window
 //w:
@@ -481,5 +494,59 @@
 //r:3.0
 #define qtn_feeds_unnamed_item "Unnamed item"
 
+
+/*  Strings copied from wmlBrowser.loc                                  */
+/* -------------------------------------------------------------------- */
+//d:DO element menu item
+//l:list_single_popup_submenu_pane_t1
+//
+#define text_wml_option_back      "Back"
+
+//d:Menu item in Bookmarks View: activate highlighted bookmark
+//l:list_single_pane_t1_cp2
+//
+#define qtn_wmlbm_load_bm         "Activate"
+
+// WmlBrowser Settings/Session listbox items
+
+//d:Browser settings session list item texts
+//l:heading_pane_t1
+//
+#define qtn_wmls_session_info             "Session info"
+
+//d:Format title text in session view.
+//l:popup_info_list_pane_t1
+//
+#define qtn_wmls_ses_view_ap              "Access point name:"
+
+//d:Browser settings session list item texts
+//l:popup_info_list_pane_t1
+//
+#define qtn_wmls_ses_view_bearer_type           "Bearer type:"
+
+//d:Browser settings session list item texts
+//l:popup_info_list_pane_t1
+//
+#define qtn_wmls_ses_view_max_speed            "Max. connection speed:"
+
+//d:Text in About Product information note's heading
+//l:heading_pane_t1
+#define qtn_browsers_title_about "Name and Version"
+
+//d:Text in About Product information note, the first %U is the browser version number, the second is the Browser build number
+//l:popup_info_list_pane_t1
+#define qtn_browsers_about_version_label "Version: %0U (%1U)"
+
+//d:Browser settings session list item texts
+//l:popup_info_list_pane_t1
+//
+#define qtn_browser_set_bearer_hscsd            "HSCSD"
+
+//d: Information text for the error dialog.  Displayed when a requested
+//d: feed couldn't be fetched from the network.
+//l:popup_note_window
+//w:
+//r:3.0
+#define qtn_feeds_network_error_dialog_text "Couldn't update feed"
 
 

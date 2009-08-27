@@ -274,6 +274,10 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
         }
 #endif  // __RSS_FEEDS
 
+    if ( ( aCommand != EWmlCmdZoomSliderShow ) && ZoomSliderVisible() )
+        {
+        MakeZoomSliderVisibleL( EFalse );
+        }
     switch ( aCommand )
         {
         case EWmlCmdFavourites:
@@ -897,27 +901,6 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
         EnableFullScreenModeL( ETrue );
         iWasContentFullScreenMode = EFalse;
         }
-
-    // Any other commands must cause the zoom slider to be hidden (if it is
-    // currently visible).
-   switch ( aCommand )
-        {
-        // case EWmlCmdZoomMode:
-        case EWmlCmdZoomSliderShow:
-            {
-            // Do nothing, we want to display zoom indicator
-            break;
-            }
-        default:
-            {
-            // If any other command and zoom indicator is displayed, close it
-            if ( ZoomSliderVisible() )
-                {
-                MakeZoomSliderVisibleL( EFalse );
-                }
-            break;
-            }
-        }   // end of switch
     }
 
 // -----------------------------------------------------------------------------
@@ -1223,8 +1206,7 @@ TInt CBrowserContentView::CommandSetResourceIdL()
         {
         TBrCtlDefs::TBrCtlElementType elementtype =
             ApiProvider().BrCtlInterface().FocusedElementType();
-        if( (elementtype == TBrCtlDefs::EElementActivatedInputBox ) ||
-            (elementtype == TBrCtlDefs::EElementActivatedObjectBox ) )
+        if( elementtype == TBrCtlDefs::EElementActivatedObjectBox )
             {
             if ( !iContentFullScreenMode )
                 {
@@ -2753,6 +2735,10 @@ void CBrowserContentView::HandleClientRectChange()
         {
         iContainer->HandleResourceChange(KEikDynamicLayoutVariantSwitch);
         UpdateFullScreenL();
+        if(KeymapIsUp())
+            {
+            RedrawKeymap();
+            }
         }
     }
 
@@ -3124,8 +3110,10 @@ void CBrowserContentView::HandlePluginFullScreen(TBool aFullScreen)
 {
   iIsPluginFullScreenMode = aFullScreen;
   if (aFullScreen) {
-    iOrientation = AppUi()->Orientation();
-    TRAP_IGNORE( AppUi()->SetOrientationL(CAknAppUiBase::EAppUiOrientationLandscape));
+  	if (AppUi()->Orientation() != CAknAppUiBase::EAppUiOrientationLandscape) {
+      iOrientation = AppUi()->Orientation();
+      TRAP_IGNORE(AppUi()->SetOrientationL(CAknAppUiBase::EAppUiOrientationLandscape));
+    }
     if (iPenEnabled) {
       Toolbar()->SetToolbarVisibility( EFalse, EFalse );
     }

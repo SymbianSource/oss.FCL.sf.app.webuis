@@ -271,7 +271,7 @@ class CBrowserBookmarksView:
         * @param aFolder Folder which contains the items.
         * @return List of items. Pushed on the cleanup stack.
         */
-        virtual CFavouritesItemList* GetItemsLC( TInt aFolder );
+        virtual CFavouritesItemList* GetItemsL( TInt aFolder );
 
         /**
         * Some displayed data has changed (Favourites database, AP-s, etc).
@@ -544,6 +544,9 @@ class CBrowserBookmarksView:
         
         // Re-Entry Gate flag for Delete Bookmark routine
         TBool iHandleDeleteInProgress;
+
+        // updates the softkey
+        TBool iSoftKeyUpdate;
 
 	};
 

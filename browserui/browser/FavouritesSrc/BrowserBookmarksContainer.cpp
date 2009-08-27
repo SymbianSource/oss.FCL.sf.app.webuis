@@ -11,9 +11,9 @@
 *
 * Contributors:
 *
-* Description: 
+* Description:
 *       Implementation of CBrowserBookmarksContainer.
-*       
+*
 *
 */
 
@@ -60,14 +60,14 @@ LOCAL_D const TInt KBookmarkTabIndex = 0;
 CBrowserBookmarksContainer* CBrowserBookmarksContainer::NewL(
         const TRect& aRect,
         CBrowserFavouritesView& aView)
-	{
-	CBrowserBookmarksContainer* container =
+    {
+    CBrowserBookmarksContainer* container =
         new (ELeave) CBrowserBookmarksContainer;
-	CleanupStack::PushL( container );
-	container->ConstructL( aRect, aView );
+    CleanupStack::PushL( container );
+    container->ConstructL( aRect, aView );
     CleanupStack::Pop();    // container
-	return container;
-	}
+    return container;
+    }
 
 // ---------------------------------------------------------
 // CBrowserBookmarksContainer::~CBrowserBookmarksContainer
@@ -85,35 +85,35 @@ CBrowserBookmarksContainer::~CBrowserBookmarksContainer()
 // ---------------------------------------------------------
 //
 void CBrowserBookmarksContainer::SetGotoActiveL()
-    {    
+    {
     if( !iGotoPaneActive)
-    	{
-       	iGotoPaneActive = ETrue;
+        {
+        iGotoPaneActive = ETrue;
 
-    	Listbox()->UpdateFilterL();	
-    	if( iSearchPane )
-    	    {
-    	    iGotoPane->SetVKBFlag( EFalse );
-    	    // Check for Search Configuration Changes //
-    	    if( View().ApiProvider().Preferences().GetIntValue( KBrowserSearchIconId )
-    	            != iSearchIconId )
-                {   
-    	        ConstructSearchPaneL();
+        Listbox()->UpdateFilterL();
+        if( iSearchPane )
+            {
+            iGotoPane->SetVKBFlag( EFalse );
+            // Check for Search Configuration Changes //
+            if( View().ApiProvider().Preferences().GetIntValue( KBrowserSearchIconId )
+                    != iSearchIconId )
+                {
+                ConstructSearchPaneL();
                 }
-    	    
+
             iSearchPane->SetFocus( EFalse );
-        	// only one editor can be active at a time //
-        	iSearchPaneActive = EFalse;
-        	// we still need to display search, when showing for first time //
-        	iSearchPane->MakeVisible(ETrue);
+            // only one editor can be active at a time //
+            iSearchPaneActive = EFalse;
+            // we still need to display search, when showing for first time //
+            iSearchPane->MakeVisible(ETrue);
             iSearchPane->CancelEditingL();
-    	    }
-            
-    	// redraw
-    	SizeChanged();
-    	
+            }
+
+        // redraw
+        SizeChanged();
+
         // It is important to set the Text and Italic property after SizeChanged, because
-        // iInputFrame->SetRect() event on GoTo/Search Pane calls the scalable version 
+        // iInputFrame->SetRect() event on GoTo/Search Pane calls the scalable version
         // ( AknLayoutUtils::LayoutEdwinScalable ) which overwrites all the properties for
         // Char and Para Formats.
         if( iSearchPane )
@@ -127,41 +127,41 @@ void CBrowserBookmarksContainer::SetGotoActiveL()
                 }
             CleanupStack::PopAndDestroy( text );
             }
-        
+
         iGotoPane->BeginEditingL();
-       	DrawDeferred();      	
-    	}
+        DrawDeferred();
+        }
     }
-    	
+
 // ---------------------------------------------------------
 // CBrowserBookmarksContainer::SetSearchActiveL
 // ---------------------------------------------------------
 //
 void CBrowserBookmarksContainer::SetSearchActiveL()
-    {    
+    {
     if( ! iSearchPaneActive )
         {
         // Check for Search Configuration Changes //
-        if( View().ApiProvider().Preferences().GetIntValue( KBrowserSearchIconId ) 
+        if( View().ApiProvider().Preferences().GetIntValue( KBrowserSearchIconId )
                 != iSearchIconId )
             {
             ConstructSearchPaneL();
             }
-            
+
         iSearchPane->SetVKBFlag( EFalse );
         iSearchPane->SetFocus( ETrue );
         iSearchPaneActive = ETrue;
-        
+
         Listbox()->UpdateFilterL();
         // only one editor can be active at a time
         iGotoPaneActive = EFalse;
         iGotoPane->MakeVisible(ETrue);
-        iGotoPane->SetFocus( EFalse );        
+        iGotoPane->SetFocus( EFalse );
         iGotoPane->CancelEditingL();
-        
+
         // redraw
         SizeChanged();
-        
+
         // Not Focused, so set the current Text Mode to italics.
         iGotoPane->SetTextModeItalicL();
         // if gotopane is empty add default text
@@ -172,11 +172,11 @@ void CBrowserBookmarksContainer::SetSearchActiveL()
             iGotoPane->SetTextL( KWWWString );
             }
         CleanupStack::PopAndDestroy( text );
-        
+
         iSearchPane->BeginEditingL();
         DrawDeferred();
         }
-       
+
     }
 
 
@@ -186,36 +186,36 @@ void CBrowserBookmarksContainer::SetSearchActiveL()
 //
 
 void CBrowserBookmarksContainer::SetGotoInactiveL()
-	{
-	if( iGotoPaneActive || iSearchPaneActive )
-		{
-		
-		  if( iSearchPane )
+    {
+    if( iGotoPaneActive || iSearchPaneActive )
+        {
+
+          if( iSearchPane )
             {
-            /* In Search Feature we have to move between the editors preserving the 
+            /* In Search Feature we have to move between the editors preserving the
              * text added, clear the text when cancel is pressed.
              */
             iGotoPane->SetTextL( KNullDesC , ETrue );
             SetSearchInactiveL();
             }
-		// Deactivate GoTo Pane
-		iGotoPaneActive = EFalse;
-			
-		// Deactivate GoTo Pane
-    	iGotoPane->MakeVisible( EFalse );
-    	iGotoPane->CancelEditingL();
-    	iGotoPane->SetFocus( EFalse ); 
-				
-		// redraw
-		Listbox()->UpdateFilterL();
-		SizeChanged();
-		DrawDeferred();
-		}
-	}
-	
+        // Deactivate GoTo Pane
+        iGotoPaneActive = EFalse;
+
+        // Deactivate GoTo Pane
+        iGotoPane->MakeVisible( EFalse );
+        iGotoPane->CancelEditingL();
+        iGotoPane->SetFocus( EFalse );
+
+        // redraw
+        Listbox()->UpdateFilterL();
+        SizeChanged();
+        DrawDeferred();
+        }
+    }
+
 void CBrowserBookmarksContainer::SetSearchInactiveL()
     {
-    iSearchPaneActive = EFalse; 
+    iSearchPaneActive = EFalse;
     iSearchPane->SetTextL( KNullDesC , ETrue);
     iSearchPane->MakeVisible( EFalse );
     iSearchPane->CancelEditingL();
@@ -267,60 +267,60 @@ void CBrowserBookmarksContainer::SizeChanged()
     {
     TRect rect = Rect();
     TInt unfilteredNumberOfItems = Listbox()->UnfilteredNumberOfItems();
-    
+
     // if goto pane is active
     if( iGotoPaneActive || iSearchPaneActive )
-    	{
-    	if( iSearchPane )
-    	    {
-    	    TAknWindowLineLayout findPane = AknLayout::find_pane();
-        	
-    	    // Enable / disable line in Goto Pane (hide if listbox is empty).
-        	iGotoPane->SetLineState( unfilteredNumberOfItems > 0 );
-        	
-        	TAknWindowLineLayout listLayout = AknLayout::list_gen_pane( 1 );
-        	
-        	TRect listBoxRect = AknLayoutUtils::RectFromCoords( rect,listLayout.il, 
-        	        listLayout.it, listLayout.ir, listLayout.ib, listLayout.iW, listLayout.iH);
-        	
-        	/* Now we need to make room for both Goto and Search Pane.
-        	 * No layout specification was suitable for this case, so 
-        	 * substracting the height of pane.
-        	 */ 
-        	listBoxRect.iBr.iY -= findPane.iH;
-        	
-        	// In Goto Mode, the listbox is laid out leaving space for Goto Pane.
-        	Listbox()->SetRect( listBoxRect );
-        	
-        
-        	// Now Lay out Search Pane as if it was the old Find Pane.
-            AknLayoutUtils::LayoutControl( iSearchPane, rect, findPane );
-        	
-        	TRect gotoRect = AknLayoutUtils::RectFromCoords( rect,findPane.il, findPane.it, 
-        	        findPane.ir, findPane.ib, findPane.iW, findPane.iH);
-        	
-        	// Calculate the new position for GoToPane.
-        	gotoRect.iTl.iY -= ( findPane.iH );
-        	gotoRect.iBr.iY -= ( findPane.iH );
-        	iGotoPane->SetRect( gotoRect );
-        	
-    	    }
-    	else
-    	    {
-    	    // Enable / disable line in Goto Pane (hide if listbox is empty).
+        {
+        if( iSearchPane )
+            {
+            TAknWindowLineLayout findPane = AknLayout::find_pane();
+
+            // Enable / disable line in Goto Pane (hide if listbox is empty).
             iGotoPane->SetLineState( unfilteredNumberOfItems > 0 );
-             
+
+            TAknWindowLineLayout listLayout = AknLayout::list_gen_pane( 1 );
+
+            TRect listBoxRect = AknLayoutUtils::RectFromCoords( rect,listLayout.il,
+                    listLayout.it, listLayout.ir, listLayout.ib, listLayout.iW, listLayout.iH);
+
+            /* Now we need to make room for both Goto and Search Pane.
+             * No layout specification was suitable for this case, so
+             * substracting the height of pane.
+             */
+            listBoxRect.iBr.iY -= findPane.iH;
+
+            // In Goto Mode, the listbox is laid out leaving space for Goto Pane.
+            Listbox()->SetRect( listBoxRect );
+
+
+            // Now Lay out Search Pane as if it was the old Find Pane.
+            AknLayoutUtils::LayoutControl( iSearchPane, rect, findPane );
+
+            TRect gotoRect = AknLayoutUtils::RectFromCoords( rect,findPane.il, findPane.it,
+                    findPane.ir, findPane.ib, findPane.iW, findPane.iH);
+
+            // Calculate the new position for GoToPane.
+            gotoRect.iTl.iY -= ( findPane.iH );
+            gotoRect.iBr.iY -= ( findPane.iH );
+            iGotoPane->SetRect( gotoRect );
+
+            }
+        else
+            {
+            // Enable / disable line in Goto Pane (hide if listbox is empty).
+            iGotoPane->SetLineState( unfilteredNumberOfItems > 0 );
+
             // In Goto Mode, the listbox is laid out leaving space for Goto Pane.
             AknLayoutUtils::LayoutControl( Listbox(), rect, AknLayout::list_gen_pane( 1 ));
-             
+
             // Lay out Goto Pane as if it was the old Find Pane.
             AknLayoutUtils::LayoutControl( iGotoPane, rect, AknLayout::find_pane() );
-    	    }
-    	}
-	else
-    	{
-        	// Fall back upon default behavior in base-class, which lays out the bookmarks list only
-        	CBrowserFavouritesContainer::SizeChanged();
+            }
+        }
+    else
+        {
+            // Fall back upon default behavior in base-class, which lays out the bookmarks list only
+            CBrowserFavouritesContainer::SizeChanged();
         }
     }
 
@@ -330,7 +330,7 @@ void CBrowserBookmarksContainer::SizeChanged()
 //
 TKeyResponse CBrowserBookmarksContainer::OfferKeyEventL
 ( const TKeyEvent& aKeyEvent, TEventCode aType )
-	{
+    {
 /*
 LOG_ENTERFN( "BookmarksContainer::OfferKeyEventL" );
 BROWSER_LOG( ( _L("aType: %d, aKeyEvent.iCode: %d, iScanCode: %d, iRepeats: %d"),
@@ -338,177 +338,209 @@ BROWSER_LOG( ( _L("aType: %d, aKeyEvent.iCode: %d, iScanCode: %d, iRepeats: %d")
 */
     TKeyResponse result = EKeyWasNotConsumed;
     TKeyEvent keyEvent( aKeyEvent );
-    
-	// Selection Key handling
-	if( keyEvent.iScanCode == EStdKeyDevice3 )
-	    {
+
+    // Selection Key handling
+    if( keyEvent.iScanCode == EStdKeyDevice3 )
+        {
         // it is possible to activate BookmarksView from ContentView
         // via a long press of Selection key, so here we must capture
-        // the KeyDown. Long press processing will be done only if key 
+        // the KeyDown. Long press processing will be done only if key
         // was pressed originally in this view.
-    	if( aType == EEventKeyDown )
-    	    {
+        if( aType == EEventKeyDown )
+            {
             iSelectionKeyDownPressed = ETrue;
-    		result = EKeyWasConsumed;
-    	    }
+            result = EKeyWasConsumed;
+            }
         else if( aType == EEventKeyUp )
-	        {
-	        if( !iSelectionKeyLongPress && iSelectionKeyDownPressed )
-	            {
-	            // short press of Selection key, pass it to GotoPane
+            {
+            if( !iSelectionKeyLongPress && iSelectionKeyDownPressed )
+                {
+                // short press of Selection key, pass it to GotoPane
                 keyEvent.iCode = EKeyOK;
                 result = EKeyWasNotConsumed;
-    	        }
-    	    else
-    	        {
-    	        // long press of Selection key was already processed
+                }
+            else
+                {
+                // long press of Selection key was already processed
                 result = EKeyWasConsumed;
                 }
-	        iSelectionKeyDownPressed = EFalse;
-	        iSelectionKeyLongPress = EFalse;
-    	    }
-    	else if( aType == EEventKey )
-    	    {
-    	    if( keyEvent.iRepeats && iSelectionKeyDownPressed )
-    	        {
+            iSelectionKeyDownPressed = EFalse;
+            iSelectionKeyLongPress = EFalse;
+            }
+        else if( aType == EEventKey )
+            {
+            if( keyEvent.iRepeats && iSelectionKeyDownPressed )
+                {
                 const CFavouritesItem* item = Listbox()->CurrentItem();
                 if ( item )
                     {
-     				// The option for the user to download the page in new window is disabled
+                    // The option for the user to download the page in new window is disabled
                     CBrowserAppUi::Static()->FetchBookmarkL( *item );
-                    }                
-    	        iSelectionKeyLongPress = ETrue;
-    	        iSelectionKeyDownPressed = EFalse;
-    	        }
-    	        
+                    }
+                iSelectionKeyLongPress = ETrue;
+                iSelectionKeyDownPressed = EFalse;
+                }
+
                 if ( (aKeyEvent.iScanCode == EStdKeyHash)  ||
                         ( aKeyEvent.iModifiers &
                         ( EModifierShift | EModifierLeftShift | EModifierRightShift |
                         EModifierCtrl | EModifierLeftCtrl | EModifierRightCtrl ) ) )
                     {
-                    
+
                     // Hash key press will be used for Mark/UnMark functionality
                     // Let Platform Listbox handle this.
                     result = EKeyWasNotConsumed;
                     }
                 else
-            	    {
-             		result = EKeyWasConsumed;
-            	    }
-    	    }
-	    }
-		// If the Goto Pane exists and we're not fetching, then decide
-		// if we should pass keystroke to it
-	if(iGotoPane && !CBrowserAppUi::Static()->Fetching())
-		{
-		// If the key so far hadn't been consumed or if the pane is already active,
-		// pass the keystroke on
-		if( (result == EKeyWasNotConsumed) || iGotoPaneActive || iSearchPaneActive )
-			{			
-        	// Goto pane has highest priority; if it's active, arrow keys go there.
-        	// If fetching is in progress, no key events are offered, to prevent it
-        	// from getting the focus and popping up a new CBA.
-        	
-        	// Enter Key  now handled through HandleCommand in BrowserBookmarksView like MSK
-			// This change affects the enter key on the QWERTY keyboard when we run emulator
-        	if(EStdKeyEnter == aKeyEvent.iScanCode && EEventKeyUp == aType && AknLayoutUtils::MSKEnabled() && (iGotoPaneActive || iSearchPaneActive ))
-				{
-				CEikButtonGroupContainer* myCba = CEikButtonGroupContainer::Current();
-				if(myCba != NULL)
-					{
-					TInt cmdId = myCba->ButtonGroup()->CommandId(CEikButtonGroupContainer::EMiddleSoftkeyPosition);
-					View().HandleCommandL(cmdId);
-					result = EKeyWasConsumed;
-					}
-				}
-			else
-			    {
-			    if( iSearchPane )
-			        {
-			        // Process separately for Search Feature //
-			        if( iGotoPaneActive )
+                    {
+                    result = EKeyWasConsumed;
+                    }
+            }
+        }
+
+    // If the Goto Pane exists and we're not fetching, decide
+    // if we should pass key event to the goto pane
+    if ( iGotoPane && !CBrowserAppUi::Static()->Fetching() )
+        {
+        // If the key hadn't been consumed, so far, determine if the keystroke
+        // should be handled by goto pane
+        if ( ( result == EKeyWasNotConsumed ) || iSearchPaneActive )
+            {
+            // Goto pane has highest priority; if it's active, arrow keys go there.
+            // If fetching is in progress, no key events are offered, to prevent it
+            // from getting the focus and popping up a new CBA.
+
+            // Enter Key now handled through HandleCommand in BrowserBookmarksView like MSK
+            // This change affects the enter key on the QWERTY keyboard when we run emulator
+            if ( EStdKeyEnter == aKeyEvent.iScanCode && EEventKeyUp == aType &&
+                 AknLayoutUtils::MSKEnabled() &&
+                 ( iGotoPaneActive || iSearchPaneActive ) )
+                {
+                // Handle MSK press
+                CEikButtonGroupContainer* myCba = CEikButtonGroupContainer::Current();
+                if ( myCba != NULL )
+                    {
+                    TInt cmdId = myCba->ButtonGroup()->CommandId(CEikButtonGroupContainer::EMiddleSoftkeyPosition);
+                    View().HandleCommandL(cmdId);
+                    result = EKeyWasConsumed;
+                    }
+                }
+            else
+                {
+                if ( iSearchPane )
+                    {
+			        // Process separately for Search Feature
+			        if ( iGotoPaneActive )
 			            {
                         result = iGotoPane->OfferKeyEventL( keyEvent, aType );
 			            }
-                    else 
+                    else
                         {
                         result = iSearchPane->OfferKeyEventL( keyEvent, aType );
                         }
- 			        }
-			    else
-			        result = iGotoPane->OfferKeyEventL( keyEvent, aType );
-				}
-        	
-        	if( iSearchPane )
-        	    {
-            	if( ( iGotoPaneActive || iSearchPaneActive) && result == EKeyWasNotConsumed ) 
+                    }
+                else
                     {
-                    
-                    if(  aKeyEvent.iCode == EKeyUpArrow )
+                    if ( iGotoPaneActive )
+                        {
+                        // Once activated let goto pane handle all the keys
+                        result = iGotoPane->OfferKeyEventL( keyEvent, aType );
+                        }
+                    else // if ( !iGotoPaneActive )
+                        {
+                        // Only a valid digit or character should popup the goto pane.
+                        // We will ignore h/w key events, i.e. camera cover, camera
+                        // shutter, zoom, etc... iCode is only valid for EEventKey,
+                        // not EEventKeyDown, so we have to use iScanCode. because
+                        // the goto pane decides to popup on EEventKeyDown. Use
+                        // upper case of iScanCode since there is no overlap of
+                        // h/w scan codes and uppercase letters.
+                        TChar inputCharCode( aKeyEvent.iScanCode );
+                        TBool isDigit = inputCharCode.IsDigit();
+                        TUint upperCase = inputCharCode.GetUpperCase();
+                        if ( isDigit ||
+                             (( upperCase >= 0x41 /*A*/ ) && ( upperCase <= 0x5A /*Z*/ )) )
+                            {
+                            // Valid digit or character was entered, let goto pane
+                            // determine if it handles the keys from here on.
+                            result = iGotoPane->OfferKeyEventL( aKeyEvent, aType );
+                            if ( result == EKeyWasConsumed )
+                                {
+                                // goto pane is not active, make it active now
+                                SetGotoActiveL();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ( iSearchPane )
+                {
+                if ( ( iGotoPaneActive || iSearchPaneActive) &&
+                       result == EKeyWasNotConsumed )
+                    {
+
+                    if (  aKeyEvent.iCode == EKeyUpArrow )
                         {
                         result = EKeyWasConsumed;
-                        if( iSearchPaneActive )
+                        if ( iSearchPaneActive )
                             {
                             SetGotoActiveL();
                             iGotoPane->SetVKBFlag( ETrue );
                             }
                         }
-                    if( aKeyEvent.iCode == EKeyDownArrow )
+
+                    if ( aKeyEvent.iCode == EKeyDownArrow )
                         {
                         result = EKeyWasConsumed;
-                        if( iGotoPaneActive )
+                        if ( iGotoPaneActive )
                             {
                             SetSearchActiveL();
                             iSearchPane->SetVKBFlag( ETrue );
                             }
                         }
                     }
-        	    }
-            
-			// if key is consumed, goto pane was not active, make it active now.
-        	if(result == EKeyWasConsumed && (!iGotoPaneActive && !iSearchPaneActive))
-        		{
-        		SetGotoActiveL();	
-        		}
-        	}
-		}
-	// For handling Enter key in emulator / Keyboard ( Enter key should behave similar to MSK )
-	if(EStdKeyEnter == keyEvent.iScanCode && EEventKey == aType && AknLayoutUtils::MSKEnabled() && result == EKeyWasNotConsumed )
-		{
-		CEikButtonGroupContainer* myCba = CEikButtonGroupContainer::Current();
-		if(myCba != NULL)
-			{
-			TInt cmdId = myCba->ButtonGroup()->CommandId(CEikButtonGroupContainer::EMiddleSoftkeyPosition);
-			if(EAknSoftkeyContextOptions  == cmdId)
-				{
-				View().MenuBar()->TryDisplayContextMenuBarL();
-				result = EKeyWasConsumed;
-				}
-			else if(Listbox()->Model()->ItemTextArray()->MdcaCount() == 0)
-				{
-				View().HandleCommandL(cmdId);
-				result = EKeyWasConsumed;
-				}
-			}
-		}
+                }
+            }
+
+    // For handling Enter key in emulator / Keyboard ( Enter key should behave similar to MSK )
+    if ( EStdKeyEnter == keyEvent.iScanCode && EEventKey == aType &&
+         AknLayoutUtils::MSKEnabled() && result == EKeyWasNotConsumed )
+        {
+        CEikButtonGroupContainer* myCba = CEikButtonGroupContainer::Current();
+        if(myCba != NULL)
+            {
+            TInt cmdId = myCba->ButtonGroup()->CommandId(CEikButtonGroupContainer::EMiddleSoftkeyPosition);
+            if(EAknSoftkeyContextOptions  == cmdId)
+                {
+                View().MenuBar()->TryDisplayContextMenuBarL();
+                result = EKeyWasConsumed;
+                }
+            else if(Listbox()->Model()->ItemTextArray()->MdcaCount() == 0)
+                {
+                View().HandleCommandL(cmdId);
+                result = EKeyWasConsumed;
+                }
+            }
+        }
 
     if ( result == EKeyWasNotConsumed )
         {
         // Otherwise, base class handles Find pane, arrows between folders and
         // the listbox.
-        result = CBrowserFavouritesContainer::OfferKeyEventL
-            ( keyEvent, aType );
+        result = CBrowserFavouritesContainer::OfferKeyEventL( keyEvent, aType );
         }
 
     return result;
-	}
+    }
 
 // ---------------------------------------------------------
 // CBrowserBookmarksContainer::HandleCursorChangedL
 // ---------------------------------------------------------
 //
 void CBrowserBookmarksContainer::HandleCursorChangedL
-( CEikListBox* 
+( CEikListBox*
 #ifdef _DEBUG
     aListBox  // used only for debugging purposes
 #endif
@@ -537,7 +569,7 @@ void CBrowserBookmarksContainer::HandleCursorChangedL
                 }
             }
         iGotoPane->SetTextL( url, ETrue );
-		iGotoPane->SetFocus ( EFalse );
+        iGotoPane->SetFocus ( EFalse );
         }
     }
 
@@ -598,7 +630,8 @@ TInt CBrowserBookmarksContainer::TitleResourceId()
 // ---------------------------------------------------------
 //
 CBrowserBookmarksContainer::CBrowserBookmarksContainer()
-: iGotoPaneActive( EFalse ),iSearchPaneActive(EFalse)
+    : iGotoPaneActive( EFalse ),
+    iSearchPaneActive(EFalse)
     {
     }
 
@@ -615,13 +648,13 @@ void CBrowserBookmarksContainer::ConstructComponentControlsL(
 
 
     // Construct Goto Pane.
-    
+
     //pass view to bookmarks goto pane
     iGotoPane = CBrowserBookmarksGotoPane::NewL( *this, &aView, KAvkonBitmapFile,
             EMbmAvkonQgn_indi_find_goto,
             EMbmAvkonQgn_indi_find_goto_mask);
     iGotoPane->SetFocus( EFalse );
-    
+
     if( View().ApiProvider().Preferences().SearchFeature() )
         {
         ConstructSearchPaneL();
@@ -648,7 +681,7 @@ CBrowserBookmarksContainer::CreateListboxIconHandlerL()
 void CBrowserBookmarksContainer::GetHelpContext( TCoeHelpContext& aContext ) const
     {
     aContext.iMajor = KUidBrowserApplication;
-	aContext.iContext = KOSS_HLP_BM_MAIN;
+    aContext.iContext = KOSS_HLP_BM_MAIN;
     }
 #endif // __SERIES60_HELP
 
@@ -677,15 +710,15 @@ void CBrowserBookmarksContainer::FocusChanged( TDrawNow aDrawNow )
 // ----------------------------------------------------------------------------
 //
 void CBrowserBookmarksContainer::HandlePointerEventL(const TPointerEvent& aPointerEvent)
-    {    
+    {
     if (AknLayoutUtils::PenEnabled())
         {
-		// if goto is active, if a pointer event falls within its rect, 
-		// pass all pointer events to it (such as, to bring up the editor's letter-entry)
-		//
-		// otherwise, if it falls within the listbox's rect
-		//
-        
+        // if goto is active, if a pointer event falls within its rect,
+        // pass all pointer events to it (such as, to bring up the editor's letter-entry)
+        //
+        // otherwise, if it falls within the listbox's rect
+        //
+
         // Now we have two different panes so we have to check explicitly before passing controls
         // to any panes.
         if( iGotoPane && ( iGotoPaneActive || iSearchPaneActive) )
@@ -700,9 +733,9 @@ void CBrowserBookmarksContainer::HandlePointerEventL(const TPointerEvent& aPoint
                          }
                      else
                          {
-                         SetGotoActiveL();                         
+                         SetGotoActiveL();
                          }
-                     iGotoPane->SetVKBFlag( ETrue );                        
+                     iGotoPane->SetVKBFlag( ETrue );
                      }
                  else if( iSearchPane->Rect().Contains( aPointerEvent.iPosition) )
                      {
@@ -712,9 +745,9 @@ void CBrowserBookmarksContainer::HandlePointerEventL(const TPointerEvent& aPoint
                          }
                      else
                          {
-                         SetSearchActiveL();                         
+                         SetSearchActiveL();
                          }
-                     iSearchPane->SetVKBFlag( ETrue );                     
+                     iSearchPane->SetVKBFlag( ETrue );
                      }
                  else
                      {
@@ -728,10 +761,10 @@ void CBrowserBookmarksContainer::HandlePointerEventL(const TPointerEvent& aPoint
                  }
             }
         else
-        	{
-    		// normally, pass all pointer events down to the listbox
-    		Listbox()->HandlePointerEventL(aPointerEvent);        		
-        	}
+            {
+            // normally, pass all pointer events down to the listbox
+            Listbox()->HandlePointerEventL(aPointerEvent);
+            }
         }
     }
 
@@ -744,29 +777,29 @@ void CBrowserBookmarksContainer::ConstructSearchPaneL()
     {
     TFileName iconFile;
     MPreferences& preferences = View().ApiProvider().Preferences();
-    
+
     TInt iconId = preferences.GetIntValue( KBrowserSearchIconId );
     // Get the Search Icon File Path.
     preferences.GetStringValueL( KBrowserSearchIconPath, KMaxFileName, iconFile );
-      
+
     // If Icon File Path Changed or Icon Id Changed, Refresh the Icon for Search Pane.
-    // Comparing Icon File path as well, because it may be possible that two different 
+    // Comparing Icon File path as well, because it may be possible that two different
     // Icon files have same icon id.
-    if( iconId != iSearchIconId  
+    if( iconId != iSearchIconId
             || iSearchIconFilePath.Compare( iconFile ) != 0 )
         {
-          
+
         TInt iconMaskId = preferences.GetIntValue( KBrowserSearchIconMaskId );
 
-        // Save IconId 
+        // Save IconId
         iSearchIconId = iconId;
         // Save Icon File
         iSearchIconFilePath = iconFile;
 
-        
-        // No Icon file or IconId or IconMaskId set , then it means no search provider is still 
+
+        // No Icon file or IconId or IconMaskId set , then it means no search provider is still
         // selected and set by search application, in that case we use the default icon for Search.
-        if( ! iconFile.Length() 
+        if( ! iconFile.Length()
                 || iconId == -1
                 || iconMaskId == -1 )
             {
@@ -774,26 +807,26 @@ void CBrowserBookmarksContainer::ConstructSearchPaneL()
             iconMaskId = EMbmAvkonQgn_indi_find_glass_mask;
             iconFile = KAvkonBitmapFile;
             }
-                 
+
         if( iSearchPane )
             {
             delete iSearchPane;
             iSearchPane = NULL;
             }
-       
-        
+
+
         // iSearchPane != NULL, implies presence of search feature, hence it can be
         // used to validate search feature avoiding repetative calls to utils and
         // avoiding need of separate variable.
-        iSearchPane = CBrowserBookmarksGotoPane::NewL( *this, 
-                            &(View()), 
-                            iconFile, 
+        iSearchPane = CBrowserBookmarksGotoPane::NewL( *this,
+                            &(View()),
+                            iconFile,
                             iconId,
                             iconMaskId,
                             GOTOPANE_POPUPLIST_DISABLE,
                             ETrue
                             );
-       
+
         CBrowserBookmarksView* bookmarkView = REINTERPRET_CAST( CBrowserBookmarksView* ,  &( View() ));
         // Set Pane observer
         iSearchPane->SetGPObserver( bookmarkView );
@@ -810,7 +843,7 @@ void CBrowserBookmarksContainer::HandleResourceChange(TInt aType)
     if( aType == KEikDynamicLayoutVariantSwitch)
         {
         // If search feature exsist
-        if( iSearchPane  ) 
+        if( iSearchPane  )
             {
             if( iSearchPaneActive )
                 {

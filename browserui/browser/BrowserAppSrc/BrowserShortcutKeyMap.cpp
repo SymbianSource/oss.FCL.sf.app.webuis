@@ -67,9 +67,8 @@ const TInt KTransparency[256] =
 #define KKeymapVScrollbarSize 4
 
 // sizing for entire keymap (not counting scrollbar)
-// as a percentage of vertical screen size, and an aspect ratio width/height
+// as a percentage of vertical and horizontal screen size
 #define KKeymapVSize 0.90
-#define KKeymapHVAspectRatio 0.88
 #define KKeymapHSize 0.90
 
 // margins for each cell
@@ -273,14 +272,15 @@ void CBrowserShortcutKeyMap::InitKeymap()
 
     // resize it to account for scrollbar width/height
     iTargetRect.Resize(-TSize(KKeymapHScrollbarSize,KKeymapVScrollbarSize));
+    
+    TBool landscape = iTargetRect.Size().iWidth > iTargetRect.Size().iHeight ; 
 
     //
     // derive shrink amounts based on keymap size constants and shrink the rect
     //
     TInt newHeight = (KKeymapVSize * iTargetRect.Size().iHeight);
-    //TInt newWidth = (KKeymapHSize * iTargetRect.Size().iWidth);
-    TInt newWidth = newHeight * KKeymapHVAspectRatio;
-
+    TInt newWidth  = (KKeymapHSize * iTargetRect.Size().iWidth);
+    
     if(newWidth > KKeymapHSize * iTargetRect.Size().iWidth)
         {
         newWidth = (KKeymapHSize * iTargetRect.Size().iWidth);
@@ -306,7 +306,15 @@ void CBrowserShortcutKeyMap::InitKeymap()
 
     // Set font types
     iLineFont = LatinPlain12();
-    iKeyFont = LatinBold16();
+    
+    if (landscape)
+        { // in landscape need to shrink the font or else it gets clipped
+        iKeyFont = LatinBold13();
+        }
+    else
+        {
+        iKeyFont = LatinBold16();
+        }
 
     // init cell data
     InitCellDataL();

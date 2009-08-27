@@ -611,7 +611,7 @@ void CSystemInfoPlugin::DesToNpvariant(TPtr8& string, NPVariant*& variant)
 {
     char* newString = NULL;
     if (string.Length()) {
-        newString = new char(string.Length());
+        newString = new char[string.Length()];
     }
     if (newString) {
         Mem::Copy(newString, string.Ptr(), string.Length());

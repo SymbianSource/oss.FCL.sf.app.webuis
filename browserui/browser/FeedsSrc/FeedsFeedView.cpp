@@ -194,10 +194,14 @@ void CFeedsFeedView::DoActivateL(const TVwsViewId& /*aPrevViewId*/,
     // fix bug RFON-7FJS2Z: need to activate status pane going back from full story page to feeds view
    	StatusPane()->SwitchLayoutL( R_AVKON_STATUS_PANE_LAYOUT_USUAL );
   	StatusPane()->MakeVisible( ETrue );
-
+    //Take Button group pointer
+    CEikButtonGroupContainer* pButtonGroupContainer = CEikButtonGroupContainer::Current();
     if (!iContainerOnStack)
         {
         AppUi()->AddToViewStackL(*this, iContainer);        
+        //Make button group invisible in order to let container have correct Rect.
+        //Patch is based on comments received from AVKON
+        if(pButtonGroupContainer) pButtonGroupContainer->MakeVisible(EFalse);
         iContainer->SetRect(ClientRect());
         if(iContainer->iBrowserControl->BrowserSettingL(TBrCtlDefs::ESettingsPageOverview))
             {
@@ -208,6 +212,8 @@ void CFeedsFeedView::DoActivateL(const TVwsViewId& /*aPrevViewId*/,
                 (TInt)TBrCtlDefs::ECommandIdBase + (TInt)TBrCtlDefs::ECommandGainFocus));
         
         iContainer->MakeVisible(ETrue);        
+        //Again make Button group visible
+        if(pButtonGroupContainer) pButtonGroupContainer->MakeVisible(ETrue);
         iContainerOnStack = ETrue;
         // resize screen after calling SetRect.  This way looks better
         iContainer->HandleResourceChange(KEikDynamicLayoutVariantSwitch);

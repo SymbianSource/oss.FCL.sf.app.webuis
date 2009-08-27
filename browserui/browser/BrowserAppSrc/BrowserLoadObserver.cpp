@@ -102,14 +102,7 @@ LOG_WRITE_FORMAT("  LoadType: %d", iLoadUrlType );
 		iWindow->ResetPageOverviewLocalSettingL();
 		iWindow->SetImagesLoaded(EFalse);		
         } 
-    switch( iLoadUrlType )
-        {
-        default:
-            {
-            HandleLoadEventOtherL( aLoadEvent, aSize, aTransactionId );
-            break;
-            }
-        }
+	HandleLoadEventOtherL( aLoadEvent, aSize, aTransactionId );
     }
 
 // ----------------------------------------------------------------------------
@@ -128,6 +121,11 @@ void CBrowserLoadObserver::HandleLoadEventOtherL(
         {
         case TBrCtlDefs::EEventLoadError:
             {
+            if(LoadStatus( ELoadStatusSecurePage ))
+            	{
+            	ClearStatus();
+            	UpdateSecureIndicatorL();
+            	}
             SetStatus( ELoadStatusMainError );
             break;
             }

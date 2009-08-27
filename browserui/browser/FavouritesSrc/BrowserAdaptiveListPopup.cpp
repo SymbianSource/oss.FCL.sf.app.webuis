@@ -292,79 +292,9 @@ void CBrowserAdaptiveListPopup::HandlePointerEventL(const TPointerEvent& aPointe
     {
     if (iList && iTouchSupported)
         {
-        TInt idx = iList->CurrentItemIndex();
-
-        //the first time
-        if ( !iList->HighLightEnabled() )
-            {
-            iList->SetHighLight( ETrue );
-
-            //save the original content
-            if ( iFirstGotoContent != NULL )
-                {
-                delete iFirstGotoContent;
-                iFirstGotoContent = NULL;
-                }
-            iFirstGotoContent = iEditor->GetTextInHBufL();
-            if ( iFirstGotoContent == NULL )
-                {
-                iFirstGotoContent = KNullDesC().AllocL();
-                }
-            }
-
         //using ComponentControl(0) instead of iList because need access to a
         //protected function
         ComponentControl(0)->HandlePointerEventL( aPointerEvent );
-        TInt idx2 = iList->CurrentItemIndex();
-        if ((idx2 != idx) || (idx == 0)) // 0 is pre-selected
-            {
-            idx2 = iItems->Count() - idx2 - 1;
-            TPtrC16 item;
-            TPtrC rightSide;
-            item.Set( (*iItems)[ idx2 ] );
-            //cut the slash from the end if needed
-            //permanent sollution until AHLE does not
-            //solve this problem related to ID: TMCN-5TTRXV error
-            if ( item[item.Length() - 1] != KSlash )
-                {
-                rightSide.Set( item.Left( item.Length() ) );
-                }
-            else
-                {
-                rightSide.Set( item.Left( item.Length() - 1 ) );
-                }
-
-            //if true then append the suffix(rightSide), to the
-            //user-typed data
-            //else just use the recent URLs text(rightSide) only
-            if ( iUrlCompletionMode )
-                {
-                HBufC* currentCompletion = HBufC::NewLC(
-                    iFirstGotoContent->Des().Length() + rightSide.Length() + 1 );
-                TPtr currentCompletionPtr = currentCompletion->Des();
-
-                currentCompletionPtr.Copy( iFirstGotoContent->Des() );
-                currentCompletionPtr.Append( rightSide );
-                currentCompletionPtr.ZeroTerminate();
-                iEditor->SetTextL( currentCompletion );
-                iEditor->SetCursorPosL( currentCompletionPtr.Length(), EFalse );
-                CleanupStack::PopAndDestroy( currentCompletion );
-                }
-            else
-                {
-                iEditor->SetTextL( &rightSide );
-                iEditor->SetCursorPosL( rightSide.Length(), EFalse );
-                }
-            iEditor->HandleTextChangedL();
-
-            delete iPrevGotoContent;
-            iPrevGotoContent = NULL;
-            iPrevGotoContent = item.AllocL();
-            iEditor->DrawNow();
-            //change the CBA depending on whether the highlight is
-            //on url or domain
-            CBrowserAppUi::Static()->UpdateCbaL();
-            }
         }
     }
 
@@ -392,11 +322,83 @@ void CBrowserAdaptiveListPopup::HandleListBoxEventL(CEikListBox* aListBox,TListB
                     }
                 }
                 break;
+            case  MEikListBoxObserver::EEventItemClicked:
+                HandleItemClickedL( aListBox );
+                break;
             default:
                 break;
             }
         }
     }
+
+void CBrowserAdaptiveListPopup::HandleItemClickedL( CEikListBox* aListBox )
+    {
+    //the first time
+   if ( !iList->HighLightEnabled() )
+       {
+       iList->SetHighLight( ETrue );
+
+       //save the original content
+       if ( !iFirstGotoContent )
+           {
+           delete iFirstGotoContent;
+           iFirstGotoContent = NULL;
+           }
+       iFirstGotoContent = iEditor->GetTextInHBufL();
+       if ( !iFirstGotoContent )
+           {
+           iFirstGotoContent = KNullDesC().AllocL();
+           }
+       }
+    TInt index = aListBox->CurrentItemIndex();
+    index = iItems->Count() - index - 1;
+    TPtrC16 item((*iItems)[ index ] );
+    TPtrC rightSide;
+
+    //cut the slash from the end if needed
+    //permanent sollution until AHLE does not
+    //solve this problem related to ID: TMCN-5TTRXV error
+    if ( item[item.Length() - 1] != KSlash )
+      {
+      rightSide.Set( item.Left( item.Length() ) );
+      }
+    else
+      {
+      rightSide.Set( item.Left( item.Length() - 1 ) );
+      }
+    
+    //if true then append the suffix(rightSide), to the
+    //user-typed data
+    //else just use the recent URLs text(rightSide) only
+    if ( iUrlCompletionMode )
+      {
+      HBufC* currentCompletion = HBufC::NewLC(
+          iFirstGotoContent->Des().Length() + rightSide.Length() + 1 );
+      TPtr currentCompletionPtr = currentCompletion->Des();
+    
+      currentCompletionPtr.Copy( iFirstGotoContent->Des() );
+      currentCompletionPtr.Append( rightSide );
+      currentCompletionPtr.ZeroTerminate();
+      iEditor->SetTextL( currentCompletion );
+      iEditor->SetCursorPosL( currentCompletionPtr.Length(), EFalse );
+      CleanupStack::PopAndDestroy( currentCompletion );
+      }
+    else
+      {
+      iEditor->SetTextL( &rightSide );
+      iEditor->SetCursorPosL( rightSide.Length(), EFalse );
+      }
+    iEditor->HandleTextChangedL();
+    
+    delete iPrevGotoContent;
+    iPrevGotoContent = NULL;
+    iPrevGotoContent = item.AllocL();
+    iEditor->DrawNow();
+    //change the CBA depending on whether the highlight is
+    //on url or domain
+    CBrowserAppUi::Static()->UpdateCbaL();
+    }
+
 
 //------------------------------------------------------------------
 // CBrowserAdaptiveListPopup::ShowSingleItemPopupListWithGraphicsL(TBool aShowTitle)
@@ -521,14 +523,9 @@ void CBrowserAdaptiveListPopup::ShowPopupListL(TBool aRelayout)
         windowLineLayoutMainTmp = windowLineLayoutMain;
         layoutMainRect.LayoutRect( rect, windowLineLayoutMainTmp );
 
-        if ( iParentType == EBookmarksGotoPane )
-        {
-            windowLineLayoutLW = AppLayout::popup_wml_address_window( 1, itemstoshow );
-        }
-        else
-        {
-            windowLineLayoutLW = AppLayout::popup_wml_address_window( 1, itemstoshow );
-        }
+      
+        windowLineLayoutLW = AppLayout::popup_wml_address_window( 1, itemstoshow );
+      
         windowLineLayoutLWTmp = windowLineLayoutLW;
         layoutLWRect.LayoutRect( layoutMainRect.Rect(), windowLineLayoutLWTmp );
         windowLineLayoutSLW = AknLayoutScalable_Apps::listscroll_popup_wml_pane();

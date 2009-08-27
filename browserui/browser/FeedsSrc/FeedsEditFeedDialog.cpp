@@ -129,7 +129,21 @@ TKeyResponse CFeedsEditFeedDialog::OfferKeyEventL(const TKeyEvent& aKeyEvent,
 //
 void CFeedsEditFeedDialog::HandlePointerEventL(const TPointerEvent& aPointerEvent) 
     {
-    CAknForm::HandlePointerEventL(aPointerEvent);
+    if ((iSelectedDlgLine != IdOfFocusControl()) && (aPointerEvent.iType == TPointerEvent::EButton1Up))
+        {
+        LineChangedL(IdOfFocusControl());
+        }
+    else
+        {
+        if ((iSelectedDlgLine == EFeedsEditAutomaticUpdatingId) && (aPointerEvent.iType == TPointerEvent::EButton1Up))
+            {
+            HandleFreqCmdL();
+            }
+        else
+            {
+            CAknForm::HandlePointerEventL(aPointerEvent);
+            }   
+        }
     }
 
 // ---------------------------------------------------------
@@ -313,7 +327,6 @@ void CFeedsEditFeedDialog::LineChangedL( TInt aControlId )
         {
         // make the 'Change' Button visible
         cba.MakeCommandVisible(EAknSoftkeyChange, ETrue);
-        HandleFreqCmdL();
         }
     else
         {
@@ -575,7 +588,11 @@ void CFeedsEditFeedDialog::ProcessCommandL(TInt aCommandId)
 
 	        break;
 #endif //__SERIES60_HELP 
-
+        case EWmlCmdAboutProduct:
+        	{
+    	    iAppUi->HandleCommandL( aCommandId );
+            break;
+        	}
         default:
             // Standard form commands.
             CAknForm::ProcessCommandL(aCommandId);

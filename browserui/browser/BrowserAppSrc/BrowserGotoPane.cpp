@@ -19,6 +19,7 @@
 
 
 // INCLUDE FILES
+#include <Browser_Platform_Variant.hrh>
 #include <eikmenub.h>
 #include <eikdef.h>
 #include <akninfrm.h>
@@ -538,7 +539,11 @@ TKeyResponse CBrowserGotoPane::OfferKeyEventL
                     if ( iSearchPaneActive )
                         {
                         SetGotoPaneActiveL();
+
+#if defined(BRDO_SEARCH_INTEGRATION_FF)
                         iEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB );
+#endif
+
                         }
                     }
                 if ( aKeyEvent.iCode == EKeyDownArrow )
@@ -547,11 +552,16 @@ TKeyResponse CBrowserGotoPane::OfferKeyEventL
                     if ( iGotoPaneActive )
                         {
                         SetSearchPaneActiveL();
+
+#if defined(BRDO_SEARCH_INTEGRATION_FF)
                         iSearchEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB );
+#endif
+
                         }
                     }
                 }
             }
+
         }
 
     return resp;
@@ -573,6 +583,7 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
     if (Rect().Contains(aPointerEvent.iPosition))
         {
         iGotoKeyHandled->EnableL(ETrue);
+
         // If search feature exists, check and route to appropriate editor //
         if ( iSearchEditor  )
             {
@@ -586,7 +597,9 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
                     {
                     SetSearchPaneActiveL();
                     }
+#if defined(BRDO_SEARCH_INTEGRATION_FF)
                 iSearchEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB);
+#endif
                 }
             else
                 {
@@ -598,7 +611,9 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
                     {
                     SetGotoPaneActiveL();
                     }
+#if defined(BRDO_SEARCH_INTEGRATION_FF)
                 iEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB);
+#endif
                 }
             }
         else
@@ -1211,7 +1226,9 @@ void CBrowserGotoPane::SetGotoPaneActiveL()
 
     if ( iSearchEditor )
         {
+#if defined(BRDO_SEARCH_INTEGRATION_FF)
         iEditor->AddFlagToUserFlags( CEikEdwin::EAvkonDisableVKB );
+#endif
         // if searchpane is empty add default text
         if ( !SearchTextLength() )
             {
@@ -1242,7 +1259,9 @@ void CBrowserGotoPane::SetSearchPaneActiveL()
 
     if ( iSearchEditor )
         {
+#if defined(BRDO_SEARCH_INTEGRATION_FF)
         iSearchEditor->AddFlagToUserFlags( CEikEdwin::EAvkonDisableVKB );
+#endif
         // if gotopane is empty add default text
         if ( !TextLength() )
             {

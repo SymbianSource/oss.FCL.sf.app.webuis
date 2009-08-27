@@ -220,7 +220,7 @@ class CBrowserFavouritesView:public CBrowserViewBase,
         * @param aFolder Folder which contains the items.
         * @return List of items. Pushed on the cleanup stack.
         */
-        virtual CFavouritesItemList* GetItemsLC( TInt aFolder );
+        virtual CFavouritesItemList* GetItemsL( TInt aFolder );
 
 	public:
 	
@@ -564,6 +564,9 @@ class CBrowserFavouritesView:public CBrowserViewBase,
         TBool iSaveStateOnDeactivate;
 
         CBrowserFavouritesListboxState* iSavedListboxState;
+        
+        //Added one variable to hold the data retrieved from database
+        CFavouritesItemList* iBookmarkitems;
 	};
 
 #include "BrowserFavouritesView.inl"

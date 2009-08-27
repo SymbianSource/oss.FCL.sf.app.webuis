@@ -334,6 +334,9 @@ void Util::EncodeSpaces(HBufC*& aString)
     TInt spaces(0);
     TPtr ptr = aString->Des();
     
+    //Trim leading and trailing spaces in URL before encoding spaces inside URL
+    ptr.Trim();
+        
     for (TInt i = ptr.Length()-1; i > 0 ; i--)
         {
         if (ptr[i] == ' ')

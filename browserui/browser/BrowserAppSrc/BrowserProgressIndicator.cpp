@@ -39,7 +39,7 @@
 const TInt KGranularity = 4;
 const TUint KkBLimit = 999;
 const TUint KOnekB = 1024;
-const TUint KOneMB = 1048580;
+const TUint KOneMB = 1024 * 1024;
 const TInt KMaxPercentage = 100;
 const TInt KMBLimit = 10;
 const TInt KMaxMBLimit = 100;

@@ -255,6 +255,9 @@
 
 // Authentication Dialog
 
+//d:label for bookmark name query
+//l:popup_query_data_window
+#define qtn_wml_query_bookmark_title          "Enter bookmark name"
 //d:label for saved deck name query
 //l:popup_query_data_window
 #define qtn_wml_query_savedpage_title          "Enter name for saved page"
@@ -846,6 +849,16 @@
 //
 #define qtn_wmls_sett_defenc_iscii "ISCII"
 
+//d: Browser default character encoding in browser settings: Korean (Euc-Kr)
+//l: list_set_graphic_pane_t1
+//
+#define qtn_wmls_sett_defenc_euc_kr "Korean (Euc-Kr)"
+
+//d: Browser default character encoding in browser settings: Korean (KSC5601)
+//l: list_set_graphic_pane_t1
+//
+#define qtn_wmls_sett_defenc_ksc_5601 "Korean (KSC5601)"
+
 //d:Browser settings main list item texts
 //l:list_setting_pane_t1
 //
@@ -1256,6 +1269,10 @@
 //l:list_single_popup_submenu_pane_t1
 //
 #define qtn_browserbm_options_copy_to_bookmarks_sm            "Copy to bookmarks"
+//d: Options menu item for deleting all Recent URLs.
+//l:list_single_pane_t1_cp2
+//
+#define qtn_browserbm_options_clear_adaptive_bookmarks              "Clear Recent URLs"
 
 //d: Confirmation note shown when 1 Adaptive Bookmark has been copied to root level of Bookmarks View.
 //l:popup_note_window
@@ -1410,6 +1427,9 @@
 //d:Menu item in Preferences->Options->Info menu
 //l:list_single_pane_t1_cp2
 #define qtn_wml_opt_about_product "Name and version"
+//d:Text in About Product information note's heading
+//l:heading_pane_t1
+#define qtn_browsers_title_about "Name and Version"
 
 //d:Menu item in Preferences->Options->Info menu
 //l:list_single_pane_t1_cp2
@@ -1977,6 +1997,65 @@
 //w:
 //r:3.1
 //
+#define qtn_browsers_sett_autoupdating      "Automatic updating"
+
+//d: Selectable text for the Automatic updating setting
+//d: If Off is selected, automatic updating does not occur
+//l: list_set_graphic_pane_t1
+//w:
+//r:3.1
+//
+#define qtn_browsers_sett_autoupdating_off "Off"
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done every 15 minutes
+//l: list_set_graphic_pane_t1
+//w:
+//r:3.1
+//
+#define qtn_browsers_sett_feeds_updating_interval_15min "Every 15 minutes"
+
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done every hour
+//l: list_set_graphic_pane_t1
+//w:
+//r:3.1
+//
+#define qtn_browsers_sett_feeds_updating_interval_hourly "Every hour"
+
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done every 4 hours
+//l: list_set_graphic_pane_t1
+//w:
+//r:3.1
+//
+#define qtn_browsers_sett_feeds_updating_interval_4hours "Every 4 hours"
+
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done daily
+//l: list_set_graphic_pane_t1
+//w:
+//r:3.1
+//
+#define qtn_browsers_sett_feeds_updating_interval_daily "Every day"
+
+
+//d: Selectable text for the Automatic updating setting
+//d: Autoupdating is done weekly
+//l: list_set_graphic_pane_t1
+//w:
+//r:3.1
+//
+#define qtn_browsers_sett_feeds_updating_interval_weekly "Every week"
+
+//d:Browser settings main list item texts for Automatic updating of web feeds
+//l:list_setting_pane_t1
+//w:
+//r:3.1
+//
 #define qtn_browsers_sett_autoupdating_ap       "Update via access point"
 
 //d:Browser settings main list item texts for Automatic updating of web feeds while roaming
@@ -2008,6 +2087,13 @@
 
 #define qtn_browsers_sett_dataquery_autoupdate_ap "The access point has to be defined to enable automatic updating."
 
+//d: When the user enables automatic updating of feeds, a confirmation query is displayed to the user
+//d: noting that turning the feature on may cost them money
+//l: popup_note_window
+//w:
+//r:3.1
+//
+#define qtn_browsers_sett_dataquery_autoupdatewarn "Enabling automatic updating may increase your monthly phone bill"
 //d: Query user to close existing WML page when activating a link to a WML page
 //d: from another window.  Only one WML page can be opened at once.
 //l: popup_note_window
@@ -2025,6 +2111,12 @@
 //r:3.1
 //
 #define qtn_browser_list_toolbar           "Toolbar"
+//d: Tooltip that is showns when the toolbar is activated via the Options menu
+//l: popup_preview_text_window/opt3
+//w:
+//r:3.1
+//
+#define qtn_browser_tooltip_toolbar  "Click an empty area of the page to show the toolbar"
 
 
 //d:Browser settings main list item texts
@@ -2081,6 +2173,13 @@
 //r: 3.2
 //
 #define qtn_browser_list_open_to_viewer         "Open to viewer"
+
+//d: Label for stylus activated popup.
+//d: Popup is shown when user taps on a phone number
+//l: list_single_pane_t1_cp2
+//r: 3.2
+//
+#define qtn_options_call                        "Call"
 
 //d: Label for stylus activated popup.
 //d: Popup is shown when user taps on a phone number
@@ -3005,6 +3104,70 @@
 //r: 5.0
 //
 #define qtn_browser_list_new_web_page               "New web page"
+
+//d: Tooltip for toolbar button
+//l: popup_preview_text_window/opt3
+//w:
+//r: 3.2
+#define qtn_browser_toolbar_tooltip_next            "Next Toolbar"
+
+//d: Tooltip for toolbar button
+//l: popup_preview_text_window/opt3
+//w:
+//r: 3.2
+#define qtn_browser_toolbar_tooltip_back            "Back"
+
+//d: Tooltip for toolbar button
+//l: popup_preview_text_window/opt3
+//w:
+//r: 3.2
+#define qtn_browser_toolbar_tooltip_forward         "Forward"
+
+//d: Tooltip for toolbar button
+//l: popup_preview_text_window/opt3
+//w:
+//r: 3.2
+#define qtn_browser_toolbar_tooltip_pageoverview    "Page Overview"
+
+//d: Tooltip for toolbar button
+//l: popup_preview_text_window/opt3
+//w:
+//r: 3.2
+#define qtn_browser_toolbar_tooltip_reload          "Reload"
+
+//d: Tooltip for toolbar button
+//l: popup_preview_text_window/opt3
+//w:
+//r: 3.2
+#define qtn_browser_toolbar_tooltip_findkeyword     "Find Keyword"
+
+//d: Tooltip for toolbar button
+//l: popup_preview_text_window/opt3
+//w:
+//r: 3.2
+#define qtn_browser_toolbar_tooltip_home            "Home"
+
+//d: Tooltip for toolbar button
+//l: popup_preview_text_window/opt3
+//w:
+//r: 3.2
+#define qtn_browser_toolbar_tooltip_subscribe       "subscribe"
+
+//d: Tooltip for toolbar button
+//l: popup_preview_text_window/opt3
+//w:
+//r: 3.2
+#define qtn_browser_toolbar_tooltip_go              "Go"
+
+//d: List of feeds to choose from .
+//l: heading_pane_t1
+//
+#define qtn_browser_toolbar_subscribe_header      "Select to subscribe"
+
+//d: Confirmation query shown before setting new home page
+//l:popup_note_window
+//
+#define qtn_browser_query_set_as_home_page         "Set as home page?"
 
 // -----------------------------------------------------------------
 // View sub-options

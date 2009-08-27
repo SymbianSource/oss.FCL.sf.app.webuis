@@ -493,6 +493,7 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
         case EWmlCmdGoToAddress: // MSK for Recent Url page
         case EWmlCmdSwitchToGotoActive:
             {
+            iSoftKeyUpdate = EFalse;
             DimToolbarButtons(ETrue);
             TheContainer()->SetGotoActiveL();
             break;
@@ -654,7 +655,7 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
                 iDomainFolderName = NULL;
 
                 CFavouritesItemList* items =
-                            GetItemsLC( KFavouritesAdaptiveItemsFolderUid );
+                            GetItemsL( KFavouritesAdaptiveItemsFolderUid );
                 TInt indexToHighlight = 0;
 
                 for ( TInt i = 0; i < items->Count(); i++ )
@@ -665,7 +666,7 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
                         }
                     }
 
-                CleanupStack::PopAndDestroy();  // items
+                delete items;
                 CleanupStack::PopAndDestroy();  // domainFolderNameToHighlight
 
                 HBufC* title;
@@ -820,7 +821,7 @@ void CBrowserBookmarksView::CommandSetResourceDynL(TSKPair& aLsk, TSKPair& aRsk,
     CBrowserBookmarksContainer* theContainer = TheContainer();
 
     // if the container doesn't exist, leave gotoPanePtr at NULL
-    if (theContainer)
+    if (theContainer && !iSoftKeyUpdate)
         {
         gotoPanePtr = theContainer->GotoPane();
         }
@@ -1120,8 +1121,7 @@ BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
     if ( Model().BeginL( /*aWrite=*/ETrue, /*aDbErrorNote*/ EFalse ) ==
             KErrNone )
         {
-        CFavouritesItemList* items = GetItemsLC( KFavouritesRootUid );
-        CleanupStack::PopAndDestroy();
+        iBookmarkitems = GetItemsL( KFavouritesRootUid );
         Model().CommitL();
         }
        
@@ -1129,8 +1129,8 @@ BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
     //thread, its important to refresh when the thread notifies the fresh data.
     //Call to GetItemsLC above, which inturn calls ManualBMSortL will set iRefresh to false
     //Make it true so that latest FavIcon db info is shown     
-    iRefresh = ETrue;
-
+    //Removed the iRefresh becoming ETrue, move to RefreshL 
+    
     if (iPenEnabled)
         {
         Toolbar()->SetToolbarObserver(this);
@@ -1458,13 +1458,19 @@ void CBrowserBookmarksView::DynInitMenuPaneL
         case R_BROWSER_BOOKMARKS_MENU_PANE_OK:
             {
             // Bookmark-specific handling.
-            if ( aState.IsEmpty() || (TheContainer()->Listbox()->UnfilteredNumberOfItems() < 2) )
+            if ( aState.IsEmpty() || (TheContainer()->Listbox()->UnfilteredNumberOfItems() < 2)||iInAdaptiveBookmarksFolder)
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMove, ETrue );
                 }
             else
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMove, EFalse );
+                }
+               
+            //Disable MoveToFolder option if you are in RecentlyVisitedUrl folder
+            if( iInAdaptiveBookmarksFolder )
+                {
+                aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
                 }
             const CFavouritesItem* item =  TheContainer()->Listbox()->CurrentItem();
             if  ( ( item ) &&
@@ -1845,10 +1851,10 @@ TBool CBrowserBookmarksView::ManualBMSortL( TInt aFolder,
     }
 
 // ----------------------------------------------------------------------------
-// CBrowserBookmarksView::GetItemsLC
+// CBrowserBookmarksView::GetItemsL
 // ----------------------------------------------------------------------------
 //
-CFavouritesItemList* CBrowserBookmarksView::GetItemsLC( TInt aFolder )
+CFavouritesItemList* CBrowserBookmarksView::GetItemsL( TInt aFolder )
     {
 PERFLOG_LOCAL_INIT
 PERFLOG_STOPWATCH_START
@@ -1856,7 +1862,6 @@ PERFLOG_STOPWATCH_START
     if ( iInAdaptiveBookmarksFolder )
         {
         items= new (ELeave) CFavouritesItemList();
-        CleanupStack::PushL(items);//1
         CDesCArrayFlat* aditems = new ( ELeave )
                                 CDesCArrayFlat( KBrowserDesCArrayGranularity );
         aditems->Reset();
@@ -1888,7 +1893,6 @@ PERFLOG_STOPWATCH_START
     else
         {
         items = new (ELeave) CFavouritesItemList();
-        CleanupStack::PushL( items );
         Model().Database().GetAll( *items, aFolder );
         TInt aBMPosition = KAdaptiveBookmarksFirstPositionInBMView; // Adaptive BM folder is first if there is no startpage
         if ( aFolder == KFavouritesRootUid )
@@ -2002,6 +2006,10 @@ PERFLOG_STOPWATCH_START
         iInAdaptiveBookmarksFolder = ETrue;
         }
 
+    if( iPreviousViewID == KUidBrowserBookmarksViewId )
+       {
+       iSoftKeyUpdate = ETrue;
+       }
     CBrowserFavouritesView::DoActivateL
                             ( aPrevViewId, aCustomMessageId, aCustomMessage );
     ApiProvider().BrCtlInterface().AddLoadEventObserverL( this );
@@ -2050,7 +2058,7 @@ void CBrowserBookmarksView::DoDeactivate()
         {
         ExitAdaptiveBookmarks();
         }
-
+    iSoftKeyUpdate = EFalse;
     if ( !ApiProvider().ExitInProgress() )
         {
         ApiProvider().BrCtlInterface().RemoveLoadEventObserver( this );

@@ -150,6 +150,10 @@ class CBrowserAdaptiveListPopup :
         */
         void ShowPopupListL(TBool aRelayout = EFalse);
         void UpdateScrollBarPositionL(const TInt aPosition);
+		void HandleItemClickedL(CEikListBox* aListBox );
+
+		
+
 
     private: // from CCoeControl
 		

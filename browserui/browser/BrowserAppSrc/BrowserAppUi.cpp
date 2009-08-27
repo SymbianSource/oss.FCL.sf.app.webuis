@@ -355,6 +355,26 @@ void CBrowserAppUi::InitBrowserL()
         // get client rect before hiding CBAs
         TRect rect = ClientRect();
         Cba()->MakeVisible( EFalse );
+        //-------------------------------------------------------------------------
+        // Create bookmarkview
+        PERFLOG_STOPWATCH_START;
+        CBrowserBookmarksView* bookmarksView = NULL;
+        TInt folderUid = doc->GetFolderToOpen();
+        if ( IsEmbeddedModeOn() && folderUid!= KFavouritesRootUid)
+            {
+            bookmarksView = CBrowserBookmarksView::NewLC( *this, *iRecentUrlStore, folderUid );
+            }
+        else
+            {
+            bookmarksView = CBrowserBookmarksView::NewLC( *this, *iRecentUrlStore );
+            }
+        PERFLOG_STOP_WRITE("\t BMView NewL")
+
+        iBookmarksView = bookmarksView;
+
+        AddViewL( bookmarksView );  // transfer ownership to CAknViewAppUi
+        CleanupStack::Pop(); // bookmarksView
+        BROWSER_LOG( ( _L( "Bookmarksview up" ) ) );
 
         //-------------------------------------------------------------------------
         // Create ContentView
@@ -417,24 +437,6 @@ void CBrowserAppUi::InitBrowserL()
 
         //-------------------------------------------------------------------------
 
-        PERFLOG_STOPWATCH_START;
-        CBrowserBookmarksView* bookmarksView = NULL;
-        TInt folderUid = doc->GetFolderToOpen();
-        if ( IsEmbeddedModeOn() && folderUid!= KFavouritesRootUid)
-            {
-            bookmarksView = CBrowserBookmarksView::NewLC( *this, *iRecentUrlStore, folderUid );
-            }
-        else
-            {
-            bookmarksView = CBrowserBookmarksView::NewLC( *this, *iRecentUrlStore );
-            }
-        PERFLOG_STOP_WRITE("\t BMView NewL")
-
-        iBookmarksView = bookmarksView;
-
-        AddViewL( bookmarksView );  // transfer ownership to CAknViewAppUi
-        CleanupStack::Pop(); // bookmarksView
-        BROWSER_LOG( ( _L( "Bookmarksview up" ) ) );
 
         CBrowserSettingsView* settingsView = CBrowserSettingsView::NewLC( *this );
         AddViewL( settingsView );   // transfer ownership to CAknViewAppUi
@@ -445,11 +447,6 @@ void CBrowserAppUi::InitBrowserL()
         AddViewL( windowSelectionView );   // transfer ownership to CAknViewAppUi
         CleanupStack::Pop(); // windowSelectionView
         BROWSER_LOG( ( _L( "windowSelectionView up" ) ) );
-
-        CBrowserInitialView* initialView = CBrowserInitialView::NewLC( *this );
-        AddViewL( initialView );   // transfer ownership to CAknViewAppUi
-        CleanupStack::Pop(); // initialView
-        BROWSER_LOG( ( _L( "initialView up" ) ) );
 
         //-------------------------------------------------------------------------
 
@@ -1118,9 +1115,14 @@ void CBrowserAppUi::HandleForegroundEventL( TBool aForeground )
 	        }
 	    else
 	        {
-	        // LastActiveViewId() might return with 0!
-	        TRAP_IGNORE( ActivateLocalViewL( LastActiveViewId() ) );
-	        }    	
+	        TVwsViewId activeViewId;
+	        if( ( GetActiveViewId( activeViewId ) == KErrNone ) &&	        		
+	            (  LastActiveViewId()  != activeViewId.iViewUid ) )
+	             {
+	             // LastActiveViewId() might return with 0!
+	             TRAP_IGNORE( ActivateLocalViewL( LastActiveViewId() ) );
+	             }
+	        }
     	}
 	iViewToBeActivatedIfNeeded.iUid = 0;    
     CAknViewAppUi::HandleForegroundEventL( aForeground );
@@ -1139,12 +1141,6 @@ void CBrowserAppUi::HandleForegroundEventL( TBool aForeground )
             Display().StopProgressAnimationL();
             }
         }
-    else if (ContentView()->FullScreenMode())
-	    {
-	    //Disable content view full screen mode if it goes to background
-    	ContentView()->EnableFullScreenModeL( EFalse);
-	    }
-
 
     if (iWindowManager)
         {
@@ -1634,7 +1630,7 @@ void CBrowserAppUi::LogAccessToRecentUrlL( CBrCtlInterface& aBrCtlInterface )
                         
             if (name && name->Length())
             	{
-            	iRecentUrlStore->SaveData(*url,*name);
+            	iRecentUrlStore->SaveDataL(*url,*name);
             	}
             else
             	{
@@ -1650,12 +1646,12 @@ void CBrowserAppUi::LogAccessToRecentUrlL( CBrCtlInterface& aBrCtlInterface )
                   	cnameDes.Append( cnameLeft );
                    	cnameDes.AppendFill( TChar(KDot),5 );   // '.....'
                    	cnameDes.Append( cnameRight );
-                	iRecentUrlStore->SaveData(*url,*cname);
+                	iRecentUrlStore->SaveDataL(*url,*cname);
                     CleanupStack::PopAndDestroy();//cname
                 	}
                 else
             	    {
-            	    iRecentUrlStore->SaveData(*url,*url);
+            	    iRecentUrlStore->SaveDataL(*url,*url);
             	    }
             	}
             }
@@ -1684,12 +1680,12 @@ void CBrowserAppUi::LogRequestedPageToRecentUrlL( const TDesC& aUrl )
               	cnameDes.Append( cnameLeft );
                	cnameDes.AppendFill( TChar(KDot),5 );   // '.....'
                	cnameDes.Append( cnameRight );
-            	iRecentUrlStore->SaveData(*url,*cname);
+            	iRecentUrlStore->SaveDataL(*url,*cname);
                 CleanupStack::PopAndDestroy();//cname
             	}
             else
         	    {
-        	    iRecentUrlStore->SaveData(*url,*url);
+        	    iRecentUrlStore->SaveDataL(*url,*url);
         	    }
             }
         CleanupStack().PopAndDestroy(); // url
@@ -2378,6 +2374,9 @@ void CBrowserAppUi::ConnectionStageAchievedL()
 		{
                  CancelFetch();
 		}
+    //Close the uploading dialog.
+    iDialogsProvider->UploadProgressNoteL(
+	                0, 0, ETrue, (MBrowserDialogsProviderObserver *)this );
 
     // SendDisconnectEventL();
     // not needed as by that point HTTPSession was already shutdown by executing disconnect menu option

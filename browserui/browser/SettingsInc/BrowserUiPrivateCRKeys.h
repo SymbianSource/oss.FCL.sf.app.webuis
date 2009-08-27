@@ -65,15 +65,6 @@ const TUint32 KBrowserNGPopupBlocking =       0x0000002F;
 // Valid values: URL string, up to 1000 characters
 const TUint32 KBrowserNGHomepageURL =         0x00000030;
 
-// Integer type value to indicate what type of Home Page 
-// should be launched when "Home" option is activated.
-// Valid values:  
-// AccessPoint = 0,
-// User defined home page address = 1,
-// Current URL = 2,
-// Bookmarks = 3    
-const TUint32 KBrowserNGHomepageType =        0x00000031;
-
 //DEPRECATED/OBSOLETE: Determine if the platform toolbar should be visible next time Browser starts
 const TUint32 KBrowserNGShowPlatformToolbar = 0x00000048;
 
