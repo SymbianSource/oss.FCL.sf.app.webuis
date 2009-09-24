@@ -264,12 +264,7 @@ TKeyResponse CBrowserContentViewContainer::OfferKeyEventL(const TKeyEvent& aKeyE
 
         }   // End of handling key events for zooming
 
-    // convert Enter key to KeyOk, this is only for emulator
-    if ( aType == EEventKey &&  keyEvent.iCode == EKeyEnter )
-        {
-        keyEvent.iCode = EKeyOK;
-        }
-
+    
     // Web Engine opens the highlighted link into a new window. (long press)
     // Currently the option is disabled and the link is opened in the same window
     // The commented part below enables the "Open link in new window" option on long press.

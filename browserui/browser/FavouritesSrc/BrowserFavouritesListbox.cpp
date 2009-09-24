@@ -258,6 +258,10 @@ CBrowserFavouritesListbox::SelectionStateL() const
             {
             state.iVisibleItemCount++;
             }
+        else
+            {
+            state.iVisibleFolderCount++;
+            }
         }
 
     TKeyArrayFix key( 0, ECmpTInt32 );

@@ -137,6 +137,7 @@ CBrowserContentView::CBrowserContentView( MApiProvider& aApiProvider ) :
     iFindItemIsInProgress = EFalse;
     iWasInFeedsView = EFalse;
     iPenEnabled = AknLayoutUtils::PenEnabled();
+    iFullScreenBeforeEditModeEntry = EFalse;
     }
 
 
@@ -978,6 +979,7 @@ PERFLOG_STOPWATCH_START
 		{
 		StartAutoFullScreenTimer();
 		}
+    iContainer->SetRect(ClientRect());
 PERFLOG_STOP_WRITE("ContentView::DoActivate")
     }
 
@@ -2278,9 +2280,21 @@ LOG_WRITE_FORMAT(" value: %d", aValue );
             }
         case TBrCtlDefs::EStateFullscreenBrowsing:
             {
-            if ( !aValue )
+            if (!iPenEnabled && IsEditMode())
                 {
-                TRAP_IGNORE( EnableFullScreenModeL( EFalse ) );
+                if (!aValue)
+                    { // exit fullscreen so remember what to go back to after edit mode is exited
+                    iFullScreenBeforeEditModeEntry = iContentFullScreenMode;
+                    TRAP_IGNORE( EnableFullScreenModeL( EFalse ) );
+                    }
+                else if (aValue && iFullScreenBeforeEditModeEntry)
+                    {
+                    TRAP_IGNORE( EnableFullScreenModeL( ETrue ) );
+                    }
+                }
+            else if (!aValue)
+                {
+                    TRAP_IGNORE( EnableFullScreenModeL( EFalse ) );
                 }
             break;
             }
@@ -2919,17 +2933,15 @@ void CBrowserContentView::SaveCurrentZoomLevel(TBool saveZoom)
 // ---------------------------------------------------------------------------
 TInt CBrowserContentView::FindCurrentZoomIndex(TInt aCurrentZoomLevel)
 {
-    TInt aIndex = -1;
-
-    for (aIndex=0; aIndex<iZoomLevelArray->Count()-1; aIndex++)
-    {
-        TInt tmpZoomLevel = (*iZoomLevelArray)[aIndex];
-        if (aCurrentZoomLevel ==(*iZoomLevelArray)[aIndex] )
-        {
-            break;
-        }
-    }
-    return aIndex;
+	TInt index = -1;
+	for ( index = 0; index<iZoomLevelArray->Count()-1; index++)
+	{
+	   if (aCurrentZoomLevel <=(*iZoomLevelArray)[index] )
+		{
+			break;
+		}
+	}
+	return index;
 }
 
 // ---------------------------------------------------------------------------
@@ -3326,7 +3338,10 @@ TBool CBrowserContentView::IsEditMode()
 	TBrCtlDefs::TBrCtlElementType focusedElementType =
                 ApiProvider().BrCtlInterface().FocusedElementType();
 
-	return  (focusedElementType == TBrCtlDefs:: EElementActivatedInputBox);
+	TBool retVal = ((focusedElementType == TBrCtlDefs:: EElementActivatedInputBox) ||
+                    (focusedElementType == TBrCtlDefs:: EElementInputBox) ||
+                    (focusedElementType == TBrCtlDefs:: EElementTextAreaBox));
+	return  (retVal);
 	}
 
 // End of File

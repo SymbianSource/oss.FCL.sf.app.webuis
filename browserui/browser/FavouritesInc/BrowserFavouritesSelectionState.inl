@@ -34,6 +34,7 @@ TBrowserFavouritesSelectionState::TBrowserFavouritesSelectionState()
     iMarkedItemCount = 0;
     iMarkedFolderCount = 0;
     iVisibleItemCount = 0;
+    iVisibleFolderCount = 0;
     }
 
 // ---------------------------------------------------------

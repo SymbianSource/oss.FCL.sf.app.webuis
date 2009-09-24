@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description: 
+* Description:
 *      Interface for Preferences handling.
 *
 *
@@ -83,7 +83,7 @@ struct TPreferencesValues
     TWmlSettingsAdaptiveBookmarks   iAdaptiveBookmarks;
     TWmlSettingsHomePage            iHomePgType;
     TBool                           iHTTPSecuritySupressed;
-    TBool                           iDownloadsOpen;    
+    TBool                           iDownloadsOpen;
     TBool                           iConnDialogs;
     TBool                           iHttpSecurityWarnings;
     TInt                            iMediaVolume;
@@ -116,17 +116,17 @@ struct TPreferencesValues
     TInt                            iToolbarButton6Cmd;     // see Toolbar Button Command List for cenrep values
     TInt                            iToolbarButton7Cmd;     // see Toolbar Button Command List for cenrep values
 	TInt							iShortcutKeysForQwerty;
-	TInt 							iShortcutKey1Cmd;    
-	TInt 							iShortcutKey2Cmd;    
-	TInt 							iShortcutKey3Cmd;    
-	TInt 							iShortcutKey4Cmd;    
-	TInt 							iShortcutKey5Cmd;    
-	TInt 							iShortcutKey6Cmd;    
-	TInt 							iShortcutKey7Cmd;    
-	TInt 							iShortcutKey8Cmd;    
-	TInt 							iShortcutKey9Cmd;    
-	TInt 							iShortcutKey0Cmd;    
-	TInt 							iShortcutKeyStarCmd;    
+	TInt 							iShortcutKey1Cmd;
+	TInt 							iShortcutKey2Cmd;
+	TInt 							iShortcutKey3Cmd;
+	TInt 							iShortcutKey4Cmd;
+	TInt 							iShortcutKey5Cmd;
+	TInt 							iShortcutKey6Cmd;
+	TInt 							iShortcutKey7Cmd;
+	TInt 							iShortcutKey8Cmd;
+	TInt 							iShortcutKey9Cmd;
+	TInt 							iShortcutKey0Cmd;
+	TInt 							iShortcutKeyStarCmd;
 	TInt 							iShortcutKeyHashCmd;
 	TUint32							iScriptLog;
 	// Minimum, Maximum and Default (for new page) Zoom Level settings
@@ -136,12 +136,13 @@ struct TPreferencesValues
 	TInt							iMaxRecentUrlsToShow;
     TBool                           iSearch;                // Search Feature
     TBool                           iService;               // Service Feature
+    TBrCtlDefs::TCursorSettings     iCursorShowMode;
     };
 
 /**
 *   Helper enum for MPreferencesObserver
 */
-enum TPreferencesEvent 
+enum TPreferencesEvent
     {
 	EPreferencesActivate,   // Preferences opened
 	EPreferencesDeactivate, // Preferences closed
@@ -159,12 +160,12 @@ class MPreferencesObserver
         /**
         * Derived classes should implement this method, and act accordingly.
         */
-		virtual void HandlePreferencesChangeL( 
+		virtual void HandlePreferencesChangeL(
 	                            const TPreferencesEvent aEvent,
                                 TPreferencesValues& aValues,
                                 TBrCtlDefs::TBrCtlSettings aSettingType ) = 0;
 	};
-	
+
 //=============================================================================
 
 /**
@@ -178,37 +179,37 @@ class MPreferences
         * To read all of the preferences in one go
         */
         virtual const TPreferencesValues& AllPreferencesL() = 0;
-        
+
         /**
         * To access embedded mode
         */
         virtual TBool EmbeddedMode() const = 0;
-        
+
         /**
 		* To access DefaultAccessPoint setting
         */
 		virtual TUint DefaultAccessPoint() const = 0;
-		
-	
+
+
 		/**
 		* To access DefaultSnapId setting
         */
 
 		virtual TUint DefaultSnapId() const = 0;
-		
+
         /**
         * To access deafult AP details if exist setting.
-        */         
-        virtual CApAccessPointItem* DefaultAPDetails() = 0;		
-		
+        */
+        virtual CApAccessPointItem* DefaultAPDetails() = 0;
+
 		/**
 		* To access Associated VPN Ap if exist
 		*/
 		virtual TUint AssociatedVpn() const = 0;
-		
+
 		/**
 		* Get the vpn item if it is vpn
-		*/		
+		*/
 		virtual TBool VpnDataL( TUint aDefaultAccessPoint, CVpnApItem& aVpnItem ) = 0;
 
         /**
@@ -220,44 +221,44 @@ class MPreferences
 		* To access PageOverview setting
         */
 		virtual TBool PageOverview() const = 0;
-		
+
 		/**
 		* To access BackList setting
         */
 		virtual TBool BackList() const = 0;
-		
+
 		/**
 		* To access AutoRefresh setting
         */
 		virtual TBool AutoRefresh() const = 0;
-		
+
 		/*
-        * Sets the automatic updating access point of Web Feeds 
+        * Sets the automatic updating access point of Web Feeds
         */
         virtual void SetAutomaticUpdatingApL( TUint aSetting ) = 0;
 		/*
-        * Sets the automatic updating while roaming of News & Blogs 
+        * Sets the automatic updating while roaming of News & Blogs
         */
         virtual void SetAutomaticUpdatingWhileRoamingL( TBool aAutoUpdateRoaming ) = 0;
-        
+
         /**
         * To modify user-defined URL suffix list (.com, .org, .net)
         */
         virtual void SetURLSuffixList( HBufC* aValue ) = 0;
-        
+
 		/**
 		* To access user-defined URL suffix list (.com, org, .net)
         */
         virtual HBufC* URLSuffixList( ) const = 0;
         /**
-        * automatic updating access point of Web Feeds 
+        * automatic updating access point of Web Feeds
         */
         virtual TUint AutomaticUpdatingAP() const = 0;
         /**
-        * automatic updating while roaming of News & Blogs 
+        * automatic updating while roaming of News & Blogs
         */
         virtual TBool AutomaticUpdatingWhileRoaming() const = 0;
-        
+
         /**
 		* To access TextWrap setting
         @ return setting item value
@@ -318,7 +319,7 @@ class MPreferences
 		* To access Downloads Open setting
         */
 		virtual TBool DownloadsOpen() const = 0;
-		     
+
 		/**
 		* To access user-defined homepage URL setting
         */
@@ -380,7 +381,7 @@ class MPreferences
         * To access Form Data Saving setting
         */
         virtual TWmlSettingsFormData FormDataSaving() const = 0;
-        
+
         /**
         * To access Access Keys setting : Enabled/Disabled
         */
@@ -390,11 +391,11 @@ class MPreferences
 		* To modify DefaultAccessPoint setting
         */
 		virtual void SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUint aAssocVpn = KWmlNoDefaultAccessPoint  ) = 0;
-		
+
 		/**
 		* To modify DefaultSnapId setting
         */
-		virtual void SetDefaultSnapId (TUint aSnapId) = 0;		
+		virtual void SetDefaultSnapId (TUint aSnapId) = 0;
 
         /**
 		* To modify AutoLoadContent setting
@@ -405,12 +406,12 @@ class MPreferences
 		* To modify PageOverview setting
         */
 		virtual void SetPageOverviewL( TBool aPageOverview ) = 0;
-		
+
 		/**
 		* To modify BackList setting
         */
 		virtual void SetBackListL( TBool aBackList ) = 0;
-		
+
 		/**
 		* To modify AutoRefresh setting
         */
@@ -504,7 +505,7 @@ class MPreferences
 
 	    /**
 	    * To access Default Access Point selection mode settings.
-        */        
+        */
         virtual TCmSettingSelectionMode AccessPointSelectionMode() = 0;
 
         /**
@@ -516,7 +517,7 @@ class MPreferences
         * To modify Popup Blocking Enabled settign
         */
         virtual void SetPopupBlockingL( TBool aPopupBlocking ) = 0;
-        
+
         /**
         * To modify Form Data Saving setting
         */
@@ -581,242 +582,242 @@ class MPreferences
         * To get value of Rotate Display setting
         */
         virtual TBool RotateDisplay() const = 0;
-    
-        /** 
+
+        /**
         * To get Toolbar On/Off value
         */
         virtual TInt ShowToolbarOnOff() const = 0;
-       
-        /** 
+
+        /**
         * To set Toolbar On/Off value
         */
         virtual void SetToolbarOnOffL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Toolbar Button 1 command value
         */
         virtual TInt ShowToolbarButton1Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Toolbar Button 1 command value
         */
         virtual void SetToolbarButton1CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Toolbar Button 2 command value
         */
         virtual TInt ShowToolbarButton2Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Toolbar Button 2 command value
         */
         virtual void SetToolbarButton2CmdL(TInt aCommand) = 0;
-        
-        /** 
+
+        /**
         * To get Toolbar Button 3 command value
         */
         virtual TInt ShowToolbarButton3Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Toolbar Button 3 command value
         */
         virtual void SetToolbarButton3CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Toolbar Button 4 command value
         */
         virtual TInt ShowToolbarButton4Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Toolbar Button 4 command value
         */
         virtual void SetToolbarButton4CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Toolbar Button 5 command value
         */
         virtual TInt ShowToolbarButton5Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Toolbar Button 5 command value
         */
         virtual void SetToolbarButton5CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Toolbar Button 6 command value
         */
         virtual TInt ShowToolbarButton6Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Toolbar Button 6 command value
         */
         virtual void SetToolbarButton6CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Toolbar Button 7 command value
         */
         virtual TInt ShowToolbarButton7Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Toolbar Button 7 command value
         */
         virtual void SetToolbarButton7CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key 1 command value
         */
         virtual TInt ShortcutKey1Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 1 command value
         */
         virtual void SetShortcutKey1CmdL(TInt aCommand) = 0;
- 
-         /** 
+
+         /**
         * To get Shortcut Key 2 command value
         */
         virtual TInt ShortcutKey2Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 2 command value
         */
         virtual void SetShortcutKey2CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key 3 command value
         */
         virtual TInt ShortcutKey3Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 3 command value
         */
         virtual void SetShortcutKey3CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key 4 command value
         */
         virtual TInt ShortcutKey4Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 4 command value
         */
         virtual void SetShortcutKey4CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key 5 command value
         */
         virtual TInt ShortcutKey5Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 5 command value
         */
         virtual void SetShortcutKey5CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key 6 command value
         */
         virtual TInt ShortcutKey6Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 6 command value
         */
         virtual void SetShortcutKey6CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key 7 command value
         */
         virtual TInt ShortcutKey7Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 7 command value
         */
         virtual void SetShortcutKey7CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key 8 command value
         */
         virtual TInt ShortcutKey8Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 8 command value
         */
         virtual void SetShortcutKey8CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key 9 command value
         */
         virtual TInt ShortcutKey9Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 9 command value
         */
         virtual void SetShortcutKey9CmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key 0 command value
         */
         virtual TInt ShortcutKey0Cmd() const = 0;
-       
-        /** 
+
+        /**
         * To set Shortcut Key 0 command value
         */
         virtual void SetShortcutKey0CmdL(TInt aCommand) = 0;
-        
-        /** 
+
+        /**
         * To get Shortcut Key Star command value
         */
         virtual TInt ShortcutKeyStarCmd() const = 0;
 
-        /** 
+        /**
         * To set Shortcut Key Star command value
         */
         virtual void SetShortcutKeyStarCmdL(TInt aCommand) = 0;
 
-        /** 
+        /**
         * To get Shortcut Key Hash command value
         */
         virtual TInt ShortcutKeyHashCmd() const = 0;
-            
-        /** 
+
+        /**
         * To set Shortcut Key Hash command value
         */
         virtual void SetShortcutKeyHashCmdL(TInt aCommand) = 0;
-        
-        /** 
+
+        /**
         * To get Shortcut Key for Qwerty command value
         */
         virtual TInt ShortcutKeysForQwerty() const = 0;
 
-        /** 
+        /**
         * Zoom Level minimum (percentage) value
         */
         virtual inline TUint32 ZoomLevelMinimum() const = 0;
 
-        /** 
+        /**
         * Zoom Level maximum (percentage) value
         */
         virtual inline TUint32 ZoomLevelMaximum() const = 0;
 
-        /** 
+        /**
         * Zoom Level default (percentage) value
         */
         virtual inline TUint32 ZoomLevelDefault() const = 0;
-        
+
    		/**
 		* Maximum Recent URLs to show
         */
         virtual TInt MaxRecentUrls() const = 0;
 
         /**
-        * Search Feature Enabled or Disabled. 
+        * Search Feature Enabled or Disabled.
         */
         virtual inline TBool SearchFeature() const = 0;
-        
+
         /**
-        * Service Feature Enabled or Disabled. 
+        * Service Feature Enabled or Disabled.
         */
         virtual inline TBool ServiceFeature() const = 0;
-                
+
         /**
         * To access an int value key in ini file
         * @param aKey the ini file key to read
@@ -831,7 +832,12 @@ class MPreferences
         */
         virtual TInt GetStringValueL ( TUint32 aKey, TInt aMaxBufSize, TDes& aBuf ) const = 0;
 
-        
+        /**  
+	    * Cursor show mode  
+	    */  
+        virtual TBrCtlDefs::TCursorSettings CursorShowMode() const = 0;  
+
+
     public:     // observer support
 
         /**
@@ -851,11 +857,11 @@ class MPreferences
 		* To flush share data key settings
 		*/
 		virtual void FlushSD() = 0;
-		
+
 		virtual void NotifyObserversL( TPreferencesEvent aEvent,
                                     TBrCtlDefs::TBrCtlSettings aSettingType ) = 0;
     };
 
 #endif
-            
+
 // End of File

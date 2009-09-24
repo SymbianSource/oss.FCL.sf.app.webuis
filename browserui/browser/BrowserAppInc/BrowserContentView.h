@@ -700,6 +700,7 @@ class CBrowserContentView : public CBrowserViewBase,
         TBool iOptionsMenuActive;
         CPeriodic *iAutoFSPeriodic;
         CPeriodic *iIdlePeriodic;
+        TBool iFullScreenBeforeEditModeEntry;
 
     };
 

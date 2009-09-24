@@ -969,7 +969,11 @@ class CBrowserPreferences : public CBase,
         * To get Service Feature Flag.
         */
         inline TInt ServiceFeature() const;
-
+		
+        /** 
+        * To get cursor show mode
+        */
+        inline TBrCtlDefs::TCursorSettings CursorShowMode() const;
     private:
 
         /**

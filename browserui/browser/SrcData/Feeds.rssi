@@ -240,6 +240,7 @@ RESOURCE MENU_PANE r_feeds_folder_menu_pane_context_menu
     items =
         {
         MENU_ITEM { command = EFeedsUpdate; txt = qtn_feeds_update; },
+        MENU_ITEM { command = EFeedsUpdateAll; txt = qtn_feeds_update_all; },
         MENU_ITEM { command = EFeedsDelete; txt = qtn_fldr_delete; },
         MENU_ITEM { command = EFeedsMove; txt = qtn_options_org_move; },
         MENU_ITEM { command = EFeedsMoveToFolder; txt = qtn_options_org_move_to_folder; },

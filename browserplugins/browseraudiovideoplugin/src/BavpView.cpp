@@ -606,6 +606,7 @@ void CBavpView::Draw( const TRect& aRect ) const
         gc.Clear( aRect );
         }
     
+        if (iBavpController->IsClipLocalMedia() && iBavpController->IsClipSeekable()) {
         if (iBavpController->State() == EBavpPlayComplete) {
           TRAP_IGNORE(iBavpController->setPositionL(iBavpController->Duration()));
         }
@@ -613,7 +614,7 @@ void CBavpView::Draw( const TRect& aRect ) const
           TRAP_IGNORE(iBavpController->setPositionL(iBavpController->getPositionL()));
         }
     }
-    
+        }        
         
     }
 

@@ -636,6 +636,7 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
             else
                 {
                 CBrowserFavouritesView::HandleCommandL( aCommand );
+                UpdateToolbarButtonsState();
                 }
             break;
             }
@@ -1448,7 +1449,12 @@ void CBrowserBookmarksView::DynInitMenuPaneL
 
     #ifndef SHOW_MARK_ALL_ALWAYS
             // As for "mark all", consider items only.
-            if ( aState.iVisibleItemCount == aState.iMarkedItemCount )
+            if ( (aState.iVisibleItemCount == aState.iMarkedItemCount) && (aState.iVisibleFolderCount == aState.iMarkedFolderCount) )
+                {
+                //Checking for both items and folders
+                aMenuPane->SetItemDimmed( EWmlCmdMarkAll, ETrue );
+                }
+           else if( (aState.iVisibleItemCount == 0) && (aState.iVisibleFolderCount < 2))//Only one folder is present and no items
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMarkAll, ETrue );
                 }
@@ -1471,6 +1477,11 @@ void CBrowserBookmarksView::DynInitMenuPaneL
             if( iInAdaptiveBookmarksFolder )
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
+                // These options are not required when user press MSK
+                aMenuPane->SetItemDimmed( EWmlCmdAddBookmark, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdCopyToBookmarks, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdSwitchToGotoActive, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdNewFolder, ETrue );
                 }
             const CFavouritesItem* item =  TheContainer()->Listbox()->CurrentItem();
             if  ( ( item ) &&
@@ -1481,16 +1492,14 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 // We can't delete adaptive bookmarks folder,
                 //   or seamless folders
                 aMenuPane->SetItemDimmed( EWmlCmdDelete, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
                 }
                 
-            if (!iPenEnabled)  
-                {
-                aMenuPane->SetItemDimmed( EWmlCmdAddBookmark, ETrue );
-                aMenuPane->SetItemDimmed( EWmlCmdCopyToBookmarks, ETrue );
-                aMenuPane->SetItemDimmed( EWmlCmdSwitchToGotoActive, ETrue );
-                aMenuPane->SetItemDimmed( EWmlCmdNewFolder, ETrue );
-                }
-
+            //Enable CopyToBookmarks option if you are in RecentlyVisitedUrl folder
+			if( iInAdaptiveBookmarksFolder )
+				{
+				aMenuPane->SetItemDimmed( EWmlCmdCopyToBookmarks, EFalse );
+				}
             break;
             }
         default:
@@ -1597,6 +1606,7 @@ void CBrowserBookmarksView::MoveItemsL()
 	        if ( (*iItemsToMove)[j] == orderArrayUid ) {
 				sortedItemsToMove->AppendL( (*iItemsToMove)[j] );
 				orderArray->Delete( i );
+				i--;
 				break;
 	        }
         }
@@ -1841,7 +1851,6 @@ TBool CBrowserBookmarksView::ManualBMSortL( TInt aFolder,
         }
     if ( iSaveBMOrder )
         {
-        iRefresh = EFalse;
         iSaveBMOrder = EFalse;
         Model().Database().SetData( aFolder, *iCurrentOrder );
         }
@@ -2205,6 +2214,7 @@ void CBrowserBookmarksView::AddNewBookmarkL()
     iRefresh = EFalse;
     Model().Database().SetData( CurrentFolder() , *iCurrentOrder );
     CleanupStack::PopAndDestroy();  // item
+    Container()->Listbox()->ClearSelection();
     }
 
 

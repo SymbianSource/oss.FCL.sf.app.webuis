@@ -635,6 +635,16 @@ TUint32 CBrowserPreferences::ZoomLevelDefault() const
     return iAllPreferences.iZoomLevelDefault;
     }    
     
+
+// ---------------------------------------------------------
+// CBrowserPreferences::CursorShowMode()
+// ---------------------------------------------------------
+//
+TBrCtlDefs::TCursorSettings CBrowserPreferences::CursorShowMode() const
+    {
+    return iAllPreferences.iCursorShowMode;
+    }   
+ 
 // ----------------------------------------------------------------------------
 // CBrowserPreferences::URLSuffixList
 // ----------------------------------------------------------------------------

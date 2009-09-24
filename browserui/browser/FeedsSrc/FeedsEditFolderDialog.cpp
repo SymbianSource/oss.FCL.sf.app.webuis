@@ -242,7 +242,11 @@ void CFeedsEditFolderDialog::ProcessCommandL(TInt aCommandId)
 
             break;
 #endif //__SERIES60_HELP 
-
+        case EWmlCmdAboutProduct:
+        {
+         iAppUi->HandleCommandL( aCommandId );
+         break;
+        }
         default:
             // Standard form commands.
             CAknForm::ProcessCommandL(aCommandId);

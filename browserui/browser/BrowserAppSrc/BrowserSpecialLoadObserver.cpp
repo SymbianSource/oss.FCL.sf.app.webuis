@@ -583,7 +583,7 @@ TBool CBrowserSpecialLoadObserver::HandleUiContentL(
                         }
     				result = ETrue;
        				}
-       			CleanupStack::PopAndDestroy(); //rfile
+       			
        			
                 // delete the downloaded file if it is not handled
                 if(deleteOpml && (dataTypeDes.Compare(KOPMLMimeType) == 0 ))
@@ -591,16 +591,40 @@ TBool CBrowserSpecialLoadObserver::HandleUiContentL(
                     rfs.Delete(fileName);
                     }       			
         		}
-        	CleanupStack::PopAndDestroy(); //rfs        	
-    		}
-    		
-    	// If open file was handled, skip sending to feeds engine
-    	// otherwise, pass it on
-    	if(!result)
-    		{
-    		// Launch the Feeds Engine
-			iContentView->HandleSubscribeToWithUrlL(url);
-			result = ETrue;	
+        	   		
+    	    // If open file was handled, skip sending to feeds engine
+    	    // otherwise, pass it on
+    	    if(!result)
+    		   {
+    		   TInt fileSize;
+    		   // Read the file from the beginning into a buffer
+    		   User::LeaveIfError(rfile.Size(fileSize));
+    		   HBufC8* buffer = HBufC8::NewLC(fileSize);
+    		   TPtr8 bufferPtr(buffer->Des());
+    		   TInt startPos = 0;
+    		   User::LeaveIfError(rfile.Read(startPos, bufferPtr, fileSize));
+    		       		   
+    		   _LIT8( searchTag1, "<feed" ); //Atom 1.0 Feed
+    		   _LIT8( searchTag2, "<rdf" );  //RSS 1.0 Feed
+    		   _LIT8( searchTag3, "<rss" );  //RSS 2.0 Feed
+    		   
+    		   if( ( bufferPtr.FindF( searchTag1 ) != KErrNotFound ) || (bufferPtr.FindF( searchTag2 ) != KErrNotFound ) ||
+    		       (bufferPtr.FindF( searchTag3 ) != KErrNotFound ) )
+    		       {    
+    		        // Launch the Feeds Engine only when xml file contain atleast one of the above mentioned feeds tag 
+			        iContentView->HandleSubscribeToWithUrlL(url);
+			       }
+    		   else
+    		      {
+    		       //Delete the file, if it is not fwd to Feeds Engine, As displaying of xml files is not supported.  
+    		       rfs.Delete(fileName);
+    		      }
+    		   result = ETrue;  
+    		   CleanupStack::PopAndDestroy(); //buffer
+    		   }
+    	    
+    	    CleanupStack::PopAndDestroy(); //rfile
+    	    CleanupStack::PopAndDestroy(); //rfs
     		}
     	}
     

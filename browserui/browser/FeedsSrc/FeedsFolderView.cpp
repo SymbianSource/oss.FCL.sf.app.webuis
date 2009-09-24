@@ -470,7 +470,11 @@ void CFeedsFolderView::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPan
             }
         
         // Mark All
-        iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EAknMarkAll, R_OPTIONS_LIST_MARK_ALL);        
+        if (  iContainer && iContainer->iCurrentFolder &&
+                        iContainer->iCurrentFolder->GetChildren().Count() != iContainer->MarkedItems()->Count() )
+            {
+            iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EAknMarkAll, R_OPTIONS_LIST_MARK_ALL);
+            }
         
         // Unmark ALL
         if (AnyMarkedItems())
@@ -484,7 +488,14 @@ void CFeedsFolderView::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPan
         
         }
     else if(aResourceId == R_FEEDS_FOLDER_MENU_PANE_CONTEXT_MENU) 
-        {
+            {
+            // move
+            if ( iContainer &&
+                    iContainer->iCurrentFolder &&
+                       iContainer->iCurrentFolder->GetChildren().Count() < 2 )
+                 {
+                    aMenuPane->SetItemDimmed(EFeedsMove,ETrue);
+                 }
             aMenuPane->SetItemDimmed(EFeedsMoveToFolder,ETrue);
 
             if (!(item->GetType() == EFolder))
@@ -497,7 +508,11 @@ void CFeedsFolderView::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPan
                     aMenuPane->SetItemDimmed(EFeedsMoveToFolder,EFalse);
                     }            
                 }
-        }
+            else
+            	{
+            	aMenuPane->SetItemDimmed(EFeedsUpdate, ETrue);
+            	}
+            }
     iApiProvider.FeedsClientUtilities().DynInitMenuPaneL(aResourceId, aMenuPane );
     }
 

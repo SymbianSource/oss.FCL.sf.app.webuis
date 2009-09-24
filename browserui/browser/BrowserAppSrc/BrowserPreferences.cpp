@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description: 
+* Description:
 *     It manages WmlBrowser's preferences
 *
 *
@@ -83,33 +83,33 @@ void CBrowserPreferences::ConstructL( TBrowserOverriddenSettings* aSettings )
     LOG_ENTERFN("CBrowserPreferences::ConstructL");
     iObservers = new ( ELeave ) CArrayPtrFlat< MPreferencesObserver >( 1 );
     iCommsModel.ApDb().AddObserverL( this );
-    	
+
 	iApDH = CApDataHandler::NewLC( iCommsModel.CommsDb() );
 	CleanupStack::Pop();
-	
+
     iVpnEngine = CVpnApEngine::NewLC( &(iCommsModel.CommsDb()) );
-    CleanupStack::Pop();	
-	
+    CleanupStack::Pop();
+
  	CRepository* repository = CRepository::NewL( KCRUidBrowserUiLV );
 
-    if ( repository->Get( 
+    if ( repository->Get(
          KBrowserUiCommonFlags, iEngineLocalFeaturesBitmask ) != KErrNone )
         {
         // in case of problems, assume everything is off
         iEngineLocalFeaturesBitmask = 0;
-        } 
-    if ( repository->Get( 
+        }
+    if ( repository->Get(
         KBrowserUiCommonFlags, iUiLocalFeaturesBitmask ) != KErrNone )
         {
         // in case of problems, assume everything is off
         iUiLocalFeaturesBitmask = 0;
-        } 
-    if ( repository->Get( 
+        }
+    if ( repository->Get(
         KBrowserUiCdmaFlags, iCdmaUiLocalFeaturesBitmask ) != KErrNone )
         {
         // in case of problems, assume everything is off
         iCdmaUiLocalFeaturesBitmask = 0;
-        } 
+        }
 
     delete repository;
 
@@ -127,7 +127,7 @@ void CBrowserPreferences::ConstructL( TBrowserOverriddenSettings* aSettings )
 
     //Read ini values to local variables.
     TRAP_IGNORE( RestoreSettingsL() );
-    
+
     // and overwrite some of them if needed
     if ( aSettings )
         {
@@ -144,7 +144,7 @@ TBool CBrowserPreferences::EngineLocalFeatureSupported( const TInt aFeature ) co
 LOG_ENTERFN("CBrowserPreferences::EngineLocalFeatureSupported");
 BROWSER_LOG( ( _L( "EnginLocalFeatureSupported returns %d" ),
         (iEngineLocalFeaturesBitmask & aFeature) ) );
-    return (iEngineLocalFeaturesBitmask & aFeature);    
+    return (iEngineLocalFeaturesBitmask & aFeature);
     }
 
 // ----------------------------------------------------------------------------
@@ -173,7 +173,7 @@ LOG_ENTERFN("CBrowserPreferences::NewLC");
 	CBrowserPreferences* result;
 	result = new ( ELeave ) CBrowserPreferences( aCommsModel, aApiProvider );
 	CleanupStack::PushL( result );
-	result->ConstructL( aSettings );	
+	result->ConstructL( aSettings );
 	return result;
 	}
 
@@ -188,7 +188,7 @@ LOG_ENTERFN("CBrowserPreferences::NewL");
 	CBrowserPreferences* result;
 	result = CBrowserPreferences::NewLC( aCommsModel, aApiProvider, aSettings );
 	CleanupStack::Pop();
-	return result;	
+	return result;
 	}
 
 // ----------------------------------------------------------------------------
@@ -196,7 +196,7 @@ LOG_ENTERFN("CBrowserPreferences::NewL");
 // ----------------------------------------------------------------------------
 //
 CBrowserPreferences::CBrowserPreferences( MCommsModel& aCommsModel,
-                                            MApiProvider& aApiProvider) : 
+                                            MApiProvider& aApiProvider) :
     iApiProvider( aApiProvider ),
     iCommsModel( aCommsModel ),
     iEmbeddedMode( EFalse )
@@ -204,7 +204,7 @@ CBrowserPreferences::CBrowserPreferences( MCommsModel& aCommsModel,
     LOG_ENTERFN("CBrowserPreferences::CBrowserPreferences");
     iAllPreferences.iCookies = EWmlSettingsCookieAllow;
     iAllPreferences.iHttpSecurityWarnings = ETrue;
-    iAllPreferences.iDownloadsOpen = ETrue;    
+    iAllPreferences.iDownloadsOpen = ETrue;
     iAllPreferences.iConnDialogs = ETrue;
     iAllPreferences.iHomePgURL = NULL;
     iAllPreferences.iSearchPgURL = NULL;
@@ -254,40 +254,40 @@ CBrowserPreferences::~CBrowserPreferences()
 
     // For short cut functions
     delete iAllPreferences.iShortCutFuncHomePg;
-    iAllPreferences.iShortCutFuncHomePg = NULL; 
+    iAllPreferences.iShortCutFuncHomePg = NULL;
 
     delete iAllPreferences.iShortCutFuncBkMark;
-    iAllPreferences.iShortCutFuncBkMark = NULL; 
+    iAllPreferences.iShortCutFuncBkMark = NULL;
 
     delete iAllPreferences.iShortCutFuncFindKeyWord;
-    iAllPreferences.iShortCutFuncFindKeyWord = NULL; 
+    iAllPreferences.iShortCutFuncFindKeyWord = NULL;
 
     delete iAllPreferences.iShortCutFuncPrePage;
-    iAllPreferences.iShortCutFuncPrePage = NULL; 
+    iAllPreferences.iShortCutFuncPrePage = NULL;
 
     delete iAllPreferences.iShortCutFuncSwitchWin;
-    iAllPreferences.iShortCutFuncSwitchWin = NULL; 
+    iAllPreferences.iShortCutFuncSwitchWin = NULL;
 
     delete iAllPreferences.iShortCutFuncMiniImage;
-    iAllPreferences.iShortCutFuncMiniImage = NULL; 
+    iAllPreferences.iShortCutFuncMiniImage = NULL;
 
     delete iAllPreferences.iShortCutFuncFullScreen;
-    iAllPreferences.iShortCutFuncFullScreen = NULL; 
+    iAllPreferences.iShortCutFuncFullScreen = NULL;
 
     delete iAllPreferences.iShortCutFuncGoAddr;
-    iAllPreferences.iShortCutFuncGoAddr = NULL; 
+    iAllPreferences.iShortCutFuncGoAddr = NULL;
 
     delete iAllPreferences.iShortCutFuncZoomIn;
-    iAllPreferences.iShortCutFuncZoomIn = NULL; 
+    iAllPreferences.iShortCutFuncZoomIn = NULL;
 
     delete iAllPreferences.iShortCutFuncZoomOut;
-    iAllPreferences.iShortCutFuncZoomOut = NULL; 
+    iAllPreferences.iShortCutFuncZoomOut = NULL;
 
     delete iAllPreferences.iShortCutFuncZoomMode;
-    iAllPreferences.iShortCutFuncZoomMode = NULL; 
+    iAllPreferences.iShortCutFuncZoomMode = NULL;
 
-    delete iAllPreferences.iUrlSuffixList;  
-    iAllPreferences.iUrlSuffixList = NULL;  
+    delete iAllPreferences.iUrlSuffixList;
+    iAllPreferences.iUrlSuffixList = NULL;
     }
 
 // ----------------------------------------------------------------------------
@@ -314,7 +314,7 @@ void CBrowserPreferences::RemoveObserver( MPreferencesObserver* anObserver )
         if ( iObservers->At( i ) == anObserver )
             {
             iObservers->Delete( i );
-            break; 
+            break;
             }
         }
     }
@@ -329,12 +329,12 @@ void CBrowserPreferences::NotifyObserversL( TPreferencesEvent aEvent,
     LOG_ENTERFN("CBrowserPreferences::NotifyObserversL");
     TInt i;
     TInt count = iObservers->Count();
-    
+
     // Passed struct of all preferences to observers
     for ( i = 0; i < count; i++ )
         {
-        iObservers->At( i )->HandlePreferencesChangeL( 
-                                                    aEvent, 
+        iObservers->At( i )->HandlePreferencesChangeL(
+                                                    aEvent,
                                                     iAllPreferences,
                                                     aSettingType );
         }
@@ -350,23 +350,23 @@ void CBrowserPreferences::RestoreSettingsL()
 //
 //  READ USER VARIATED SETTINGS
 //
-    
+
 	//Read auto load content setting
     iAllPreferences.iAutoLoadContent = GetIntValue( KBrowserNGImagesEnabled );
-    
+
     //Read font size
     iAllPreferences.iFontSize = GetIntValue( KBrowserNGFontSize );
 
 	// Read Allow Cookies setting
     if ( GetIntValue( KBrowserNGCookiesEnabled ) )
-        {    
+        {
         iAllPreferences.iCookies = EWmlSettingsCookieAllow;
         }
     else
         {
         iAllPreferences.iCookies = EWmlSettingsCookieReject;
         }
-        
+
     // Read ECMA Setting
     if ( GetIntValue( KBrowserNGECMAScriptSupport ) )
         {
@@ -389,11 +389,11 @@ void CBrowserPreferences::RestoreSettingsL()
             iAllPreferences.iIMEINotification = EWmlSettingsIMEIDisable;
             }
         }
-    
+
     TInt encoding;
 	iRepository->Get( KBrowserNGEncoding, encoding );
     iAllPreferences.iEncoding = ( TUint32 ) encoding;
-    
+
     iAllPreferences.iScriptLog = GetIntValue( KBrowserNGScriptLog ) ;
 
     //Read Fullscreen setting
@@ -407,13 +407,13 @@ void CBrowserPreferences::RestoreSettingsL()
             iAllPreferences.iFullScreen = EWmlSettingsFullScreenFullScreen;
             break;
         	}
-  
+
         case KBrowserFullScreenSettingDataSoftkeysOn:
             {
             iAllPreferences.iFullScreen = EWmlSettingsFullScreenSoftkeysOnly;
             break;
             }
- 
+
         default:
             {
             break;
@@ -433,19 +433,19 @@ void CBrowserPreferences::RestoreSettingsL()
             {
             case (KBrowserAdaptiveBookmarksSettingDataOn):
                 {
-                iAllPreferences.iAdaptiveBookmarks = 
+                iAllPreferences.iAdaptiveBookmarks =
                                             EWmlSettingsAdaptiveBookmarksOn;
                 break;
                 }
             case (KBrowserAdaptiveBookmarksSettingDataHideFolder):
                 {
-                iAllPreferences.iAdaptiveBookmarks = 
+                iAllPreferences.iAdaptiveBookmarks =
                                     EWmlSettingsAdaptiveBookmarksHideFolder;
                 break;
                 }
             case (KBrowserAdaptiveBookmarksSettingDataOff):
                 {
-                iAllPreferences.iAdaptiveBookmarks = 
+                iAllPreferences.iAdaptiveBookmarks =
                                     EWmlSettingsAdaptiveBookmarksOff;
                 break;
                 }
@@ -453,22 +453,22 @@ void CBrowserPreferences::RestoreSettingsL()
                 {
                 break;
                 }
-            }        
+            }
         }
 
-//  
+//
 //  READ OPERATOR VARIATED SETTINGS
 //
 
-	iAllPreferences.iHomePgType = 
+	iAllPreferences.iHomePgType =
                 ( TWmlSettingsHomePage ) GetIntValue( KBrowserNGHomepageType );
-    iAllPreferences.iPageOverview = GetIntValue ( 
+    iAllPreferences.iPageOverview = GetIntValue (
 		                                    KBrowserNGPageOverview );
-	iAllPreferences.iBackList = GetIntValue ( 
+	iAllPreferences.iBackList = GetIntValue (
 		                                    KBrowserNGBackList );
-	iAllPreferences.iAutoRefresh = GetIntValue ( 
-		                                    KBrowserNGAutoRefresh );	
-    
+	iAllPreferences.iAutoRefresh = GetIntValue (
+		                                    KBrowserNGAutoRefresh );
+
     if(PROGRESSIVE_DOWNLOAD)
 	    {
     	iAllPreferences.iDownloadsOpen = GetIntValue ( KBrowserNGOpenDownloads );
@@ -477,28 +477,28 @@ void CBrowserPreferences::RestoreSettingsL()
     	{
     	iAllPreferences.iDownloadsOpen = EFalse;
     	}
-		                                    
+
     //Read suppress security UI setting
     iAllPreferences.iHTTPSecuritySupressed = GetIntValue ( KBrowserSecurityUI );
 
     //Read show connection queries setting
     iAllPreferences.iConnDialogs = GetIntValue( KBrowserConnectionDialogs );
-    
+
     if( !iAllPreferences.iHTTPSecuritySupressed )
         {
         // Read HTTP security warnings setting
-	    iAllPreferences.iHttpSecurityWarnings = GetIntValue ( 
+	    iAllPreferences.iHttpSecurityWarnings = GetIntValue (
 		                            KBrowserNGShowSecurityWarnings );
         }
-    else 
+    else
         {
         //we don't want to see sec warning because they're supressed
         iAllPreferences.iHttpSecurityWarnings = EFalse;
-        }    
-    
+        }
+
     // Media Volume uses different SD ini. Revert to Browser SD ini after use
     iAllPreferences.iMediaVolume = GetIntValue( KBrowserMediaVolumeControl );
-    
+
     // Pop up Blocking
     iAllPreferences.iPopupBlocking = GetIntValue( KBrowserNGPopupBlocking );
 
@@ -507,7 +507,7 @@ void CBrowserPreferences::RestoreSettingsL()
 
     // Access Keys
     iAllPreferences.iAccessKeys = (TBool) GetIntValue( KBrowserNGAccessKeys );
-    
+
     // The leaving functions come at the end
 
     // Search Page
@@ -516,12 +516,12 @@ void CBrowserPreferences::RestoreSettingsL()
         delete iAllPreferences.iSearchPgURL;
         iAllPreferences.iSearchPgURL = NULL;
         }
-        
+
     // Web reed feeds settings - begin
     iAllPreferences.iAutomaticUpdatingAP = GetIntValue( KBrowserNGAutomaticUpdatingAccessPoint );
-    
+
     iAllPreferences.iAutomaticUpdatingWhileRoaming = GetIntValue( KBrowserNGAutomaticUpdatingWhileRoaming );
-    
+
     // Web reed feeds settings - end
     if (CBrowserAppUi::Static()->OrientationCanBeChanged() )
         {
@@ -547,41 +547,41 @@ void CBrowserPreferences::RestoreSettingsL()
     const TInt selectionMode = GetIntValue( KBrowserAccessPointSelectionMode );
     switch ( selectionMode )
         {
-        case EBrowserCenRepApSelModeUserDefined: 
+        case EBrowserCenRepApSelModeUserDefined:
              {
-             iAllPreferences.iAccessPointSelectionMode = EConnectionMethod; 
-             break; 
+             iAllPreferences.iAccessPointSelectionMode = EConnectionMethod;
+             break;
              }
-        case EBrowserCenRepApSelModeAlwaysAsk: 
+        case EBrowserCenRepApSelModeAlwaysAsk:
              {
-             iAllPreferences.iAccessPointSelectionMode = EAlwaysAsk; 
-             break; 
+             iAllPreferences.iAccessPointSelectionMode = EAlwaysAsk;
+             break;
              }
         case EBrowserCenRepApSelModeDestination:
              {
-             iAllPreferences.iAccessPointSelectionMode = EDestination; 
-             break; 
+             iAllPreferences.iAccessPointSelectionMode = EDestination;
+             break;
              }
         default: // Default to Always ask.
              {
-             iAllPreferences.iAccessPointSelectionMode = EAlwaysAsk; 
-             break; 
+             iAllPreferences.iAccessPointSelectionMode = EAlwaysAsk;
+             break;
              }
         }
- 
-    //we differentiate by connecting with a Snap or an access point                         
+
+    //we differentiate by connecting with a Snap or an access point
    if (iAllPreferences.iAccessPointSelectionMode == EConnectionMethod)
-   	    {   		
+   	    {
         //Read default AP setting
         ap = GetIntValue( KBrowserDefaultAccessPoint );
 
-        SetDefaultAccessPointL( ap );   
+        SetDefaultAccessPointL( ap );
 		}
     else if (iAllPreferences.iAccessPointSelectionMode == EDestination)
 		{
    		iAllPreferences.iDefaultSnapId = GetIntValue( KBrowserNGDefaultSnapId );
 		}
-	
+
     // For Short Cut keys
     if ( iAllPreferences.iShortCutFuncHomePg )
         {
@@ -686,7 +686,7 @@ void CBrowserPreferences::RestoreSettingsL()
 
     // For Configuring Toolbar Buttons
     iAllPreferences.iToolbarOnOff       = GetIntValue( KToolbarOnOff );
-    
+
     iAllPreferences.iToolbarButton1Cmd  = GetIntValue( KToolbarButton1Cmd );
     iAllPreferences.iToolbarButton2Cmd  = GetIntValue( KToolbarButton2Cmd );
     iAllPreferences.iToolbarButton3Cmd  = GetIntValue( KToolbarButton3Cmd );
@@ -694,10 +694,10 @@ void CBrowserPreferences::RestoreSettingsL()
     iAllPreferences.iToolbarButton5Cmd  = GetIntValue( KToolbarButton5Cmd );
     iAllPreferences.iToolbarButton6Cmd  = GetIntValue( KToolbarButton6Cmd );
     iAllPreferences.iToolbarButton7Cmd  = GetIntValue( KToolbarButton7Cmd );
-    
-    // For configuring Shortcut Keys 
+
+    // For configuring Shortcut Keys
     iAllPreferences.iShortcutKeysForQwerty  = GetIntValue( KShortcutKeysForQwerty );
-	
+
     iAllPreferences.iShortcutKey1Cmd  = GetIntValue( KShortcutKey1Cmd );
     iAllPreferences.iShortcutKey2Cmd  = GetIntValue( KShortcutKey2Cmd );
     iAllPreferences.iShortcutKey3Cmd  = GetIntValue( KShortcutKey3Cmd );
@@ -715,12 +715,13 @@ void CBrowserPreferences::RestoreSettingsL()
     iAllPreferences.iZoomLevelMin = GetIntValue( KBrowserNGZoomMin );
     iAllPreferences.iZoomLevelMax = GetIntValue( KBrowserNGZoomMax );
     iAllPreferences.iZoomLevelDefault = GetIntValue( KBrowserNGZoomDefault );
-            
+
     iAllPreferences.iMaxRecentUrlsToShow = GetIntValue( KBrowserNGMaxRecentUrls );
 
     iAllPreferences.iSearch = GetIntValue( KBrowserSearch );
     iAllPreferences.iService = GetIntValue( KBrowserServices );
-    }
+    iAllPreferences.iCursorShowMode = (TBrCtlDefs::TCursorSettings)GetIntValue( KBrowserCursorShowMode );
+	}
 
 
 // ----------------------------------------------------------------------------
@@ -739,13 +740,13 @@ const TPreferencesValues& CBrowserPreferences::AllPreferencesL()
 TBool CBrowserPreferences::VpnDataL( TUint aDefaultAccessPoint, CVpnApItem& aVpnItem )
     {
     TBool ret( EFalse );
-    
+
     if( iVpnEngine->IsVpnApL( aDefaultAccessPoint ) )
         {
         iVpnEngine->VpnDataL( aDefaultAccessPoint, aVpnItem );
         ret = ETrue;
         }
-    
+
     return ret;
     }
 
@@ -771,13 +772,13 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
             // if it doesn't, reset access point to always ask and homepage to blank access point home page.
             TUint snapId = iAllPreferences.iDefaultSnapId;
             if (snapId != KWmlNoDefaultSnapId)
-                {            
+                {
     			TRAPD(err, RCmDestination dest = cmManager.DestinationL( snapId ));
     			if (err != KErrNone)
     			    {
     			    aDefaultAccessPoint = KWmlNoDefaultAccessPoint;
         	    	aAssocVpn = KWmlNoDefaultAccessPoint;
-        	    	
+
         			SetAccessPointSelectionModeL(EAlwaysAsk );
         			if (iAllPreferences.iHomePgType == EWmlSettingsHomePageAccessPoint)
         				{
@@ -794,7 +795,7 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
 
 			break;
         	}
-        	
+
         //if connecting with Iap Id
         case EConnectionMethod:
             {
@@ -803,15 +804,15 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
   	        CApListItem* apItem = iCommsModel.AccessPointsL()->ItemForUid( aDefaultAccessPoint );
 	        if (apItem == NULL)
                 {
-                TBool isVpn = EFalse; 
-                TRAPD(leaveCode, isVpn = iVpnEngine->IsVpnApL( aDefaultAccessPoint )) 
+                TBool isVpn = EFalse;
+                TRAPD(leaveCode, isVpn = iVpnEngine->IsVpnApL( aDefaultAccessPoint ))
                 if ( leaveCode == KErrNone )
                 {
-                    if ( isVpn ) 
+                    if ( isVpn )
                         {
                         BROWSER_LOG( ( _L( " This is VPN AP which has a snap in it" ) ) );
-                        break;               
-                        }    	    	
+                        break;
+                        }
                 }
     	    	aDefaultAccessPoint = KWmlNoDefaultAccessPoint;
     	    	aAssocVpn = KWmlNoDefaultAccessPoint;
@@ -828,17 +829,17 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
         			CleanupStack::PopAndDestroy( buf );
     				}
 		    	}
-            
-		    break;	
+
+		    break;
         	}
 
         default:
         	{
-        	break;	
+        	break;
         	}
         }
-    
-    	
+
+
 	// check web feeds for deleted access point
 	CApListItem* apItem = iCommsModel.AccessPointsL()->ItemForUid( iAllPreferences.iAutomaticUpdatingAP );
 	if (apItem == NULL)
@@ -858,23 +859,23 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
 
         TUint32 ass( aDefaultAccessPoint );
         iVpnItem->ReadUint( EApVpnWapAccessPointID, ass );
-        aAssocVpn = ass;            
+        aAssocVpn = ass;
 
         // get real WAP id
         TUint32 ap( aDefaultAccessPoint );
         iVpnItem->ReadUint( EApVpnRealWapID, ap );
         aDefaultAccessPoint = ap;
-        }    
+        }
     BROWSER_LOG( ( _L( "VPN OK" ) ) );
 	iAllPreferences.iDefaultAccessPoint = aDefaultAccessPoint;
 	iAllPreferences.iAssocVpn = aAssocVpn;
-	
-	CApAccessPointItem* api = CApAccessPointItem::NewLC();//maybe we can optimise this too	    
+
+	CApAccessPointItem* api = CApAccessPointItem::NewLC();//maybe we can optimise this too
 	BROWSER_LOG( ( _L( "CApAccessPointItem OK" ) ) );
     TInt err;
     if  ( iOverridenSettings )
         {
-        iCustomAp = iOverridenSettings->GetBrowserSetting( 
+        iCustomAp = iOverridenSettings->GetBrowserSetting(
                                                 EBrowserOverSettingsCustomAp );
         }
     if ( ( iOverridenSettings ) &&  iCustomAp  )
@@ -888,23 +889,23 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
         }
     else
         {
-	    TRAP( err, iApDH->AccessPointDataL( 
-	                            iAllPreferences.iDefaultAccessPoint, *api ) );	        
+	    TRAP( err, iApDH->AccessPointDataL(
+	                            iAllPreferences.iDefaultAccessPoint, *api ) );
         }
     BROWSER_LOG( ( _L( " AccessPointDataL: %d" ), err ) );
 	//Reset default AP pointer and delete the data
 	delete iAllPreferences.iDefaultAPDetails;
 	iAllPreferences.iDefaultAPDetails = NULL;
-	if  ( err != KErrNone )//Let's select the first 
+	if  ( err != KErrNone )//Let's select the first
 		{
-#ifndef __WINSCW__ //we will not select on Wins (defaultap will be assigned a uid indicating that there is 
+#ifndef __WINSCW__ //we will not select on Wins (defaultap will be assigned a uid indicating that there is
 					//no default ap) but rather let ConnMan show the Conn Dlg
 		// The first valid access point has to be selected if exists
 		LOG_WRITE("WE SHOULD NOT BE HERE!!!");
 		CApSelect* apSelect = CApSelect::NewLC
 			(
 			iCommsModel.CommsDb(),
-			KEApIspTypeAll, //KEApIspTypeWAPMandatory, 
+			KEApIspTypeAll, //KEApIspTypeWAPMandatory,
 			EApBearerTypeAll,
 			KEApSortNameAscending,
 			EIPv4 | EIPv6
@@ -926,13 +927,13 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
 #else
 		iAllPreferences.iDefaultAccessPoint = KWmlNoDefaultAccessPoint;
 		iAllPreferences.iDefaultAPDetails = NULL;
-		CleanupStack::PopAndDestroy( api );		
-#endif//WINSCW	
+		CleanupStack::PopAndDestroy( api );
+#endif//WINSCW
 		}
 	else
 		{
 		iAllPreferences.iDefaultAPDetails = api;//store new default accesspoint details
-		CleanupStack::Pop( ); // api			
+		CleanupStack::Pop( ); // api
 		}
 	/*
 	* If VPN set VPN AP ID to default access point!
@@ -943,29 +944,29 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
 	    }
     if( !iEmbeddedMode )
         {
-	    //Store ini value / gateway 
-        SetIntValueL ( KBrowserDefaultAccessPoint, 
+	    //Store ini value / gateway
+        SetIntValueL ( KBrowserDefaultAccessPoint,
                                         iAllPreferences.iDefaultAccessPoint );
         }
     NotifyObserversL( EPreferencesItemChange );
-	    
+
 	//  LOG_LEAVEFN("CBrowserPreferences::SetDefaultAccessPointL");
 	}
-	
-	
+
+
 // ----------------------------------------------------------------------------
 // CBrowserPreferences::SetDefaultSnapId: DestNetChange
 // ----------------------------------------------------------------------------
 //
  void CBrowserPreferences::SetDefaultSnapId (TUint aSnapId)
 		{
-	
+
 		//storing the value of the default snap ID
 		iAllPreferences.iDefaultSnapId = aSnapId;
-		                                        
-        SetIntValueL ( KBrowserNGDefaultSnapId, 
+
+        SetIntValueL ( KBrowserNGDefaultSnapId,
                                         iAllPreferences.iDefaultSnapId );
-	
+
 		}
 
 
@@ -983,10 +984,10 @@ void CBrowserPreferences::SetAutoLoadContentL( TInt aAutoLoadContent )
         // Store value in Shared Data and forward new setting to BrCtl
         if( !iEmbeddedMode )
             {
-            SetIntValueL( KBrowserNGImagesEnabled, 
+            SetIntValueL( KBrowserNGImagesEnabled,
                                     iAllPreferences.iAutoLoadContent );
             }
-        NotifyObserversL( EPreferencesItemChange, 
+        NotifyObserversL( EPreferencesItemChange,
                                         TBrCtlDefs::ESettingsAutoLoadImages );
         }
     }
@@ -1005,14 +1006,14 @@ void CBrowserPreferences::SetPageOverviewL( TBool aPageOverview )
         // Store value in Shared Data and forward new setting to BrCtl
         if( !iEmbeddedMode )
             {
-            SetIntValueL( KBrowserNGPageOverview, 
+            SetIntValueL( KBrowserNGPageOverview,
                                         iAllPreferences.iPageOverview );
             }
         NotifyObserversL( EPreferencesItemChange,
                             TBrCtlDefs::ESettingsPageOverview);
         }
     }
-    
+
 // ----------------------------------------------------------------------------
 // CBrowserPreferences::SetBackListL
 // ----------------------------------------------------------------------------
@@ -1027,14 +1028,14 @@ void CBrowserPreferences::SetBackListL( TBool aBackList )
         // Store value in Shared Data and forward new setting to BrCtl
         if( !iEmbeddedMode )
             {
-            SetIntValueL( KBrowserNGBackList, 
+            SetIntValueL( KBrowserNGBackList,
                                         iAllPreferences.iBackList );
             }
         NotifyObserversL( EPreferencesItemChange,
                             TBrCtlDefs::ESettingsBackList);
         }
     }
-    
+
 // ----------------------------------------------------------------------------
 // CBrowserPreferences::SetAutoRefreshL
 // ----------------------------------------------------------------------------
@@ -1049,13 +1050,13 @@ void CBrowserPreferences::SetAutoRefreshL( TBool aAutoRefresh )
         // Store value in Shared Data and forward new setting to BrCtl
         if( !iEmbeddedMode )
             {
-            SetIntValueL( KBrowserNGAutoRefresh, 
+            SetIntValueL( KBrowserNGAutoRefresh,
                                         iAllPreferences.iAutoRefresh );
             }
         NotifyObserversL( EPreferencesItemChange,
                             TBrCtlDefs::ESettingsAutoRefresh);
         }
-    }    
+    }
 
 // ----------------------------------------------------------------------------
 // CBrowserPreferences::SetTextWrapL
@@ -1072,8 +1073,8 @@ void CBrowserPreferences::SetTextWrapL( TBool aTextWrap )
         if ( !iEmbeddedMode )
             {
             SetIntValueL( KBrowserTextWrapEnabled, iAllPreferences.iTextWrap );
-            }            
-        NotifyObserversL( EPreferencesItemChange, 
+            }
+        NotifyObserversL( EPreferencesItemChange,
                                         TBrCtlDefs::ESettingsTextWrapEnabled );
         }
     }
@@ -1094,7 +1095,7 @@ void CBrowserPreferences::SetFontSizeL( TInt aFontSize )
             {
             SetIntValueL( KBrowserNGFontSize, iAllPreferences.iFontSize );
             }
-        NotifyObserversL( EPreferencesItemChange, 
+        NotifyObserversL( EPreferencesItemChange,
                                             TBrCtlDefs::ESettingsFontSize );
         }
     }
@@ -1109,14 +1110,14 @@ void CBrowserPreferences::SetEncodingL( TUint32 aEncoding )
     if ( aEncoding != iAllPreferences.iEncoding )
         {
         iAllPreferences.iEncoding = aEncoding;
-    
+
         // Store value in Shared Data and forward new setting to BrCtl
         if( !iEmbeddedMode )
             {
-            SetIntValueL ( KBrowserNGEncoding, 
+            SetIntValueL ( KBrowserNGEncoding,
                             ( TInt ) iAllPreferences.iEncoding );
             }
-        NotifyObserversL( EPreferencesItemChange, 
+        NotifyObserversL( EPreferencesItemChange,
                                         TBrCtlDefs::ESettingsCharacterset );
         }
     }
@@ -1131,14 +1132,14 @@ void CBrowserPreferences::SetScriptLogL( TUint32 aScriptLog )
     if ( aScriptLog != iAllPreferences.iScriptLog )
         {
         iAllPreferences.iScriptLog = aScriptLog;
-    
+
         // Store value in Shared Data and forward new setting to BrCtl
         if( !iEmbeddedMode )
             {
-            TBool ret = SetIntValueL ( KBrowserNGScriptLog, 
+            TBool ret = SetIntValueL ( KBrowserNGScriptLog,
                             ( TInt ) iAllPreferences.iScriptLog );
             }
-        NotifyObserversL( EPreferencesItemChange, 
+        NotifyObserversL( EPreferencesItemChange,
                                         TBrCtlDefs::ESettingsScriptLog );
         }
     }
@@ -1147,17 +1148,17 @@ void CBrowserPreferences::SetScriptLogL( TUint32 aScriptLog )
 // CBrowserPreferences::SetAdaptiveBookmarksL
 // ----------------------------------------------------------------------------
 //
-void CBrowserPreferences::SetAdaptiveBookmarksL( 
+void CBrowserPreferences::SetAdaptiveBookmarksL(
                             TWmlSettingsAdaptiveBookmarks aAdaptiveBookmarks )
     {
     LOG_ENTERFN( "CBrowserPreferences::SetAdaptiveBookmarksL" );
-    
+
     if ( ADAPTIVEBOOKMARKS )
         {
         if ( aAdaptiveBookmarks != iAllPreferences.iAdaptiveBookmarks )
             {
             iAllPreferences.iAdaptiveBookmarks = aAdaptiveBookmarks;
-            
+
             if( !iEmbeddedMode )
                 {
 
@@ -1165,20 +1166,20 @@ void CBrowserPreferences::SetAdaptiveBookmarksL(
                 {
 				case (EWmlSettingsAdaptiveBookmarksOn):
                     {
-             
-       				SetIntValueL ( KBrowserNGAdaptiveBookmarks, 
-       					KBrowserAdaptiveBookmarksSettingDataOn );                   
+
+       				SetIntValueL ( KBrowserNGAdaptiveBookmarks,
+       					KBrowserAdaptiveBookmarksSettingDataOn );
                     break;
                     }
                 case (EWmlSettingsAdaptiveBookmarksHideFolder):
                     {
-                    SetIntValueL ( KBrowserNGAdaptiveBookmarks, 
+                    SetIntValueL ( KBrowserNGAdaptiveBookmarks,
                     	KBrowserAdaptiveBookmarksSettingDataHideFolder );
                     break;
                     }
                 case (EWmlSettingsAdaptiveBookmarksOff):
                     {
-                    SetIntValueL ( KBrowserNGAdaptiveBookmarks, 
+                    SetIntValueL ( KBrowserNGAdaptiveBookmarks,
                     	KBrowserAdaptiveBookmarksSettingDataOff );
                     break;
                     }
@@ -1200,7 +1201,7 @@ void CBrowserPreferences::SetAdaptiveBookmarksL(
 void CBrowserPreferences::SetFullScreenL( TWmlSettingsFullScreen aFullScreen )
     {
     LOG_ENTERFN("CBrowserPreferences::SetFullScreenL");
-  
+
     if ( aFullScreen != iAllPreferences.iFullScreen )
         {
         iAllPreferences.iFullScreen = aFullScreen;
@@ -1210,20 +1211,20 @@ void CBrowserPreferences::SetFullScreenL( TWmlSettingsFullScreen aFullScreen )
                 {
 				case EWmlSettingsFullScreenSoftkeysOnly:
                     {
-                    SetIntValueL ( KBrowserNGFullScreen, 
+                    SetIntValueL ( KBrowserNGFullScreen,
                     	KBrowserFullScreenSettingDataSoftkeysOn );
                     break;
                     }
                 case EWmlSettingsFullScreenFullScreen:
                     {
-                    SetIntValueL ( KBrowserNGFullScreen, 
+                    SetIntValueL ( KBrowserNGFullScreen,
                     	KBrowserFullScreenSettingDataSoftkeysOff );
                     break;
                     }
                 default:
                     {
                     break;
-                    }    
+                    }
                 }
             }
         NotifyObserversL( EPreferencesItemChange ); // ContentView is interested
@@ -1244,10 +1245,10 @@ void CBrowserPreferences::SetCookiesL( TWmlSettingsCookies aCookies )
         // Store value in Shared Data and forward new setting to BrCtl
         if( !iEmbeddedMode )
             {
-            SetIntValueL( KBrowserNGCookiesEnabled, 
+            SetIntValueL( KBrowserNGCookiesEnabled,
                                             iAllPreferences.iCookies );
             }
-        NotifyObserversL( EPreferencesItemChange, 
+        NotifyObserversL( EPreferencesItemChange,
                                         TBrCtlDefs::ESettingsCookiesEnabled );
         }
     }
@@ -1266,10 +1267,10 @@ void CBrowserPreferences::SetEcmaL( TWmlSettingsECMA aEcma )
         // Store value in Shared Data and forward new setting to BrCtl
         if( !iEmbeddedMode )
             {
-			SetIntValueL( KBrowserNGECMAScriptSupport, 
+			SetIntValueL( KBrowserNGECMAScriptSupport,
 			                                    iAllPreferences.iEcma );
             }
-        NotifyObserversL( EPreferencesItemChange, 
+        NotifyObserversL( EPreferencesItemChange,
                                     TBrCtlDefs::ESettingsECMAScriptEnabled );
         }
     }
@@ -1286,10 +1287,10 @@ void CBrowserPreferences::SetDownloadsOpenL( TBool aOpen )
         iAllPreferences.iDownloadsOpen = aOpen;
         if( !iEmbeddedMode )
             {
-			SetIntValueL ( KBrowserNGOpenDownloads, 
+			SetIntValueL ( KBrowserNGOpenDownloads,
 				        (TInt) iAllPreferences.iDownloadsOpen );
             }
-        NotifyObserversL( EPreferencesItemChange, 
+        NotifyObserversL( EPreferencesItemChange,
                                     TBrCtlDefs::ESettingsAutoOpenDownloads );
         }
     }
@@ -1307,10 +1308,10 @@ void CBrowserPreferences::SetHttpSecurityWarningsL( TBool aWarningsOn )
         iAllPreferences.iHttpSecurityWarnings = aWarningsOn;
         if( !iEmbeddedMode )
             {
-			SetIntValueL ( KBrowserNGShowSecurityWarnings, 
+			SetIntValueL ( KBrowserNGShowSecurityWarnings,
 				        (TInt) iAllPreferences.iHttpSecurityWarnings );
             }
-        NotifyObserversL( EPreferencesItemChange, 
+        NotifyObserversL( EPreferencesItemChange,
                                     TBrCtlDefs::ESettingsSecurityWarnings );
         }
     }
@@ -1319,7 +1320,7 @@ void CBrowserPreferences::SetHttpSecurityWarningsL( TBool aWarningsOn )
 // CBrowserPreferences::SetIMEINotification
 // ----------------------------------------------------------------------------
 //
-void CBrowserPreferences::SetIMEINotificationL( 
+void CBrowserPreferences::SetIMEINotificationL(
                                         TWmlSettingsIMEI aIMEINotification )
     {
     LOG_ENTERFN("CBrowserPreferences::SetIMEINotificationL");
@@ -1328,14 +1329,14 @@ void CBrowserPreferences::SetIMEINotificationL(
         if ( aIMEINotification != iAllPreferences.iIMEINotification )
             {
             iAllPreferences.iIMEINotification = aIMEINotification;
-            
+
             // Store value in Shared Data and forward new setting to BrCtl
             if( !iEmbeddedMode )
                 {
-                SetIntValueL( KBrowserIMEINotification, 
+                SetIntValueL( KBrowserIMEINotification,
                                         iAllPreferences.iIMEINotification );
                 }
-            NotifyObserversL( EPreferencesItemChange, 
+            NotifyObserversL( EPreferencesItemChange,
                                     TBrCtlDefs::ESettingsIMEINotifyEnabled );
             }
         }
@@ -1351,7 +1352,7 @@ void CBrowserPreferences::HandleApDbEventL( TEvent anEvent )
     if ( anEvent == EDbChanged )//maybe somebody has modified the AP (not very likely though)
         {
         SetDefaultAccessPointL( iAllPreferences.iDefaultAccessPoint );
-        }    
+        }
     }
 
 // ----------------------------------------------------------------------------
@@ -1376,13 +1377,13 @@ BROWSER_LOG( ( _L( " pgtype: %d" ), pgtype ) );
 		    // the value of the home page from the shared data
 			homePgFound = GetStringValueL( KBrowserNGHomepageURL, KMaxHomePgUrlLength, aUrl );
 			}
-		else if ((iAllPreferences.iAccessPointSelectionMode == EConnectionMethod) && 
+		else if ((iAllPreferences.iAccessPointSelectionMode == EConnectionMethod) &&
 				 (pgtype == EWmlSettingsHomePageAccessPoint))
         {
 			// The user has a defined access point, and wants to use the access point's
     		// home page
 BROWSER_LOG( ( _L( "HomePageUrl, Access Point" ) ) );
-        
+
         TUint defaultAp = DefaultAccessPoint();
         if ( defaultAp != KWmlNoDefaultAccessPoint ) // There is an access point defined
             {
@@ -1441,7 +1442,7 @@ BROWSER_LOG( ( _L( "CBrowserPreferences::HomePageFromIapL returns %d" ), homePgF
 //
 TPtrC CBrowserPreferences::SearchPageUrlL()
     {
-LOG_ENTERFN("CBrowserPreferences::SearchPageUrlL");    
+LOG_ENTERFN("CBrowserPreferences::SearchPageUrlL");
     TBool urlTooBig = EFalse;
     TInt error = KErrTooBig;
     TInt length = 512;
@@ -1482,7 +1483,7 @@ LOG_ENTERFN("CBrowserPreferences::SearchPageUrlL");
         }
 
     NotifyObserversL( EPreferencesItemChange );
-    
+
 #ifdef _DEBUG
     TPtrC logString = *iAllPreferences.iSearchPgURL;
     BROWSER_LOG( ( _L( "CBrowserPreferences::SearchPageUrlL returns %S" ), &logString ) );
@@ -1517,12 +1518,12 @@ void CBrowserPreferences::SetFormDataSavingL( TWmlSettingsFormData aFormDataSavi
 
 
         // TO DO: Add to cenrep
-        SetIntValueL( KBrowserFormDataSaving, 
+        SetIntValueL( KBrowserFormDataSaving,
                         iAllPreferences.iFormDataSaving );
         }
     NotifyObserversL( EPreferencesItemChange,
                             TBrCtlDefs::ESettingsAutoFormFillEnabled );
-    }    
+    }
 
 // ----------------------------------------------------------------------------
 // CBrowserPreferences::GetIntValue
@@ -1531,17 +1532,17 @@ void CBrowserPreferences::SetFormDataSavingL( TWmlSettingsFormData aFormDataSavi
 TInt CBrowserPreferences::GetIntValue( TUint32 aKey) const
     {
 LOG_ENTERFN("CBrowserPreferences::GetIntValue");
-    TInt retVal = 0; 
-      
+    TInt retVal = 0;
+
 	if ( iRepository )
 	   	{
-    	iRepository->Get(aKey, retVal);	
+    	iRepository->Get(aKey, retVal);
     	}
-                
+
 BROWSER_LOG( ( _L( "CBrowserPreferences::GetIntValue returns %d" ), retVal ) );
     return retVal;
     }
-    									   
+
 // ----------------------------------------------------------------------------
 // CBrowserPreferences::SetIntValueL
 // ----------------------------------------------------------------------------
@@ -1550,19 +1551,19 @@ TBool CBrowserPreferences::SetIntValueL ( TUint32 aKey, const TInt& aValue )
     {
 LOG_ENTERFN("CBrowserPreferences::SetIntValueL");
 BROWSER_LOG( ( _L( "aValue: %d" ), aValue ) );
-    
+
     // Log setting value BEFORE the change
     #ifdef I__BROWSER_LOG_ENABLED
         TInt preValue;
     	iRepository->Get( aKey, preValue );
         BROWSER_LOG( ( _L( "Prechange CenRep setting value: %d" ), preValue ) );
     #endif // I__BROWSER_LOG_ENABLED
-    
+
     TBool retVal=EFalse;
 	if ( iRepository && ( KErrNone == iRepository->Set( aKey, aValue ) ) )
     	{
     	retVal = ETrue;
-    	}	
+    	}
 
     // Log setting value AFTER the change
     #ifdef I__BROWSER_LOG_ENABLED
@@ -1573,7 +1574,7 @@ BROWSER_LOG( ( _L( "aValue: %d" ), aValue ) );
 
     BROWSER_LOG( ( _L( "CBrowserPreferences::SetIntValueL returns %d" ), retVal ) );
     return retVal;
-    }	
+    }
 
 // ----------------------------------------------------------------------------
 // CBrowserPreferences::GetStringValueL
@@ -1586,7 +1587,7 @@ LOG_ENTERFN("CBrowserPreferences::GetStringValueL(TUint32)");
     TFileName value;
     TInt err( KErrNotFound );
 
-	
+
 	if( iRepository )
 		{
 		err = iRepository->Get( aKey, value );
@@ -1598,12 +1599,12 @@ LOG_ENTERFN("CBrowserPreferences::GetStringValueL(TUint32)");
        	TPtr ptr = retVal->Des();
        	ptr.Copy ( value );
        	}
-        
+
     #ifdef _DEBUG
         TPtrC logString = *retVal;
         BROWSER_LOG( ( _L( "CBrowserPreferences::GetStringValueL returns %S" ), &logString ) );
     #endif // _DEBUG
-    
+
     return retVal;
     }
 
@@ -1611,20 +1612,20 @@ LOG_ENTERFN("CBrowserPreferences::GetStringValueL(TUint32)");
 // CBrowserPreferences::GetStringValueL
 // ----------------------------------------------------------------------------
 //
-TInt CBrowserPreferences::GetStringValueL( 
-		TUint32 aKey, TInt aMaxBufSize, 
+TInt CBrowserPreferences::GetStringValueL(
+		TUint32 aKey, TInt aMaxBufSize,
 		TDes& aBuf) const
     {
 LOG_ENTERFN("CBrowserPreferences::GetStringValueL(TUint32,TInt,TDes&)");
     // Not sure this works, but CRepository has no information about the return
-    // values of the methods. 
+    // values of the methods.
     // So dont know if iRepository->Get returns with an errorid on error,therefore
     // error = iRepository->Get( aKey, ptr ) may not work.
     TInt length( 256 );
     HBufC* value = HBufC::NewL( length );
     TPtr ptr = value->Des();
     TInt error;
-    
+
 	error = iRepository->Get( aKey, ptr );
 
     for( length=length*2; (error==KErrTooBig) && (length<aMaxBufSize); length=length*2)
@@ -1632,7 +1633,7 @@ LOG_ENTERFN("CBrowserPreferences::GetStringValueL(TUint32,TInt,TDes&)");
         delete value;
         value = HBufC::NewL( length );
         ptr = value->Des();
-        
+
 		error = iRepository->Get( aKey, ptr );
         }
     if( error == KErrNone )
@@ -1641,7 +1642,7 @@ LOG_ENTERFN("CBrowserPreferences::GetStringValueL(TUint32,TInt,TDes&)");
         aBuf.Append( ptr );
         }
     delete value;
-    
+
     BROWSER_LOG( ( _L( "CBrowserPreferences::GetStringValueL(TUint32,TInt,TDes&) returns %d" ),
         error ) );
     return error;
@@ -1662,27 +1663,27 @@ LOG_ENTERFN("CBrowserPreferences::SetStringValueL");
         BROWSER_LOG( ( _L( "aValue %S" ), &paramVal ) );
         HBufC* doNothing = HBufC::NewL( 512 );
         TPtr preChange = doNothing->Des();
-    	iRepository->Get( aKey, preChange );	
+    	iRepository->Get( aKey, preChange );
         BROWSER_LOG( ( _L( "Prechange CenRep setting value: %S" ), &preChange ) );
         delete doNothing;
     #endif // _DEBUG
 
     TBool retVal=EFalse;
-	
+
 	if ( iRepository && ( KErrNone == iRepository->Set( aKey, aValue ) ) )
     	{
     	retVal = ETrue;
-    	}	
+    	}
     // Log setting value AFTER the change
     #ifdef _DEBUG
         HBufC* doNothing2 = HBufC::NewL( 512 );
         TPtr postChange = doNothing2->Des();
-   		iRepository->Get( aKey, postChange );	
-        
+   		iRepository->Get( aKey, postChange );
+
         BROWSER_LOG( ( _L( "Postchange CenRep setting value: %S" ), &postChange ) );
         delete doNothing2;
     #endif // _DEBUG
-    
+
     BROWSER_LOG( ( _L( "CBrowserPreferences::SetStringValueL returns %d" ), retVal) );
     return retVal;
     }
@@ -1700,7 +1701,7 @@ LOG_ENTERFN("CBrowserPreferences::SetOverriddenSettingsL");
         TUint tempValue;
         iOverriden = ETrue;
         iOverridenSettings = aSettings;
-        
+
         // Check overridden settings by looking at their default values
         // (see how Launcher2 sets them in the OverriddenSettings constructor)
         tempValue = iOverridenSettings->GetBrowserSetting( EBrowserOverSettingsCustomAp );
@@ -1712,7 +1713,7 @@ LOG_ENTERFN("CBrowserPreferences::SetOverriddenSettingsL");
             }
         tempValue = iOverridenSettings->GetBrowserSetting( EBrowserOverSettingsAutoLoadImages );
         if( tempValue != KMaxTUint )
-            {           
+            {
             iAllPreferences.iAutoLoadContent = tempValue;
             }
 
@@ -1751,7 +1752,7 @@ void CBrowserPreferences::SetEmbeddedModeL(TBool aEmbeddedMode)
     iEmbeddedMode = aEmbeddedMode;
     if( iEmbeddedMode /* && ApiProvider().StartedUp()*/ )
         {
-        NotifyObserversL( EPreferencesItemChange, 
+        NotifyObserversL( EPreferencesItemChange,
                                             TBrCtlDefs::ESettingsEmbedded );
         }
     return;
@@ -1792,10 +1793,10 @@ void CBrowserPreferences::SetHomePageUrlL( const TDesC& aHomePageURL )
     if( aHomePageURL.Length() )
         {
         // Save the homepage with a scheme (default is http if not specified).
-        HBufC* temp = Util::AllocateUrlWithSchemeL( aHomePageURL ); 
+        HBufC* temp = Util::AllocateUrlWithSchemeL( aHomePageURL );
         delete iAllPreferences.iHomePgURL;
         iAllPreferences.iHomePgURL = temp;
-        SetStringValueL( KBrowserNGHomepageURL, 
+        SetStringValueL( KBrowserNGHomepageURL,
                                         iAllPreferences.iHomePgURL->Des() );
         }
     }
@@ -1809,10 +1810,10 @@ void CBrowserPreferences::SetSearchPageUrlL( const TDesC& aSearchPageURL )
     LOG_ENTERFN("CBrowserPreferences::SetSearchPageUrlL");
 
     // Save the searchpage with a scheme (default is http if not specified).
-    HBufC* temp = Util::AllocateUrlWithSchemeL( aSearchPageURL ); 
+    HBufC* temp = Util::AllocateUrlWithSchemeL( aSearchPageURL );
     delete iAllPreferences.iSearchPgURL;
     iAllPreferences.iSearchPgURL = temp;
-    SetStringValueL( KBrowserNGSearchPageURL, 
+    SetStringValueL( KBrowserNGSearchPageURL,
 	                            iAllPreferences.iSearchPgURL->Des() );
     }
 
@@ -1889,7 +1890,7 @@ BROWSER_LOG( ( _L( "CBrowserPreferences::AccessPointSelectionMode returns %d" ),
 // CBrowserPreferences::SetAccessPointSelectionModeL
 // ----------------------------------------------------------------------------
 //
-void CBrowserPreferences::SetAccessPointSelectionModeL( 
+void CBrowserPreferences::SetAccessPointSelectionModeL(
                 TCmSettingSelectionMode aAccessPointSelectionMode )
     {
     LOG_ENTERFN("CBrowserPreferences::SetAccessPointSelectionModeL");
@@ -1898,30 +1899,30 @@ void CBrowserPreferences::SetAccessPointSelectionModeL(
 		{
 		iAllPreferences.iAccessPointSelectionMode = aAccessPointSelectionMode;
 
-        switch ( aAccessPointSelectionMode )                              
+        switch ( aAccessPointSelectionMode )
             {
             case EAlwaysAsk:
                 {
-                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeAlwaysAsk ); 
-                break; 
+                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeAlwaysAsk );
+                break;
                 }
             case EDestination:
                 {
-                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeDestination ); 
-                break; 
+                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeDestination );
+                break;
                 }
             case EConnectionMethod:
                 {
-                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeUserDefined ); 
+                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeUserDefined );
                 break;
                 }
             default:
                 {
-                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeAlwaysAsk ); 
-                break; 
+                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeAlwaysAsk );
+                break;
                 }
-            }          
-		}  
+            }
+		}
     }
 
 // ----------------------------------------------------------------------------
@@ -1943,14 +1944,14 @@ void CBrowserPreferences::SetAutomaticUpdatingWhileRoamingL( TBool aAutoUpdateRo
     if ( aAutoUpdateRoaming != iAllPreferences.iAutomaticUpdatingWhileRoaming )
         {
         iAllPreferences.iAutomaticUpdatingWhileRoaming = aAutoUpdateRoaming;
-        SetIntValueL( KBrowserNGAutomaticUpdatingWhileRoaming, 
+        SetIntValueL( KBrowserNGAutomaticUpdatingWhileRoaming,
                                         iAllPreferences.iAutomaticUpdatingWhileRoaming );
     	}
-    	
+
     }
 
 
-   
+
 // ---------------------------------------------------------
 // CBrowserPreferences::SetToolbarOnOffL()
 // ---------------------------------------------------------
@@ -1961,14 +1962,14 @@ void CBrowserPreferences::SetToolbarOnOffL(TInt aCommand)
         {
         iAllPreferences.iToolbarOnOff = aCommand;
         SetIntValueL( KToolbarOnOff, iAllPreferences.iToolbarOnOff );
-        
-        NotifyObserversL( EPreferencesItemChange, 
+
+        NotifyObserversL( EPreferencesItemChange,
                           TBrCtlDefs::ESettingsToolbarOnOff );
         }
     }
 
-    
-    
+
+
 // ---------------------------------------------------------
 // CBrowserPreferences::SetToolbarButton1CmdL()
 // ---------------------------------------------------------
@@ -1979,8 +1980,8 @@ void CBrowserPreferences::SetToolbarButton1CmdL(TInt aCommand)
         {
         iAllPreferences.iToolbarButton1Cmd = aCommand;
         SetIntValueL( KToolbarButton1Cmd, iAllPreferences.iToolbarButton1Cmd );
-        
-        NotifyObserversL( EPreferencesItemChange, 
+
+        NotifyObserversL( EPreferencesItemChange,
                           TBrCtlDefs::ESettingsToolbarButton1Cmd );
         }
     }
@@ -1996,8 +1997,8 @@ void CBrowserPreferences::SetToolbarButton2CmdL(TInt aCommand)
         {
         iAllPreferences.iToolbarButton2Cmd = aCommand;
         SetIntValueL( KToolbarButton2Cmd, iAllPreferences.iToolbarButton2Cmd );
-        
-        NotifyObserversL( EPreferencesItemChange, 
+
+        NotifyObserversL( EPreferencesItemChange,
                           TBrCtlDefs::ESettingsToolbarButton2Cmd );
         }
     }
@@ -2012,8 +2013,8 @@ void CBrowserPreferences::SetToolbarButton3CmdL(TInt aCommand)
         {
         iAllPreferences.iToolbarButton3Cmd = aCommand;
         SetIntValueL( KToolbarButton3Cmd, iAllPreferences.iToolbarButton3Cmd );
-        
-        NotifyObserversL( EPreferencesItemChange, 
+
+        NotifyObserversL( EPreferencesItemChange,
                           TBrCtlDefs::ESettingsToolbarButton3Cmd );
         }
     }
@@ -2028,8 +2029,8 @@ void CBrowserPreferences::SetToolbarButton4CmdL(TInt aCommand)
         {
         iAllPreferences.iToolbarButton4Cmd = aCommand;
         SetIntValueL( KToolbarButton4Cmd, iAllPreferences.iToolbarButton4Cmd );
-        
-        NotifyObserversL( EPreferencesItemChange, 
+
+        NotifyObserversL( EPreferencesItemChange,
                           TBrCtlDefs::ESettingsToolbarButton4Cmd );
         }
     }
@@ -2044,8 +2045,8 @@ void CBrowserPreferences::SetToolbarButton5CmdL(TInt aCommand)
         {
         iAllPreferences.iToolbarButton5Cmd = aCommand;
         SetIntValueL( KToolbarButton5Cmd, iAllPreferences.iToolbarButton5Cmd );
-        
-        NotifyObserversL( EPreferencesItemChange, 
+
+        NotifyObserversL( EPreferencesItemChange,
                           TBrCtlDefs::ESettingsToolbarButton5Cmd );
         }
     }
@@ -2060,8 +2061,8 @@ void CBrowserPreferences::SetToolbarButton6CmdL(TInt aCommand)
         {
         iAllPreferences.iToolbarButton6Cmd = aCommand;
         SetIntValueL( KToolbarButton6Cmd, iAllPreferences.iToolbarButton6Cmd );
-        
-        NotifyObserversL( EPreferencesItemChange, 
+
+        NotifyObserversL( EPreferencesItemChange,
                           TBrCtlDefs::ESettingsToolbarButton6Cmd );
         }
     }
@@ -2076,8 +2077,8 @@ void CBrowserPreferences::SetToolbarButton7CmdL(TInt aCommand)
         {
         iAllPreferences.iToolbarButton7Cmd = aCommand;
         SetIntValueL( KToolbarButton7Cmd, iAllPreferences.iToolbarButton7Cmd );
-        
-        NotifyObserversL( EPreferencesItemChange, 
+
+        NotifyObserversL( EPreferencesItemChange,
                           TBrCtlDefs::ESettingsToolbarButton7Cmd );
         }
     }
@@ -2107,7 +2108,7 @@ void CBrowserPreferences::SetShortcutKey2CmdL(TInt aCommand)
         SetIntValueL( KShortcutKey2Cmd, iAllPreferences.iShortcutKey2Cmd );
         }
     }
-    
+
 // ---------------------------------------------------------
 // CBrowserPreferences::SetShortcutKey3CmdL()
 // ---------------------------------------------------------
@@ -2238,7 +2239,7 @@ void CBrowserPreferences::SetShortcutKeyHashCmdL(TInt aCommand)
         }
     }
 
-    
+
 // ----------------------------------------------------------------------------
 // CBrowserPreferences::SetURLSuffixList
 // ----------------------------------------------------------------------------
@@ -2246,8 +2247,8 @@ void CBrowserPreferences::SetShortcutKeyHashCmdL(TInt aCommand)
 void CBrowserPreferences::SetURLSuffixList( HBufC* aSetting )
     {
     LOG_ENTERFN("CBrowserPreferences::SetUpdateHoursDefined");
-        
-    SetStringValueL ( KBrowserUrlSuffix, aSetting->Des() );    
+
+    SetStringValueL ( KBrowserUrlSuffix, aSetting->Des() );
 
     TPtr ptr = iAllPreferences.iUrlSuffixList->Des();
     ptr.Copy( aSetting->Des() );

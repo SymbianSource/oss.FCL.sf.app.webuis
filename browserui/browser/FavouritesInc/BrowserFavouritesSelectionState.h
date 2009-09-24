@@ -166,6 +166,7 @@ struct TBrowserFavouritesSelectionState
         TInt iMarkedItemCount;      ///< Count of marked items.
         TInt iMarkedFolderCount;    ///< Count of marked folders.
         TInt iVisibleItemCount;     ///< Count of visible items (not folders).
+        TInt iVisibleFolderCount;     ///< Count of visible folders (not items).
     };
 
 #include "BrowserFavouritesSelectionState.inl"

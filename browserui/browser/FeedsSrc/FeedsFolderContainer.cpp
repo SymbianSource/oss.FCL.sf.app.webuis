@@ -1220,12 +1220,11 @@ void CFeedsFolderContainer::HandleCancelL()
         {
         // Clear the move state and update the Cba.
         iMoveActive = EFalse;
+		// Remove the marks.
+        iListBox->View()->ClearSelection();
         UpdateCbaL();
         // Un-Dim Toolbar
         DimToolbar(EFalse);
-        
-        // Remove the marks.
-        iListBox->View()->ClearSelection();
         }
     }
 
@@ -1856,11 +1855,13 @@ void CFeedsFolderContainer::AddFoldersToListL(const CFeedsEntity& aFolder, CDesC
 void CFeedsFolderContainer::MoveToFolderMoveL(const CFeedsEntity& aTargetFolder)
     {
     RPointerArray<const CFeedsEntity>  markedItems(10);
+    RPointerArray<const CFeedsEntity>  removedItems(10);
+    const RPointerArray<CFeedsEntity>&  folderItems = aTargetFolder.GetChildren();
     const CArrayFix<TInt>*            markedIndexes = NULL;
     const CFeedsEntity*                folder = NULL;
 
     CleanupClosePushL(markedItems);
-
+    CleanupClosePushL(removedItems);
     // Get the array of marked items.
     markedIndexes = MarkedItems();
     if ((markedIndexes == NULL) || (markedIndexes->Count() == 0))
@@ -1873,13 +1874,43 @@ void CFeedsFolderContainer::MoveToFolderMoveL(const CFeedsEntity& aTargetFolder)
     for (TInt i = 0; i < markedIndexes->Count(); i++)
         {
         folder = iCurrentFolder->GetChildren()[((*markedIndexes)[i])];
-        User::LeaveIfError(markedItems.Append(folder));
+        // if the target folder already has some feed
+        if(folderItems.Count() > 0)
+            {
+            TPtrC item;
+            TPtrC url;
+            folder->GetStringValue(EFeedAttributeTitle, item);
+            const CFeedsEntity*  otherItem = iApiProvider.FeedsClientUtilities().Search(item, aTargetFolder);
+            if(!(otherItem == CurrentItem())&& otherItem != NULL)
+                {
+                otherItem->GetStringValue(EFeedAttributeLink, url);
+                iApiProvider.FeedsClientUtilities().AddFolderItemL(item,url,EFalse,aTargetFolder,0);
+                User::LeaveIfError(removedItems.Append(folder));
+                }
+            else
+                {
+                // feed not present in target folder
+                User::LeaveIfError(markedItems.Append(folder));
+                }
+            }
+        // if the target folder is empty
+        else
+            {
+            // Move the items.
+            User::LeaveIfError(markedItems.Append(folder));
+            }
         }
-    
-    // Move the items.
-    iApiProvider.FeedsClientUtilities().MoveFolderItemsToL(markedItems, aTargetFolder);
-        
+    if(removedItems.Count())
+        {
+        iApiProvider.FeedsClientUtilities().DeleteFolderItemsL(removedItems);
+        }
+    if(markedItems.Count())
+        {
+        // Move the items.
+        iApiProvider.FeedsClientUtilities().MoveFolderItemsToL(markedItems, aTargetFolder);
+        }
     // Clean up
+    CleanupStack::PopAndDestroy(/*removedItems*/);
     CleanupStack::PopAndDestroy(/*markedItems*/);
     }
 

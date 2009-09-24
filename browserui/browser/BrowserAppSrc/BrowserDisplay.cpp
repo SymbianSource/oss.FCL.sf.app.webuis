@@ -274,12 +274,6 @@ PERFLOG_STOPWATCH_START
             CAknIndicatorContainer* indicContainerEditing = SelectIndicContainerEditing();
             CAknIndicatorContainer* indicContainerOwn = SelectIndicContainerOwn();
 
-            _IND_STATE( FileSize ) = EAknIndicatorStateOff;
-            indicContainerEditing->_SET_INDIC( FileSize );
-            indicContainerOwn->_SET_INDIC( FileSize );
-            indicContainerOwn->SetIndicatorValueL( 
-                TUid::Uid( _AKN_IND( FileSize ) ), KNullDesC() );
-
             if ( Layout_Meta_Data::IsLandscapeOrientation() )
                 { 
                 // Lanscape mode - Title in title pane not navipane/messageinfo
@@ -403,6 +397,13 @@ BROWSER_LOG( ( _L("myWindow: %d"), iWindow->WindowId() ) );
                 CAknIndicatorContainer* indicContainerEditing = SelectIndicContainerEditing();
                 CAknIndicatorContainer* indicContainerOwn = SelectIndicContainerOwn();
 
+                _IND_STATE( FileSize ) = EAknIndicatorStateOff;
+                indicContainerEditing->_SET_INDIC( FileSize );
+                indicContainerOwn->_SET_INDIC( FileSize );
+
+                indicContainerOwn->SetIndicatorValueL( 
+                TUid::Uid( _AKN_IND( FileSize ) ), KNullDesC() );
+                
                 _IND_STATE( ProgressBar ) = EAknIndicatorStateOff;
                 indicContainerEditing->_SET_INDIC( ProgressBar );
                 indicContainerOwn->_SET_INDIC( ProgressBar );

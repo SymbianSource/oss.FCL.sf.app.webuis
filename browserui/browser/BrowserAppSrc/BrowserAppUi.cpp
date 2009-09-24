@@ -820,6 +820,16 @@ void CBrowserAppUi::HandleCommandL(TInt aCommand)
 			BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandIdBase + (TInt)TBrCtlDefs::ECommandOneStepBack );
             break;
             }
+        case EEikCmdEditPaste:
+            {
+            TKeyEvent keyEvent;
+            keyEvent.iCode = EKeyF18;  //member of TKeyCode	
+            keyEvent.iScanCode = EEikCmdEditPaste;	
+            keyEvent.iModifiers = EModifierCtrl;
+            keyEvent.iRepeats = 0;
+            TRAP_IGNORE( BrCtlInterface().OfferKeyEventL(keyEvent, EEventKey));
+            }
+            break;
 	    //=====================================================================
         default:
             {
@@ -3770,9 +3780,18 @@ void CBrowserAppUi::HandleApplicationSpecificEventL(TInt aEventType, const TWsEv
     {
     CAknAppUi::HandleApplicationSpecificEventL(aEventType, aWsEvent);
 
+    /*
+     * Note:  Even though we get these memory events from the system for handling OOM, and we pass them off
+     * to the command handler, there is no code further down the line that actually handles them (it would 
+     * normally be in BrCtl).  We totally ignore these events.  This is because the system has too high of an OOM threshold.
+     * I.e. the system may only have 6m left and think it's out of memory, however, the browser can still render
+     * many pages in only 6m.  So, these system events are ignored and the browser handles OOM with its own mechanism.
+     * (See OOMStopper and OOMHandler)
+     */
 	if(aEventType == KAppOomMonitor_FreeRam )
 		{
 		iWindowManager->CloseAllWindowsExceptCurrent();
+		// If we were really doing anything about this event, why do we not want to do it to the foreground?
 		if(!iIsForeground)
 		    {
             BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandFreeMemory + (TInt)TBrCtlDefs::ECommandIdBase);
