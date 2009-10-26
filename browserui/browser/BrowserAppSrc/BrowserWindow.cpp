@@ -839,6 +839,15 @@ void CBrowserWindow::UpdateGlobalPreferencesL(
                                         Preferences().CursorShowMode() );
             break; 
             }
+            
+        case TBrCtlDefs::ESettingsEnterKeyMode:
+            {
+            iBrCtlInterface->SetBrowserSettingL(
+                                        TBrCtlDefs::ESettingsEnterKeyMode,
+                                        Preferences().EnterKeyMode() );
+            break; 
+            }
+
         // LOCAL SETTINGS should be ignored
         case TBrCtlDefs::ESettingsTextWrapEnabled:
         case TBrCtlDefs::ESettingsFontSize:
@@ -930,6 +939,8 @@ void CBrowserWindow::UpdateBrCtlSettingsL()
 	UpdateGlobalPreferencesL( TBrCtlDefs::ESettingsZoomLevelDefault );
 
 	UpdateGlobalPreferencesL( TBrCtlDefs::ESettingsCursorShowMode );
+	UpdateGlobalPreferencesL( TBrCtlDefs::ESettingsEnterKeyMode );
+	
     // Font Size - LOCAL Setting
     iBrCtlInterface->SetBrowserSettingL( TBrCtlDefs::ESettingsFontSize,
             iWindowManager->ApiProvider()->Preferences().FontSize() );

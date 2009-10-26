@@ -1483,6 +1483,11 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 aMenuPane->SetItemDimmed( EWmlCmdSwitchToGotoActive, ETrue );
                 aMenuPane->SetItemDimmed( EWmlCmdNewFolder, ETrue );
                 }
+                
+            if( iContainer && iContainer->Listbox() && !iContainer->Listbox()->AnyFoldersL() )
+                {
+                aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
+                }
             const CFavouritesItem* item =  TheContainer()->Listbox()->CurrentItem();
             if  ( ( item ) &&
                   ( ( item->Uid() == KFavouritesAdaptiveItemsFolderUid ) ||
@@ -1496,10 +1501,23 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 }
                 
             //Enable CopyToBookmarks option if you are in RecentlyVisitedUrl folder
-			if( iInAdaptiveBookmarksFolder )
-				{
-				aMenuPane->SetItemDimmed( EWmlCmdCopyToBookmarks, EFalse );
-				}
+            if( iInAdaptiveBookmarksFolder )
+            	{
+            	aMenuPane->SetItemDimmed( EWmlCmdCopyToBookmarks, EFalse );
+            	}
+            //judge the selected items include RecentlyVisitedUrl folder or not, if include set "copy to bookmarks" dim
+            CArrayPtr<const CFavouritesItem>* items = Container()->Listbox()->SelectedItemsLC();
+            if (items->Count())
+                {
+                for (TInt i=0;i<items->Count();i++)
+				    {
+				    if((*items)[i]->Uid() == KFavouritesAdaptiveItemsFolderUid )
+				        {
+			            aMenuPane->SetItemDimmed( EWmlCmdCopyToBookmarks, ETrue );
+			            }
+			        }
+                }
+            CleanupStack::PopAndDestroy();//items
             break;
             }
         default:
@@ -2752,6 +2770,10 @@ void CBrowserBookmarksView::UpdateToolbarButtonsState()
                                 || (!state.AnyDeletable());
 
         Toolbar()->SetItemDimmed( EWmlCmdDelete, needToDimDeleteBtn, ETrue );
+        //set EWmlCmdAddBookmark dim in RecentlyVisitedUrl Folder
+        Toolbar()->SetItemDimmed( EWmlCmdAddBookmark, iInAdaptiveBookmarksFolder, ETrue);
+       
+        
         }
     }
 // End of File

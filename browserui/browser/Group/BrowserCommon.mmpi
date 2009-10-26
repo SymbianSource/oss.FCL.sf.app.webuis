@@ -20,9 +20,13 @@
 TARGETTYPE  exe
 
 EPOCSTACKSIZE 0x14000
-EPOCHEAPSIZE 0x5000 0x1000000
-VENDORID    VID_DEFAULT
 
+// There is no need to set a custom heap size as a custom allocator is used so the default values of 1 KB for
+// minimum and 1 MB for maximum should be used instead.  These will be used for a short time at startup for
+// the default heap, which in turn is used to create the custom allocator. no gain in functionality
+//EPOCHEAPSIZE 0x5000 0x1000000
+
+VENDORID    VID_DEFAULT
 CAPABILITY CAP_APPLICATION NetworkControl -Location
 
 EpocAllowDllData

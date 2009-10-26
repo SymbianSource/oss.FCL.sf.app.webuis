@@ -255,8 +255,7 @@ void CBrowserLoadObserver::HandleLoadEventOtherL(
                 !LoadStatus( ELoadStatusFirstChunkArrived ) && 
                 !iApiProvider->ExitInProgress() )
                 {
-                // Go back to bookmarks and close the content view
-				iApiProvider->ExitBrowser( ETrue );
+                // Don't do anything; let the embedder close the browser
                 }
             // No content to be shown, go back to where we came from
             else if ( !iRestoreContentFlag  )

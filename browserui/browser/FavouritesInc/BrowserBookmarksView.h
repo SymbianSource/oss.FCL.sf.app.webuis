@@ -460,6 +460,7 @@ class CBrowserBookmarksView:
         */
         void AddUidToLastPlaceToCurrentListL( TInt aUid );
 
+    public:
         /**
         * Dim or Un-dim Toolbar buttons.
         */

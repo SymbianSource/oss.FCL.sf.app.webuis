@@ -49,6 +49,7 @@
 #include "BrowserFavouritesListbox.h"
 #include "BrowserFavouritesListboxModel.h"
 #include "BrowserFavouritesListboxIconHandler.h"
+#include "logger.h" 
 
 // CONSTANTS
 LOCAL_D const TInt KTabId = 88888;
@@ -217,6 +218,13 @@ TKeyResponse CBrowserFavouritesContainer::OfferKeyEventL
         // Otherwise, let the listbox fiddle with it. This will NOT consume
         // arrow presses (base class overridden).
         result = iListbox->OfferKeyEventL( aKeyEvent, aType );
+        
+        if( (aKeyEvent.iCode == EKeyDownArrow) || (aKeyEvent.iCode == EKeyUpArrow) )  
+                {  
+                BROWSER_LOG( ( _L("Need to update tool bar buttons") ) );  
+                iView->UpdateToolbarButtonsState();  
+                }  
+
         }
 
     return result;

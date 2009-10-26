@@ -37,6 +37,7 @@ SOURCE  VideoServicesDocument.cpp
 SOURCE  VideoServicesContainer.cpp
 
 START RESOURCE ../data/VideoServices.rss
+DEPENDS avkon.rsg
 HEADER
 TARGETPATH      APP_RESOURCE_DIR
 

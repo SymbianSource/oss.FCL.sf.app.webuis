@@ -42,6 +42,7 @@
 #include <BrowserNG.rsg>
 #include <FeatMgr.h>
 #include <AiwGenericParam.h>
+#include <aknnavi.h>
 
 //CONSTANTS
 const TInt KMaxDocHandlerUrlLen = 255;
@@ -314,6 +315,7 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
                 	(previousViewID != KUidBrowserFeedsTopicViewId) &&
                 	(previousViewID != KUidBrowserFeedsFeedViewId) )
                 	{
+                	iApiProvider->Display().NaviPaneL()->Pop();
         	        CBrowserAppUi::Static()->CloseContentViewL();
                 	}
 #else //__RSS_FEEDS           

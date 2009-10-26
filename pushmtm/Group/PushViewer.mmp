@@ -80,6 +80,7 @@ DEBUGLIBRARY         flogger.lib
 
 
 START RESOURCE  ../Data/PushViewer.rss
+DEPENDS avkon.rsg
 HEADER
 #ifdef __S60_32__
 LANG sc 

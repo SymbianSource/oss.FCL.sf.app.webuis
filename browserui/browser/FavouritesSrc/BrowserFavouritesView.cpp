@@ -60,6 +60,7 @@
 #include "CommsModel.h"
 #include "Display.h"
 #include "Preferences.h"
+#include "logger.h" 
 
 #include "eikon.hrh"
 
@@ -1811,5 +1812,11 @@ void CBrowserFavouritesView::ConfigContextMenu()
     MenuBar()->SetMenuTitleResourceId( OptionsMenuResourceId());
     MenuBar()->SetMenuType(CEikMenuBar::EMenuOptions);  // adds task swapper menu item first
     }
+
+void CBrowserFavouritesView::UpdateToolbarButtonsState()  
+    {  
+    LOG_ENTERFN("CBrowserFavouritesView::UpdateToolbarButtonsState");    
+    BROWSER_LOG( ( _L("Implementation is not required here") ) );  
+    }  
 
 // End of File

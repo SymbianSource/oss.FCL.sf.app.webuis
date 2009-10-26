@@ -37,6 +37,7 @@ TARGET npBrowserAudioVideoPlugin.rsc
 END
 
 START RESOURCE  ../data/BrowserAudioVideoPlugin.rss
+DEPENDS avkon.rsg
 HEADER
 TARGET      BrowserAudioVideoPlugin.rsc       
 TARGETPATH  RESOURCE_FILES_DIR 

@@ -207,10 +207,11 @@ TKeyResponse CBrowserContentViewContainer::OfferKeyEventL(const TKeyEvent& aKeyE
         iApiProvider.BrCtlInterface().FocusedElementType();
 
     // Don't allow virtual keyboard backspace key event to close the window
-    // And don't close window if editing in an input box
+    // And don't close window if editing in an input box or textarea input 
     if ( !AknLayoutUtils::PenEnabled() && aType == EEventKey
         && keyEvent.iCode == EKeyBackspace
-        && elementtype != TBrCtlDefs::EElementActivatedInputBox )
+        && elementtype != TBrCtlDefs::EElementActivatedInputBox 
+        && elementtype != TBrCtlDefs::EElementTextAreaBox )
         {
         if ( iApiProvider.Preferences().UiLocalFeatureSupported(
                                                     KBrowserMultipleWindows ) )
@@ -270,7 +271,10 @@ TKeyResponse CBrowserContentViewContainer::OfferKeyEventL(const TKeyEvent& aKeyE
     // The commented part below enables the "Open link in new window" option on long press.
     // UI change request AHUN-6U3NT4, S60 bug AHUN-6UYT6N
 
-    if ( aType == EEventKey && keyEvent.iCode == EKeyOK )
+    TBool aEnterKeyForLinksActivation = (keyEvent.iCode == EKeyEnter) && 
+        (iApiProvider.Preferences().EnterKeyMode() == TBrCtlDefs::EEnterKeyCanActivateLink);
+    if ( aType == EEventKey && 
+         (keyEvent.iCode == EKeyOK || aEnterKeyForLinksActivation) )
         {
         if ( keyEvent.iRepeats && iSelectionKeyPressed )
             {
@@ -301,7 +305,9 @@ TKeyResponse CBrowserContentViewContainer::OfferKeyEventL(const TKeyEvent& aKeyE
         }
 
     // stop the event handling when find item was actived
-    if ( (keyEvent.iScanCode == EStdKeyDevice3 || keyEvent.iScanCode == EStdKeyXXX)
+    if ( (keyEvent.iScanCode == EStdKeyDevice3 || 
+          keyEvent.iScanCode == EStdKeyXXX ||
+          aEnterKeyForLinksActivation)
         && aType == EEventKeyDown && !iView->FindItemIsInProgress() )
         {
         iSelectionKeyPressed = ETrue;

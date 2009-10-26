@@ -721,7 +721,8 @@ void CBrowserPreferences::RestoreSettingsL()
     iAllPreferences.iSearch = GetIntValue( KBrowserSearch );
     iAllPreferences.iService = GetIntValue( KBrowserServices );
     iAllPreferences.iCursorShowMode = (TBrCtlDefs::TCursorSettings)GetIntValue( KBrowserCursorShowMode );
-	}
+    iAllPreferences.iEnterKeyMode = (TBrCtlDefs::TEnterKeySettings)GetIntValue( KBrowserEnterKeyMode );
+    }
 
 
 // ----------------------------------------------------------------------------

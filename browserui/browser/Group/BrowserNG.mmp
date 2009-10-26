@@ -46,6 +46,7 @@ SOURCE  ../BrowserAppSrc/BrowserInitialView.cpp
 #endif
 
 START RESOURCE ../SrcData/BrowserNG.rss
+DEPENDS avkon.rsg
 TARGETPATH APP_RESOURCE_DIR
 HEADER
 #ifdef __S60_32__
@@ -57,7 +58,7 @@ END
 
 START RESOURCE ../SrcData/BrowserNG_reg.rss
 DEPENDS browserng.rsg
-
+DEPENDS avkon.rsg
 // Do not change the UID below.
 TARGETPATH /private/10003a3f/apps
 END

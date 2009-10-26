@@ -492,10 +492,15 @@ class CBrowserFavouritesView:public CBrowserViewBase,
         virtual TKeyResponse OfferKeyEventL
             ( const TKeyEvent& aKeyEvent, TEventCode aType );
 
-		/**
+        /**
         * Reset state with deactivation event
         */
-		void ResetStateInDeActivation();
+        void ResetStateInDeActivation();
+
+        /**  
+        * Needed for updating tool bar buttons when there is a up/down arrow key events received.  
+        **/  
+        virtual void UpdateToolbarButtonsState(); 
 
     private:    // from MWmlBrowserFavouritesModelObserver
 

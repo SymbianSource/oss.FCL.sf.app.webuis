@@ -974,6 +974,9 @@ class CBrowserPreferences : public CBase,
         * To get cursor show mode
         */
         inline TBrCtlDefs::TCursorSettings CursorShowMode() const;
+        
+        inline TBrCtlDefs::TEnterKeySettings EnterKeyMode() const;
+        
     private:
 
         /**

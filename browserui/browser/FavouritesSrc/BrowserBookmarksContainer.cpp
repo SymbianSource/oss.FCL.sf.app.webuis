@@ -412,7 +412,7 @@ BROWSER_LOG( ( _L("aType: %d, aKeyEvent.iCode: %d, iScanCode: %d, iRepeats: %d")
 
             // Enter Key now handled through HandleCommand in BrowserBookmarksView like MSK
             // This change affects the enter key on the QWERTY keyboard when we run emulator
-            if ( EStdKeyEnter == aKeyEvent.iScanCode && EEventKeyUp == aType &&
+            if ( EStdKeyEnter == aKeyEvent.iScanCode && EEventKey == aType &&
                  AknLayoutUtils::MSKEnabled() &&
                  ( iGotoPaneActive || iSearchPaneActive ) )
                 {

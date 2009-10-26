@@ -681,6 +681,15 @@ TInt CBrowserPreferences::ServiceFeature() const
     return iAllPreferences.iService;        
     }
 
+// ---------------------------------------------------------
+// CBrowserPreferences::EnterKeyMode()
+// ---------------------------------------------------------
+//
+TBrCtlDefs::TEnterKeySettings CBrowserPreferences::EnterKeyMode() const
+    {
+    return iAllPreferences.iEnterKeyMode;
+    }    
+
 #endif
 
 // End of File

@@ -137,6 +137,7 @@ struct TPreferencesValues
     TBool                           iSearch;                // Search Feature
     TBool                           iService;               // Service Feature
     TBrCtlDefs::TCursorSettings     iCursorShowMode;
+    TBrCtlDefs::TEnterKeySettings     iEnterKeyMode;
     };
 
 /**
@@ -837,6 +838,10 @@ class MPreferences
 	    */  
         virtual TBrCtlDefs::TCursorSettings CursorShowMode() const = 0;  
 
+       /**
+        * Enter key mode
+        */
+        virtual TBrCtlDefs::TEnterKeySettings EnterKeyMode() const = 0;
 
     public:     // observer support
 
