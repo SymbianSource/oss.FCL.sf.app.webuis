@@ -25,7 +25,7 @@
 #include "Browser.hrh"               // Data definitions
 #include <wmlbrowser.loc>              // Localization constants
 #include <avkon.loc>
-#include <Browser_platform_variant.hrh>     //Browser feature flags
+#include <browser_platform_variant.hrh>     //Browser feature flags
 
 //-----------------------------------------------------------------------------
 // CBAs

@@ -20,8 +20,8 @@
 
 #include "BrowserAppDocument.h"
 #include "BrowserAppUi.h"
-#include "FavouritesItem.h"
-#include <BrCtlInterface.h>
+#include "favouritesitem.h"
+#include <brctlinterface.h>
 #include "CommonConstants.h"
 
 CBrowserAppDocument::CBrowserAppDocument(CEikApplication& aApp): CAknDocument(aApp)

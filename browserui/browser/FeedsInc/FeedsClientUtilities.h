@@ -20,15 +20,15 @@
 #define FEEDS_CLIENT_UTILITIES_H
 
 // INCLUDES
-#include <BrCtlSpecialLoadObserver.h>
+#include <brctlspecialloadobserver.h>
 
 #include "Preferences.h"
 #include "FeedsWaitDialog.h"
 #include "FeedsFileSearchAgent.h"
 #include "CommonConstants.h"
-#include "FeedsInterface.h"
-#include "FeedsMap.h"
-#include "Transaction.h"
+#include "feedsinterface.h"
+#include "feedsmap.h"
+#include "transaction.h"
 // CONSTANTS
 
 // MACROS

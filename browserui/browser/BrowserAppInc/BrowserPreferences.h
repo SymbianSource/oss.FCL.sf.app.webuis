@@ -22,12 +22,12 @@
 // INCLUDE FILES
 #include <e32base.h>
 #include <ActiveApDb.h>
-#include <BrCtlDefs.h>
+#include <brctldefs.h>
 #include "Browser.hrh"
 #include "Preferences.h"
 #include <BrowserNG.rsg>
 #include "BrowserUiPrivateCRKeys.h"
-#include <BrowserUiSDKCRKeys.h>
+#include <browseruisdkcrkeys.h>
 #include <centralrepository.h> 
 #include <bldvariant.hrh>
 

@@ -24,9 +24,9 @@
 #include <AknPopup.h>
 #include <gulicon.h>
 #include <AknIconArray.h>
-#include <FavouritesDb.h>
-#include <FavouritesItem.h>
-#include <FavouritesItemList.h>
+#include <favouritesdb.h>
+#include <favouritesitem.h>
+#include <favouritesitemlist.h>
 #include <BrowserNG.rsg>
 #include <AknsConstants.h>
 #include "BrowserFavouritesFolderSelector.h"

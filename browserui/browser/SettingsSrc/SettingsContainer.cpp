@@ -39,7 +39,7 @@
 #include <aputils.h>
 #include <commdb.h>
 #include <StringLoader.h>
-#include <DownloadMgrClient.h>
+#include <downloadmgrclient.h>
 #include <VpnApItem.h>
 #include <aknnotewrappers.h>
 
@@ -60,10 +60,10 @@
 #include "BrowserWindowManager.h"
 #include "BrowserWindow.h"
 // Browser as a plugin
-#include <BrCtlInterface.h>
-#include <BrCtlDefs.h>
+#include <brctlinterface.h>
+#include <brctldefs.h>
 
-#include <BrowserPluginInterface.h>
+#include <browserplugininterface.h>
 //Zsolt
 #include <cmmanager.h>
 #include <cmdestination.h>
@@ -3516,9 +3516,9 @@ void CSettingsContainer::CreateEncodingArrayL()
     AddEncodingL( KCharacterSetIdentifierShiftJis,      R_WMLBROWSER_SETTINGS_ENCODING_SHIFT_JIS );
     AddEncodingL( KCharacterSetIdentifierKoi8_r,        R_WMLBROWSER_SETTINGS_ENCODING_KOI8_R );
     AddEncodingL( KCharacterSetIdentifierKoi8_u,        R_WMLBROWSER_SETTINGS_ENCODING_KOI8_U );
-	AddEncodingL( KCharacterSetIdentifierIscii,			R_WMLBROWSER_SETTINGS_ENCODING_ISCII);
+	AddEncodingL( KCharacterSetIdentifierIscii_temp,			R_WMLBROWSER_SETTINGS_ENCODING_ISCII);
     AddEncodingL( KCharacterSetIdentifierEucKr,         R_WMLBROWSER_SETTINGS_ENCODING_EUC_KR );
-    AddEncodingL( KCharacterSetIdentifierKsc5601,       R_WMLBROWSER_SETTINGS_ENCODING_KSC_5601 );
+    AddEncodingL( KCharacterSetIdentifierKsc5601_temp,       R_WMLBROWSER_SETTINGS_ENCODING_KSC_5601 );
     AddEncodingL( KCharacterSetIdentifierAutomatic,     R_WMLBROWSER_SETTINGS_ENCODING_AUTOMATIC );
     }
 

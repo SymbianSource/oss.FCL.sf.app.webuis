@@ -21,8 +21,8 @@
 
 //  INCLUDES
 #include <e32base.h>
-#include <BrCtlDefs.h>
-#include "HttpCacheManager.h"
+#include <brctldefs.h>
+#include "httpcachemanager.h"
 
 // CONSTANTS
 

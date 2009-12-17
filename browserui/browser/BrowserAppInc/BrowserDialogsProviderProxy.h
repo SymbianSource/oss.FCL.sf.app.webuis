@@ -25,8 +25,8 @@
 // User includes
 
 // System Includes
-#include <BrCtlDialogsProvider.h>
-#include <BrowserDialogsProvider.h>
+#include <brctldialogsprovider.h>
+#include <browserdialogsprovider.h>
 #include <e32std.h>
 
 // CONSTANTS

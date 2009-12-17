@@ -23,7 +23,7 @@
 #include <e32base.h>
 #include <npscript.h>
 #include <HWRMVibra.h>
-#include <WidgetRegistryClient.h>
+#include <widgetregistryclient.h>
 
 // FORWARD DECLARATIONS
 class CHWRMLight;

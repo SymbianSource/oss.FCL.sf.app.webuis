@@ -22,8 +22,8 @@
 
 #include <eiklbx.h>
 #include <calslbs.h>
-#include <FavouritesItem.h>
-#include <FavouritesItemList.h>
+#include <favouritesitem.h>
+#include <favouritesitemlist.h>
 #include "BrowserFavouritesListboxModel.h"
 #include "BrowserFavouritesIconIndexArray.h"
 #include "BrowserUtil.h"

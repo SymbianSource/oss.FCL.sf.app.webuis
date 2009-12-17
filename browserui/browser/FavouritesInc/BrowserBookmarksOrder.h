@@ -15,7 +15,7 @@
 *
 */
 #include <e32base.h>
-#include <FavouritesItemData.h>
+#include <favouritesitemdata.h>
 
 class CBrowserBookmarksOrder : public MFavouritesItemData,
                                public CBase

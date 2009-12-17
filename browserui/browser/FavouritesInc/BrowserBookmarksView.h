@@ -25,8 +25,8 @@
 #include "BrowserFavouritesView.h"
 #include "BrowserBookmarksGotoPane.h"
 #include "Preferences.h"
-#include <ApChangeObserver.h>
-#include <BrCtlInterface.h>
+#include <apchangeobserver.h>
+#include <brctlinterface.h>
 #include <AknToolbarObserver.h>
 
 
@@ -271,7 +271,7 @@ class CBrowserBookmarksView:
         * @param aFolder Folder which contains the items.
         * @return List of items. Pushed on the cleanup stack.
         */
-        virtual CFavouritesItemList* GetItemsL( TInt aFolder );
+        virtual CFavouritesItemList* GetItemsLC( TInt aFolder );
 
         /**
         * Some displayed data has changed (Favourites database, AP-s, etc).

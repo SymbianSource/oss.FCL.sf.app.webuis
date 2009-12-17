@@ -34,9 +34,9 @@
 #include <akntabgrp.h>
 #include <eikimage.h>
 #include <barsread.h>
-#include <BrCtlDefs.h>
-#include <BrCtlInterface.h>
-#include <BrCtlDefs.h>
+#include <brctldefs.h>
+#include <brctlinterface.h>
+#include <brctldefs.h>
 #include <browser.mbg>
 #include <gulicon.h>
 

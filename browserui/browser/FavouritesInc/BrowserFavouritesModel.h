@@ -24,10 +24,10 @@
 //  INCLUDES
 
 #include <e32base.h>
-#include <FavouritesDbObserver.h>
+#include <favouritesdbobserver.h>
 #include "BrowserBookmarksOrder.h"
-#include "FavouritesDb.h"
-#include "FavouritesFile.h"
+#include "favouritesdb.h"
+#include "favouritesfile.h"
 #include "ApiProvider.h"
 
 // FORWARD DECLARATION

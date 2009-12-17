@@ -18,7 +18,7 @@
 */
 
 #include <data_caging_paths.hrh>
-#include <platform/mw/Browser_platform_variant.hrh>
+#include <platform/mw/browser_platform_variant.hrh>
 
 TARGET      BrowserNG.exe
 UID  0x100039CE 0x10008D39

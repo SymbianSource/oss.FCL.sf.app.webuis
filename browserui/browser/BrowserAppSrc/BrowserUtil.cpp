@@ -23,8 +23,8 @@
 #include "logger.h"
 
 #include <e32base.h>
-#include <FavouritesLimits.h>
-#include <FavouritesItem.h>
+#include <favouriteslimits.h>
+#include <favouritesitem.h>
 #include <uri16.h>
 #include <SysUtil.h>
 #include <ErrorUi.h>

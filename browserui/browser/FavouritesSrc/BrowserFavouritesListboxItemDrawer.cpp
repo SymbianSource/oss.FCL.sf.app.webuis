@@ -21,8 +21,8 @@
 // INCLUDE FILES
 #include "BrowserFavouritesListboxItemDrawer.h"
 #include "BrowserFavouritesListboxModel.h"
-#include <FavouritesItemList.h>
-#include <FavouritesItem.h>
+#include <favouritesitemlist.h>
+#include <favouritesitem.h>
 
 //================== MEMBER FUNCTIONS =========================================
 

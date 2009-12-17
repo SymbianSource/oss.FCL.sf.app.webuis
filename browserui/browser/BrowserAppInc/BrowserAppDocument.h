@@ -21,7 +21,7 @@
 #ifndef __BROWSERAPPDOCUMENT_H
 #define __BROWSERAPPDOCUMENT_H
 
-#include "BrowserOverriddenSettings.h"
+#include "browseroverriddensettings.h"
 #include "BrowserUtil.h"
 #include <akndoc.h>
 

@@ -33,7 +33,7 @@
 #include "BrowserUiVariant.hrh"
 #endif
 #include <aknutils.h>
-#include <BrctlInterface.h>
+#include <brctlinterface.h>
 #include "BrowserAppUi.h"
 #include <gulicon.h>
 #include <browser.mbg>

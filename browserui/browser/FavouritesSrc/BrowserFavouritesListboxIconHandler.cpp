@@ -20,7 +20,7 @@
 
 // INCLUDE FILES
 #include <AknIconArray.h>
-#include <FavouritesItem.h>
+#include <favouritesitem.h>
 #include "BrowserFavouritesListboxIconHandler.h"
 #include "BrowserFavouritesIconIndexArray.h"
 #include "BrowserFavouritesListbox.h"

@@ -21,8 +21,8 @@
 // INCLUDE FILES
 
 #include <AknWaitDialog.h>
-#include <FavouritesDb.h>
-#include <FavouritesItem.h>
+#include <favouritesdb.h>
+#include <favouritesitem.h>
 #include <BrowserNG.rsg>
 #include "BrowserFavouritesIncrementalMove.h"
 #include "BrowserFavouritesModel.h"

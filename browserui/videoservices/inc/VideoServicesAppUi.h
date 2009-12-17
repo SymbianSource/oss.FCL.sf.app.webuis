@@ -29,11 +29,11 @@
 #include <browserlauncher.h>
 #include <downloadedcontenthandler.h>
 #include <centralrepository.h>
-#include <HttpCacheManagerInternalCRKeys.h>    
+#include <httpcachemanagerinternalcrkeys.h>    
 #include "VideoServicesPrivateCRKeys.h"
 
 #include <favouriteslimits.h> // KFavouritesMaxUrl
-#include <BrowserOverriddenSettings.h>
+#include <browseroverriddensettings.h>
 
 // CONSTANTS
 const TUid KUidBrowserApplication = { 0x10008d39 };				//Browser UID

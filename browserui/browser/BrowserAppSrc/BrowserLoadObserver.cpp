@@ -31,8 +31,8 @@
 #include "BrowserDialogsProviderProxy.h"
 
 #include <FeatMgr.h>
-#include <MConnection.h>
-#include <BrowserDialogsProvider.h>
+#include <mconnection.h>
+#include <browserdialogsprovider.h>
 
 #ifdef I__LOG_EVENT_TIME
     // defines a local timer with name 'localTime'

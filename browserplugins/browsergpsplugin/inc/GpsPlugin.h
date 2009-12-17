@@ -20,9 +20,9 @@
 #define GPSPLUGIN_H
 
 //  INCLUDES
-#include <CEcomBrowserPluginInterface.h>
+#include <cecombrowserplugininterface.h>
 #include <npscript.h>
-#include <PluginAdapterInterface.h> // For base class MPluginNotifier
+#include <pluginadapterinterface.h> // For base class MPluginNotifier
 
 // FORWARD DECLARATIONS
 class CGpsObserver;

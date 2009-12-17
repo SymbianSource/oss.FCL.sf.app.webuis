@@ -22,11 +22,11 @@
 //  INCLUDES
 #include <e32std.h>
 #include <npupp.h>
-#include <PluginAdapterInterface.h> // For base class MPluginNotifier
+#include <pluginadapterinterface.h> // For base class MPluginNotifier
 #include <aknnotewrappers.h>  // For displaying note
 #include <drmhelper.h>
 #include <DRMCommon.h>
-#include <CEcomBrowserPluginInterface.h>
+#include <cecombrowserplugininterface.h>
 #include "BavpNPObject.h"
 #include <rt_gesturehelper.h>
 

@@ -18,7 +18,7 @@
 
 // INCLUDE FILES
 #include "PushMtmCacheSupply.h"
-#include "HttpCacheManager.h"
+#include "httpcachemanager.h"
 #include "PushMtmCacheDataSupplier.h"
 
 #include <http/RHTTPTransaction.h>

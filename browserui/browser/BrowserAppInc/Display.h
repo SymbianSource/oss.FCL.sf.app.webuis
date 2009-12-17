@@ -22,7 +22,7 @@
 #define MDISPLAY_H
 
 // INCLUDES
-#include <Browser_platform_variant.hrh>
+#include <browser_platform_variant.hrh>
 
 // FORWARD DECLARATIONS
 

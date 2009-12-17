@@ -39,9 +39,9 @@
 #include <browser.mbg>
 #include "Browser.hrh"
 #include <BrowserNG.rsg>
-#include <FeedAttributes.h>
-#include <FolderAttributes.h>
-#include <FeedsEntity.h>
+#include <feedattributes.h>
+#include <folderattributes.h>
+#include <feedsentity.h>
 #include "FeedsTopicContainer.h"
 #include "FeedsTopicView.h"
 

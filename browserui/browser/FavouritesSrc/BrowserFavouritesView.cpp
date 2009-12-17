@@ -30,11 +30,11 @@
 #include <AknQueryDialog.h>
 #include <BrowserNG.rsg>
 #include <avkon.rsg>
-#include <FavouritesLimits.h>
-#include <FavouritesDb.h>
-#include <FavouritesItem.h>
-#include <FavouritesItemList.h>
-#include <InternetConnectionManager.h>
+#include <favouriteslimits.h>
+#include <favouritesdb.h>
+#include <favouritesitem.h>
+#include <favouritesitemlist.h>
+#include <internetconnectionmanager.h>
 #include <FeatMgr.h>
 #include <centralrepository.h>
 #include <nifman.h>
@@ -241,7 +241,7 @@ CBrowserFavouritesView::CBrowserFavouritesView( MApiProvider& aApiProvider,
           iIsActivated( EFalse ),
           iLastSelection( 0 ),
           iUpdatePending( EFalse ),
-          iRefresh( EFalse )
+          iRefresh( ETrue )
     {
     }
 
@@ -259,12 +259,13 @@ void CBrowserFavouritesView::ConstructL( TInt aViewResourceId )
     }
 
 // ---------------------------------------------------------
-// CBrowserFavouritesView::GetItemsL
+// CBrowserFavouritesView::GetItemsLC
 // ---------------------------------------------------------
 //
-CFavouritesItemList* CBrowserFavouritesView::GetItemsL( TInt aFolder )
+CFavouritesItemList* CBrowserFavouritesView::GetItemsLC( TInt aFolder )
     {
     CFavouritesItemList* items = new (ELeave) CFavouritesItemList();
+    CleanupStack::PushL( items );
     iModel->Database().GetAll( *items, aFolder );
     iModel->SortL( *items );
     return items;
@@ -412,8 +413,6 @@ void CBrowserFavouritesView::RefreshL( TBool aDbErrorNote /*=EFalse*/ )
     // not activated (and tries to refresh); but this "activated-check" is
     // made here, not in Bookmarks View, because it makes things more safe and
     // "future-proof".)
-    //Making iRefresh ETrue
-    iRefresh = ETrue;
     if ( iIsActivated )
         {
         iUpdatePending = ETrue;
@@ -773,16 +772,7 @@ void CBrowserFavouritesView::DeleteMarkedItemsL()
 
         if (count ==1)
             {
-            CFavouritesItemList* allItems=NULL;
-            if(iRefresh)
-                {
-                allItems = GetItemsL( KFavouritesRootUid );
-                CleanupStack::PushL(allItems);
-                }
-            else 
-                {
-                allItems = iBookmarkitems;
-                }
+            CFavouritesItemList* allItems = GetItemsLC( KFavouritesRootUid );
             item = items->At(0);
             iPreferredHighlightUid = item->Uid();
             TInt index = allItems->UidToIndex(iPreferredHighlightUid);
@@ -1177,16 +1167,8 @@ void CBrowserFavouritesView::FillListboxL( TInt aFolder, TBool aKeepState )
     listbox->View()->SetDisableRedraw( ETrue );
 
     // Change the data.
-    CFavouritesItemList* items = NULL; 
-    if (iRefresh)
-        {
-        items = GetItemsL( aFolder );
-        CleanupStack::PushL(items);
-        }
-    else
-        {
-        items = iBookmarkitems;
-        }
+    CFavouritesItemList* items = GetItemsLC( aFolder );
+
     // Next take localized item names for seamless links.
     TInt contextId;
     TInt resId = 0;
@@ -1271,10 +1253,7 @@ void CBrowserFavouritesView::FillListboxL( TInt aFolder, TBool aKeepState )
         // Set Search item to italics font
         iContainer->Listbox()->ItalicizeRowItemL(0);
         }
-    if(iRefresh)
-        {
-        CleanupStack::Pop();    // items: passing ownership to listbox.
-        }
+    CleanupStack::Pop();    // items: passing ownership to listbox.
     iContainer->Listbox()->SetDataL
         ( items, /*ApiProvider().CommsModel(),*/ aKeepState );
     CAknColumnListBoxView *aknview = STATIC_CAST(CAknColumnListBoxView*, iContainer->Listbox()->View() );

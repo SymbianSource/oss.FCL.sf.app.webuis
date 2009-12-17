@@ -19,7 +19,7 @@
 
 
 // INCLUDES
-#include <platform/mw/Browser_platform_variant.hrh>
+#include <browser_platform_variant.hrh>
 #include <BrowserNG.rsg>
 #include <uri16.h>
 #include <uri8.h>
@@ -30,10 +30,10 @@
 #include <aplistitemlist.h>
 #include <aplistitem.h>
 #include <apparc.h>
-#include "FavouritesFile.h"
+#include "favouritesfile.h"
 #include <aknmessagequerydialog.h>
 #include <FeatMgr.h>
-#include <InternetConnectionManager.h>
+#include <internetconnectionmanager.h>
 #include <APSettingsHandlerUi.h>
 #include <UriUtilsCommon.h>
 #include <aknnavi.h>
@@ -46,20 +46,20 @@
 #include <CMGXFileManager.h>
 #endif
 
-#include <BrowserPluginInterface.h>
+#include <browserplugininterface.h>
 #include <oommonitorplugin.h>
 
-#include "BrowserOverriddenSettings.h"
+#include "browseroverriddensettings.h"
 #include "BrowserLauncherService.h"
 
-#include "CookieManagerClient.h"
+#include "cookiemanagerclient.h"
 
 #ifdef __SERIES60_HELP
 #include <hlplch.h>
 #endif //__SERIES60_HELP
 
 #include "BrowserAppDocument.h"
-#include "DownloadedContentHandler.h"
+#include "downloadedcontenthandler.h"
 #include "BrowserBmOTABinSender.h"
 #include "BrowserCommandLineParser.h"
 #include "BrowserApplication.h"
@@ -78,11 +78,12 @@
 #include "BrowserPreferences.h"
 #include "SessionAndSecurity.h"
 #include "BrowserUIVariant.hrh"
+#include "BrowserWindowQueue.h"
 #include "Logger.h"
 #include <data_caging_path_literals.hrh>
 
-#include <BrCtlDefs.h>
-#include "BrowserDialogsProvider.h"
+#include <brctldefs.h>
+#include "browserdialogsprovider.h"
 #include "BrowserSoftkeysObserver.h"
 #include "BrowserLoadObserver.h"
 #include "BrowserSpecialLoadObserver.h"
@@ -91,9 +92,9 @@
 
 
 // Dialogs Provider
-#include <BrowserDialogsProviderObserver.h>
-#include <BrCtlInterface.h>
-#include <BrowserDialogsProvider.h>
+#include <browserdialogsproviderobserver.h>
+#include <brctlinterface.h>
+#include <browserdialogsprovider.h>
 
 // Multiple Windows
 #include "BrowserPopupEngine.h"
@@ -3585,6 +3586,12 @@ LOG_ENTERFN("AppUi::CloseWindowL");
 	//There are only two cases for closing window. One is user initialized and the
 	//other is script initialized. For both cases, the window should be deleted.
     TBool forceDelete( ETrue );
+    // this variable is useful to know if the window has a parent window which needs to be activated on closing current window
+    TBool parentPresent(EFalse);
+    if ( WindowMgr().CurrentWindowQue() && WindowMgr().CurrentWindowQue()->iParent )
+        {
+        parentPresent = ETrue;
+        }
     // delete the current window by default
     if( aWindowId == 0 )
         {
@@ -3619,7 +3626,7 @@ LOG_ENTERFN("AppUi::CloseWindowL");
     if( winId > 0 )  // still remain a window to be activated
         {
    	    WindowMgr().SwitchWindowL( winId );
-            if(CalledFromAnotherApp() && (!IsEmbeddedModeOn()))
+        if(CalledFromAnotherApp() && (!IsEmbeddedModeOn()) && !parentPresent)
    	        {
    	        SetCalledFromAnotherApp(EFalse);
    	        SendBrowserToBackground();
@@ -4088,7 +4095,7 @@ void CBrowserAppUi::HandleWsEventL(const TWsEvent& aEvent,
 // ---------------------------------------------------------
 // CBrowserAppUi::HandleSystemEventL
 // ---------------------------------------------------------
-
+#if defined(__S60_50__)
 void CBrowserAppUi::HandleSystemEventL(const TWsEvent& aEvent)
    {
    
@@ -4109,7 +4116,7 @@ void CBrowserAppUi::HandleSystemEventL(const TWsEvent& aEvent)
    // call base class implementation
    CAknAppUi::HandleSystemEventL(aEvent);
    }
-
+#endif  
 // ---------------------------------------------------------
 // CBrowserAppUi::StartFetchHomePageL
 // ---------------------------------------------------------

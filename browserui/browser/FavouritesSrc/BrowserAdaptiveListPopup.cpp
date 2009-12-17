@@ -24,7 +24,7 @@
 #include <AknPopup.h>
 #include <AknListQueryDialog.h>
 #include <AknIconArray.h>
-#include "RecentUrlStore.h"
+#include "recenturlstore.h"
 #include <AknsUtils.h>
 #include <AknsListBoxBackgroundControlContext.h>
 #include <AppApacLayout.cdl.h>

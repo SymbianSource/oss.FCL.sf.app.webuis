@@ -32,7 +32,7 @@
 #include <EikSpane.h>
 #include <Avkon.hrh>
 #include <BrowserNG.rsg>
-#include <FavouritesDb.h>
+#include <favouritesdb.h>
 
 #include <aknconsts.h>
 #include <akneditstateindicator.h>

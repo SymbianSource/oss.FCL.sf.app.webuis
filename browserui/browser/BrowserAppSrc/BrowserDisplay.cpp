@@ -34,7 +34,7 @@
 #include <akneditstateindicator.h>
 #include <aknindicatorcontainer.h>
 #include <AknStatuspaneUtils.h>
-#include <Browser_platform_variant.hrh>
+#include <browser_platform_variant.hrh>
 
 #include <wlaninternalpskeys.h> // For WLAN state checking
 

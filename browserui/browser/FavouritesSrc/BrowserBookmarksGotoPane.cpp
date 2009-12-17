@@ -23,7 +23,7 @@
 
 #include <akninfrm.h>
 #include <eikedwin.h>
-#include <FavouritesLimits.h>
+#include <favouriteslimits.h>
 
 #include <aknconsts.h>
 #include <akneditstateindicator.h>

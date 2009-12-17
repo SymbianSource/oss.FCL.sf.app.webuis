@@ -19,7 +19,7 @@
 
 #include <platform_paths.hrh>
 #include <data_caging_paths_strings.hrh>
-#include "../../../../../mw/web/web_plat/browser_platform_api/inc/Browser_platform_variant.hrh"
+#include "../../../../../mw/web/web_plat/browser_platform_api/inc/browser_platform_variant.hrh"
 
 PRJ_PLATFORMS
 DEFAULT

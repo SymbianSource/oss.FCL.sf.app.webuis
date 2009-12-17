@@ -18,19 +18,19 @@
 
 
 // INCLUDE FILES
-#include "BrowserLauncher.h"
+#include "browserlauncher.h"
 #include "BrowserLauncherExtension.h"
 #include "logger.h"
 #include "BrowserUiPrivateCRKeys.h"
-#include "BrowserOverriddenSettings.h"
+#include "browseroverriddensettings.h"
 #include "Browser.hrh"
 
-#include <FavouritesLimits.h> // Context Id:s
+#include <favouriteslimits.h> // Context Id:s
 #include <eikappui.h>
 #include <eikapp.h>
 #include <eikenv.h>
 #include <centralrepository.h>
-#include <FavouritesDb.h>
+#include <favouritesdb.h>
 
 // CONSTANTS
 const TInt KBrowserAppUid = 0x10008D39;

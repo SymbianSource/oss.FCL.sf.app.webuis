@@ -17,8 +17,8 @@
 
 
 // INCLUDE FILES
-#include <CDownloadMgrUiDownloadsList.h>
-#include <CDownloadMgrUiDownloadMenu.h>
+#include <cdownloadmgruidownloadslist.h>
+#include <cdownloadmgruidownloadmenu.h>
 #include <eikmenup.h>
 #include <aknsfld.h>
 #include <smut.h>
@@ -29,12 +29,12 @@
 #endif
 
 #include <irmsgtypeuid.h>
-#include <FavouritesDb.h>
+#include <favouritesdb.h>
 
 #include <BrowserNG.rsg>
 
-#include <FavouritesItem.h>
-#include <FavouritesItemList.h>
+#include <favouritesitem.h>
+#include <favouritesitemlist.h>
 #include <ApEngineConsts.h>
 #include <ApListItem.h>
 #include <ApListItemList.h>
@@ -61,7 +61,7 @@
 #include "CommandVisibility.h"
 #include "BrowserBmOTABinSender.h"
 #include "CommsModel.h"
-#include <MConnection.h>
+#include <mconnection.h>
 #include "BrowserUiVariant.hrh"
 #include "BrowserWindowManager.h"
 #include "BrowserWindow.h"
@@ -656,7 +656,7 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
                 iDomainFolderName = NULL;
 
                 CFavouritesItemList* items =
-                            GetItemsL( KFavouritesAdaptiveItemsFolderUid );
+                            GetItemsLC( KFavouritesAdaptiveItemsFolderUid );
                 TInt indexToHighlight = 0;
 
                 for ( TInt i = 0; i < items->Count(); i++ )
@@ -667,7 +667,7 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
                         }
                     }
 
-                delete items;
+                CleanupStack::PopAndDestroy();  // items
                 CleanupStack::PopAndDestroy();  // domainFolderNameToHighlight
 
                 HBufC* title;
@@ -1122,7 +1122,8 @@ BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
     if ( Model().BeginL( /*aWrite=*/ETrue, /*aDbErrorNote*/ EFalse ) ==
             KErrNone )
         {
-        iBookmarkitems = GetItemsL( KFavouritesRootUid );
+        CFavouritesItemList* items = GetItemsLC( KFavouritesRootUid );
+        CleanupStack::PopAndDestroy();
         Model().CommitL();
         }
        
@@ -1130,8 +1131,8 @@ BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
     //thread, its important to refresh when the thread notifies the fresh data.
     //Call to GetItemsLC above, which inturn calls ManualBMSortL will set iRefresh to false
     //Make it true so that latest FavIcon db info is shown     
-    //Removed the iRefresh becoming ETrue, move to RefreshL 
-    
+    iRefresh = ETrue;
+
     if (iPenEnabled)
         {
         Toolbar()->SetToolbarObserver(this);
@@ -1881,7 +1882,7 @@ TBool CBrowserBookmarksView::ManualBMSortL( TInt aFolder,
 // CBrowserBookmarksView::GetItemsL
 // ----------------------------------------------------------------------------
 //
-CFavouritesItemList* CBrowserBookmarksView::GetItemsL( TInt aFolder )
+CFavouritesItemList* CBrowserBookmarksView::GetItemsLC( TInt aFolder )
     {
 PERFLOG_LOCAL_INIT
 PERFLOG_STOPWATCH_START
@@ -1889,6 +1890,7 @@ PERFLOG_STOPWATCH_START
     if ( iInAdaptiveBookmarksFolder )
         {
         items= new (ELeave) CFavouritesItemList();
+        CleanupStack::PushL(items);//1
         CDesCArrayFlat* aditems = new ( ELeave )
                                 CDesCArrayFlat( KBrowserDesCArrayGranularity );
         aditems->Reset();
@@ -1920,6 +1922,7 @@ PERFLOG_STOPWATCH_START
     else
         {
         items = new (ELeave) CFavouritesItemList();
+        CleanupStack::PushL( items );
         Model().Database().GetAll( *items, aFolder );
         TInt aBMPosition = KAdaptiveBookmarksFirstPositionInBMView; // Adaptive BM folder is first if there is no startpage
         if ( aFolder == KFavouritesRootUid )

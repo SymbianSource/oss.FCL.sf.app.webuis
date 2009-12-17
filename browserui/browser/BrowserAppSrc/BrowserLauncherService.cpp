@@ -20,7 +20,7 @@
 
 // INCLUDES
 #include "BrowserLauncherService.h"
-#include "BrowserOverriddenSettings.h"
+#include "browseroverriddensettings.h"
 #include "LauncherServerCommands.hrh"
 #include "BrowserAppDocument.h"
 #include "BrowserAppUi.h"
@@ -29,7 +29,7 @@
 #include <AiwGenericParam.h>
 #include <s32mem.h>
 #include "BrowserSpecialLoadObserver.h"
-#include "MConnection.h"
+#include "mconnection.h"
 
 // -----------------------------------------------------------------------------
 // CBrowserLauncherService::~CBrowserLauncherService()

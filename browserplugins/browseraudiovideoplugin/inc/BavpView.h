@@ -26,7 +26,7 @@
 #include <coedef.h>
 
 #include "BrowserAudioVideoPlugin.hrh"
-#include <PluginAdapterInterface.h>
+#include <pluginadapterinterface.h>
 
 // CLASS DECLARATION
 class CBavpPlugin;

@@ -19,7 +19,7 @@
 
 #include <centralrepository.h>	
 #include <ProfileEngineSDKCRKeys.h>
-#include <BrowserUiSDKCRKeys.h>
+#include <browseruisdkcrkeys.h>
 
 #include "BavpLogger.h"
 #include "BavpVolumeHandler.h"

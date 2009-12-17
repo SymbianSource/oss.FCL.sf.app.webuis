@@ -21,7 +21,7 @@
 // INCLUDE FILES
 
 #include "BrowserFavouritesListboxState.h"
-#include <FavouritesLimits.h>
+#include <favouriteslimits.h>
 
 // ================= MEMBER FUNCTIONS =======================
 

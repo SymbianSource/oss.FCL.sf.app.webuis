@@ -25,12 +25,12 @@
 #include <data_caging_path_literals.hrh>
 #include <barsread.h>                       // For TResourceReader
 #include <StringLoader.h>
-#include <PluginAdapterInterface.h>
+#include <pluginadapterinterface.h>
 #include <BrowserAudioVideoPlugin.rsg>      // For text
 
 #include "BavpLogger.h"
 #include "BavpView.h"
-#include "BrCtlDefs.h"
+#include "brctldefs.h"
 #include "BavpController.h"
 #include "BavpPlugin.h"
 

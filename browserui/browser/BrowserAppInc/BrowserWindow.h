@@ -26,10 +26,10 @@
 #include <e32base.h>
 #include "ApiProvider.h"
 #include "Preferences.h"
-#include <BrCtlDefs.h>
+#include <brctldefs.h>
 #include "BrowserLoadObserver.h"
 #include "BrowserDialogsProviderProxy.h"
-#include <BrCtlWindowObserver.h>
+#include <brctlwindowobserver.h>
 
 // FORWARD DECLARATIONS
 class CBrCtlInterface;

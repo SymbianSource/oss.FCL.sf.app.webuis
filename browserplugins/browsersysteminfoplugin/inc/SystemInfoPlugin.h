@@ -20,7 +20,7 @@
 #define SYSTEMINFOPLUGIN_H
 
 //  INCLUDES
-#include <CEcomBrowserPluginInterface.h>
+#include <cecombrowserplugininterface.h>
 #include <npscript.h>
 
 

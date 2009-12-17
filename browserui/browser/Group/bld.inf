@@ -18,7 +18,7 @@
 */
 
 #include <platform_paths.hrh>
-#include "../../../../../mw/web/web_plat/browser_platform_api/inc/Browser_platform_variant.hrh"
+#include "../../../../../mw/web/web_plat/browser_platform_api/inc/browser_platform_variant.hrh"
 
 PRJ_PLATFORMS
 
@@ -30,6 +30,32 @@ DEFAULT
 PRJ_EXPORTS
 #ifdef __S60_32__
 ../rom/browser_stub_32.sis		     /epoc32/release/armv5/urel/browser_stub.sis
+../data/qgn_indi_browser_bm_tb_new.svg                    /epoc32/s60/icons/qgn_indi_browser_bm_tb_new.svg    
+../data/qgn_indi_browser_feeds_tb_back_to_web.svg         /epoc32/s60/icons/qgn_indi_browser_feeds_tb_back_to_web.svg
+../data/qgn_indi_browser_feeds_tb_next.svg                /epoc32/s60/icons/qgn_indi_browser_feeds_tb_next.svg
+../data/qgn_indi_browser_feeds_tb_open_detail.svg         /epoc32/s60/icons/qgn_indi_browser_feeds_tb_open_detail.svg 
+../data/qgn_indi_browser_feeds_tb_open_full.svg           /epoc32/s60/icons/qgn_indi_browser_feeds_tb_open_full.svg
+../data/qgn_indi_browser_feeds_tb_open_topic.svg          /epoc32/s60/icons/qgn_indi_browser_feeds_tb_open_topic.svg
+../data/qgn_indi_browser_feeds_tb_previous.svg            /epoc32/s60/icons/qgn_indi_browser_feeds_tb_previous.svg
+../data/qgn_indi_browser_feeds_tb_update.svg              /epoc32/s60/icons/qgn_indi_browser_feeds_tb_update.svg
+../data/qgn_indi_browser_feeds_tb_update_all.svg          /epoc32/s60/icons/qgn_indi_browser_feeds_tb_update_all.svg
+../data/qgn_indi_browser_tb_delete.svg                    /epoc32/s60/icons/qgn_indi_browser_tb_delete.svg
+../data/qgn_indi_browser_tb_find_kw_next.svg              /epoc32/s60/icons/qgn_indi_browser_tb_find_kw_next.svg
+../data/qgn_indi_browser_tb_find_kw_prev.svg              /epoc32/s60/icons/qgn_indi_browser_tb_find_kw_prev.svg
+../data/qgn_indi_browser_tb_history_back.svg              /epoc32/s60/icons/qgn_indi_browser_tb_history_back.svg
+../data/qgn_indi_browser_tb_history_fw.svg                /epoc32/s60/icons/qgn_indi_browser_tb_history_fw.svg
+../data/qgn_indi_browser_tb_view_images.svg               /epoc32/s60/icons/qgn_indi_browser_tb_view_images.svg
+../data/qgn_indi_browser_tb_view_pages.svg                /epoc32/s60/icons/qgn_indi_browser_tb_view_pages.svg
+../data/qgn_indi_button_exit_fs.svg                       /epoc32/s60/icons/qgn_indi_button_exit_fs.svg
+../data/qgn_prop_file_rss_error.svg                       /epoc32/s60/icons/qgn_prop_file_rss_error.svg
+../data/qgn_prop_folder_rss_error.svg                     /epoc32/s60/icons/qgn_prop_folder_rss_error.svg
+
+../data/A_H/qgn_indi_browser_tb_back.bmp                  /epoc32/s60/icons/A_H/qgn_indi_browser_tb_back.bmp
+../data/A_H/qgn_indi_browser_tb_back_mask_soft.bmp        /epoc32/s60/icons/A_H/qgn_indi_browser_tb_back_mask_soft.bmp
+../data/A_H/qgn_indi_browser_tb_rss.bmp                   /epoc32/s60/icons/A_H/qgn_indi_browser_tb_rss.bmp 
+../data/A_H/qgn_indi_browser_tb_rss_mask_soft.bmp         /epoc32/s60/icons/A_H/qgn_indi_browser_tb_rss_mask_soft.bmp
+../data/A_H/qgn_prop_folder_rss.svg                       /epoc32/s60/icons/A_H/qgn_prop_folder_rss.svg 
+../data/A_H/qgn_prop_folder_rss_error.svg                 /epoc32/s60/icons/A_H/qgn_prop_folder_rss_error.svg
 #else
 ../rom/browser_stub.sis		     /epoc32/release/armv5/urel/browser_stub.sis
 #endif

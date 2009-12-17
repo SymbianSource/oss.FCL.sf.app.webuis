@@ -20,13 +20,13 @@
 
 // INCLUDE FILES
 
-#include <BrCtlDefs.h>
-#include <BrCtlInterface.h>
+#include <brctldefs.h>
+#include <brctlinterface.h>
 
 #include "BrowserWindow.h"
 #include "BrowserContentView.h"
 #include "BrowserContentViewContainer.h"
-#include "BrowserDialogsProvider.h"
+#include "browserdialogsprovider.h"
 #include "BrowserDialogsProviderProxy.h"
 #include "BrowserSoftkeysObserver.h"
 #include "BrowserSpecialLoadObserver.h"
@@ -38,8 +38,8 @@
 #include "Logger.h"
 #include "BrowserDisplay.h"
 #include "BrowserPopupEngine.h"
-#include <CDownloadMgrUiDownloadsList.h>
-#include <DownloadMgrClient.h>
+#include <cdownloadmgruidownloadslist.h>
+#include <downloadmgrclient.h>
 
 // for instantiating BrCtlInterface
 #include "CommonConstants.h"

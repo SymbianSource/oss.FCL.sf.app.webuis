@@ -36,7 +36,7 @@
 #include <Featmgr.h>
 #include <fepbase.h>
 #include <aknutils.h>
-#include <BrowserUiSDKCRKeys.h>
+#include <browseruisdkcrkeys.h>
 
 #include <centralrepository.h>
 #include <AknLayout2ScalableDef.h>
@@ -50,7 +50,7 @@
 #include "BrowserAppUi.h"
 #include "BrowserUtil.h"
 #include "browser.hrh"
-#include "FavouritesLimits.h"
+#include "favouriteslimits.h"
 #include "BrowserAdaptiveListPopup.h"
 #include "BrowserContentView.h"
 

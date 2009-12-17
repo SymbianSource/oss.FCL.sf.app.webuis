@@ -30,7 +30,7 @@
 #include <CSLPushMsgEntry.h>
 #include <eikenv.h>
 #include <apmstd.h>
-#include <SchemeHandler.h>
+#include <schemehandler.h>
 #include <AknNoteWrappers.h>
 #include <PushEntry.h>
 #include <PushMtmUi.rsg>

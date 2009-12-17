@@ -28,7 +28,7 @@
 #include "Preferences.h"
 #include "Display.h"
 #include "ApiProvider.h"
-#include <BrCtlDefs.h>
+#include <brctldefs.h>
 #include "BrowserUtil.h"
 #include <BrowserNG.rsg>
 #include <StringLoader.h>
@@ -276,6 +276,22 @@ CBrowserWindow* CBrowserWindowManager::CurrentWindow() const
     if( iCurrentWindow )
         {
         return iCurrentWindow->iWindow;
+        }
+    else
+        {
+        return NULL;
+        }
+    }
+	
+// -----------------------------------------------------------------------------
+// CBrowserWindowManager::CurrentWindowQue()
+// -----------------------------------------------------------------------------
+//
+CBrowserWindowQue* CBrowserWindowManager::CurrentWindowQue() const
+    {
+    if( iCurrentWindow )
+        {
+        return iCurrentWindow;
         }
     else
         {

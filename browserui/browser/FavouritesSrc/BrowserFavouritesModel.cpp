@@ -24,18 +24,18 @@
 #include <Avkon.hrh>
 #include <AknForm.h>    // This contains CAknDialog
 #include <AknQueryDialog.h>
-#include <FavouritesDb.h>
-#include <FavouritesItem.h>
-#include <FavouritesItemList.h>
-#include <FavouritesLimits.h>
-#include <ActiveFavouritesDbNotifier.h>
+#include <favouritesdb.h>
+#include <favouritesitem.h>
+#include <favouritesitemlist.h>
+#include <favouriteslimits.h>
+#include <activefavouritesdbnotifier.h>
 #include <BrowserNG.rsg>
 
 #include "BrowserFavouritesModel.h"
 #include "BrowserFavouritesModelObserver.h"
 #include "BrowserUtil.h"
 #include "BrowserDialogs.h"
-#include "BrowserDialogsProvider.h"
+#include "browserdialogsprovider.h"
 #include "BrowserFavouritesView.h"
 
 #include "Browser.hrh"

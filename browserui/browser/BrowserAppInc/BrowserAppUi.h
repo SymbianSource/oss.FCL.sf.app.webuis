@@ -22,19 +22,19 @@
 
 
 // INCLUDE FILES 
-#include <Browser_platform_variant.hrh>
+#include <browser_platform_variant.hrh>
 #include <aknviewappui.h>
-#include <ConnectionObservers.h>	// CHG!
+#include <connectionobservers.h>	// CHG!
 #include <apgcli.h>
 #include "ApiProvider.h"
 #include "BrowserBuild.h"
 #include "WmlBrowserBuild.h"
-#include "RecentUrlStore.h"
+#include "recenturlstore.h"
 
-#include <FavouritesDb.h>
-#include "DownloadedContentHandler.h"
+#include <favouritesdb.h>
+#include "downloadedcontenthandler.h"
 #include "WindowInfoProvider.h"
-#include "BrowserOverriddenSettings.h"
+#include "browseroverriddensettings.h"
 
 // FORWARD DECLARATIONS
 class CBrowserViewBase;
@@ -103,7 +103,7 @@ class CBrowserAppUi : public CAknViewAppUi,
         ~CBrowserAppUi();
 
     public:
-
+#if defined(__S60_50__)
         /**
         * Handling the system Event.
         * @since Series 60 1.2
@@ -111,7 +111,7 @@ class CBrowserAppUi : public CAknViewAppUi,
         */
                 
         void HandleSystemEventL(const TWsEvent& aEvent);
-        
+#endif          
         /**
         * Get the active view.
 		* @since Series 60 1.2

@@ -26,7 +26,7 @@
 #include <aknlists.h>
 #include <CTSYDomainPSKeys.h>
 
-#include <BrowserUiSDKCRKeys.h>
+#include <browseruisdkcrkeys.h>
 #include <BrowserAudioVideoPlugin.rsg>
 
 #include "BavpController.h"

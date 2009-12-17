@@ -25,7 +25,7 @@
 #include <apparc.h>
 #include <sendui.h>
 #include <FindItemDialog.h>
-#include <BrCtlInterface.h>
+#include <brctlinterface.h>
 
 #include "BrowserAppViewBase.h"
 #include "BrowserGotoPane.h"

@@ -25,7 +25,7 @@
 
 #include <e32base.h>
 #include <bamdesca.h>
-#include <FavouritesWapAp.h>
+#include <favouriteswapap.h>
 
 // FORWARD DECLARATION
 

@@ -20,7 +20,7 @@
 #include <AknViewAppUi.h>
 #include <BaUtils.h>
 #include <BaDesca.h>
-#include <BrCtlInterface.h>
+#include <brctlinterface.h>
 #include <GulIcon.h>
 #include <data_caging_path_literals.hrh>
 #include <eikmenup.h>
@@ -28,10 +28,10 @@
 
 
 #include <BrowserNG.rsg>
-#include <BrCtlDialogsProvider.h>
-#include <BrowserDialogsProvider.h>
-#include <BrCtlDefs.h>
-#include <InternetConnectionManager.h>
+#include <brctldialogsprovider.h>
+#include <browserdialogsprovider.h>
+#include <brctldefs.h>
+#include <internetconnectionmanager.h>
 #include <FeatMgr.h>
 #include <Uri16.h>
 

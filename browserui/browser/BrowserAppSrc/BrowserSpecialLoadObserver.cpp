@@ -37,7 +37,7 @@
     #include <AknLists.h>
 #endif // __WINS__
 #include <DocumentHandler.h>
-#include <MConnection.h>  // for MConnection
+#include <mconnection.h>  // for MConnection
 #include <schemehandler.h>
 #include <BrowserNG.rsg>
 #include <FeatMgr.h>

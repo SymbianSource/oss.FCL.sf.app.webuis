@@ -25,7 +25,7 @@
 #include "WmlBrowserBuild.h"
 #include "Preferences.h"
 #include <e32base.h>
-#include <BrCtlDefs.h>
+#include <brctldefs.h>
 #include "WindowObserver.h"
 
 // FORWARD DECLARATIONS
@@ -77,7 +77,9 @@ class CBrowserWindowManager :   public CBase,
             const TDesC& aTargetName );
 
         CBrowserWindow* CurrentWindow() const;
-
+        
+        CBrowserWindowQue* CurrentWindowQue() const;
+        
         inline MApiProvider* ApiProvider() const;
 
         inline CBrowserContentView* ContentView() const;

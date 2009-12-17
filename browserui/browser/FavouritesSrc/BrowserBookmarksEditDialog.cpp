@@ -30,7 +30,7 @@
 #include <AknPopupField.h>
 #include <AknQueryValueText.h>
 #include <AknKeys.h>
-#include <FavouritesItem.h>
+#include <favouritesitem.h>
 #include <aknnavi.h>
 #include <aknnavide.h>
 

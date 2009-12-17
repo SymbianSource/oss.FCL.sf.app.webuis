@@ -18,11 +18,11 @@
 
 
 // INCLUDE FILES
-#include "BrowserLauncher.h"
+#include "browserlauncher.h"
 #include "BrowserLauncherExtension.h"
 #include "logger.h"
-#include "DownloadedContentHandler.h"
-#include <FavouritesLimits.h> // Context Id:s
+#include "downloadedcontenthandler.h"
+#include <favouriteslimits.h> // Context Id:s
 
 #include <eikenv.h>
 #include <AiwGenericParam.h>

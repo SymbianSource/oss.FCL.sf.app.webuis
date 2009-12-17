@@ -23,7 +23,7 @@
 #include "Browser.hrh"
 #include <es_sock.h>
 #include "SessionAndSecurity.h"
-#include <MConnection.h>
+#include <mconnection.h>
 #include <BrowserNG.rsg>
 #include <AknQueryDialog.h>
 #include <AknMessageQueryDialog.h>
@@ -33,7 +33,7 @@
 #include "BrowserUtil.h"
 #include "ApiProvider.h"
 #include <ssl.h> // for TCertInfo
-#include <BrCtlInterface.h>
+#include <brctlinterface.h>
 
 // CONSTANTS
 const   TInt KWmlSessionInfoMaxLength = 1000;

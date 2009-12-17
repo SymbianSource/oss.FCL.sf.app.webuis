@@ -24,7 +24,7 @@
 #include <aknsfld.h>
 #include <avkon.mbg>
 #include <BrowserNG.rsg>
-#include <FavouritesItem.h>
+#include <favouritesitem.h>
 #include <FeatMgr.h>
 #include "BrowserBookmarksView.h"
 
@@ -43,7 +43,7 @@
 #endif // __SERIES60_HELP
 #include "Logger.h"
 #include "e32event.h"
-#include "BrowserUiSDKCRKeys.h"
+#include "browseruisdkcrkeys.h"
 #include <StringLoader.h>
 
 // CONSTANTS
@@ -427,7 +427,7 @@ BROWSER_LOG( ( _L("aType: %d, aKeyEvent.iCode: %d, iScanCode: %d, iRepeats: %d")
                 }
             else
                 {
-                if ( iSearchPane )
+                if ( iSearchPane && iSearchPaneActive)
                     {
 			        // Process separately for Search Feature
 			        if ( iGotoPaneActive )

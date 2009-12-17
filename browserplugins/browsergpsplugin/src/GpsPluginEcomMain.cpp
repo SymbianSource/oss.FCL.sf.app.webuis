@@ -20,7 +20,7 @@
 // INCLUDE FILES
 #include "GpsPlugin.h"
 #include <implementationproxy.h>
-#include <CEcomBrowserPluginInterface.h>
+#include <cecombrowserplugininterface.h>
 
 
 /*********************************************************/

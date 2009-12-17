@@ -20,7 +20,7 @@
 
 // INCLUDE FILES
 #include <BrowserNG.rsg>
-#include <FavouritesItem.h>
+#include <favouritesitem.h>
 #include "BrowserFavouritesFolderListboxIconHandler.h"
 #include "BrowserFavouritesIconIndexArray.h"
 #include "BrowserFavouritesView.h"

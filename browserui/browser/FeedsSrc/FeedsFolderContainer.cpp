@@ -41,13 +41,13 @@
 #include "Browser.hrh"
 #include <BrowserNG.rsg>
 #include <browser.mbg>
-#include <BrCtlDialogsProvider.h>
-#include <BrowserDialogsProvider.h>
+#include <brctldialogsprovider.h>
+#include <browserdialogsprovider.h>
 
-#include <FeedAttributes.h>
-#include <FolderAttributes.h>
+#include <feedattributes.h>
+#include <folderattributes.h>
 
-#include <FeedsEntity.h>
+#include <feedsentity.h>
 #include "FeedsFolderContainer.h"
 #include "FeedsFolderView.h"
 #include "ApiProvider.h"

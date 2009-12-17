@@ -17,7 +17,7 @@
 #ifndef BROWSERUIPRIVATECRKEYS_H
 #define BROWSERUIPRIVATECRKEYS_H
 
-#include <BrowserUiSDKCRKeys.h>
+#include <browseruisdkcrkeys.h>
 
 
 // Indicates whether to show connection dialogs or not.

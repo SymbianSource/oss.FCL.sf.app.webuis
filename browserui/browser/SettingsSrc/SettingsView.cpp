@@ -33,7 +33,13 @@
 #include "SettingsContainer.h"
 #include "CommonConstants.h"
 
+#ifndef SYMBIAN_ENABLE_SPLIT_HEADERS
 #include <eikapp.h>
+#else
+#include <eikapp.h>
+#include <vwsdefpartner.h>  // KNullViewId
+#endif
+
 // CONSTS
 
 // ========================= MEMBER FUNCTIONS ================================

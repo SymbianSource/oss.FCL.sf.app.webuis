@@ -19,14 +19,14 @@
 
 
 // INCLUDE FILES
-#include <CDownloadMgrUiDownloadsList.h>
-#include <CDownloadMgrUiDownloadMenu.h>
+#include <cdownloadmgruidownloadslist.h>
+#include <cdownloadmgruidownloadmenu.h>
 #include <FeatMgr.h>
 #include <irmsgtypeuid.h>
 #include <SenduiMtmUids.h>
 #include <IrcMTM.h>
 #include <EikMenuP.h>
-#include <InternetConnectionManager.h>
+#include <internetconnectionmanager.h>
 #include <DocumentHandler.h>
 #include <apmstd.h>
 #include <aknnavi.h>
@@ -71,7 +71,7 @@
 #include "Preferences.h"
 #include "BrowserPreferences.h"
 #include "Display.h"
-#include "FavouritesWapAp.h"
+#include "favouriteswapap.h"
 #include "BrowserBookmarksModel.h"
 #include "BrowserDialogs.h"
 #include "BrowserUtil.h"
@@ -81,14 +81,14 @@
 #include "BrowserAdaptiveListPopup.h"
 #include "BrowserApplication.h"
 #include "logger.h"
-#include "FavouritesFile.h"
+#include "favouritesfile.h"
 #include "BrowserWindowManager.h"
 #include "BrowserWindow.h"
 #include "BrowserPopupEngine.h"
 
-#include <BrCtlDialogsProvider.h>
-#include <BrowserDialogsProvider.h>
-#include <BrCtlDefs.h>
+#include <brctldialogsprovider.h>
+#include <browserdialogsprovider.h>
+#include <brctldefs.h>
 #include <akntoolbar.h>
 #ifdef RD_SCALABLE_UI_V2
 #include <akntoolbarextension.h>
@@ -1038,6 +1038,7 @@ void CBrowserContentView::UpdateFullScreenL()
 
             ApiProvider().Display().FSPaneOnL( );
             ApiProvider().Display().SetGPRSIndicatorOnL();
+            UpdateTitleL(ApiProvider());
             ApiProvider().Display().RestoreTitleL();
             StatusPane()->ApplyCurrentSettingsL();
             if ( resIdChanged || sizeChangedCba || sizeChangedSP  )

@@ -41,7 +41,7 @@
 
 #include <COEMAIN.H>
 #include <FeatMgr.h>
-#include <BrCtlDefs.h>
+#include <brctldefs.h>
 
 #include "CommsModel.h"
 #include "ApiProvider.h"
@@ -52,7 +52,7 @@
 #include <bldvariant.hrh>
 #include "commonconstants.h"
 #include "BrowserAppUi.h"
-#include "BrowserOverriddenSettings.h"
+#include "browseroverriddensettings.h"
 #include "SettingsContainer.h"  // for TEncoding
 #include "BrowserUtil.h" // for Util::AllocateUrlWithSchemeL
 #include "logger.h"

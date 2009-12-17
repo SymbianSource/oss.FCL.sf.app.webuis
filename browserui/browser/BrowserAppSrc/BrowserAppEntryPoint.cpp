@@ -11,9 +11,9 @@
 *
 * Contributors:
 *
-* Description: 
+* Description:
 *     Browser App Entry point
-*     
+*
 *
 */
 
@@ -33,41 +33,54 @@ LOCAL_C CApaApplication* NewApplication( )
     return new CBrowserApplication;
     }
 
-EXPORT_C TInt UserHeap::SetupThreadHeap(TBool, SStdEpocThreadCreateInfo& aInfo)
-	{
+// -----------------------------------------------------------------------------
+// SetupThreadHeap - Called for heap creation of thread in this process.
+// This approach used to keep correct heap for pointers held in static data objects
+// when they are destructed after E32Main() by OS.
+// -----------------------------------------------------------------------------
+EXPORT_C TInt UserHeap::SetupThreadHeap(TBool aSubThread, SStdEpocThreadCreateInfo& aInfo)
+    {
     TInt r = KErrNone;
     if (!aInfo.iAllocator && aInfo.iHeapInitialSize>0)
-		{
-		// new heap required
-		RHeap* pH = NULL;
-		r = CreateThreadHeap(aInfo, pH);
-		if (r == KErrNone)
-			{       // should happen for main thread, otherwise panic      
-					RAllocator* oldAllocator = MemoryManager::SwitchToFastAllocator();
-			}
-		}
-	else if (aInfo.iAllocator)
-		{
-		// sharing a heap
-		RAllocator* pA = aInfo.iAllocator;
-		pA->Open();
-		User::SwitchAllocator(pA);
-		}
+        {
+        // new heap required
+        RHeap* pH = NULL;
+        r = CreateThreadHeap(aInfo, pH);
+        if (r == KErrNone && !aSubThread)
+            {
+            // main thread - new allocator created and set as default heap      
+            MemoryManager::CreateFastAllocator();
+            }
+        }
+    else if (aInfo.iAllocator)
+        {
+        // sharing a heap
+        RAllocator* pA = aInfo.iAllocator;
+        pA->Open();
+        User::SwitchAllocator(pA);
+        }
 
     return r;
-	}
+    }
 
+// -----------------------------------------------------------------------------
+// E32Main
+// -----------------------------------------------------------------------------
 GLDEF_C TInt E32Main()
     {
     ROomMonitorSession oomMs;
-    TInt r = oomMs.Connect();
-    if (r == KErrNone)
+    TInt result = oomMs.Connect();
+    if ( result == KErrNone )
         {
-        r = oomMs.RequestFreeMemory(KFreeMemoryTarget);
+        result = oomMs.RequestFreeMemory( KFreeMemoryTarget );
         oomMs.Close();
         }
+
+    // initialize MemmoryManager
+    MemoryManager::InitFastAllocator();    
     
-	return EikStart::RunApplication(NewApplication);
+    // run application event loop
+    return EikStart::RunApplication(NewApplication);
     }
 
 //  End of File  

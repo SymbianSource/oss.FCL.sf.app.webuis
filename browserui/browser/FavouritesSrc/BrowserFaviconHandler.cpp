@@ -23,11 +23,11 @@
 #include "ApiProvider.h"
 #include "BrowserUtil.h"
 #include <e32base.h>
-#include <BrCtlDefs.h>
+#include <brctldefs.h>
 #include <fbs.h>
 #include <MdaImageConverter.h>
-#include <FavouritesItemList.h>
-#include <FavouritesItem.h>
+#include <favouritesitemlist.h>
+#include <favouritesitem.h>
 
 // number of favicons to get before redrawing
 const TInt KNumFaviconsToRedraw = 3	;

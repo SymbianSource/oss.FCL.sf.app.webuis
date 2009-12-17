@@ -22,7 +22,7 @@
 #include <AknNaviLabel.h>
 #include <aknutils.h>
 #include <AknViewAppUi.h>
-#include <BrCtlInterface.h>
+#include <brctlinterface.h>
 #include <CharConv.H>
 #include <StringLoader.h>
 
@@ -36,16 +36,16 @@
 #include <BrowserNG.rsg>
 #include "FeedsFeedContainer.h"
 #include "FeedsFeedView.h"
-#include "XmlEncoding.h"
+#include "xmlencoding.h"
 #include "ApiProvider.h"
 #include "BrowserSpecialLoadObserver.h"
 #include "Display.h"
 #include "BrowserWindowManager.h"
 #include "BrowserWindow.h"
 #include "BrowserAppUi.h"
-#include <FeedAttributes.h>
-#include <FolderAttributes.h>
-#include <FeedsEntity.h>
+#include <feedattributes.h>
+#include <folderattributes.h>
+#include <feedsentity.h>
 
 #include "eikon.hrh"
 

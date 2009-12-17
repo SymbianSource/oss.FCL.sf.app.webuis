@@ -29,7 +29,7 @@
 #include "CommandVisibility.h"
 #include "CommsModel.h"
 #include "BrowserFavouritesModel.h"
-#include "FavouritesLimits.h"
+#include "favouriteslimits.h"
 
 // FORWARD DECLARATION
 class CFavouritesItemList;
@@ -220,7 +220,7 @@ class CBrowserFavouritesView:public CBrowserViewBase,
         * @param aFolder Folder which contains the items.
         * @return List of items. Pushed on the cleanup stack.
         */
-        virtual CFavouritesItemList* GetItemsL( TInt aFolder );
+        virtual CFavouritesItemList* GetItemsLC( TInt aFolder );
 
 	public:
 	
@@ -569,9 +569,6 @@ class CBrowserFavouritesView:public CBrowserViewBase,
         TBool iSaveStateOnDeactivate;
 
         CBrowserFavouritesListboxState* iSavedListboxState;
-        
-        //Added one variable to hold the data retrieved from database
-        CFavouritesItemList* iBookmarkitems;
 	};
 
 #include "BrowserFavouritesView.inl"

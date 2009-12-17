@@ -25,11 +25,11 @@
 #include <CSLPushMsgEntry.h>
 #include <Uri8.h>
 #include <SysUtil.h>
-#include <CookieFilterInterface.h>
+#include <cookiefilterinterface.h>
 #include <uaproffilter_interface.h>
 #include <CommDbConnPref.h>
 #include <cdbcols.h>
-#include <BrowserUiSDKCRKeys.h>
+#include <browseruisdkcrkeys.h>
 #include "PushMtmPrivateCRKeys.h"
 #include <centralrepository.h> 
 #include <commdb.h>
@@ -37,10 +37,10 @@
 #include <ApAccessPointItem.h>
 #include <ApUtils.h>
 #include <ApSelect.h>
-#include <HttpFilterAcceptHeaderInterface.h>
-#include <HttpFilterIopInterface.h>
-#include <HttpFilterCommonStringsExt.h>
-#include <DeflateFilterInterface.h>
+#include <httpfilteracceptheaderinterface.h>
+#include <httpfilteriopinterface.h>
+#include <httpfiltercommonstringsext.h>
+#include <deflatefilterinterface.h>
 #include <FeatMgr.h>
 
 // ================= MACROS =======================

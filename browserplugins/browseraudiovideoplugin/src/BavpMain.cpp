@@ -22,7 +22,7 @@
 #include <npapi.h>      // For NPError
 #include <npupp.h>      // For NPNetscapeFuncs
 #include <implementationproxy.h>
-#include <CEcomBrowserPluginInterface.h>
+#include <cecombrowserplugininterface.h>
 
 #include "BavpLogger.h"
 #include "BavpPlugin.h" // For bap_xx methods

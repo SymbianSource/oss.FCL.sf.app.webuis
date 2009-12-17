@@ -23,7 +23,7 @@
 
 //  INCLUDES
 #include <e32base.h>
-#include <BrCtlSpecialLoadObserver.h>
+#include <brctlspecialloadobserver.h>
 #include <apparc.h>
 #include <badesca.h>
 #include <AknServerApp.h>

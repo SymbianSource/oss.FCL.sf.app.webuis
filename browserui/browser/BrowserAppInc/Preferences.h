@@ -29,7 +29,7 @@
 #include "Browser.hrh"
 #include <bldvariant.hrh>
 
-#include <BrCtlDefs.h>
+#include <brctldefs.h>
 #include <ApAccessPointItem.h>
 
 #include <CmApplicationSettingsUi.h>

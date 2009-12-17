@@ -26,8 +26,8 @@
 
 #include "Browser.hrh"
 #include <BrowserNG.rsg>
-#include <FeedAttributes.h>
-#include <FolderAttributes.h>
+#include <feedattributes.h>
+#include <folderattributes.h>
 #include "BrowserAppUi.h"
 #include "CommonConstants.h"
 

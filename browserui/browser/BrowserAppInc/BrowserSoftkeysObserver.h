@@ -21,7 +21,7 @@
 #define BROWSERSOFTKEYSOBSERVER_H
 
 //  INCLUDES
-#include <BrCtlSoftkeysObserver.h>
+#include <brctlsoftkeysobserver.h>
 #include "WmlBrowserBuild.h"
 
 class CBrowserWindow;

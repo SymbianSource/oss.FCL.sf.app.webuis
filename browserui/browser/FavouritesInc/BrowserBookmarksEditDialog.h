@@ -24,7 +24,7 @@
 // INCLUDE FILES
 
 #include <AknForm.h>
-// #include <FavouritesLimits.h>
+// #include <favouriteslimits.h>
 #include <bldvariant.hrh>
 
 // FORWARD DECLARATION

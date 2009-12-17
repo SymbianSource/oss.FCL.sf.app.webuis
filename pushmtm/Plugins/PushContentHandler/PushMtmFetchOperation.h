@@ -28,7 +28,7 @@
 #include <stringpool.h>
 #include <apmstd.h>
 #include <es_sock.h>
-#include "HttpCacheManager.h"
+#include "httpcachemanager.h"
 #include "PushMtmCacheSupply.h"
 
 // FORWARD DECLARATIONS

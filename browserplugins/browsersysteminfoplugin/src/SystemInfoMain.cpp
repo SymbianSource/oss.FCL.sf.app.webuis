@@ -19,7 +19,7 @@
 
 // INCLUDE FILES
 #include <implementationproxy.h>
-#include <CEcomBrowserPluginInterface.h>
+#include <cecombrowserplugininterface.h>
 #include "SystemInfoPlugin.h"
 
 

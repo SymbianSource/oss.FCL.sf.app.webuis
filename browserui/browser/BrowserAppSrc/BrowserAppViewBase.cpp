@@ -31,7 +31,7 @@
 #include <AknSgcc.h>
 #include <StringLoader.h>
 #include "BrowserUtil.h"
-#include <BrowserUiSDKCRKeys.h>
+#include <browseruisdkcrkeys.h>
 // ================= MEMBER FUNCTIONS =======================
 
 // ---------------------------------------------------------

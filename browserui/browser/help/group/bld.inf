@@ -18,7 +18,7 @@
 */
 
 #include <platform_paths.hrh>	
-#include "../../../../../../mw/web/web_plat/browser_platform_api/inc/Browser_platform_variant.hrh"
+#include "../../../../../../mw/web/web_plat/browser_platform_api/inc/browser_platform_variant.hrh"
 			
 #if !defined(__PLATFORM_VERSION_32__) && !defined(__PLATFORM_VERSION_50__) && !defined(__PLATFORM_VERSION_50_TUBE__)
 

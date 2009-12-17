@@ -24,11 +24,11 @@
 #include <EIKCLBD.H>
 #include <gulicon.h>
 #include <AknIconArray.h>
-#include <FavouritesDb.h>
+#include <favouritesdb.h>
 #include <BrowserNG.rsg>
 #include <ApListItemList.h>
-#include <FavouritesItem.h>
-#include <FavouritesItemList.h>
+#include <favouritesitem.h>
+#include <favouritesitemlist.h>
 #include <AknsConstants.h>
 
 #include "BrowserFavouritesListbox.h"

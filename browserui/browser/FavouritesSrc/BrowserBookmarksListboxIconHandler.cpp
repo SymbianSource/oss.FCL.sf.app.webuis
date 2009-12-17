@@ -23,8 +23,8 @@
 #include <ApListItem.h>
 #include <ApListItemList.h>
 #include <ApEngineConsts.h>
-#include <FavouritesItem.h>
-#include <FavouritesWapAp.h>
+#include <favouritesitem.h>
+#include <favouriteswapap.h>
 #include <BrowserNG.rsg>
 #include "BrowserBookmarksListboxIconHandler.h"
 #include "BrowserFavouritesListbox.h"

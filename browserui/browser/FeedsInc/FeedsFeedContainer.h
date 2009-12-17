@@ -24,7 +24,7 @@
 #include <coecntrl.h>
 #include <coemop.h>
 #include <aknnavidecoratorobserver.h>
-#include <BrCtlSpecialLoadObserver.h>
+#include <brctlspecialloadobserver.h>
 
 // CONSTANTS
 

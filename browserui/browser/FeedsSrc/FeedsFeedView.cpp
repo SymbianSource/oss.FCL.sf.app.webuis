@@ -19,7 +19,7 @@
 #include <aknviewappui.h>
 #include <aknutils.h>
 #include <AknToolbar.h>
-#include <BrCtlInterface.h>
+#include <brctlinterface.h>
 #include <eikbtgpc.h>
 #include <eikmenup.h>
 #include <hlplch.h>
@@ -29,8 +29,8 @@
 #include "Browser.hrh"
 #include <BrowserNG.rsg>
 #include "BrowserUtil.h"
-#include <FeedAttributes.h>
-#include <FolderAttributes.h>
+#include <feedattributes.h>
+#include <folderattributes.h>
 #include "FeedsFeedContainer.h"
 #include "FeedsFeedView.h"
 
@@ -172,7 +172,7 @@ void CFeedsFeedView::HandleCommandL(TInt aCommand)
             break;
 
 		case EFeedsSeeFullStory:
-            iApiProvider.FeedsClientUtilities().LoadUrlL(iContainer->GetItemUrl());
+            iContainer->iBrowserControl->HandleCommandL(TBrCtlDefs::ECommandOpen);
             break;
 
         default:

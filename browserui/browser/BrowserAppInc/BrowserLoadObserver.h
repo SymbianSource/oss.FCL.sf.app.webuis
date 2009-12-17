@@ -22,8 +22,8 @@
 #define BROWSERLOADOBSERVER_H
 
 //  INCLUDES
-#include <BrCtlInterface.h>
-#include <BrowserDialogsProviderObserver.h>
+#include <brctlinterface.h>
+#include <browserdialogsproviderobserver.h>
 
 //  FORWARD DECLARATIONS
 class MApiProvider;

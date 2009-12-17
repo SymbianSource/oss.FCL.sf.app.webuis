@@ -31,8 +31,8 @@
 
 #include "BrowserAppUi.h"
 #include "CommonConstants.h"
-#include <FeedAttributes.h>
-#include <FolderAttributes.h>
+#include <feedattributes.h>
+#include <folderattributes.h>
 #include "FeedsFolderContainer.h"
 #include "FeedsFolderView.h"
 #include "Display.h"

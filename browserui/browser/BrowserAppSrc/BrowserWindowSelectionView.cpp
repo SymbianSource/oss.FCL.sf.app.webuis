@@ -27,8 +27,8 @@
 #include <eikbtgpc.h>
 #include <akntabgrp.h>
 #include <aknnavi.h>
-#include <BrCtlInterface.h>
-#include <BrCtlDefs.h>
+#include <brctlinterface.h>
+#include <brctldefs.h>
 #include "BrowserAppUi.h"
 #include "CommonConstants.h"
 #include "BrowserWindowSelectionView.h"

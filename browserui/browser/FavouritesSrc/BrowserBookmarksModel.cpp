@@ -23,8 +23,8 @@
 #include "BrowserBookmarksModel.h"
 #include "BrowserUtil.h"
 #include <BrowserNG.rsg>
-#include <FavouritesItem.h>
-#include <FavouritesItemList.h>
+#include <favouritesitem.h>
+#include <favouritesitemlist.h>
 #include <StringLoader.h>
 #include <FeatMgr.h>
 #include "ApiProvider.h"
