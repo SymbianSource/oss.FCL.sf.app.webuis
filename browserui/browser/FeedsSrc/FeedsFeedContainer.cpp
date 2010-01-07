@@ -36,7 +36,7 @@
 #include <BrowserNG.rsg>
 #include "FeedsFeedContainer.h"
 #include "FeedsFeedView.h"
-#include "xmlencoding.h"
+#include <xmlencoding.h>
 #include "ApiProvider.h"
 #include "BrowserSpecialLoadObserver.h"
 #include "Display.h"

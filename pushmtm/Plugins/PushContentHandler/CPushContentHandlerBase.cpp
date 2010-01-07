@@ -30,7 +30,7 @@
 #include "StringResourceReader.h"
 #include "PushContentHandlerPanic.h"
 #include <PushEntry.h>
-#include <PushMessage.h>
+#include <push/pushmessage.h>
 #include <msvstd.h>
 #include <mtclreg.h>
 #include <mtclbase.h>

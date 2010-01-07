@@ -17,7 +17,6 @@
 *
 */
 
-
 #ifndef BROWSER_FAVOURITES_MODEL_H
 #define BROWSER_FAVOURITES_MODEL_H
 
@@ -26,8 +25,8 @@
 #include <e32base.h>
 #include <favouritesdbobserver.h>
 #include "BrowserBookmarksOrder.h"
-#include "favouritesdb.h"
-#include "favouritesfile.h"
+#include <favouritesdb.h>
+#include <favouritesfile.h>
 #include "ApiProvider.h"
 
 // FORWARD DECLARATION

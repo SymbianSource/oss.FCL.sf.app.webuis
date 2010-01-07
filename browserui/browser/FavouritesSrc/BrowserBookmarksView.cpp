@@ -15,7 +15,6 @@
 *
 */
 
-
 // INCLUDE FILES
 #include <cdownloadmgruidownloadslist.h>
 #include <cdownloadmgruidownloadmenu.h>
@@ -1590,6 +1589,21 @@ CBrowserFavouritesContainer* CBrowserBookmarksView::CreateContainerL()
 // ----------------------------------------------------------------------------
 void CBrowserBookmarksView::MoveItemsL()
     {
+    
+    // Get the Uid of currently highlighted bookmark item from listbox.
+    // NOTE: Listbox indexes is based on "visible" items in list box, our order
+    // array has visible and invisible items, we have to use Uid to find items.
+    const CFavouritesItem* toItem = Container()->Listbox()->CurrentItem();
+    TInt toUid(NULL);
+    if ( toItem ) {
+        toUid = toItem->Uid();
+        if (toUid == (*iItemsToMove)[0])
+            { // Moving to same location so change nothing, cleanup, & exit
+            CancelMoveItemsL();
+            return;
+            }
+    }    
+    
 	// Get a copy of the ordered array, it may contain visible and hidden items.
     CArrayFixFlat<TInt>* orderArray =
                             new (ELeave) CArrayFixFlat<TInt>(KGranularityHigh);
@@ -1597,20 +1611,17 @@ void CBrowserBookmarksView::MoveItemsL()
     
     orderArray->AppendL( & ( iCurrentOrder->GetBookMarksOrder()[0] ),
                              iCurrentOrder->GetBookMarksOrder().Count() );
+    
+    if ( toUid == NULL ) {
+        toUid = (*orderArray)[orderArray->Count()-1] ;
+    }
+
 
 	// Create a sorted "bookmarks to be moved" array
     CArrayFixFlat<TInt>* sortedItemsToMove =
                             new (ELeave) CArrayFixFlat<TInt>(KGranularityHigh);
     CleanupStack::PushL( sortedItemsToMove );
 
-    // Get the Uid of currently highlighted bookmark item from listbox.
-    // NOTE: Listbox indexes is based on "visible" items in list box, our order
-    // array has visible and invisible items, we have to use Uid to find items.
-    const CFavouritesItem* toItem = Container()->Listbox()->CurrentItem();
-    TInt toUid( (*orderArray)[orderArray->Count()-1] );
-    if ( toItem ) {
-    	toUid = toItem->Uid();
-    }
 
 	// Walk our copy of the ordered bookmark array and
 	// 1. Delete the bookmark items to be moved from the ordered array
@@ -2775,8 +2786,10 @@ void CBrowserBookmarksView::UpdateToolbarButtonsState()
         Toolbar()->SetItemDimmed( EWmlCmdDelete, needToDimDeleteBtn, ETrue );
         //set EWmlCmdAddBookmark dim in RecentlyVisitedUrl Folder
         Toolbar()->SetItemDimmed( EWmlCmdAddBookmark, iInAdaptiveBookmarksFolder, ETrue);
-       
-        
+        if(iManualItemMovingGoingOn)
+            {
+            DimToolbarButtons(ETrue);
+            }      
         }
     }
 // End of File

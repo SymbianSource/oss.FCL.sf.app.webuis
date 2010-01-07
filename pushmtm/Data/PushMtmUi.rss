@@ -23,7 +23,7 @@ NAME PMTM
 
 #include "PushMtmCommands.hrh"
 #include "PushMtmUi.hrh"
-#include <PushMtmUi.loc>
+#include <pushmtmui.loc>
 #include <eikon.rh>
 #include <uikon.rh>
 #include <uikon.hrh>

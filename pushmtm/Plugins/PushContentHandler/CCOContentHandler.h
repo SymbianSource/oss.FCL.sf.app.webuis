@@ -22,12 +22,9 @@
 
 // INCLUDE FILES
 
-//#include "PushMtmDef.hrh"
 #include "PushContentHandlerDef.hrh"
-#include <CContentHandlerBase.h>
+#include <push/CContentHandlerBase.h>
 #include <E32Base.h>
-//#include <msvstd.h>
-//#include <msvapi.h>
 
 // CONSTANTS
 
@@ -43,11 +40,11 @@ class CPushMtmSettings;*/
 
 // CLASS DECLARATION
 
-/** 
-* CCOContentHandler Handles Cache Operation Content  
+/**
+* CCOContentHandler Handles Cache Operation Content
 *
 * This handler takes ownership of the CO message and processes it
-* according to the processing rules 
+* according to the processing rules
 * [WAP Cache Operation version 31-July-2001].
 * Also S60 specific requirements are applied.
 *
@@ -81,26 +78,26 @@ class CCOContentHandler : public CContentHandlerBase
 	    void ConstructL();
 
     private: // Methods from CPushHandlerBase
-	    
+
         /**
-        * HandleMessage Async. Version. Takes ownership of Push Message and 
+        * HandleMessage Async. Version. Takes ownership of Push Message and
         * sets self active to continue processing message.
         * @param aPushMsg CPushMessage to process.
-        * @param aStatus Request status variable for use in asynchronous 
+        * @param aStatus Request status variable for use in asynchronous
         *        operations.
         * @return None.
         */
 	    void HandleMessageL( CPushMessage* aPushMsg, TRequestStatus& aStatus );
 
         /**
-        * HandleMessage Sync. Version. Takes ownership of Push Message and 
+        * HandleMessage Sync. Version. Takes ownership of Push Message and
         * sets self active to continue processing message.
-        * Initial State: Set data members then go to the next state 
+        * Initial State: Set data members then go to the next state
         * @param aPushMsg CPushMessage to process.
         */
 	    void HandleMessageL( CPushMessage* aPushMsg );
 
-        /** 
+        /**
         * Same functionality as DoCancel()
         */
 	    void CancelHandleMessage();

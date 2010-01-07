@@ -17,14 +17,12 @@
 *
 */
 
-
-
 // INCLUDE FILES
-#include  <e32std.h>
+#include <e32std.h>
 #include <AknPopup.h>
 #include <AknListQueryDialog.h>
 #include <AknIconArray.h>
-#include "recenturlstore.h"
+#include <recenturlstore.h>
 #include <AknsUtils.h>
 #include <AknsListBoxBackgroundControlContext.h>
 #include <AppApacLayout.cdl.h>
@@ -46,7 +44,6 @@
 #include <data_caging_path_literals.hrh>
 
 #include "eikon.hrh"
-
 
 // CONSTANTS
 const TInt KMaxIcons = 2;

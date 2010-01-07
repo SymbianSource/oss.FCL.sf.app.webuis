@@ -28,7 +28,7 @@
 #include "PushContentHandlerPanic.h"
 #include "si_dict.h"
 #include "PushContentHandlerUtils.h"
-#include <CSIPushMsgEntry.h>
+#include <push/CSIPushMsgEntry.h>
 #include <msvids.h>
 #include <PushMtmUi.rsg>
 #include <nw_dom_node.h>
@@ -130,10 +130,10 @@ CSIContentHandler::~CSIContentHandler()
 // ---------------------------------------------------------
 //
 CSIContentHandler::CSIContentHandler()
-:   CPushContentHandlerBase(), 
-    iSavedMsgId( KMsvNullIndexEntryId ), 
-    iPushMsgAction( KErrNotFound ), 
-    iExpiresTime( Time::NullTTime() ), 
+:   CPushContentHandlerBase(),
+    iSavedMsgId( KMsvNullIndexEntryId ),
+    iPushMsgAction( KErrNotFound ),
+    iExpiresTime( Time::NullTTime() ),
     iCreatedTime( Time::NullTTime() )
 	{
 	}
@@ -187,7 +187,7 @@ void CSIContentHandler::ParsePushMsgL()
         User::Leave( KErrCorrupt );
         }
 
-    // Get content type. It will tell us wheather the msg body is encoded or 
+    // Get content type. It will tell us wheather the msg body is encoded or
     // textual.
     TPtrC contentType;
 	iMessage->GetContentType( contentType );
@@ -205,7 +205,7 @@ void CSIContentHandler::ParsePushMsgL()
     */
 
     // Add SI dictionary.
-    NW_WBXML_Dictionary_t* dictArray[ KNoOfDictArrays ] = 
+    NW_WBXML_Dictionary_t* dictArray[ KNoOfDictArrays ] =
         { (NW_WBXML_Dictionary_t*)&NW_SI_WBXMLDictionary };
 
     NW_Status_t stat = NW_STAT_SUCCESS;
@@ -218,7 +218,7 @@ void CSIContentHandler::ParsePushMsgL()
     NW_Byte* buffer = (NW_Byte*)bodyPtr.Ptr();
     NW_Int32 length = (NW_Int32)bodyPtr.Size();
     // Let's use the content type now.
-    NW_Bool encoded = ( contentType.CompareF( KSiTextContentType ) == 0 ) ? 
+    NW_Bool encoded = ( contentType.CompareF( KSiTextContentType ) == 0 ) ?
                                                          NW_FALSE : NW_TRUE;
     // SI public identifier.
     NW_Uint32 publicID = NW_SI_PublicId;
@@ -230,13 +230,13 @@ void CSIContentHandler::ParsePushMsgL()
     CDocumentTreeOwner* docTreeOwner = new (ELeave) CDocumentTreeOwner;
     CleanupStack::PushL( docTreeOwner );
     NW_DOM_DocumentNode_t* domNode = NW_DOM_DocumentNode_BuildTree
-        ( 
-                            &domHandle, 
-                            buffer, 
-                            length, 
-                            encoded, 
-                            publicID, 
-                            extTNotStringTable 
+        (
+                            &domHandle,
+                            buffer,
+                            length,
+                            encoded,
+                            publicID,
+                            extTNotStringTable
         );
 	if (!domNode)
 		{
@@ -274,7 +274,7 @@ void CSIContentHandler::ParsePushMsgL()
         }
 
 	PUSHLOG_WRITE("CSIContentHandler::ParsePushMsgL: before calling getDocumentElement")
-    NW_DOM_ElementNode_t* siElement = 
+    NW_DOM_ElementNode_t* siElement =
         NW_DOM_DocumentNode_getDocumentElement( domNode );
 	PUSHLOG_WRITE("CSIContentHandler::ParsePushMsgL: after calling getDocumentElement")
 	if (!siElement)
@@ -336,17 +336,17 @@ void CSIContentHandler::ParsePushMsgL()
 			PUSHLOG_WRITE_FORMAT("CSIContentHandler::ParsePushMsgL: getNodeName ErrCode: %d", NwxStatusToErrCode( stat ))
             User::LeaveIfError( NwxStatusToErrCode( stat ) );
             NW_Byte*  nameBuf = NW_String_getStorage( name );
-            NW_Uint16 nameLen = NW_String_getCharCount( name, 
+            NW_Uint16 nameLen = NW_String_getCharCount( name,
                                                         iCharEncoding );
             TPtrC8 namePtr( nameBuf, nameLen );
 
-            if ( type == NW_DOM_ELEMENT_NODE && 
+            if ( type == NW_DOM_ELEMENT_NODE &&
                  namePtr.CompareF( KIndication ) == 0 )
                 {
                 // We found the indication element. Parse it.
                 PUSHLOG_WRITE("CSIContentHandler::ParsePushMsgL: indication under si found.")
                 indicationFound = ETrue;
-                NW_DOM_ElementNode_t* indicationElement = 
+                NW_DOM_ElementNode_t* indicationElement =
                     REINTERPRET_CAST( NW_DOM_ElementNode_t*, node );
                 ParseIndicationL( *indicationElement );
                 }
@@ -416,7 +416,7 @@ void CSIContentHandler::ParseIndicationL( NW_DOM_ElementNode_t& aIndication )
     ***********************************/
     if ( NW_DOM_Node_hasChildNodes( &aIndication ) )
         {
-        NW_DOM_TextNode_t* textNode = 
+        NW_DOM_TextNode_t* textNode =
             NW_DOM_Node_getFirstChild( &aIndication );
         User::LeaveIfNull( textNode );
 
@@ -437,7 +437,7 @@ void CSIContentHandler::ParseIndicationL( NW_DOM_ElementNode_t& aIndication )
 // CSIContentHandler::ParseIndAttributeL
 // ---------------------------------------------------------
 //
-void CSIContentHandler::ParseIndAttributeL( NW_DOM_AttributeHandle_t& 
+void CSIContentHandler::ParseIndAttributeL( NW_DOM_AttributeHandle_t&
                                             aAttrHandle )
 	{
     PUSHLOG_ENTERFN("CSIContentHandler::ParseIndAttributeL")
@@ -492,7 +492,7 @@ void CSIContentHandler::ParseIndAttributeL( NW_DOM_AttributeHandle_t&
                 {
                 User::LeaveIfError( NwxStatusToErrCode( stat ) );
                 NW_Byte* storage = NW_String_getStorage( val );
-                NW_Uint16 length = NW_String_getCharCount( val, 
+                NW_Uint16 length = NW_String_getCharCount( val,
                                                            iCharEncoding );
                 if ( length == 0 )
                     {
@@ -574,7 +574,7 @@ void CSIContentHandler::ParseIndAttributeL( NW_DOM_AttributeHandle_t&
             NW_String_t* val = NW_String_new();
             User::LeaveIfNull( val );
             stringOwner->SetString( val );
-            stat = NW_DOM_AttributeHandle_getValue( &aAttrHandle, val ); 
+            stat = NW_DOM_AttributeHandle_getValue( &aAttrHandle, val );
             User::LeaveIfError( NwxStatusToErrCode( stat ) );
             NW_Byte* storage = NW_String_getStorage( val );
             NW_Uint16 length = NW_String_getCharCount( val, iCharEncoding );
@@ -589,7 +589,7 @@ void CSIContentHandler::ParseIndAttributeL( NW_DOM_AttributeHandle_t&
         }
     else
         {
-        __ASSERT_DEBUG( EFalse, 
+        __ASSERT_DEBUG( EFalse,
             ContHandPanic( EPushContHandPanUnexpSiToken ) );
         }
 
@@ -707,7 +707,7 @@ HBufC16* CSIContentHandler::ConvertToUnicodeL( const TDesC8& aSrc, TUint aCharSe
             }
         else
             {
-            __ASSERT_DEBUG( resultOnStack, 
+            __ASSERT_DEBUG( resultOnStack,
                 ContHandPanic( EPushContHandPanSiResNotOnStack ) );
             // This may change the address of ucs2buffer so we need to put
             // it on the cleanup stack again!!
@@ -831,9 +831,9 @@ HBufC16* CSIContentHandler::ConvertToUnicodeL
     PUSHLOG_WRITE_FORMAT(" Storage: 0x%x",NW_String_getStorage(&aString));
     PUSHLOG_WRITE_FORMAT(" Byte count: %d",NW_String_getByteCount(&aString)-1);
 
-    // We will use NW_String_getByteCount(&aString)-1 as size, because 
+    // We will use NW_String_getByteCount(&aString)-1 as size, because
     // NW_String_getByteCount(&aString) includes NULL terminator.
-    const TPtrC8 src( NW_String_getStorage(&aString), 
+    const TPtrC8 src( NW_String_getStorage(&aString),
                       NW_String_getByteCount(&aString)-1 );
     HBufC16* ucs2buffer = ConvertToUnicodeL( src, id );
 
@@ -852,7 +852,7 @@ void CSIContentHandler::InitialiseCharacterSetConverterL()
     iCharacterSetConverter = CCnvCharacterSetConverter::NewL();
 
     RFs& fs = iMsvSession->FileSession();
-    iCharacterSetsAvailable = 
+    iCharacterSetsAvailable =
         CCnvCharacterSetConverter::CreateArrayOfCharacterSetsAvailableL( fs );
 
     PUSHLOG_LEAVEFN("CSIContentHandler::InitialiseCharacterSetConverterL")
@@ -898,7 +898,7 @@ TUint CSIContentHandler::ConvertActionString
 // CSIContentHandler::SetSIPushMsgEntryFieldsL
 // ---------------------------------------------------------
 //
-void CSIContentHandler::SetSIPushMsgEntryFieldsL( CSIPushMsgEntry& 
+void CSIContentHandler::SetSIPushMsgEntryFieldsL( CSIPushMsgEntry&
                                                   aSIPushMsgEntry )
 	{
     PUSHLOG_ENTERFN("CSIContentHandler::SetSIPushMsgEntryFieldsL")
@@ -924,7 +924,7 @@ void CSIContentHandler::SetSIPushMsgEntryFieldsL( CSIPushMsgEntry&
             }
 		}
 
-    __ASSERT_DEBUG( ActionFlag(), 
+    __ASSERT_DEBUG( ActionFlag(),
                     ContHandPanic( EPushContHandPanUnspecSiAction ) );
 	if ( ActionFlag() )
         {
@@ -960,18 +960,18 @@ void CSIContentHandler::SetSIPushMsgEntryFieldsL( CSIPushMsgEntry&
     if ( srvAddress.Length() == 0 )
         {
         // Read from resource.
-        HBufC* details = 
+        HBufC* details =
             iStrRscReader->AllocReadResourceLC( R_PUSHMISC_UNK_SENDER );
         aSIPushMsgEntry.SetMsgDetailsL( *details );
         CleanupStack::PopAndDestroy( details );
         }
     else
         {
-        // Convert the "From" information to the format required by the UI 
+        // Convert the "From" information to the format required by the UI
         // spec and then decode it.
         HBufC* details = iWapPushUtils->ConvertDetailsL( srvAddress );
         CleanupStack::PushL( details );
-        HBufC* convertedFrom = 
+        HBufC* convertedFrom =
             CPushMtmUtil::ConvertUriToDisplayFormL( *details );
         CleanupStack::PushL( convertedFrom );
         //
@@ -989,7 +989,7 @@ void CSIContentHandler::SetSIPushMsgEntryFieldsL( CSIPushMsgEntry&
     else
         {
         // Display URL.
-        __ASSERT_DEBUG( HrefFlag(), 
+        __ASSERT_DEBUG( HrefFlag(),
                         ContHandPanic( EPushContHandPanUnspecSiHref ) );
         const TPtrC url = aSIPushMsgEntry.Url();
         HBufC* convertedUrl = CPushMtmUtil::ConvertUriToDisplayFormL( url );
@@ -1003,11 +1003,11 @@ void CSIContentHandler::SetSIPushMsgEntryFieldsL( CSIPushMsgEntry&
     // ******** Push MTM specific processing *********
 
     /*
-    * Unfortunately in CPushMsgEntryBase there is no such functionality 
-    * with which we can reach TMsvEntry as non-const, but we have to 
-    * modify the entry's iMtmData2 member somehow. We can do it 
-    * with either casting or with modifying and saving the entry 
-    * manually after it has been saved by CSIPushMsgEntry. The latter 
+    * Unfortunately in CPushMsgEntryBase there is no such functionality
+    * with which we can reach TMsvEntry as non-const, but we have to
+    * modify the entry's iMtmData2 member somehow. We can do it
+    * with either casting or with modifying and saving the entry
+    * manually after it has been saved by CSIPushMsgEntry. The latter
     * solution is more expensive so we choose the first.
     */
     TMsvEntry& tEntry = CONST_CAST( TMsvEntry&, aSIPushMsgEntry.Entry() );
@@ -1038,10 +1038,10 @@ void CSIContentHandler::ProcessingPushMsgEntryL()
 
 	TBool deletePushMsg( EFalse );
 
-    __ASSERT_DEBUG( ActionFlag(), 
+    __ASSERT_DEBUG( ActionFlag(),
                     ContHandPanic( EPushContHandPanUnspecSiAction ) );
 
-    // S60 requirement: if both the href and the message is empty then 
+    // S60 requirement: if both the href and the message is empty then
     // delete the msg.
     if ( HrefFlag() == EFalse && DataFlag() == EFalse )
         {
@@ -1075,7 +1075,7 @@ void CSIContentHandler::ProcessingPushMsgEntryL()
 		    }
         }
 
-	// An SI with the action attribute set to “delete” MUST have an 
+	// An SI with the action attribute set to “delete” MUST have an
     // explicitly assigned value for si-id.
 	if ( !deletePushMsg && ActionFlag() )
 		{
@@ -1099,7 +1099,7 @@ void CSIContentHandler::ProcessingPushMsgEntryL()
     if ( !deletePushMsg && ActionFlag() )
         {
         // SI with action=signal-none must not be presented to the end-user.
-        // Note. In S60 signal-none behaves the same as delete: the 
+        // Note. In S60 signal-none behaves the same as delete: the
         // message is discarded after processing it!
         if ( iPushMsgAction == CSIPushMsgEntry::ESIPushMsgSignalNone )
             {
@@ -1119,7 +1119,7 @@ void CSIContentHandler::ProcessingPushMsgEntryL()
         }
     else
         {
-        // The new entry must be discarded. 
+        // The new entry must be discarded.
         // Delete the corresponding matching entry, too.
         if ( matchingEntryId != KMsvNullIndexEntryId )
             {
@@ -1150,7 +1150,7 @@ void CSIContentHandler::StoreSIMessageL( TMsvId aMatchingEntryId )
        //Delete this old entry
        iWapPushUtils->DeleteEntryL( aMatchingEntryId );
     }
-   
+
     SetSIPushMsgEntryFieldsL( *siEntry );
     iSavedMsgId = siEntry->SaveL( *iMsvSession, KMsvGlobalInBoxIndexEntryId );
 
@@ -1179,9 +1179,9 @@ TBool CSIContentHandler::HandleMsgOrderReceptionL( TMsvId& aMatchingEntryId )
 	{
     PUSHLOG_ENTERFN("CSIContentHandler::HandleMsgOrderReceptionL")
 
-    __ASSERT_DEBUG( ( SiIdFlag() || HrefFlag() ), 
+    __ASSERT_DEBUG( ( SiIdFlag() || HrefFlag() ),
             ContHandPanic( EPushContHandPanNoSiIdOrHrefAttr ) );
-    __ASSERT_DEBUG( CreatedFlag(), 
+    __ASSERT_DEBUG( CreatedFlag(),
             ContHandPanic( EPushContHandPanNoCreatedAttr ) );
 
     CMsvEntrySelection* matchingIdList = NULL;
@@ -1207,7 +1207,7 @@ TBool CSIContentHandler::HandleMsgOrderReceptionL( TMsvId& aMatchingEntryId )
 		CSIPushMsgEntry* siEntry = CSIPushMsgEntry::NewL();
 		CleanupStack::PushL( siEntry );
 
-		// Delete older stored messages and/or mark current message for 
+		// Delete older stored messages and/or mark current message for
         // deletion if same date or older than stored messages
         TBool foundOneToBeReplaced = EFalse;
 		for ( TInt count = 0; count < matchingListCount; ++count )
@@ -1216,7 +1216,7 @@ TBool CSIContentHandler::HandleMsgOrderReceptionL( TMsvId& aMatchingEntryId )
 
             siEntry->RetrieveL( *iMsvSession, matchingSiMsgEntryId );
 
-			// Skip date comparisons if creation date not valid - 
+			// Skip date comparisons if creation date not valid -
             // SI without created attribute never gets replaced.
 			TTime existingSiCreatedTime( siEntry->Created() );
 
@@ -1226,25 +1226,25 @@ TBool CSIContentHandler::HandleMsgOrderReceptionL( TMsvId& aMatchingEntryId )
                 }
             else
                 {
-                __ASSERT_DEBUG( !foundOneToBeReplaced, 
+                __ASSERT_DEBUG( !foundOneToBeReplaced,
                                 ContHandPanic( EPushContHandPanTooManySi ) );
                 if ( foundOneToBeReplaced )
                     {
                     PUSHLOG_WRITE(" Already found one")
                     // Only one SI has to be found.
-                    // If the program runs into it, then make a 
-                    // garbage collection to ensure consistency and 
+                    // If the program runs into it, then make a
+                    // garbage collection to ensure consistency and
                     // remove other messages found.
                     iWapPushUtils->DeleteEntryL( matchingSiMsgEntryId );
-                    // After the 'for' only one SI is allowed that has created 
+                    // After the 'for' only one SI is allowed that has created
                     // attribute.
                     }
                 else
                     {
                     foundOneToBeReplaced = ETrue; // A match was found.
-                    // Check if received SI is newer than existing stored Si 
+                    // Check if received SI is newer than existing stored Si
                     // (out of order).
-                    if ( iCreatedTime > existingSiCreatedTime ) 
+                    if ( iCreatedTime > existingSiCreatedTime )
 	                    {
                         PUSHLOG_WRITE(" Replacing...")
                         // The new SI replaces the existing.
@@ -1263,7 +1263,7 @@ TBool CSIContentHandler::HandleMsgOrderReceptionL( TMsvId& aMatchingEntryId )
 
 		CleanupStack::PopAndDestroy( siEntry ); // siEntry
 		}
-		
+
 	CleanupStack::PopAndDestroy( matchingIdList ); // matchingIdList
 
     PUSHLOG_LEAVEFN("CSIContentHandler::HandleMsgOrderReceptionL")
@@ -1274,7 +1274,7 @@ TBool CSIContentHandler::HandleMsgOrderReceptionL( TMsvId& aMatchingEntryId )
 // CSIContentHandler::ConvertDateTimeL
 // ---------------------------------------------------------
 //
-TBool CSIContentHandler::ConvertDateTimeL( const TDesC& aDateTime, 
+TBool CSIContentHandler::ConvertDateTimeL( const TDesC& aDateTime,
                                            TTime& aConvertedDate ) const
 	{
     PUSHLOG_ENTERFN("CSIContentHandler::ConvertDateTimeL")
@@ -1301,7 +1301,7 @@ TBool CSIContentHandler::ConvertDateTimeL( const TDesC& aDateTime,
         else
 			{
             // Now 'str' is in format YYYYMMDD:HHMMSS
-			// Adjust UTC time to zero offset TTime. Only month and day 
+			// Adjust UTC time to zero offset TTime. Only month and day
             // is effected.
 			const TInt KFirstMonthChar = KValidTTimeMonthStart;
 			const TInt KSecondMonthChar = KFirstMonthChar + 1;
@@ -1336,7 +1336,7 @@ TBool CSIContentHandler::ConvertDateTimeL( const TDesC& aDateTime,
 				str[KSecondDayChar]--;
                 }
 
-			// string is now syntaxically correct, but Set() will return an 
+			// string is now syntaxically correct, but Set() will return an
             // error if it's semantically incorrect.
             User::LeaveIfError( convertedTime.Set( str ) );
 			convertedOK = ETrue;
@@ -1387,7 +1387,7 @@ HBufC* CSIContentHandler::ConvertOpaqueToUtcL( const TDesC8& aOpaque ) const
         convertedPtr.Append( TChar(KAsciiZeroCharCode + low) );
         }
 
-    // A valid UTC %Datetime contains 14 numerical characters and 6 
+    // A valid UTC %Datetime contains 14 numerical characters and 6
     // non-numerical: “1999-04-30T06:40:00Z”.
     // So fill the remaining bytes with zeros.
     for ( i = convertedPtr.Length(); i < KValidUTCNumericals; ++i )
@@ -1443,8 +1443,8 @@ TBool CSIContentHandler::IsValidUTCTime( TDes& aDateTime ) const
         {
 	    // strip out formatting characters
 	    TInt formatCharPos = 4;
-	    aDateTime.Delete( formatCharPos, 1 ); 
-	    // now move through two characters at a time and remove other chars 
+	    aDateTime.Delete( formatCharPos, 1 );
+	    // now move through two characters at a time and remove other chars
 	    // to just leave digits
 	    const TInt KRemainingFormatChars = 5;
         TInt i( 0 );
@@ -1456,10 +1456,10 @@ TBool CSIContentHandler::IsValidUTCTime( TDes& aDateTime ) const
 
         // Now aDateTime has to be in format YYYYMMDDHHMMSS
 
-        __ASSERT_DEBUG( aDateTime.Length() == KValidTTimeLength, 
+        __ASSERT_DEBUG( aDateTime.Length() == KValidTTimeLength,
                         ContHandPanic( EPushContHandPanBadTTimeLength ) );
 
-        // now have UTC string stripped of format characters - check remaining 
+        // now have UTC string stripped of format characters - check remaining
         // characters are all digits - YYYYMMDDHHMMSS
         TChar ch;
         for ( i = 0; i < KValidTTimeLength; ++i )
@@ -1474,7 +1474,7 @@ TBool CSIContentHandler::IsValidUTCTime( TDes& aDateTime ) const
 
         if ( isValid )
             {
-            /* 
+            /*
             In YYYYMMDDHHMMSS
             YYYY = 4 digit year ("0000" ... "9999")
             MM = 2 digit month ("01"=January, "02"=February ... "12"=December)
@@ -1487,7 +1487,7 @@ TBool CSIContentHandler::IsValidUTCTime( TDes& aDateTime ) const
             TUint val;
             // Do not check year. There are no restrictions.
             // Check month.
-            TLex parser( aDateTime.Mid( KValidTTimeMonthStart, 
+            TLex parser( aDateTime.Mid( KValidTTimeMonthStart,
                                         KValidTTimeBlockLength ) );
             err = parser.Val( val, EDecimal );
             if ( err )
@@ -1506,7 +1506,7 @@ TBool CSIContentHandler::IsValidUTCTime( TDes& aDateTime ) const
             // Check day.
             if ( isValid )
                 {
-                parser = aDateTime.Mid( KValidTTimeDayStart, 
+                parser = aDateTime.Mid( KValidTTimeDayStart,
                                         KValidTTimeBlockLength );
                 err = parser.Val( val, EDecimal );
                 if ( err )
@@ -1526,7 +1526,7 @@ TBool CSIContentHandler::IsValidUTCTime( TDes& aDateTime ) const
             // Check hour.
             if ( isValid )
                 {
-                parser = aDateTime.Mid( KValidTTimeHourStart, 
+                parser = aDateTime.Mid( KValidTTimeHourStart,
                                         KValidTTimeBlockLength );
                 err = parser.Val( val, EDecimal );
                 if ( err )
@@ -1546,7 +1546,7 @@ TBool CSIContentHandler::IsValidUTCTime( TDes& aDateTime ) const
             // Check minute.
             if ( isValid )
                 {
-                parser = aDateTime.Mid( KValidTTimeMinuteStart, 
+                parser = aDateTime.Mid( KValidTTimeMinuteStart,
                                         KValidTTimeBlockLength );
                 err = parser.Val( val, EDecimal );
                 if ( err )
@@ -1566,7 +1566,7 @@ TBool CSIContentHandler::IsValidUTCTime( TDes& aDateTime ) const
             // Check second.
             if ( isValid )
                 {
-                parser = aDateTime.Mid( KValidTTimeSecondStart, 
+                parser = aDateTime.Mid( KValidTTimeSecondStart,
                                         KValidTTimeBlockLength );
                 err = parser.Val( val, EDecimal );
                 if ( err )
@@ -1601,7 +1601,7 @@ TBool CSIContentHandler::IsValidUTCTime( TDes& aDateTime ) const
 // ---------------------------------------------------------
 //
 TBool CSIContentHandler::AttributeToTTimeL
-                        ( NW_DOM_AttributeHandle_t& aAttrHandle, 
+                        ( NW_DOM_AttributeHandle_t& aAttrHandle,
                           TTime& aConvertedDate ) const
     {
     PUSHLOG_ENTERFN("CSIContentHandler::AttributeToTTimeL")
@@ -1640,7 +1640,7 @@ TBool CSIContentHandler::AttributeToTTimeL
             dataBuf->Des().Copy( dataPtr );
             gotDate = ConvertDateTimeL( *dataBuf, aConvertedDate );
 
-            CleanupStack::PopAndDestroy( 2, stringOwner ); // dataBuf, 
+            CleanupStack::PopAndDestroy( 2, stringOwner ); // dataBuf,
                                                            // stringOwner
             }
         else if ( valType == NW_DOM_ATTR_VAL_OPAQUE )
@@ -1669,12 +1669,12 @@ TBool CSIContentHandler::AttributeToTTimeL
 // CSIContentHandler::HandleMessageL
 // ---------------------------------------------------------
 //
-void CSIContentHandler::HandleMessageL( CPushMessage* aPushMsg, 
+void CSIContentHandler::HandleMessageL( CPushMessage* aPushMsg,
                                         TRequestStatus& aStatus )
 	{
     PUSHLOG_ENTERFN("CSIContentHandler::HandleMessageL")
 
-    __ASSERT_DEBUG( aPushMsg != NULL, 
+    __ASSERT_DEBUG( aPushMsg != NULL,
                     ContHandPanic( EPushContHandPanMsgNull ) );
 
 #ifdef __TEST_LOG__
@@ -1701,7 +1701,7 @@ void CSIContentHandler::HandleMessageL( CPushMessage* aPushMsg )
 	{
     PUSHLOG_ENTERFN("CSIContentHandler::HandleMessageL")
 
-    __ASSERT_DEBUG( aPushMsg != NULL, 
+    __ASSERT_DEBUG( aPushMsg != NULL,
                     ContHandPanic( EPushContHandPanMsgNull ) );
 
 #ifdef __TEST_LOG__

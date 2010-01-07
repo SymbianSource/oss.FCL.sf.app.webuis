@@ -15,6 +15,7 @@
 *
 */
 
+#include <Browser_platform_variant.hrh>
 #include <AknNavi.h>
 #include <AknNaviDe.h>
 #include <AknNaviLabel.h>
@@ -55,7 +56,7 @@
 #include "BrowserAppUi.h"
 #include "BrowserDialogs.h"
 #include "BrowserUtil.h"
-
+#include <AknUtils.h>
 // It's also the size of the icon array without favicon
 const TInt KFirstFaviconIndex = 6;
 const TInt KDateSize = 30;          // Size of Date strings
@@ -349,7 +350,11 @@ void CFeedsFolderContainer::HandleListBoxEventL(CEikListBox* /*aListBox*/,
             }
         }
     // Toolbar buttons status should be changed when focus is moved from feed to folder or viceversa
-    else if(aEventType == MEikListBoxObserver::EEventItemClicked)
+    else if ( (aEventType == MEikListBoxObserver::EEventItemClicked)
+#ifdef BRDO_TOUCH_ENABLED_FF
+            ||(aEventType == MEikListBoxObserver::EEventFlickStopped)
+#endif // BRDO_TOUCH_ENABLED_FF            
+            )
       	{
 		UpdateToolbarButtonsState();
       	}
@@ -1567,6 +1572,11 @@ void CFeedsFolderContainer::UpdateListBoxL(TInt aInitialSelection)
                     CleanupStack::PopAndDestroy( dateFormat );//dateFormat
                     //
                     timestamp.Append(temp);
+                    // Convert to locale specific numbers 
+                    if (TBidiText::ERightToLeft == AknTextUtils::CurrentScriptDirectionality ())
+                        {
+                        AknTextUtils::DisplayTextLanguageSpecificNumberConversion(timestamp); 
+                        }
                     }
                     
                 // If there is a favicon for this url then add it to the icon list

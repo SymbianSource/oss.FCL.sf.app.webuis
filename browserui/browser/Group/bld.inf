@@ -65,9 +65,9 @@ PRJ_EXPORTS
 ../SrcData/backup_registration.xml      /epoc32/data/z/private/10008d39/backup_registration.xml
 ../SrcData/backup_registration.xml      /epoc32/release/winscw/udeb/z/private/10008d39/backup_registration.xml
 ../SrcData/backup_registration.xml      /epoc32/release/winscw/urel/z/private/10008d39/backup_registration.xml
-../loc/BrowserHp.loc                    APP_LAYER_LOC_EXPORT_PATH(BrowserHp.loc)
-../loc/Feeds.loc                        APP_LAYER_LOC_EXPORT_PATH(Feeds.loc)
-../loc/WmlBrowser.loc                   APP_LAYER_LOC_EXPORT_PATH(WmlBrowser.loc)
+../loc/browserhp.loc                    APP_LAYER_LOC_EXPORT_PATH(browserhp.loc)
+../loc/feeds.loc                        APP_LAYER_LOC_EXPORT_PATH(feeds.loc)
+../loc/wmlbrowser.loc                   APP_LAYER_LOC_EXPORT_PATH(wmlbrowser.loc)
 
 ../Rom/BrowserLauncher.iby              CORE_APP_LAYER_IBY_EXPORT_PATH(BrowserLauncher.iby)
 ../Rom/BrowserUi.iby                    CORE_APP_LAYER_IBY_EXPORT_PATH(BrowserUi.iby)

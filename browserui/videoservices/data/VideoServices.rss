@@ -23,7 +23,7 @@ NAME    VIDS // For video Services
 
 #include <eikon.rh>
 #include "VideoServices.hrh"
-#include "VideoServices.loc"
+#include "videoservices.loc"
 #include <avkon.rsg>
 #include <avkon.rh>
 #include <avkon.mbg>

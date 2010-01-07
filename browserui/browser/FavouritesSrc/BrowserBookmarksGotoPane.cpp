@@ -37,10 +37,6 @@
 #include <AppLayout.cdl.h>
 #include <AknLayout.cdl.h>
 
-#include <centralrepository.h>
-#include <AknFepInternalCRKeys.h>
-#include <PtiDefs.h>
-
 #include "BrowserBookmarksGotoPane.h"
 #include "BrowserUtil.h"
 #include "commonconstants.h"
@@ -569,18 +565,10 @@ void CBrowserBookmarksGotoPane::ConstructL ( const CCoeControl& aParent, const T
 
     // In Search Mode we allow all types of inputs
     TInt editorFlags( (iSearchPaneMode ? EAknEditorFlagDefault : EAknEditorFlagLatinInputModesOnly) | EAknEditorFlagUseSCTNumericCharmap );
-#ifdef RD_INTELLIGENT_TEXT_INPUT
-    TInt physicalKeyboards = 0;
-    CRepository* aknFepRepository = CRepository::NewL( KCRUidAknFep );
-    User::LeaveIfNull( aknFepRepository );
 
-    aknFepRepository->Get( KAknFepPhysicalKeyboards,  physicalKeyboards );
-    delete aknFepRepository;
+    // Always disable T9 input for goto url
+    editorFlags = (editorFlags | EAknEditorFlagNoT9);
 
-    if ( physicalKeyboards &&   EPtiKeyboardQwerty3x11 ) {
-        editorFlags = (editorFlags | EAknEditorFlagNoT9);
-        }
-#endif
     iEditor->SetAknEditorFlags( editorFlags );
 
 

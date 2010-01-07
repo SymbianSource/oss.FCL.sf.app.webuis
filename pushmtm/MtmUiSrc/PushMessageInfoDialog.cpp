@@ -24,9 +24,9 @@
 #include "PushMtmUiPanic.h"
 #include "PushMtmUtil.h"
 #include "PushMtmLog.h"
-#include <CSIPushMsgEntry.h>
-#include <CSLPushMsgEntry.h>
-#include <CUnknownPushMsgEntry.h>
+#include <push/CSIPushMsgEntry.h>
+#include <push/CSLPushMsgEntry.h>
+#include <push/CUnknownPushMsgEntry.h>
 #include <PushMtmUi.rsg>
 #include <AknLists.h>
 #include <msvapi.h>
@@ -56,7 +56,7 @@ _LIT( KSpace, " " );
 // ---------------------------------------------------------
 //
 CPushMessageInfoDialog::CPushMessageInfoDialog()
-:   CAknPopupList(), 
+:   CAknPopupList(),
     iResourceLoader( *iCoeEnv )
     {
     }
@@ -92,8 +92,8 @@ void CPushMessageInfoDialog::ConstructL( CMsvSession& aMsvSession, TMsvId aId )
     {
     PUSHLOG_ENTERFN("CPushMessageInfoDialog::ConstructL");
 
-    __ASSERT_DEBUG( !iListBox && 
-                    !iListBoxModel, 
+    __ASSERT_DEBUG( !iListBox &&
+                    !iListBoxModel,
                     UiPanic( EPushMtmUiPanAlreadyInitialized ) );
 
     FeatureManager::InitializeLibL();
@@ -101,7 +101,7 @@ void CPushMessageInfoDialog::ConstructL( CMsvSession& aMsvSession, TMsvId aId )
     // Add resource file.
     TParse* fileParser = new (ELeave) TParse;
     // Unnecessary to call CleanupStack::PushL( fileParser );
-    fileParser->Set( KPushMtmUiResourceFileAndDrive, &KDC_MTM_RESOURCE_DIR, NULL ); 
+    fileParser->Set( KPushMtmUiResourceFileAndDrive, &KDC_MTM_RESOURCE_DIR, NULL );
     iResourceFile = fileParser->FullName();
     PUSHLOG_WRITE_FORMAT(" iResourceFile: <%S>",&iResourceFile);
     delete fileParser;
@@ -111,7 +111,7 @@ void CPushMessageInfoDialog::ConstructL( CMsvSession& aMsvSession, TMsvId aId )
 
     // Construct list box's model first
     // This list box will be used by an CAknPopupList object.
-    __ASSERT_DEBUG( !iListBoxModel && !iListBox, 
+    __ASSERT_DEBUG( !iListBoxModel && !iListBox,
                     UiPanic( EPushMtmUiPanAlreadyInitialized ) );
    	iListBoxModel = new (ELeave) CDesCArrayFlat( KArrayGranularity );
     // Construct list box.
@@ -119,7 +119,7 @@ void CPushMessageInfoDialog::ConstructL( CMsvSession& aMsvSession, TMsvId aId )
 
     // ========================================================
     // Layout info of CAknSingleHeadingPopupMenuStyleListBox
-    TAknTextLineLayout textLayout = 
+    TAknTextLineLayout textLayout =
         AknLayout::List_pane_texts__menu_single_heading__Line_2(0);
 
     // Font of the second column of the given list box
@@ -129,19 +129,19 @@ void CPushMessageInfoDialog::ConstructL( CMsvSession& aMsvSession, TMsvId aId )
     TInt itemCount = 0; // No need to set
     TInt titleVisible = 1; // known value (we always have title)
     TRect main_pane = iAvkonAppUi->ClientRect();
- 
+
     TAknLayoutRect popup_menu_graphic_window;
     popup_menu_graphic_window.LayoutRect( main_pane,
         AknLayout::popup_menu_graphic_window(itemCount) );
- 
+
     TAknLayoutRect menu_heading_pane;
     menu_heading_pane.LayoutRect( popup_menu_graphic_window.Rect(),
         AknLayout::list_menu_heading_pane(titleVisible, itemCount) );
- 
+
     TAknLayoutRect list_item;
     list_item.LayoutRect( menu_heading_pane.Rect(),
         AknLayout::list_single_heading_popup_menu_pane(itemCount) );
- 
+
     TAknLayoutText text;
     text.LayoutText( list_item.Rect(), textLayout );
 
@@ -151,8 +151,8 @@ void CPushMessageInfoDialog::ConstructL( CMsvSession& aMsvSession, TMsvId aId )
     // Add items to the list.
     AddMessageInfoItemsL( aMsvSession, aId );
 
-    CAknPopupList::ConstructL( iListBox, 
-                               R_AVKON_SOFTKEYS_OK_EMPTY__OK, 
+    CAknPopupList::ConstructL( iListBox,
+                               R_AVKON_SOFTKEYS_OK_EMPTY__OK,
                                AknPopupLayouts::EMenuGraphicHeadingWindow );
 
 	iListBox->ConstructL( this, EAknListBoxViewerFlags );
@@ -177,7 +177,7 @@ void CPushMessageInfoDialog::ConstructL( CMsvSession& aMsvSession, TMsvId aId )
 // CPushMessageInfoDialog::AddMessageInfoItemL
 // ---------------------------------------------------------
 //
-void CPushMessageInfoDialog::AddMessageInfoItemL( TInt aHeaderResourceId, 
+void CPushMessageInfoDialog::AddMessageInfoItemL( TInt aHeaderResourceId,
                                                   const TDesC& aText ) const
     {
     __ASSERT_DEBUG( iListBoxModel, UiPanic( EPushMtmUiPanNotInitialized ) );
@@ -193,16 +193,16 @@ void CPushMessageInfoDialog::AddMessageInfoItemL( TInt aHeaderResourceId,
         AknTextUtils::DisplayTextLanguageSpecificNumberConversion( paramTextCopyPtr );
         }
 
-    HBufC* header = ( aHeaderResourceId == KNoResource ? 
-        KNullDesC().AllocLC() : 
+    HBufC* header = ( aHeaderResourceId == KNoResource ?
+        KNullDesC().AllocLC() :
         iCoeEnv->AllocReadResourceLC( aHeaderResourceId ) );
 
-    CArrayFix<TPtrC>* wrappedArray = 
+    CArrayFix<TPtrC>* wrappedArray =
         new ( ELeave ) CArrayFixFlat<TPtrC>( KArrayGranularity );
     CleanupStack::PushL( wrappedArray );
 
     AknTextUtils::WrapToArrayL
-                                ( paramTextCopyPtr, iSecondColumnWidth, 
+                                ( paramTextCopyPtr, iSecondColumnWidth,
                                   *iSecondColumnFont, *wrappedArray );
     // visual is directly not used, but wrappedArray points to it
 
@@ -211,10 +211,10 @@ void CPushMessageInfoDialog::AddMessageInfoItemL( TInt aHeaderResourceId,
     for ( TInt loop = 0; loop < lines; ++loop )
         {
         TPtrC current = ( *wrappedArray )[loop];
-        // Allocate a buffer for the new list box item text 
+        // Allocate a buffer for the new list box item text
         // (including header, separator and wrapped text)
         HBufC* currentFormattedLine = HBufC::NewLC
-            ( ((loop==0) ? header->Length() : /*KSpace().Length()*/1) + 
+            ( ((loop==0) ? header->Length() : /*KSpace().Length()*/1) +
               /*KTab().Length()*/1 + current.Length() );
         TPtr currentFormattedLinePtr = currentFormattedLine->Des(); // writeable
 
@@ -256,7 +256,7 @@ TTime CPushMessageInfoDialog::ConvertUniversalToHomeTime
           }
 
 #ifdef __TEST_LOG__
-        // The following section will call LEAVEable functions, but 
+        // The following section will call LEAVEable functions, but
         // they are only for logging purposes.
         _LIT( KDateFormat, "%E%D%X%N%Y %1 %2 %3" );
         _LIT( KTimeFormat, "%-B%:0%J%:1%T%:2%S%:3%+B" );
@@ -279,7 +279,7 @@ TTime CPushMessageInfoDialog::ConvertUniversalToHomeTime
 // CPushMessageInfoDialog::AddMessageInfoItemsL
 // ---------------------------------------------------------
 //
-void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession, 
+void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
                                                    TMsvId aId ) const
     {
     PUSHLOG_ENTERFN("CPushMessageInfoDialog::AddMessageInfoItemsL");
@@ -330,12 +330,12 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
     TPtrC8 from8( msg->From() );
     if ( from8.Length() )
         {
-        // Copy the 8-bit text into a 16-bit one and convert the string to 
+        // Copy the 8-bit text into a 16-bit one and convert the string to
         // decoded form.
         HBufC* from16 = HBufC::NewMaxLC( from8.Length() );
         from16->Des().Copy( from8 );
 
-        HBufC* convertedFrom = 
+        HBufC* convertedFrom =
             CPushMtmUtil::ConvertUriToDisplayFormL( *from16 );
         CleanupStack::PushL( convertedFrom );
         //
@@ -355,7 +355,7 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
         if ( url.Length() )
             {
             //
-            HBufC* convertedUrl = 
+            HBufC* convertedUrl =
                 CPushMtmUtil::ConvertUriToDisplayFormL( url );
             CleanupStack::PushL( convertedUrl );
             //
@@ -373,7 +373,7 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
         if ( url.Length() )
             {
             //
-            HBufC* convertedUrl = 
+            HBufC* convertedUrl =
                 CPushMtmUtil::ConvertUriToDisplayFormL( url );
             CleanupStack::PushL( convertedUrl );
             //
@@ -426,9 +426,9 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
 
     TBuf<32> time;
     TBuf<32> date;
-    HBufC* dateFormatString = 
+    HBufC* dateFormatString =
                 iCoeEnv->AllocReadResourceLC( R_QTN_DATE_USUAL_WITH_ZERO );
-    HBufC* timeFormatString = 
+    HBufC* timeFormatString =
                 iCoeEnv->AllocReadResourceLC( R_QTN_TIME_USUAL_WITH_ZERO );
 
     // ************************************************************************
@@ -482,12 +482,12 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
             }
         }
 
-    CleanupStack::PopAndDestroy( 2, dateFormatString ); 
+    CleanupStack::PopAndDestroy( 2, dateFormatString );
     // timeFormatString, dateFormatString
 
     // ************************************************************************
     // Information item: Size.
-    // Convert the message size given in bytes into kilobytes. Round the 
+    // Convert the message size given in bytes into kilobytes. Round the
     // value up, if necessary.
     // ************************************************************************
     TReal messageSize( 0 );
@@ -518,11 +518,11 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
         {
         ++messageSizeInt;
         }
-    HBufC* size = 
+    HBufC* size =
         StringLoader::LoadLC( R_QTN_SIZE_KB, messageSizeInt, iCoeEnv );
     // From avkon.loc:
     // #define qtn_size_kb " %N kB"
-    // We don't need white spaces at the beginning of the size string, so 
+    // We don't need white spaces at the beginning of the size string, so
     // remove them:
     size->Des().Trim();
     AddMessageInfoItemL( R_PUSHMID_SIZE, *size );

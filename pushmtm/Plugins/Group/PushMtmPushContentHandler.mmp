@@ -15,7 +15,6 @@
 *
 */
 
-
 #include <platform_paths.hrh>
 #include <platform/mw/browser_platform_variant.hrh>
 
@@ -45,11 +44,15 @@ USERINCLUDE     ../../Inc
 USERINCLUDE     ../../MtmUtilInc
 USERINCLUDE     ../../MtmUiInc
 
+/* todo: to be removed once push header are updated */
+USERINCLUDE     /epoc32/include/push
+
 APP_LAYER_SYSTEMINCLUDE
-APP_LAYER_ECOM_SYSTEMINCLUDE
-APP_LAYER_PUSH_SYSTEMINCLUDE
-APP_LAYER_HTTP_SYSTEMINCLUDE
-APP_LAYER_LIBC_SYSTEMINCLUDE
+OS_LAYER_ESTLIB_SYSTEMINCLUDE
+#if defined(__PLATFORM_VERSION_32__)
+SYSTEMINCLUDE   APP_LAYER_PUBLIC_EXPORT_PATH(push)
+SYSTEMINCLUDE   APP_LAYER_PUBLIC_EXPORT_PATH(ecom)
+#endif
 
 SOURCEPATH      ../PushContentHandler
 SOURCE          CCOContentHandler.cpp
@@ -65,8 +68,8 @@ SOURCE          PushContentHandlerUtils.cpp
 #ifdef __SERIES60_PUSH_SL
 SOURCE          PushMtmAutoFetchOperation.cpp
 SOURCE          PushMtmFetchOperation.cpp
-SOURCE			PushMtmCacheSupply.cpp
-SOURCE			PushMtmCacheDataSupplier.cpp
+SOURCE		      PushMtmCacheSupply.cpp
+SOURCE		      PushMtmCacheDataSupplier.cpp
 #endif // __SERIES60_PUSH_SL
 SOURCE          si_dict.c
 SOURCE          sl_dict.c

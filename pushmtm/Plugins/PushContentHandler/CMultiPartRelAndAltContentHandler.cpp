@@ -15,12 +15,10 @@
 *
 */
 
-
-
 // INCLUDE FILES
 
 #include "CMultiPartRelAndAltContentHandler.h"
-#include <CMultiPartIteratorBase.h>
+#include <push/cmultipartiteratorbase.h>
 #include <msvids.h>
 
 // Constants

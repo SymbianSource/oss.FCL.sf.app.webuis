@@ -15,7 +15,6 @@
 *
 */
 
-
 #include <defaultcaps.hrh>
 #include <data_caging_paths.hrh>
 #include <platform_paths.hrh>
@@ -35,8 +34,9 @@ USERINCLUDE		../MtmUiInc
 USERINCLUDE		../MtmUtilInc
 
 APP_LAYER_SYSTEMINCLUDE
-APP_LAYER_PUSH_SYSTEMINCLUDE
-
+#if defined(__PLATFORM_VERSION_32__)
+SYSTEMINCLUDE   APP_LAYER_PUBLIC_EXPORT_PATH(push)
+#endif
 
 SOURCEPATH		../ViewerSrc
 SOURCE          PushViewerApp.cpp
@@ -78,7 +78,6 @@ LIBRARY         efsrv.lib
 DEBUGLIBRARY         flogger.lib
 #endif
 
-
 START RESOURCE  ../Data/PushViewer.rss
 DEPENDS avkon.rsg
 HEADER
@@ -89,7 +88,6 @@ LANGUAGE_IDS
 #endif
 TARGETPATH   APP_RESOURCE_DIR
 END // RESOURCE
-
 
 START RESOURCE  ../Data/PushViewer_reg.rss
 DEPENDS pushviewer.rsg

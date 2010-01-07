@@ -25,7 +25,7 @@
 #include "PushMtmSettings.h"
 #include "PushMtmUtilPanic.h"
 #include "PushMtmLog.h"
-#include <PushMessage.h>
+#include <push/PushMessage.h>
 #include <PushEntry.h>
 
 // ================= MEMBER FUNCTIONS =======================
@@ -35,9 +35,9 @@
 // ---------------------------------------------------------
 //
 EXPORT_C TBool TPushAuthenticationUtil::AuthenticateMsgL
-										( 
-										const CPushMtmSettings& aMtmSettings, 
-										const CPushMessage& aPushMsg 
+										(
+										const CPushMtmSettings& aMtmSettings,
+										const CPushMessage& aPushMsg
 										)
     {
     PUSHLOG_ENTERFN("TPushAuthenticationUtil::AuthenticateMsgL")
@@ -94,9 +94,9 @@ EXPORT_C TBool TPushAuthenticationUtil::AuthenticateMsgL
 // ---------------------------------------------------------
 //
 EXPORT_C TBool TPushAuthenticationUtil::AuthenticateMsgL
-										( 
-										const CPushMtmSettings& aMtmSettings, 
-										const CPushMsgEntryBase& aPushMsg 
+										(
+										const CPushMtmSettings& aMtmSettings,
+										const CPushMsgEntryBase& aPushMsg
 										)
     {
     PUSHLOG_ENTERFN("TPushAuthenticationUtil::AuthenticateMsgL 2")

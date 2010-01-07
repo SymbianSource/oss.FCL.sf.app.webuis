@@ -122,10 +122,10 @@ void CBrowserLoadObserver::HandleLoadEventOtherL(
         case TBrCtlDefs::EEventLoadError:
             {
             if(LoadStatus( ELoadStatusSecurePage ))
-            	{
-            	ClearStatus();
-            	UpdateSecureIndicatorL();
-            	}
+                {
+                UpdateSecureIndicatorL();
+                }
+            ClearStatus();
             SetStatus( ELoadStatusMainError );
             break;
             }
@@ -149,7 +149,7 @@ void CBrowserLoadObserver::HandleLoadEventOtherL(
             break;
             }
         case TBrCtlDefs::EEventExitingSecurePage:
-		case TBrCtlDefs::EEventSubmittingToNonSecurePage:
+        case TBrCtlDefs::EEventSubmittingToNonSecurePage:
             {
             ClearStatus( ELoadStatusSecurePage );
             ClearStatus( ELoadStatusAllItemIsSecure );

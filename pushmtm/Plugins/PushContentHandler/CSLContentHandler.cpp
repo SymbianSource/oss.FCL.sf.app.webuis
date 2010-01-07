@@ -30,7 +30,7 @@
 #include "StringResourceReader.h"
 #include "sl_dict.h"
 #include "PushContentHandlerUtils.h"
-#include <CSLPushMsgEntry.h>
+#include <push/cslpushmsgentry.h>
 #include <msvids.h>
 #include <apgtask.h>
 #include <apgcli.h>

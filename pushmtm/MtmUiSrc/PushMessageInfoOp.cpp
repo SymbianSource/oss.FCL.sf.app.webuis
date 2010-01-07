@@ -15,8 +15,6 @@
 *
 */
 
-
-
 // INCLUDE FILES
 
 #include "PushMessageInfoOp.h"

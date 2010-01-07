@@ -26,7 +26,7 @@
 #include "BrowserWindow.h"
 #include "BrowserContentView.h"
 #include "BrowserContentViewContainer.h"
-#include "browserdialogsprovider.h"
+#include <browserdialogsprovider.h>
 #include "BrowserDialogsProviderProxy.h"
 #include "BrowserSoftkeysObserver.h"
 #include "BrowserSpecialLoadObserver.h"

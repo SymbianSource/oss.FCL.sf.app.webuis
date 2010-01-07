@@ -28,9 +28,10 @@
 #include <pluginadapterinterface.h>
 #include <BrowserAudioVideoPlugin.rsg>      // For text
 
+#include <brctldefs.h>
+
 #include "BavpLogger.h"
 #include "BavpView.h"
-#include "brctldefs.h"
 #include "BavpController.h"
 #include "BavpPlugin.h"
 

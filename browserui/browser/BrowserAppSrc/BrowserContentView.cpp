@@ -71,7 +71,7 @@
 #include "Preferences.h"
 #include "BrowserPreferences.h"
 #include "Display.h"
-#include "favouriteswapap.h"
+#include <favouriteswapap.h>
 #include "BrowserBookmarksModel.h"
 #include "BrowserDialogs.h"
 #include "BrowserUtil.h"
@@ -81,7 +81,7 @@
 #include "BrowserAdaptiveListPopup.h"
 #include "BrowserApplication.h"
 #include "logger.h"
-#include "favouritesfile.h"
+#include <favouritesfile.h>
 #include "BrowserWindowManager.h"
 #include "BrowserWindow.h"
 #include "BrowserPopupEngine.h"
@@ -248,7 +248,8 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
                                                      ( aCommand == EWmlCmdHistory ) ||
                                                      ( aCommand == EWmlCmdGoToAddress ) ||
                                                      ( aCommand == EWmlCmdShowShortcutKeymap ) ||
-                                                     ( aCommand == EWmlCmdShowMiniature ) ) )
+                                                     ( aCommand == EWmlCmdShowMiniature )||
+                                                     ( aCommand == EWmlCmdShowToolBar)) )
         {
         iWasContentFullScreenMode = iContentFullScreenMode;
         EnableFullScreenModeL( EFalse );
@@ -3159,6 +3160,11 @@ void CBrowserContentView::ShowFsStatusPane(TBool aShow)
 #endif
         StatusPane()->MakeVisible( ETrue );
         iContainer->SetRect(ClientRect());
+        // Remove any timer that has already been set
+        if ( iPeriodic )
+            {
+            iPeriodic->Cancel();
+            }
         }
     else
         {

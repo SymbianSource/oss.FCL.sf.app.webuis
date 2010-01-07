@@ -15,13 +15,11 @@
 *
 */
 
-
-
 // INCLUDE FILES
-#include "browserlauncher.h"
+#include <browserlauncher.h>
 #include "BrowserLauncherExtension.h"
 #include "logger.h"
-#include "downloadedcontenthandler.h"
+#include <downloadedcontenthandler.h>
 #include <favouriteslimits.h> // Context Id:s
 
 #include <eikenv.h>
@@ -29,9 +27,6 @@
 #include <s32mem.h>
 #include <coecntrl.h>
 #include <eikappui.h>
-
-
-
 
 NONSHARABLE_CLASS( CLauncherCommandAbsorbingControl ) : public CCoeControl
     {

@@ -38,11 +38,8 @@
 #include <aknutils.h>
 #include <browseruisdkcrkeys.h>
 
-#include <centralrepository.h>
 #include <AknLayout2ScalableDef.h>
-#include <AknFepInternalCRKeys.h>
 #include <aknlayoutfont.h>
-#include <PtiDefs.h>
 #include <aknlayoutscalable_avkon.cdl.h>
 
 #include "CommonConstants.h"
@@ -50,7 +47,7 @@
 #include "BrowserAppUi.h"
 #include "BrowserUtil.h"
 #include "browser.hrh"
-#include "favouriteslimits.h"
+#include <favouriteslimits.h>
 #include "BrowserAdaptiveListPopup.h"
 #include "BrowserContentView.h"
 
@@ -233,18 +230,10 @@ void CBrowserGotoPane::ConstructL ( const CCoeControl* aParent, TInt aIconBitmap
                                             EAknEditorNumericInputMode );
         }
     TInt editorFlags =  ((iFindKeywordMode) ? EAknEditorFlagDefault : EAknEditorFlagLatinInputModesOnly) |EAknEditorFlagUseSCTNumericCharmap;
-#ifdef RD_INTELLIGENT_TEXT_INPUT
-    TInt physicalKeyboards = 0;
-    CRepository* aknFepRepository = CRepository::NewL( KCRUidAknFep );
-    User::LeaveIfNull( aknFepRepository );
 
-    aknFepRepository->Get( KAknFepPhysicalKeyboards,  physicalKeyboards );
-    delete aknFepRepository;
+    // Always disable T9 input for goto url
+    editorFlags = (editorFlags | EAknEditorFlagNoT9);
 
-    if ( physicalKeyboards &&   EPtiKeyboardQwerty3x11 ) {
-        editorFlags = (editorFlags | EAknEditorFlagNoT9);
-    }
-#endif
     iEditor->SetAknEditorFlags( editorFlags );
 
     iEditor->SetAknEditorPermittedCaseModes (   EAknEditorUpperCase |
@@ -301,10 +290,9 @@ void CBrowserGotoPane::SetOrdinalPosition( TInt aPos )
 //
 void CBrowserGotoPane::HandleFindSizeChanged()
     {
-    if ( !AknLayoutUtils::PenEnabled() )
+    
+    if ( iSearchEditor && !iFindKeywordMode)
         {
-        if ( iSearchEditor && !iFindKeywordMode)
-            {
             TRect clientRect = CBrowserAppUi::Static()->ClientRect();
             TAknWindowLineLayout findWindow = AknLayout::popup_find_window();
 
@@ -314,9 +302,11 @@ void CBrowserGotoPane::HandleFindSizeChanged()
             // Now Increase the height of rect to make room for two editors (Goto + search)//
             findWindowRect.iTl.iY -= ( findWindow.iH  );
             SetRect( findWindowRect );
-            }
-        else
-            {
+        }
+
+    else if ( !AknLayoutUtils::PenEnabled() )
+        {
+        
             TRect parentrect = iAvkonAppUi->ApplicationRect();
 
             TAknLayoutRect lrect;
@@ -326,9 +316,8 @@ void CBrowserGotoPane::HandleFindSizeChanged()
             AknLayoutUtils::LayoutControl ( this,
                                         lrect.Rect(),
                                         AknLayout::popup_find_window() );
-            }
         }
-    else
+    else if( AknLayoutUtils::PenEnabled() )
         {
         // The ClientRect() will be the application rectangle minus any
         // toolbars/menu bars etc.

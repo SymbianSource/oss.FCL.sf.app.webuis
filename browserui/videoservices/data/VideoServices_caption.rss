@@ -16,7 +16,7 @@
 */
 
 
-#include "VideoServices.loc"
+#include "videoservices.loc"
 #include <apcaptionfile.rh>
 
 RESOURCE CAPTION_DATA

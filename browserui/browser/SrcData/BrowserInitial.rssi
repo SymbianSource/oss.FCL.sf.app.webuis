@@ -24,7 +24,7 @@
 //  INCLUDES
 
 #include "Browser.hrh"
-#include <WmlBrowser.loc>
+#include <wmlbrowser.loc>
 #include <browser.mbg>
 #include <bldvariant.hrh>
 

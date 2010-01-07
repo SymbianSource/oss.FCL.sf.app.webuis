@@ -17,10 +17,9 @@
 *
 */
 
-
 #include "BrowserAppDocument.h"
 #include "BrowserAppUi.h"
-#include "favouritesitem.h"
+#include <favouritesitem.h>
 #include <brctlinterface.h>
 #include "CommonConstants.h"
 

@@ -17,7 +17,6 @@
 *
 */
 
-
 // INCLUDES
 #include <browser_platform_variant.hrh>
 #include <BrowserNG.rsg>
@@ -30,7 +29,7 @@
 #include <aplistitemlist.h>
 #include <aplistitem.h>
 #include <apparc.h>
-#include "favouritesfile.h"
+#include <favouritesfile.h>
 #include <aknmessagequerydialog.h>
 #include <FeatMgr.h>
 #include <internetconnectionmanager.h>
@@ -49,7 +48,7 @@
 #include <browserplugininterface.h>
 #include <oommonitorplugin.h>
 
-#include "browseroverriddensettings.h"
+#include <browseroverriddensettings.h>
 #include "BrowserLauncherService.h"
 
 #include "cookiemanagerclient.h"
@@ -59,7 +58,7 @@
 #endif //__SERIES60_HELP
 
 #include "BrowserAppDocument.h"
-#include "downloadedcontenthandler.h"
+#include <downloadedcontenthandler.h>
 #include "BrowserBmOTABinSender.h"
 #include "BrowserCommandLineParser.h"
 #include "BrowserApplication.h"
@@ -83,7 +82,7 @@
 #include <data_caging_path_literals.hrh>
 
 #include <brctldefs.h>
-#include "browserdialogsprovider.h"
+#include <browserdialogsprovider.h>
 #include "BrowserSoftkeysObserver.h"
 #include "BrowserLoadObserver.h"
 #include "BrowserSpecialLoadObserver.h"
@@ -2819,6 +2818,13 @@ LOG_ENTERFN("CBrowserAppUi::CloseContentViewL");
                 }
             SetViewToBeActivatedIfNeededL( KUidBrowserBookmarksViewId );
             }
+        else if ( IsEmbeddedModeOn())
+        {
+         if( !iExitInProgress )
+          {
+           ExitBrowser( ETrue );
+          }
+        }
         else
             {
                	if(CalledFromAnotherApp() && (!IsEmbeddedModeOn()))

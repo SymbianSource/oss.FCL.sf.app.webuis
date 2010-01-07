@@ -15,14 +15,12 @@
 *
 */
 
-
-
 // INCLUDE FILES
 
 #include "CMultiPartMixedContentHandler.h"
-#include <PushDispatcher.h>
-#include <CMultiPartTextIterator.h>
-#include <CMultiPartBinIterator.h>
+#include <push/pushdispatcher.h>
+#include <push/cmultiparttextiterator.h>
+#include <push/cmultipartbiniterator.h>
 
 // Constants
 
@@ -31,19 +29,19 @@ _LIT(KReserved, "Reserved");
 _LIT(KErrPushMsgNull,	"NULL CPushMessage");
 #endif
 
-/** 
+/**
  * Static Factory Construction
  *
  * @param aFs Reference to a file session
  * @param aLibrary Reference to DLL Library Object
- * @param aIndex Index number corresponding to the Unknown App Handler Class 
+ * @param aIndex Index number corresponding to the Unknown App Handler Class
  *        'EMultiPartMixedContentHandler'
  *
  * @return fully initialized instance of this class
  */
 CMultiPartMixedContentHandler* CMultiPartMixedContentHandler::NewL()
 	{
-	CMultiPartMixedContentHandler* self = 
+	CMultiPartMixedContentHandler* self =
         new (ELeave) CMultiPartMixedContentHandler;
 	CleanupStack::PushL(self);
 	self->ConstructL();
@@ -51,7 +49,7 @@ CMultiPartMixedContentHandler* CMultiPartMixedContentHandler::NewL()
 	return self;
 	}
 
-/** 
+/**
  * Destructor
  */
 CMultiPartMixedContentHandler::~CMultiPartMixedContentHandler()
@@ -66,9 +64,9 @@ CMultiPartMixedContentHandler::~CMultiPartMixedContentHandler()
  *
  * @param aFs Reference to a file session
  * @param aLibrary Reference to DLL Library Object
- * @param aIndex Index number corresponding to the Unknown App Handler Class 
+ * @param aIndex Index number corresponding to the Unknown App Handler Class
  *        'EMultiPartMixedContentHandler'
- */ 
+ */
 CMultiPartMixedContentHandler::CMultiPartMixedContentHandler()
 :   CContentHandlerBase()
 	{
@@ -84,7 +82,7 @@ void CMultiPartMixedContentHandler::ConstructL()
 
 #ifdef __TEST_MULTIPART_MIX_SUPP
 
-/** 
+/**
  * Creates a Multipart Binary Iterator that will be used for splitting apart the binary
  * mulitpart.
  *
@@ -102,10 +100,10 @@ void CMultiPartMixedContentHandler::LoadMultipartMsgL()
 		iMultiMessage = CMultipartBinIterator::NewL(*iMessage);
 	else
 		User::Leave(KErrCorrupt);
-	
+
 	iMultiMessage->FirstL();
 	iState = EHandlePart;
-	
+
 	IdleComplete();
 	}
 
@@ -118,15 +116,15 @@ void CMultiPartMixedContentHandler::HandlePartL()
 	{
 	CPushMessage* msgPart = iMultiMessage->PartL();
 	CleanupStack::PushL(msgPart);
-	
+
 	TPtrC contentType;
 	msgPart->GetContentType(contentType);
-	CContentHandlerBase& contentHandler = 
+	CContentHandlerBase& contentHandler =
         PushContentTypeDispatcher::GetHandlerL( contentType, *iLog, *iManager );
 	iContentHandler = &contentHandler;
 	CleanupStack::Pop(msgPart);
 
-	// treat as an acknowledged message always to ensure 
+	// treat as an acknowledged message always to ensure
 	// sequential creation of handlers
 	iContentHandler->HandleMessageL(msgPart, iStatus);
 	iState = ENextPart;
@@ -141,25 +139,25 @@ void CMultiPartMixedContentHandler::NextPartL()
 	{
 	if (iMultiMessage->NextL())
 		iState = EHandlePart;
-	else 
+	else
 		iState = EDone;
-	
+
 	IdleComplete();
 	}
 
 #endif // __TEST_MULTIPART_MIX_SUPP
 
-/** 
+/**
  * The Asynchronous entry point for this plug-in to handle the CPushMessage.
- * 
+ *
  * Since we really didn't start an async event, make it look as though our
- * asynchronous request has been completed. 
+ * asynchronous request has been completed.
  *
  * @param aPushMsg A WAP binary multipart.mixed message that will be processed
- * @param aStatus The TRequestStatus of the caller indicating that this will 
+ * @param aStatus The TRequestStatus of the caller indicating that this will
  *        be used aysnchronously
  */
-void CMultiPartMixedContentHandler::HandleMessageL( CPushMessage* aPushMsg, 
+void CMultiPartMixedContentHandler::HandleMessageL( CPushMessage* aPushMsg,
                                                     TRequestStatus& aStatus )
 	{
 	__ASSERT_DEBUG( aPushMsg != NULL, User::Panic(KErrPushMsgNull, KErrNone));
@@ -181,11 +179,11 @@ void CMultiPartMixedContentHandler::HandleMessageL( CPushMessage* aPushMsg,
 	}
 
 
-/** 
+/**
  * The Synchronous entry point for this plug-in to handle the CPushMessage.
  *
  * @param aPushMsg A WAP binary multipart.mixed message that will be processed
- * @param aStatus The TRequestStatus of the caller indicating that this will be 
+ * @param aStatus The TRequestStatus of the caller indicating that this will be
  *        used aysnchronously
  */
 void CMultiPartMixedContentHandler::HandleMessageL( CPushMessage* aPushMsg )
@@ -206,7 +204,7 @@ void CMultiPartMixedContentHandler::HandleMessageL( CPushMessage* aPushMsg )
 #endif // __TEST_MULTIPART_MIX_SUPP
 	}
 
-/** 
+/**
  * Cancels Asynronous requests on called handler.
  */
 void CMultiPartMixedContentHandler::CancelHandleMessage()
@@ -224,7 +222,7 @@ void CMultiPartMixedContentHandler::CPushHandlerBase_Reserved2()
 	User::Panic(KReserved, KErrNotSupported);
 	}
 
-/** 
+/**
  * Cancels Asynronous requests on caller and completes self.
  */
 void CMultiPartMixedContentHandler::DoCancel()
@@ -236,7 +234,7 @@ void CMultiPartMixedContentHandler::DoCancel()
 	Complete( KErrCancel );
 	}
 
-/** 
+/**
  * State machine to step through the multipart message until it is done
  *
  * State EHandlePart: Starts the processing of each part of the multipart
@@ -281,7 +279,7 @@ void CMultiPartMixedContentHandler::RunL()
 		}
 	}
 
-/** 
+/**
  * Clean up
  */
 TInt CMultiPartMixedContentHandler::RunError(TInt aError)

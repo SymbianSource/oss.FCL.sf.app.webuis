@@ -15,7 +15,6 @@
 *
 */
 
-
 #include <data_caging_paths.hrh>
 #include <platform_paths.hrh>
 #include <platform/mw/browser_platform_variant.hrh>
@@ -36,7 +35,6 @@ TARGET npGpsPlugin.rsc
 END
 
 APP_LAYER_SYSTEMINCLUDE
-APP_LAYER_ECOM_SYSTEMINCLUDE
 
 USERINCLUDE ../inc
 SOURCEPATH  ../src
@@ -58,7 +56,6 @@ LIBRARY			npscript.lib
 LIBRARY lbs.lib
 LIBRARY SatInfo.lib
 LIBRARY flogger.lib
-
 
 DEFFILE npGpsPlugin.def
 NOSTRICTDEF

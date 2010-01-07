@@ -29,7 +29,7 @@
 #include "CommandVisibility.h"
 #include "CommsModel.h"
 #include "BrowserFavouritesModel.h"
-#include "favouriteslimits.h"
+#include <favouriteslimits.h>
 
 // FORWARD DECLARATION
 class CFavouritesItemList;

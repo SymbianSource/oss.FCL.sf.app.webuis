@@ -21,7 +21,7 @@
 #include <e32std.h>     // For _LIT
 #include <npapi.h>      // For NPError
 #include <npupp.h>      // For NPNetscapeFuncs
-#include <implementationproxy.h>
+#include <ecom/implementationproxy.h>
 #include <cecombrowserplugininterface.h>
 
 #include "BavpLogger.h"

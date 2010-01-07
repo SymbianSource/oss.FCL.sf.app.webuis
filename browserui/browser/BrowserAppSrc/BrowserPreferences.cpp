@@ -52,7 +52,7 @@
 #include <bldvariant.hrh>
 #include "commonconstants.h"
 #include "BrowserAppUi.h"
-#include "browseroverriddensettings.h"
+#include <browseroverriddensettings.h>
 #include "SettingsContainer.h"  // for TEncoding
 #include "BrowserUtil.h" // for Util::AllocateUrlWithSchemeL
 #include "logger.h"

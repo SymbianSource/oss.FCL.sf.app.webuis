@@ -24,8 +24,8 @@ NAME    PSHV
 //  INCLUDES
 
 #include "PushViewer.hrh"
-#include <PushViewer.loc>
-#include <PushMtmUi.loc>
+#include <pushviewer.loc>
+#include <pushmtmui.loc>
 #include <uikon.rh>
 #include <eikon.rh>
 #include <avkon.rh>

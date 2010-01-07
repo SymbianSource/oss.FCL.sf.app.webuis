@@ -20,7 +20,7 @@
 // INCLUDE FILES
 	// System includes
 #include <e32std.h>
-#include <ImplementationProxy.h>
+#include <ecom/implementationproxy.h>
 
 	// User includes
 #include "WhiteListAdapter.h"

@@ -15,8 +15,7 @@
 *
 */
 
-
-#include "RegistryInfo.rh"
+#include <ecom/registryinfo.rh>
 #include "SystemInfoPlugin.rls"
 
 //  RESOURCE DEFINITIONS 

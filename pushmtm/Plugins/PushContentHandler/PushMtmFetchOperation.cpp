@@ -22,7 +22,7 @@
 #include "PushMtmFetchOperation.h"
 #include "PushContentHandlerPanic.h"
 #include "PushMtmLog.h"
-#include <CSLPushMsgEntry.h>
+#include <push/cslpushmsgentry.h>
 #include <Uri8.h>
 #include <SysUtil.h>
 #include <cookiefilterinterface.h>

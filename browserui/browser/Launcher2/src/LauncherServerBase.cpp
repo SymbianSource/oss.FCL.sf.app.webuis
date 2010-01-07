@@ -17,13 +17,12 @@
 *
 */
 
-
 // INCLUDES
 #include "LauncherClientService.h"
 #include "LauncherServerBase.h"
 #include "LauncherServerCommands.hrh"
-#include "browseroverriddensettings.h"
-#include "browserlauncher.h"
+#include <browseroverriddensettings.h>
+#include <browserlauncher.h>
 #include "BrowserAppDocument.h"
 #include "BrowserAppUi.h"
 #include "eikenv.h"

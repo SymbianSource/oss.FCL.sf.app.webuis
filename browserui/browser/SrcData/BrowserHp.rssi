@@ -19,7 +19,7 @@
 
 
 // INCLUDES
-#include <BrowserHp.loc>
+#include <browserhp.loc>
 
 //  RESOURCE IDENTIFIER
 RESOURCE TBUF r_lhp_title 	        { buf = qtn_lhp_title; }

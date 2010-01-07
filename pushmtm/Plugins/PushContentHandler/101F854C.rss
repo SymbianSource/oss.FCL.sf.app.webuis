@@ -17,7 +17,7 @@
 
 
 
-#include <RegistryInfo.rh>
+#include <ecom/registryinfo.rh>
 #include "PushContentHandlerDef.hrh"
 
 

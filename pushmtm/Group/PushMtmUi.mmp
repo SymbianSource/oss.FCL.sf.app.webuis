@@ -15,7 +15,6 @@
 *
 */
 
-
 #include <defaultcaps.hrh>
 #include <data_caging_paths.hrh>
 #include <platform_paths.hrh>
@@ -47,8 +46,9 @@ USERINCLUDE     ../MtmUtilInc
 USERINCLUDE     ../ViewerInc
 
 APP_LAYER_SYSTEMINCLUDE
-APP_LAYER_PUSH_SYSTEMINCLUDE
-APP_LAYER_ECOM_SYSTEMINCLUDE
+#if defined(__PLATFORM_VERSION_32__)
+SYSTEMINCLUDE   APP_LAYER_PUBLIC_EXPORT_PATH(push)
+#endif
 
 SOURCEPATH      ../MtmUiSrc
 SOURCE          PushLoadServiceOp.cpp

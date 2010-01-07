@@ -33,8 +33,8 @@ PRJ_EXPORTS
 #ifndef __S60_32__
 ../rom/wappush.iby            CORE_APP_LAYER_IBY_EXPORT_PATH(wappush.iby)
 #endif
-../loc/PushMtmUi.loc          APP_LAYER_LOC_EXPORT_PATH(PushMtmUi.loc)
-../loc/PushViewer.loc         APP_LAYER_LOC_EXPORT_PATH(PushViewer.loc)
+../loc/pushmtmui.loc          APP_LAYER_LOC_EXPORT_PATH(pushmtmui.loc)
+../loc/pushviewer.loc         APP_LAYER_LOC_EXPORT_PATH(pushviewer.loc)
 
 ../conf/pushmtm.confml        APP_LAYER_CONFML(pushmtm.confml)
 ../conf/pushmtm_10008D42.crml APP_LAYER_CRML(pushmtm_10008D42.crml)

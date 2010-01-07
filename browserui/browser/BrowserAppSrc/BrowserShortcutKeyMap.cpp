@@ -33,6 +33,7 @@
 #include "ApiProvider.h"
 #include "BrowserUIVariant.hrh"
 #include "BrowserAppUi.h"
+#include <AknBidiTextUtils.h> 
 
 // CONSTANTS
 _LIT( KKeyMapSvgFile, "browser.mif" );
@@ -564,9 +565,10 @@ void CBrowserShortcutKeyMap::CreateSpriteCellL(const TInt& aCellIndex)
         lineWidthArray->AppendL(pCurrCell->rLine1.Width());
         lineWidthArray->AppendL(pCurrCell->rLine2.Width());
 
-        CArrayFixFlat<TPtrC> *WrappedArray = new( ELeave ) CArrayFixFlat<TPtrC>(3);
-        AknTextUtils::WrapToArrayL( *(pCurrCell->lineText), *lineWidthArray, *iLineFont, *WrappedArray );
-
+        CArrayFixFlat<TPtrC> *WrappedArray = new( ELeave ) CArrayFixFlat<TPtrC>(3);        
+        pCurrCell->lineText = pCurrCell->lineText->ReAllocL(pCurrCell->lineText->Length() + lineWidthArray->Count() * KAknBidiExtraSpacePerLine);
+        TPtr ptr(pCurrCell->lineText->Des());
+        AknBidiTextUtils::ConvertToVisualAndWrapToArrayL( ptr,*lineWidthArray, *iLineFont, *WrappedArray, EFalse );
         iSpriteBitmapContext->UseFont( iLineFont );
         iSpriteBitmapContext->DrawText(WrappedArray->At(0),
             pCurrCell->rLine2, iLineFont->FontMaxHeight(), CGraphicsContext::ECenter, 0);

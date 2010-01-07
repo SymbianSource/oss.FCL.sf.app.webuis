@@ -15,14 +15,12 @@
 *
 */
 
-
-
 // INCLUDE FILES
-#include "browserlauncher.h"
+#include <browserlauncher.h>
 #include "BrowserLauncherExtension.h"
 #include "logger.h"
 #include "BrowserUiPrivateCRKeys.h"
-#include "browseroverriddensettings.h"
+#include <browseroverriddensettings.h>
 #include "Browser.hrh"
 
 #include <favouriteslimits.h> // Context Id:s

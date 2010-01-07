@@ -15,7 +15,6 @@
 *
 */
 
-
 #include <defaultcaps.hrh>
 #include <data_caging_paths.hrh>
 #include <bldvariant.hrh>
@@ -33,7 +32,9 @@ USERINCLUDE     ../MtmUtilInc
 USERINCLUDE     ../Inc
 
 APP_LAYER_SYSTEMINCLUDE
-APP_LAYER_PUSH_SYSTEMINCLUDE
+#if defined(__PLATFORM_VERSION_32__)
+SYSTEMINCLUDE   APP_LAYER_PUBLIC_EXPORT_PATH(push)
+#endif
 
 SOURCEPATH      ../MtmUtilSrc
 SOURCE          PushAsyncOpRunner.cpp
@@ -78,7 +79,6 @@ LIBRARY         WapPushUtils.lib
 #endif // __PUSH_WHITELIST
 LIBRARY         SISLPushMsgUtils.lib
 LIBRARY         CENTRALREPOSITORY.lib
-
 
 #if defined(ARMCC)
     DEFFILE ../EABI/PUSHMTMUTILU_EKA2.def

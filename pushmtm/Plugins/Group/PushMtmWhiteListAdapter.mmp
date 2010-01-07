@@ -15,7 +15,6 @@
 *
 */
 
-
 #include <platform_paths.hrh>
 #include <platform/mw/browser_platform_variant.hrh>
 #include <defaultcaps.hrh>
@@ -48,7 +47,6 @@ USERINCLUDE	../WhiteListAdapterInc
 USERINCLUDE	../../MtmUtilInc
 
 APP_LAYER_SYSTEMINCLUDE
-APP_LAYER_ECOM_SYSTEMINCLUDE
 
 // SOURCE FILES
 

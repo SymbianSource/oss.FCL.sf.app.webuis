@@ -24,7 +24,7 @@
 #include "PushMtmUiPanic.h"
 #include "PushMtmLog.h"
 #include "PushMtmUtil.h"
-#include <CSIPushMsgEntry.h>
+#include <push/CSIPushMsgEntry.h>
 #include <eikenv.h>
 #include <aknappui.h>
 #include <uikon.hrh>
@@ -45,13 +45,13 @@ _LIT8( KTextPlainString, "text/plain" );
 // CPushLoadServiceOp::NewL
 // ---------------------------------------------------------
 //
-CPushViewMessageOp* CPushViewMessageOp::NewL( CMsvSession& aSession, 
-                                              TMsvId aEntryId, 
-                                              TRequestStatus& aObserverStatus ) 
+CPushViewMessageOp* CPushViewMessageOp::NewL( CMsvSession& aSession,
+                                              TMsvId aEntryId,
+                                              TRequestStatus& aObserverStatus )
     {
     PUSHLOG_ENTERFN("CPushViewMessageOp::NewL")
 
-    CPushViewMessageOp* self = 
+    CPushViewMessageOp* self =
         new (ELeave) CPushViewMessageOp( aSession, aEntryId, aObserverStatus );
     CleanupStack::PushL( self );
     self->ConstructL();
@@ -95,9 +95,9 @@ void CPushViewMessageOp::StartL()
 // CPushViewMessageOp::CPushViewMessageOp
 // ---------------------------------------------------------
 //
-CPushViewMessageOp::CPushViewMessageOp( CMsvSession& aSession, 
-                                        TMsvId aEntryId, 
-                                        TRequestStatus& aObserverStatus ) 
+CPushViewMessageOp::CPushViewMessageOp( CMsvSession& aSession,
+                                        TMsvId aEntryId,
+                                        TRequestStatus& aObserverStatus )
 :   CPushMtmUiOperation( aSession, aEntryId, aObserverStatus ),
     iIsCancelled( EFalse )
     {
@@ -108,7 +108,7 @@ CPushViewMessageOp::CPushViewMessageOp( CMsvSession& aSession,
 // CPushViewMessageOp::ConstructL
 // ---------------------------------------------------------
 //
-void CPushViewMessageOp::ConstructL() 
+void CPushViewMessageOp::ConstructL()
     {
     CPushMtmUiOperation::ConstructL();
     }
@@ -123,7 +123,7 @@ void CPushViewMessageOp::RunL()
 
     if ( iDocHandler )
         {
-        // Content handler is running; we just need to close it, 
+        // Content handler is running; we just need to close it,
         // NotifyExit has already been called.
         delete iDocHandler;
         iDocHandler = NULL;
@@ -139,7 +139,7 @@ void CPushViewMessageOp::RunL()
         TMsvId service;
         User::LeaveIfError( iMsvSession.GetEntry( iEntryId, service, tEntry ) );
 
-        __ASSERT_ALWAYS( tEntry.iMtm == KUidMtmWapPush, 
+        __ASSERT_ALWAYS( tEntry.iMtm == KUidMtmWapPush,
                          UiPanic( EPushMtmUiPanBadMtm ) );
 
         CSIPushMsgEntry* si = NULL;
@@ -171,7 +171,7 @@ void CPushViewMessageOp::RunL()
         TDataType dataType( KTextPlainString );
 
         CAiwGenericParamList& paramList = iDocHandler->InParamListL();
-        RFile tempFile;  
+        RFile tempFile;
         iDocHandler->SaveTempFileL
             ( *text8, dataType, KNullDesC, tempFile );
         PUSHLOG_WRITE(" SaveTempFileL OK");
@@ -185,7 +185,7 @@ void CPushViewMessageOp::RunL()
         PUSHLOG_WRITE(" PopAndDestroy( 2, si ) OK");
 
         // Signal the observer when the viewer is terminated.
-        // Until then we are observeing the message 
+        // Until then we are observeing the message
         // (delete & replacement notification).
         //ObserveEntryEventL();                       // (2)
         // Now we are observing two things: the viewer (1) and the entry (2).
@@ -208,7 +208,7 @@ void CPushViewMessageOp::DoCancel()
     iIsCancelled = ETrue;
 
     CancelObserveEntryEvent();
-    // If there is DocHandler, then it means that we are active and 
+    // If there is DocHandler, then it means that we are active and
     // waiting for NotifyExit to be called.
     if ( iDocHandler )
         {
@@ -243,7 +243,7 @@ TInt CPushViewMessageOp::RunError( TInt aError )
 // CPushViewMessageOp::HandleEntryEventL
 // ---------------------------------------------------------
 //
-void CPushViewMessageOp::HandleEntryEventL( TMsvEntryEvent aEvent, 
+void CPushViewMessageOp::HandleEntryEventL( TMsvEntryEvent aEvent,
                          TAny* /*aArg1*/, TAny* /*aArg2*/, TAny* /*aArg3*/ )
     {
     PUSHLOG_ENTERFN("CPushViewMessageOp::HandleEntryEventL");
@@ -251,8 +251,8 @@ void CPushViewMessageOp::HandleEntryEventL( TMsvEntryEvent aEvent,
     if ( aEvent == EMsvEntryChanged )
         {
         PUSHLOG_WRITE(" Changed");
-        // We don't have to bother with such case that the 
-        // content changes, but the entry is saved as 'read' in 
+        // We don't have to bother with such case that the
+        // content changes, but the entry is saved as 'read' in
         // this case, because this operation handles only SI messages.
         //TODO NotifyAndCancelL( R_PUSHMISC_INFO_REPLACED );
         }
@@ -280,7 +280,7 @@ void CPushViewMessageOp::NotifyAndCancelL( TInt aResId )
     // Add resource file.
     TParse* fileParser = new (ELeave) TParse;
     CleanupStack::PushL( fileParser );
-    fileParser->Set( KPushMtmUiResourceFileAndDrive, &KDC_MTM_RESOURCE_DIR, NULL ); 
+    fileParser->Set( KPushMtmUiResourceFileAndDrive, &KDC_MTM_RESOURCE_DIR, NULL );
     AssureResourceL( fileParser->FullName() );
     CleanupStack::PopAndDestroy( fileParser ); // fileParser
     fileParser = NULL;

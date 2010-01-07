@@ -15,7 +15,6 @@
 *
 */
 
-
 #ifndef FEEDS_CLIENT_UTILITIES_H
 #define FEEDS_CLIENT_UTILITIES_H
 
@@ -26,9 +25,10 @@
 #include "FeedsWaitDialog.h"
 #include "FeedsFileSearchAgent.h"
 #include "CommonConstants.h"
-#include "feedsinterface.h"
-#include "feedsmap.h"
-#include "transaction.h"
+#include <feedsinterface.h>
+#include <feedsmap.h>
+#include <transaction.h>
+
 // CONSTANTS
 
 // MACROS

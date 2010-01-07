@@ -23,7 +23,7 @@
 #include "PushMtmCliSrvPanic.h"
 #include "PushMtmUtil.h"
 #include "PushMtmLog.h"
-#include <CSIPushMsgEntry.h>
+#include <push/CSIPushMsgEntry.h>
 #include <msvids.h>
 
 // ================= MEMBER FUNCTIONS =======================
@@ -38,13 +38,13 @@ CPushMtmGcOperation* CPushMtmGcOperation::NewL(
                                 TRequestStatus& aObserverRequestStatus )
     {
     PUSHLOG_ENTERFN("CPushMtmGcOperation::NewL")
-    
+
     CPushMtmGcOperation* self = new (ELeave) CPushMtmGcOperation
         ( aSession, aFolderId, aObserverRequestStatus );
     CleanupStack::PushL( self );
     self->ConstructL();
     CleanupStack::Pop(); // self
-    
+
     PUSHLOG_LEAVEFN("CPushMtmGcOperation::NewL")
     return self;
     }
@@ -56,12 +56,12 @@ CPushMtmGcOperation* CPushMtmGcOperation::NewL(
 CPushMtmGcOperation::~CPushMtmGcOperation()
     {
     PUSHLOG_ENTERFN("CPushMtmGcOperation::~CPushMtmGcOperation")
-    
+
     Cancel();
     delete iEntrySel;
     delete iEntryWrapper;
     delete iUtil;
-    
+
     PUSHLOG_LEAVEFN("CPushMtmGcOperation::~CPushMtmGcOperation")
     }
 
@@ -72,9 +72,9 @@ CPushMtmGcOperation::~CPushMtmGcOperation()
 void CPushMtmGcOperation::DoSyncL()
     {
     PUSHLOG_ENTERFN("CPushMtmGcOperation::DoSyncL")
-    
+
     InitL();
-    
+
     for ( iCurrentIndex = 0; iCurrentIndex < iCount; ++iCurrentIndex )
         {
         // iCurrentIndex indicate the current entry in the selection.
@@ -84,7 +84,7 @@ void CPushMtmGcOperation::DoSyncL()
     // Release unnecessary resources.
     delete iEntrySel;
     iEntrySel = NULL;
-    
+
     PUSHLOG_LEAVEFN("CPushMtmGcOperation::DoSyncL")
     }
 
@@ -92,10 +92,10 @@ void CPushMtmGcOperation::DoSyncL()
 // CPushMtmGcOperation::CPushMtmGcOperation
 // ---------------------------------------------------------
 //
-CPushMtmGcOperation::CPushMtmGcOperation( CMsvSession& aSession, 
-                                          TMsvId aFolderId, 
-                                          TRequestStatus& aObserverRequestStatus ) 
-:   CPushMtmOperation( aSession, KMsvNullIndexEntryId, aObserverRequestStatus ), 
+CPushMtmGcOperation::CPushMtmGcOperation( CMsvSession& aSession,
+                                          TMsvId aFolderId,
+                                          TRequestStatus& aObserverRequestStatus )
+:   CPushMtmOperation( aSession, KMsvNullIndexEntryId, aObserverRequestStatus ),
     iState( EInit ), iFolderId( aFolderId ), iCurrentIndex( 0 )
     {
     }
@@ -116,7 +116,7 @@ void CPushMtmGcOperation::ConstructL()
 void CPushMtmGcOperation::InitL()
     {
     PUSHLOG_ENTERFN("CPushMtmGcOperation::InitL")
-    
+
     if ( !iUtil )
         {
         iUtil = CPushMtmUtil::NewL( iMsvSession );
@@ -152,7 +152,7 @@ void CPushMtmGcOperation::InitL()
         {
         iEntryWrapper = CSIPushMsgEntry::NewL();
         }
-        
+
     PUSHLOG_LEAVEFN("CPushMtmGcOperation::InitL")
     }
 
@@ -163,7 +163,7 @@ void CPushMtmGcOperation::InitL()
 void CPushMtmGcOperation::GcCurrentL()
     {
     PUSHLOG_ENTERFN("CPushMtmGcOperation::GcCurrentL")
-    
+
     PUSHLOG_WRITE_FORMAT(" iCurrentIndex: %d",iCurrentIndex)
     TMsvId entryId( iEntrySel->At(iCurrentIndex) );
 
@@ -173,8 +173,8 @@ void CPushMtmGcOperation::GcCurrentL()
     User::LeaveIfError
         ( iMsvSession.GetEntry( entryId, dummyService, tEntry ) );
 
-    __ASSERT_DEBUG( tEntry.iMtm == KUidMtmWapPush && 
-                    tEntry.iBioType == KUidWapPushMsgSI.iUid, 
+    __ASSERT_DEBUG( tEntry.iMtm == KUidMtmWapPush &&
+                    tEntry.iBioType == KUidWapPushMsgSI.iUid,
                     CliSrvPanic( EPushMtmCliSrvPanBadType ) );
 #endif // _DEBUG
 
@@ -188,7 +188,7 @@ void CPushMtmGcOperation::GcCurrentL()
 		    {
 		    PUSHLOG_WRITE(" Expired")
             // The message has expired. Delete it.
-            CMsvEntry* cParent = 
+            CMsvEntry* cParent =
                 iMsvSession.GetEntryL( iEntryWrapper->Entry().Parent() );
             CleanupStack::PushL( cParent );
             // Delete the message.
@@ -196,7 +196,7 @@ void CPushMtmGcOperation::GcCurrentL()
             CleanupStack::PopAndDestroy(); // cParent
             }
         }
-        
+
     PUSHLOG_LEAVEFN("CPushMtmGcOperation::GcCurrentL")
     }
 
@@ -207,7 +207,7 @@ void CPushMtmGcOperation::GcCurrentL()
 void CPushMtmGcOperation::RunL()
     {
     PUSHLOG_ENTERFN("CPushMtmGcOperation::RunL")
-    
+
     if ( iState == EInit )
         {
         InitL();
@@ -225,7 +225,7 @@ void CPushMtmGcOperation::RunL()
         }
     else if ( iState == EGarbageCollecting )
         {
-        __ASSERT_DEBUG( iCount, 
+        __ASSERT_DEBUG( iCount,
             CliSrvPanic( EPushMtmCliSrvPanEmptySelection ) );
         // iCurrentIndex indicate the current entry in the selection.
         GcCurrentL();
@@ -243,10 +243,10 @@ void CPushMtmGcOperation::RunL()
         }
     else
         {
-        __ASSERT_DEBUG( EFalse, 
+        __ASSERT_DEBUG( EFalse,
             CliSrvPanic( EPushMtmCliSrvPanCommandNotSupported ) );
         }
-        
+
     PUSHLOG_LEAVEFN("CPushMtmGcOperation::RunL")
     }
 
@@ -257,9 +257,9 @@ void CPushMtmGcOperation::RunL()
 void CPushMtmGcOperation::DoCancel()
     {
     PUSHLOG_ENTERFN("CPushMtmGcOperation::DoCancel")
-    
+
     CPushMtmOperation::DoCancel();
-    
+
     PUSHLOG_LEAVEFN("CPushMtmGcOperation::DoCancel")
     }
 
@@ -271,7 +271,7 @@ TInt CPushMtmGcOperation::RunError( TInt aError )
     {
     PUSHLOG_ENTERFN("CPushMtmGcOperation::RunError")
     PUSHLOG_WRITE_FORMAT(" aError: %d",aError)
-    
+
     TBool doContinue( EFalse );
 
     PUSHLOG_WRITE_FORMAT(" iState: %d",iState)
@@ -295,7 +295,7 @@ TInt CPushMtmGcOperation::RunError( TInt aError )
         }
     else
         {
-        __ASSERT_DEBUG( EFalse, 
+        __ASSERT_DEBUG( EFalse,
             CliSrvPanic( EPushMtmCliSrvPanCommandNotSupported ) );
         }
 

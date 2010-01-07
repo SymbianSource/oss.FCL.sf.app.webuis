@@ -23,7 +23,7 @@
 #include <u32std.h>
 #include <eikapp.h>
 #include <eikstart.h>
-#include "MemoryManager.h"
+#include <MemoryManager.h>
 #include <OOMMonitorSession.h>
 
 const int KFreeMemoryTarget = 6000000;

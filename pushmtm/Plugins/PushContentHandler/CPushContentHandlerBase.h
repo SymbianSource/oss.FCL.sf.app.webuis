@@ -23,7 +23,7 @@
 
 // INCLUDE FILES
 
-#include <CContentHandlerBase.h>
+#include <push/CContentHandlerBase.h>
 #include <E32Base.h>
 #include <msvstd.h>
 #include <msvapi.h>
@@ -37,14 +37,14 @@ class CStringResourceReader;
 
 // CLASS DECLARATION
 
-/** 
-* CPushContentHandlerBase class stands as a base class for almost all push 
-* content handlers of the Push MTM. It collects the generic functionality of 
-* a push content handler, such as garbage collection when receiving new 
-* service message, supporting CMsvSession, CPushMtmUtil and CPushMtmSettings 
+/**
+* CPushContentHandlerBase class stands as a base class for almost all push
+* content handlers of the Push MTM. It collects the generic functionality of
+* a push content handler, such as garbage collection when receiving new
+* service message, supporting CMsvSession, CPushMtmUtil and CPushMtmSettings
 * objects.
 */
-class CPushContentHandlerBase : public CContentHandlerBase, 
+class CPushContentHandlerBase : public CContentHandlerBase,
                                 public MMsvSessionObserver
 	{
     protected: // Constructors and destructor
@@ -55,7 +55,7 @@ class CPushContentHandlerBase : public CContentHandlerBase,
 	    CPushContentHandlerBase();
 
         /**
-        * Symbian OS constructor. CActiveScheduler::Add( this ) is called in 
+        * Symbian OS constructor. CActiveScheduler::Add( this ) is called in
         * this method!!
         */
 	    void ConstructL();
@@ -82,13 +82,13 @@ class CPushContentHandlerBase : public CContentHandlerBase,
     protected: // From MMsvSessionObserver
 
         /**
-        * Msv session events are handled by this method. This implementation 
+        * Msv session events are handled by this method. This implementation
         * is empty.
         * @return None.
         */
-        void HandleSessionEventL( TMsvSessionEvent aEvent, 
-                                  TAny* aArg1, 
-                                  TAny* aArg2, 
+        void HandleSessionEventL( TMsvSessionEvent aEvent,
+                                  TAny* aArg1,
+                                  TAny* aArg2,
                                   TAny* aArg3);
 
     protected: // Data

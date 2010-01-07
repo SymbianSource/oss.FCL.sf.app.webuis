@@ -27,7 +27,7 @@
 #include "CMultiPartMixedContentHandler.h"
 #include "CMultiPartRelAndAltContentHandler.h"
 #include <e32std.h>
-#include <ImplementationProxy.h>
+#include <ecom/implementationproxy.h>
 
 
 const TImplementationProxy ImplementationTable[] = 

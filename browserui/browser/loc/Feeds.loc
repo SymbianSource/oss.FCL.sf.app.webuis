@@ -495,7 +495,7 @@
 #define qtn_feeds_unnamed_item "Unnamed item"
 
 
-/*  Strings copied from wmlBrowser.loc                                  */
+/*  Strings copied from wmlbrowser.loc                                  */
 /* -------------------------------------------------------------------- */
 //d:DO element menu item
 //l:list_single_popup_submenu_pane_t1

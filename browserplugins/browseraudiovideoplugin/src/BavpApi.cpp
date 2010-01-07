@@ -15,11 +15,10 @@
 *
 */
 
-
 // INCLUDE FILES
 #include <Uri16.h>
 #include <mmf/common/MmfControllerFrameworkBase.h>
-#include "stdlib.h"
+#include <stdlib.h>
 
 #include "BavpLogger.h"
 #include "BavpPlugin.h"

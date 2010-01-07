@@ -18,7 +18,7 @@
 
 
 // INCLUDE FILES
-#include <implementationproxy.h>
+#include <ecom/implementationproxy.h>
 #include <cecombrowserplugininterface.h>
 #include "SystemInfoPlugin.h"
 

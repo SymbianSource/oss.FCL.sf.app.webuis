@@ -15,7 +15,6 @@
 *
 */
 
-
 // INCLUDE FILES
 #include <BrowserAudioVideoPlugin.rsg>
 #include <StringLoader.h>

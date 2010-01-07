@@ -26,8 +26,8 @@
 #include "PushMtmUtil.h"
 #include "PushMtmSettings.h"
 #include "PushAuthenticationUtilities.h"
-#include <CSIPushMsgEntry.h>
-#include <CSLPushMsgEntry.h>
+#include <push/CSIPushMsgEntry.h>
+#include <push/CSLPushMsgEntry.h>
 #include <eikenv.h>
 #include <apmstd.h>
 #include <schemehandler.h>
@@ -51,13 +51,13 @@ _LIT( KDefaultScheme, "http://" );
 // CPushLoadServiceOp::NewL
 // ---------------------------------------------------------
 //
-CPushLoadServiceOp* CPushLoadServiceOp::NewL( CMsvSession& aSession, 
-                                              TMsvId aEntryId, 
-                                              TRequestStatus& aObserverStatus ) 
+CPushLoadServiceOp* CPushLoadServiceOp::NewL( CMsvSession& aSession,
+                                              TMsvId aEntryId,
+                                              TRequestStatus& aObserverStatus )
     {
     PUSHLOG_ENTERFN("CPushLoadServiceOp::NewL")
 
-    CPushLoadServiceOp* self = 
+    CPushLoadServiceOp* self =
         new (ELeave) CPushLoadServiceOp( aSession, aEntryId, aObserverStatus );
     CleanupStack::PushL( self );
     self->ConstructL();
@@ -97,11 +97,11 @@ void CPushLoadServiceOp::StartL()
         {
         PUSHLOG_WRITE(" Msg is expired.")
         // The entry is expired.
-        
+
         // Display a confirmation dialog.
         TParse* fileParser = new (ELeave) TParse;
         CleanupStack::PushL( fileParser );
-        fileParser->Set( KPushMtmUiResourceFileAndDrive, &KDC_MTM_RESOURCE_DIR, NULL ); 
+        fileParser->Set( KPushMtmUiResourceFileAndDrive, &KDC_MTM_RESOURCE_DIR, NULL );
         AssureResourceL( fileParser->FullName() );
         CleanupStack::PopAndDestroy( fileParser ); // fileParser
         fileParser = NULL;
@@ -130,10 +130,10 @@ void CPushLoadServiceOp::StartL()
 // CPushLoadServiceOp::CPushLoadServiceOp
 // ---------------------------------------------------------
 //
-CPushLoadServiceOp::CPushLoadServiceOp( CMsvSession& aSession, 
-                                        TMsvId aEntryId, 
-                                        TRequestStatus& aObserverStatus ) 
-:   CPushMtmUiOperation( aSession, aEntryId, aObserverStatus ), 
+CPushLoadServiceOp::CPushLoadServiceOp( CMsvSession& aSession,
+                                        TMsvId aEntryId,
+                                        TRequestStatus& aObserverStatus )
+:   CPushMtmUiOperation( aSession, aEntryId, aObserverStatus ),
     iDone( EFalse )
     {
     PUSHLOG_WRITE("CPushLoadServiceOp constructing")
@@ -143,7 +143,7 @@ CPushLoadServiceOp::CPushLoadServiceOp( CMsvSession& aSession,
 // CPushLoadServiceOp::ConstructL
 // ---------------------------------------------------------
 //
-void CPushLoadServiceOp::ConstructL() 
+void CPushLoadServiceOp::ConstructL()
     {
     PUSHLOG_ENTERFN("CPushLoadServiceOp::ConstructL")
 
@@ -154,7 +154,7 @@ void CPushLoadServiceOp::ConstructL()
     // Initialize iTEntry.
     TMsvId service;
     User::LeaveIfError( iMsvSession.GetEntry( iEntryId, service, iTEntry ) );
-    __ASSERT_ALWAYS( iTEntry.iMtm == KUidMtmWapPush, 
+    __ASSERT_ALWAYS( iTEntry.iMtm == KUidMtmWapPush,
                      UiPanic( EPushMtmUiPanBadMtm ) );
 
     PUSHLOG_LEAVEFN("CPushLoadServiceOp::ConstructL")
@@ -205,7 +205,7 @@ CPushMsgEntryBase* CPushLoadServiceOp::RetrieveContextAndGetUrlLC
         {
         context = CSIPushMsgEntry::NewL();
         }
-    else if ( bioType == KUidWapPushMsgSL.iUid && 
+    else if ( bioType == KUidWapPushMsgSL.iUid &&
               FeatureManager::FeatureSupported( KFeatureIdPushSL ) )
         {
         context = CSLPushMsgEntry::NewL();
@@ -242,7 +242,7 @@ CPushMsgEntryBase* CPushLoadServiceOp::RetrieveContextAndGetUrlLC
 // CPushLoadServiceOp::AuthenticateL
 // ---------------------------------------------------------
 //
-TBool CPushLoadServiceOp::AuthenticateL( const CPushMsgEntryBase& aPushMsg, 
+TBool CPushLoadServiceOp::AuthenticateL( const CPushMsgEntryBase& aPushMsg,
                                          const CPushMtmSettings& aMtmSettings ) const
     {
     PUSHLOG_ENTERFN("CPushLoadServiceOp::AuthenticateL");
@@ -270,10 +270,10 @@ TBool CPushLoadServiceOp::AuthenticateL( const CPushMsgEntryBase& aPushMsg,
                 isAuthenticated = ExecuteUserQueryL( R_PUSHLS_SL_CACHE_NOT_AUTH );
                 }
             }
-        else if 
-           ( 
-             sl.Action() == CSLPushMsgEntry::ESLPushMsgExecuteHigh && 
-             aMtmSettings.ServiceLoadingType() == CPushMtmSettings::EAutomatic 
+        else if
+           (
+             sl.Action() == CSLPushMsgEntry::ESLPushMsgExecuteHigh &&
+             aMtmSettings.ServiceLoadingType() == CPushMtmSettings::EAutomatic
            )
             {
             PUSHLOG_WRITE(" SL high + auto");
@@ -375,7 +375,7 @@ void CPushLoadServiceOp::RunL()
             iSchemeHandler = NULL;
             HBufC* validatedUrl = ValidateLC( url );
             iSchemeHandler = CSchemeHandler::NewL( *validatedUrl );
-            
+
             if( (url.Mid(0,7).Compare(_L("http://")) == 0) || (url.Mid(0,8).Compare(_L("https://")) == 0))
             {
             	TRAPD( err, iSchemeHandler->HandleUrlStandaloneL());
@@ -390,7 +390,7 @@ void CPushLoadServiceOp::RunL()
 			    if( err != KErrNone)
 				    SignalObserver( err );
             }
-            
+
           }
 
         CleanupStack::PopAndDestroy( context ); // context, needed for 'url'

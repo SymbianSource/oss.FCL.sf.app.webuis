@@ -15,24 +15,21 @@
 *
 */
 
-
-
 #ifndef __CMULTIPARTMIXEDCONTENTHANDLER_H__
 #define __CMULTIPARTMIXEDCONTENTHANDLER_H__
-
 
 // INCLUDE FILES
 
 #include "PushMtmDef.hrh"
 #include "PushContentHandlerDef.hrh"
-#include <CContentHandlerBase.h>
+#include <push/ccontenthandlerbase.h>
 #include <E32Base.h>
 
 // CONSTANTS
 
-const TUid KUidPushMultiPartMixedContentHandler	= { 
+const TUid KUidPushMultiPartMixedContentHandler	= {
            EUidPushMultiPartMixedContentHandler };
-_LIT(KMultiPartMixedContentHandlerData, 
+_LIT(KMultiPartMixedContentHandlerData,
      "application/vnd.wap.multipart.mixed||multipart/mixed");
 
 // FORWARD DECLARATIONS
@@ -42,14 +39,14 @@ class CMultipartIteratorBase;
 // CLASS DECLARATION
 
 /**
-* The MultiPart/Mixed Content Handler 
+* The MultiPart/Mixed Content Handler
 *
-* Takes apart the mulitpart message, creating a new sub message from each 
+* Takes apart the mulitpart message, creating a new sub message from each
 * part, then calls on new Push Handlers to process each sub message.
 *
-* All multipart/mixed messages are dropped if __TEST_MULTIPART_MIX_SUPP 
+* All multipart/mixed messages are dropped if __TEST_MULTIPART_MIX_SUPP
 * is not defined.
-*/ 
+*/
 class CMultiPartMixedContentHandler : public CContentHandlerBase
 	{
     public: // Constructors and destructor
@@ -77,7 +74,7 @@ class CMultiPartMixedContentHandler : public CContentHandlerBase
 #endif // __TEST_MULTIPART_MIX_SUPP
 
     private:	// Methods from CPushHandlerBase
-	    
+
 	    void HandleMessageL(CPushMessage* aPushMsg, TRequestStatus& aStatus);
 
 	    void HandleMessageL(CPushMessage* aPushMsg);
@@ -100,16 +97,16 @@ class CMultiPartMixedContentHandler : public CContentHandlerBase
 
 	    enum TState
             {
-            ELoadMsgData, 
-            EHandlePart, 
-            ENextPart, 
+            ELoadMsgData,
+            EHandlePart,
+            ENextPart,
             EDone
             };
 
 	    CMultipartIteratorBase*		iMultiMessage;
 
 	    CContentHandlerBase*		iContentHandler;
-	    
+
 	};
 
 

@@ -35,7 +35,7 @@
 #include "BrowserFavouritesModelObserver.h"
 #include "BrowserUtil.h"
 #include "BrowserDialogs.h"
-#include "browserdialogsprovider.h"
+#include <browserdialogsprovider.h>
 #include "BrowserFavouritesView.h"
 
 #include "Browser.hrh"

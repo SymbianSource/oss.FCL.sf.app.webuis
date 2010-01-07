@@ -17,11 +17,10 @@
 *
 */
 
-
 #ifndef __BROWSERAPPDOCUMENT_H
 #define __BROWSERAPPDOCUMENT_H
 
-#include "browseroverriddensettings.h"
+#include <browseroverriddensettings.h>
 #include "BrowserUtil.h"
 #include <akndoc.h>
 

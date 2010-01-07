@@ -42,8 +42,8 @@
 #include <csxhelp/browser.hlp.hrh>
 #endif // __SERIES60_HELP
 #include "Logger.h"
-#include "e32event.h"
-#include "browseruisdkcrkeys.h"
+#include <e32event.h>
+#include <browseruisdkcrkeys.h>
 #include <StringLoader.h>
 
 // CONSTANTS

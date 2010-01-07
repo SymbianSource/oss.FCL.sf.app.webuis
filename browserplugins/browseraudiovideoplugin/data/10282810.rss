@@ -16,7 +16,7 @@
 */
 
 
-#include "RegistryInfo.rh"
+#include <ecom/registryinfo.rh>
 #include "BrowserAudioVideoPlugin.rls"
 
 //  RESOURCE DEFINITIONS 

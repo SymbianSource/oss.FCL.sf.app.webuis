@@ -26,8 +26,8 @@
 #include "PushMtmUtil.h"
 #include "PushViewer.hrh"
 #include "PushMtmLog.h"
-#include <CSIPushMsgEntry.h>
-#include <CSLPushMsgEntry.h>
+#include <push/CSIPushMsgEntry.h>
+#include <push/CSLPushMsgEntry.h>
 #include <PushViewer.rsg>
 #include <aknmessagequerydialog.h>
 #include <AknQueryDialog.h>
@@ -48,7 +48,6 @@
 #endif // __SERIES60_HELP
 
 #include "eikon.hrh"
-
 
 // ================= MEMBER FUNCTIONS =======================
 

@@ -15,7 +15,6 @@
 *
 */
 
-
 #include <AknView.h>
 #include <AknViewAppUi.h>
 #include <BaUtils.h>
@@ -25,7 +24,6 @@
 #include <data_caging_path_literals.hrh>
 #include <eikmenup.h>
 #include <StringLoader.h>
-
 
 #include <BrowserNG.rsg>
 #include <brctldialogsprovider.h>

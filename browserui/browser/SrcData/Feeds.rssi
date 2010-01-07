@@ -25,7 +25,7 @@
 
 #include "Browser.hrh"
 #include "Feeds.hrh"
-#include <Feeds.loc>
+#include <feeds.loc>
 #include "feeds_toolbar.rssi"
 
 

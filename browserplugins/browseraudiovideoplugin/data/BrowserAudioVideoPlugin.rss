@@ -30,7 +30,7 @@ NAME    BAVP  // 4 letter resource identifier
 #include <BrowserAudioVideoPlugin.mbg>
 
 #include "BrowserAudioVideoPlugin.hrh"
-#include <BrowserAudioVideoPlugin.loc>
+#include <browseraudiovideoplugin.loc>
 
 //  RESOURCE DEFINITIONS 
 

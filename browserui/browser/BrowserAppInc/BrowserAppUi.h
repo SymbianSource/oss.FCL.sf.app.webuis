@@ -16,10 +16,8 @@
 *
 */
 
-
 #ifndef __BROWSERAPPUI_H
 #define __BROWSERAPPUI_H
-
 
 // INCLUDE FILES 
 #include <browser_platform_variant.hrh>
@@ -29,12 +27,12 @@
 #include "ApiProvider.h"
 #include "BrowserBuild.h"
 #include "WmlBrowserBuild.h"
-#include "recenturlstore.h"
+#include <recenturlstore.h>
 
 #include <favouritesdb.h>
-#include "downloadedcontenthandler.h"
+#include <downloadedcontenthandler.h>
 #include "WindowInfoProvider.h"
-#include "browseroverriddensettings.h"
+#include <browseroverriddensettings.h>
 
 // FORWARD DECLARATIONS
 class CBrowserViewBase;

@@ -22,8 +22,8 @@
 #include "PushMtmUtil.h"
 #include "PushMtmUtilPanic.h"
 #include "PushMtmLog.h"
-#include <CSIPushMsgEntry.h>
-#include <CSLPushMsgEntry.h>
+#include <push/CSIPushMsgEntry.h>
+#include <push/CSLPushMsgEntry.h>
 #include <msvids.h>
 #include <msvuids.h>
 #include <msvapi.h>
@@ -57,7 +57,7 @@ EXPORT_C CPushMtmUtil::~CPushMtmUtil()
 // CPushMtmUtil::MarkServiceUnreadL
 // ---------------------------------------------------------
 //
-EXPORT_C void CPushMtmUtil::MarkServiceUnreadL( TMsvId aEntryId, 
+EXPORT_C void CPushMtmUtil::MarkServiceUnreadL( TMsvId aEntryId,
                                                 TBool aUnread )
     {
     PUSHLOG_ENTERFN("CPushMtmUtil::MarkServiceUnreadL")
@@ -84,8 +84,8 @@ EXPORT_C void CPushMtmUtil::MarkServiceUnreadL( TMsvId aEntryId,
 // ---------------------------------------------------------
 //
 EXPORT_C CMsvEntrySelection* CPushMtmUtil::FindMessagesL
-                                               ( TMsvId aFolderId, 
-                                                 TUid aMsgType, 
+                                               ( TMsvId aFolderId,
+                                                 TUid aMsgType,
                                                  TBool aRecursive )
     {
     CMsvEntrySelection* sel = new (ELeave) CMsvEntrySelection;
@@ -138,10 +138,10 @@ EXPORT_C CMsvEntrySelection* CPushMtmUtil::FindMessagesL( TUid aMsgType )
 //
 EXPORT_C CMsvEntrySelection* CPushMtmUtil::FindPushFoldersL()
     {
-    // Only the Inbox, the Documents folder and the user 
+    // Only the Inbox, the Documents folder and the user
     // defined folders can contain push messages.
     // The user defined folders can only be in the Documents folder.
-    // (See the definition of CMsgFolderSelectionListArray::ConstructL 
+    // (See the definition of CMsgFolderSelectionListArray::ConstructL
     // in msgavkon for more details.)
     CMsvEntrySelection* pushFolders = new (ELeave) CMsvEntrySelection;
     CleanupStack::PushL( pushFolders );
@@ -172,7 +172,7 @@ EXPORT_C CMsvEntrySelection* CPushMtmUtil::FindPushFoldersL()
             ( iMsvSession, KDocumentsIndexEntryId, selOrd );
         CleanupStack::PushL( documentsFolder );
 
-        CMsvEntrySelection* userDefFolders = 
+        CMsvEntrySelection* userDefFolders =
             documentsFolder->ChildrenWithTypeL( KUidMsvFolderEntry );
         CleanupStack::PopAndDestroy(); // documentsFolder
         CleanupStack::PushL( userDefFolders );
@@ -181,7 +181,7 @@ EXPORT_C CMsvEntrySelection* CPushMtmUtil::FindPushFoldersL()
         const TInt count( userDefFolders->Count() );
         for ( TInt i = 0; i < count; ++i )
             {
-            // However Templates folder is in Documents, no messages 
+            // However Templates folder is in Documents, no messages
             // can be moved there - it cannot contain push messages.
             if ( userDefFolders->At( i ) != KTemplatesIndexEntryId )
                 {
@@ -204,7 +204,7 @@ EXPORT_C CMsvEntrySelection* CPushMtmUtil::FindSiIdLC( const TDesC& aSiId )
     {
 	CMsvEntrySelection* matching = new (ELeave) CMsvEntrySelection;
 	CleanupStack::PushL( matching );
-	
+
 	CSIPushMsgEntry* siEntry = CSIPushMsgEntry::NewL();
 	CleanupStack::PushL( siEntry );
 
@@ -231,16 +231,16 @@ EXPORT_C CMsvEntrySelection* CPushMtmUtil::FindSiIdLC( const TDesC& aSiId )
 // CPushMtmUtil::FindUrlLC
 // ---------------------------------------------------------
 //
-EXPORT_C CMsvEntrySelection* CPushMtmUtil::FindUrlLC( const TDesC& aUrl, 
+EXPORT_C CMsvEntrySelection* CPushMtmUtil::FindUrlLC( const TDesC& aUrl,
                                                       TUid aPushType )
 	{
-    __ASSERT_ALWAYS( aPushType == KUidWapPushMsgSI || 
-                     aPushType == KUidWapPushMsgSL, 
+    __ASSERT_ALWAYS( aPushType == KUidWapPushMsgSI ||
+                     aPushType == KUidWapPushMsgSL,
                      UtilPanic( EPushMtmUtilPanBadBioType ) );
 
 	CMsvEntrySelection* matching = new (ELeave) CMsvEntrySelection;
 	CleanupStack::PushL( matching );
-	
+
     CMsvEntrySelection* all = FindMessagesL( aPushType );
     CleanupStack::PushL( all );
 
@@ -332,7 +332,7 @@ EXPORT_C HBufC* CPushMtmUtil::ConvertDetailsL( const TDesC8& aFrom ) const
 //
 EXPORT_C void CPushMtmUtil::SetAttrs( TMsvEntry& aContext, TUint32 aAttrs )
     {
-    aContext.iMtmData2 = aContext.iMtmData2 | 
+    aContext.iMtmData2 = aContext.iMtmData2 |
                          (aAttrs<<KPushMtmShiftOnlyAttrs);
     }
 
@@ -342,7 +342,7 @@ EXPORT_C void CPushMtmUtil::SetAttrs( TMsvEntry& aContext, TUint32 aAttrs )
 //
 EXPORT_C void CPushMtmUtil::ResetAttrs( TMsvEntry& aContext, TUint32 aAttrs )
     {
-    aContext.iMtmData2 = aContext.iMtmData2 & 
+    aContext.iMtmData2 = aContext.iMtmData2 &
                          ~(aAttrs<<KPushMtmShiftOnlyAttrs);
     }
 
@@ -352,7 +352,7 @@ EXPORT_C void CPushMtmUtil::ResetAttrs( TMsvEntry& aContext, TUint32 aAttrs )
 //
 EXPORT_C TUint32 CPushMtmUtil::Attrs( const TMsvEntry& aContext )
     {
-    return (aContext.iMtmData2 >> KPushMtmShiftOnlyAttrs) & 
+    return (aContext.iMtmData2 >> KPushMtmShiftOnlyAttrs) &
            KPushMtmMaskOnlyAttrs;
     }
 
@@ -378,7 +378,7 @@ EXPORT_C HBufC* CPushMtmUtil::ConvertUriToDisplayFormL( const TDesC& aUri )
 // CPushMtmUtil::CPushMtmUtil
 // ---------------------------------------------------------
 //
-CPushMtmUtil::CPushMtmUtil( CMsvSession& aMsvSession ) 
+CPushMtmUtil::CPushMtmUtil( CMsvSession& aMsvSession )
 : iMsvSession( aMsvSession )
     {
     }
@@ -395,9 +395,9 @@ void CPushMtmUtil::ConstructL()
 // CPushMtmUtil::FindMessagesL
 // ---------------------------------------------------------
 //
-void CPushMtmUtil::FindMessagesL( TMsvId aFolderId, 
-                                  TUid aMsgType, 
-                                  TBool aRecursive, 
+void CPushMtmUtil::FindMessagesL( TMsvId aFolderId,
+                                  TUid aMsgType,
+                                  TBool aRecursive,
                                   CMsvEntrySelection& aResult )
     {
     // Find the push entries of the specified type in the specified folder.
@@ -442,7 +442,7 @@ void CPushMtmUtil::FindMessagesL( TMsvId aFolderId,
     // Find messages in the subfolders if required.
     if ( aRecursive )
         {
-        CMsvEntrySelection* subFolders = 
+        CMsvEntrySelection* subFolders =
             thisFolder->ChildrenWithTypeL( KUidMsvFolderEntry );
         CleanupStack::PushL( subFolders );
 

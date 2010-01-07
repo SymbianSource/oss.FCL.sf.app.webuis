@@ -19,7 +19,7 @@
 
 //  INCLUDES
 
-#include <PushMtmUi.loc>
+#include <pushmtmui.loc>
 #include "PushMtmDef.hrh"
 #include <mtmconfig.rh>
 #include <msvstd.hrh>

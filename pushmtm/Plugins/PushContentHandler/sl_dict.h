@@ -15,7 +15,6 @@
 *
 */
 
-
 /*
 ** WARNING
 **
@@ -31,9 +30,7 @@
 #ifndef HEADER_GUARD_sl_dict_h
 #define HEADER_GUARD_sl_dict_h
 
-
 #include <nw_wbxml_dictionary.h>
-
 
 #ifdef __cplusplus
 extern "C"
