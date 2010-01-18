@@ -2792,4 +2792,19 @@ void CBrowserBookmarksView::UpdateToolbarButtonsState()
             }      
         }
     }
+
+void CBrowserBookmarksView::HandleForegroundEventL( TBool aForeground )
+    {
+    // make sure we call base class function before proceeding
+    CBrowserFavouritesView::HandleForegroundEventL(aForeground);
+    if ( aForeground )
+        {
+        if ( TheContainer()->GotoPaneActive() && TheContainer()->GotoPane()->PopupList()->IsPoppedUp() )
+            {
+            // The pop up messes the screen when changing layouts
+            // So make sure to redraw the pane while coming to foreground 
+            TheContainer()->GotoPane()->PopupList()->HandleResourceChange(KEikDynamicLayoutVariantSwitch);
+            }
+        }
+    }
 // End of File

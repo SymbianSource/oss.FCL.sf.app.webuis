@@ -287,6 +287,8 @@ class CBrowserBookmarksView:
         * up an error note.
         */
         virtual void RefreshL( TBool aDbErrorNote = EFalse );
+        
+        void HandleForegroundEventL( TBool aForeground );
 
 	protected:	// protected methods from CAknView
 

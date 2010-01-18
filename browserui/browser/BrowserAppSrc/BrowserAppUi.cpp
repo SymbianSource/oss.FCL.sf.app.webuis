@@ -2387,7 +2387,8 @@ void CBrowserAppUi::ConnectionStageAchievedL()
     //Close the uploading dialog.
     iDialogsProvider->UploadProgressNoteL(
 	                0, 0, ETrue, (MBrowserDialogsProviderObserver *)this );
-
+    //connection has been lost, so cancel the authentication dialog.
+    iDialogsProvider->CancelAll();
     // SendDisconnectEventL();
     // not needed as by that point HTTPSession was already shutdown by executing disconnect menu option
     // will cause a crash when user tries to quickly reconnect right after disconnecting, as HTTP session

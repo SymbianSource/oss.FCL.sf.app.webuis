@@ -309,7 +309,7 @@ class CBrowserFavouritesView:public CBrowserViewBase,
         * Handle foreground event.
         * @param aForeground ETrue if foreground.
         */
-        void HandleForegroundEventL( TBool aForeground );
+        virtual void HandleForegroundEventL( TBool aForeground );
 
     protected:	// from MEikListBoxObserver
 

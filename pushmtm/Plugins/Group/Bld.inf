@@ -26,9 +26,10 @@ PRJ_EXPORTS
 
 
 PRJ_MMPFILES
-
+#if defined( __S60_32__) || defined( __S60_50__) 
 // Remove Symbian Push Content Handler
 gnumakefile PushContentHandlerClean.mk
+#endif
 // Build our Push Content Handler
 PushMtmPushContentHandler.mmp
 

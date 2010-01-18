@@ -1938,6 +1938,12 @@ void CBrowserContentView::AddNewBookmarkL( TBool aAsLastVisited, HBufC* aUrl )
                                 ( *item, CBrowserFavouritesModel::ESaved ) );
                     queryName = EFalse;
                     AddBMUidToLastPlaceToCurrentListL( item->Uid() );
+                    
+                    // To retain FavIcon in iconDatabase, we need to reference icon bitmap reference at least once
+                    HBufC* url = ApiProvider().BrCtlInterface().PageInfoLC(TBrCtlDefs::EPageInfoUrl);
+                    CGulIcon *icon = ApiProvider().BrCtlInterface().GetBitmapData(*url, TBrCtlDefs::EBitmapFavicon);
+                    CleanupStack::PopAndDestroy(); //url
+                    delete icon;
                     }
                 else if( KErrAlreadyExists == err )
                     {
