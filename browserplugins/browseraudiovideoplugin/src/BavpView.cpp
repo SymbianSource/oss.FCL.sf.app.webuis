@@ -19,6 +19,7 @@
 
 
 // INCLUDE FILES
+#include <browser_platform_variant.hrh>
 #include <AknUtils.h>
 #include <aknclearer.h>
 #include <AknBitmapAnimation.h>
@@ -58,6 +59,14 @@ void CBavpView::ConstructL( const CCoeControl* aParent,
     iBavPlugin = aBavPlugin;
     
 	CreateWindowL(aParent);
+#ifdef BRDO_MULTITOUCH_ENABLED_FF
+    if (AknLayoutUtils::PenEnabled()) {
+        DrawableWindow()->SetPointerGrab(ETrue);
+        EnableDragEvents();
+    }
+	//To enable advance pointer info for multi-touch
+   	Window().EnableAdvancedPointers();
+#endif 
 	ActivateL(); // Draws icon
 	iRect = aRect;
 	CCoeControl::SetRect( aRect ); // Calls SizeChanged
@@ -757,18 +766,31 @@ void CBavpView::HandlePointerEventL(const TPointerEvent &aPointerEvent)
      * so we convert position of the pointer event here.
      */
     TPoint point(aPointerEvent.iPosition  + PositionRelativeToScreen());
-    TPointerEvent tmpEvent(aPointerEvent);
-    tmpEvent.iPosition = point;
-    
     NPNetscapeFuncs* funcs = iBavPlugin->getNPNFuncs();
-    
-    
-    if(funcs && funcs->setvalue)
-        {
-        (funcs->setvalue)(iBavPlugin->getNPP(), 
-                            (NPPVariable) NPPVPluginPointerEvent,
-                            (void*) &(tmpEvent));
+#ifdef BRDO_MULTITOUCH_ENABLED_FF
+    if (aPointerEvent.IsAdvancedPointerEvent()) {
+        TAdvancedPointerEvent tadvp = *(static_cast<const TAdvancedPointerEvent *>(&aPointerEvent));
+        tadvp.iPosition = point;
+        if(funcs && funcs->setvalue) {
+            (funcs->setvalue)(iBavPlugin->getNPP(), 
+                                (NPPVariable) NPPVPluginPointerEvent,
+                                (void*) &(tadvp));
         }
+
+    }
+    else {
+#endif 	
+        TPointerEvent event(aPointerEvent);
+        event.iPosition = point;
+        if(funcs && funcs->setvalue) {
+            (funcs->setvalue)(iBavPlugin->getNPP(), 
+                                (NPPVariable) NPPVPluginPointerEvent,
+                                (void*) &(event));
+      }
+#ifdef BRDO_MULTITOUCH_ENABLED_FF	  
+    }
+#endif 	
+ 
     }
 
 //  End of File

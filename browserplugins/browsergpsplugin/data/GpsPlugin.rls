@@ -18,4 +18,4 @@
 
 rls_string STRING_r_browser_gps_plugin "npGpsPlugin.dll;Browser GPS Plugin"
 rls_string STRING_r_browser_gps_desc "GPS Plugin for S60 Browser"
-rls_string STRING_r_mime_gps "application/x-gps-widget";
+rls_string STRING_r_mime_gps "application/x-gps-widget"

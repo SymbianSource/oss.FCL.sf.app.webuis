@@ -172,7 +172,7 @@ void CFeedsFeedView::HandleCommandL(TInt aCommand)
             break;
 
 		case EFeedsSeeFullStory:
-            iContainer->iBrowserControl->HandleCommandL(TBrCtlDefs::ECommandOpen);
+            iContainer->iBrowserControl->HandleCommandL((TBrCtlDefs::ECommandIdBase + TBrCtlDefs::ECommandOpen));
             break;
 
         default:

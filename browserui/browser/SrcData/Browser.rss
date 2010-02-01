@@ -441,6 +441,7 @@ RESOURCE MENU_PANE r_menu_pane
         MENU_ITEM
             {
             cascade = r_help_submenu;
+            command = EAknCmdHelp;
             txt = qtn_browser_options_help;
             },
         MENU_ITEM

@@ -18,7 +18,7 @@
 
 
 //  INCLUDES
-
+#include "browser_platform_variant.hrh"
 #include "PushSettingsDialog.h"
 #include "PushMtmUiDef.h"
 #include "PushMtmUiPanic.h"
@@ -678,7 +678,11 @@ void CPushSettingsDialog::HandleListBoxEventL
 	// Generate change command only if double tapped/center key is pressed. 
 	//Removed single tap check from here
 	if ( aEventType == EEventEnterKeyPressed || 
-         aEventType == EEventItemDoubleClicked )
+         aEventType == EEventItemDoubleClicked 
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF         
+         || aEventType == EEventItemSingleClicked 
+#endif         
+         )
         {
         ProcessCommandL( EPushSettingsDialogCmdChangeWithoutSettingPage );
         }

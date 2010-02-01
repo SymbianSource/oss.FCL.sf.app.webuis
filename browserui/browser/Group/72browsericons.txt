@@ -97,3 +97,5 @@
 -c8,8 qgn_indi_browser_tb_send_url
 -c8,8 qgn_indi_browser_tb_goto_and_search.svg
 -c8,8 qgn_prop_browser_info_small.svg
+-c8,8 qgn_indi_browser_tb_exit.svg
+

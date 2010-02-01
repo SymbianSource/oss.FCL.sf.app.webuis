@@ -649,6 +649,9 @@ void CBrowserFavouritesView::HandleListBoxEventL
             {
             case MEikListBoxObserver::EEventEnterKeyPressed:
             case MEikListBoxObserver::EEventItemDoubleClicked:
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF                
+            case MEikListBoxObserver::EEventItemSingleClicked:    
+#endif                
                 {
                 if ( iContainer->Listbox()->CurrentItem() )
                     {

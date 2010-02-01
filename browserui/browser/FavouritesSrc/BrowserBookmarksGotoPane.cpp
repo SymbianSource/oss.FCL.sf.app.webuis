@@ -47,6 +47,7 @@
 #include "BrowserFavouritesView.h"
 #include "Preferences.h"
 #include <Featmgr.h>
+#include "BrowserUiSDKCRKeys.h"
 
 #include <eikpriv.rsg>
 #include <BARSREAD.H>
@@ -64,7 +65,7 @@ const TInt EUseSkinContext = 0x01;
 const TInt EParentAbsolute = 0x02;
 const TInt KRightSpace = 10; //space in pixels left at the end of text editor.
 // CONSTANTS
-
+const TInt KMaxTitleLength = 512;
 _LIT(KAddressText,"http://www.");
 
 // ================= MEMBER FUNCTIONS =======================
@@ -580,7 +581,20 @@ void CBrowserBookmarksGotoPane::ConstructL ( const CCoeControl& aParent, const T
     TBool searchFeature = iView->ApiProvider().Preferences().SearchFeature();
     if ( searchFeature )
         {
-        iDefaultSearchText = StringLoader::LoadL( R_IS_WEB_SEARCH );
+        HBufC* searchProvider = HBufC::NewLC( KMaxTitleLength );
+        TPtr searchProviderPtr = searchProvider->Des();
+
+        iView->ApiProvider().Preferences().GetStringValueL( KBrowserSearchProviderTitle,
+            KMaxTitleLength , searchProviderPtr);
+        if( searchProvider->Length() == 0 )
+            {
+            iDefaultSearchText = StringLoader::LoadL( R_IS_WEB_SEARCH );
+            }
+        else
+            {
+            iDefaultSearchText = searchProvider->AllocL();
+            }
+        CleanupStack::PopAndDestroy(searchProvider);
         }
 
     //adaptive popuplist

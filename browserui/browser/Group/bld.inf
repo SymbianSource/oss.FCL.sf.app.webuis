@@ -104,7 +104,11 @@ PRJ_EXTENSIONS
 START EXTENSION s60/mifconv
 OPTION TARGETFILE browser.mif
 OPTION HEADERFILE browser.mbg
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF    
+OPTION SOURCEFILE 72browsericons.txt
+#else 	
 OPTION SOURCEFILE browsericons.txt
+#endif	
 END
 START EXTENSION s60/mifconv
 OPTION TARGETFILE browserng_aif.mif

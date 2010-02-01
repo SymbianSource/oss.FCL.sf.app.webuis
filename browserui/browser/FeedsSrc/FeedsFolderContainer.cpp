@@ -336,9 +336,19 @@ CCoeControl* CFeedsFolderContainer::ComponentControl(TInt aIndex) const
 void CFeedsFolderContainer::HandleListBoxEventL(CEikListBox* /*aListBox*/, 
         TListBoxEvent aEventType)
     {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF    
+    if (aEventType == MEikListBoxObserver::EEventEmptyListClicked)
+        {
+            return;
+        }
+#endif    
     // An item was selected.
     if ((aEventType == MEikListBoxObserver::EEventEnterKeyPressed) ||
-        (aEventType == MEikListBoxObserver::EEventItemDoubleClicked))
+        (aEventType == MEikListBoxObserver::EEventItemDoubleClicked)
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF		
+		 || (aEventType == MEikListBoxObserver::EEventItemSingleClicked)
+#endif		 
+		 )
         {
         if ( iMoveActive )
             {

@@ -50,6 +50,7 @@
 
 /// Tab index for Bookmarks View.
 LOCAL_D const TInt KBookmarkTabIndex = 0;
+const TInt KMaxTitleLength = 512;
 
 // ================= MEMBER FUNCTIONS =======================
 
@@ -123,7 +124,22 @@ void CBrowserBookmarksContainer::SetGotoActiveL()
             CleanupStack::PushL( text );
             if ( !text->Length() )
                 {
-                iSearchPane->SetTextL( *iDefaultSearchText );
+                //TODO: read possible title valu from cenrep, if not found seyt the default text
+                HBufC* searchProvider = HBufC::NewLC( KMaxTitleLength );
+                TPtr searchProviderPtr = searchProvider->Des();
+        
+                View().ApiProvider().Preferences().GetStringValueL( KBrowserSearchProviderTitle,
+                    KMaxTitleLength , searchProviderPtr);
+                if( searchProvider->Length() == 0 )
+                    {
+                    iSearchPane->SetTextL( *iDefaultSearchText );
+                    }
+                else
+                    {
+                    iSearchPane->SetTextL( searchProviderPtr );
+                    }
+                CleanupStack::PopAndDestroy(searchProvider);
+                
                 }
             CleanupStack::PopAndDestroy( text );
             }

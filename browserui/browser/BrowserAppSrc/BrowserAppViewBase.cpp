@@ -32,6 +32,8 @@
 #include <StringLoader.h>
 #include "BrowserUtil.h"
 #include <browseruisdkcrkeys.h>
+#include <UTF.h>
+#include <charconv.h>
 // ================= MEMBER FUNCTIONS =======================
 
 // ---------------------------------------------------------
@@ -291,8 +293,8 @@ void CBrowserViewBase::LaunchSearchApplicationL( const TDesC& aSearchString )
     TUid searchAppId( TUid::Uid( id ) );
     TApaTaskList taskList( CEikonEnv::Static()->WsSession() );
     TApaTask task = taskList.FindApp( searchAppId );
-    HBufC8* searchParam8 = HBufC8::NewLC( aSearchString.Length() + 1);
-    searchParam8->Des().Append( aSearchString );
+    HBufC8* searchParam8 = CnvUtfConverter::ConvertFromUnicodeToUtf8L( aSearchString );
+    CleanupStack::PushL( searchParam8 );
     if ( task.Exists() )
         {
         User::LeaveIfError( task.SendMessage( TUid::Uid( 0 ), *searchParam8 ) );

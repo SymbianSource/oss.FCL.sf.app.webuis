@@ -282,6 +282,19 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
         }
     switch ( aCommand )
         {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF		
+        case EWmlCmdSetAsHomePage:
+            {
+            HBufC* url = ApiProvider().BrCtlInterface().PageInfoLC(TBrCtlDefs::EPageInfoUrl);
+            if ( url && url->Length() && TBrowserDialogs::ConfirmQueryYesNoL(R_BROWSER_QUERY_SET_AS_HOME_PAGE))
+                {
+                ApiProvider().Preferences().SetHomePageUrlL(url->Des());
+                ApiProvider().Preferences().SetHomePageTypeL( EWmlSettingsHomePageAddress );
+                }
+            CleanupStack::PopAndDestroy(); // url
+            break;
+            } 
+#endif			      
         case EWmlCmdFavourites:
             {
             ApiProvider().SetViewToBeActivatedIfNeededL(
@@ -321,6 +334,14 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
         case EWmlCmdGoToAddress:
 		case EWmlCmdGoToAddressAndSearch:
             {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF            
+            CEikButtonGroupContainer* cba = Cba()->Current();
+            CEikCba* eikCba = static_cast<CEikCba*>( cba->ButtonGroup() );
+            if( eikCba )
+                {
+                eikCba->EnableItemSpecificSoftkey( EFalse );
+                }
+#endif  
 			iContainer->GotoPane()->SetGotoPaneActiveL();
             LaunchGotoAddressEditorL();
             break;
@@ -1390,7 +1411,8 @@ void CBrowserContentView::DynInitMenuPaneL( TInt aResourceId,
             }
 
         // set as home page
-        aMenuPane->SetItemDimmed( EWmlCmdSetAsHomePage, ETrue);
+        //aMenuPane->SetItemDimmed( EWmlCmdSetAsHomePage, ETrue);
+
 
         // pop-up blocking
         if ( ApiProvider().IsEmbeddedModeOn() || ApiProvider().WindowMgr().CurrentWindow()->WMLMode())

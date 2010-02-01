@@ -246,8 +246,11 @@ PERFLOG_LOCAL_INIT;
 PERFLOG_STOPWATCH_START;
 
 
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+    BaseConstructL( EAknEnableSkin | EAknEnableMSK | EAknSingleClickCompatible);
+#else 
     BaseConstructL( EAknEnableSkin | EAknEnableMSK );
-
+#endif
     if ( !IsEmbeddedModeOn( ) )
     	{
     	InitBrowserL();
@@ -331,7 +334,12 @@ void CBrowserAppUi::InitBrowserL()
         BROWSER_LOG( ( _L( "Preferences up" ) ) );
 
         PERFLOG_STOPWATCH_START;
-        iConnection = CInternetConnectionManager::NewL( &iCommsModel->CommsDb(), EFalse );
+        #ifdef BRDO_OCC_ENABLED_FF
+          iConnection = CInternetConnectionManager::NewL( &iCommsModel->CommsDb(), ETrue );
+        #else
+          iConnection = CInternetConnectionManager::NewL( &iCommsModel->CommsDb(), EFalse );
+        #endif
+        	
         PERFLOG_STOP_WRITE("\t ConnMan NewL");
         BROWSER_LOG( ( _L( "ConnectionManager up" ) ) );
 
@@ -542,6 +550,13 @@ void CBrowserAppUi::HandleCommandL(TInt aCommand)
 												(TInt)TBrCtlDefs::ECommandIdBase );
             break;
             }
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF			
+        case EWmlCmdSetAsHomePage:
+            {
+            ContentView()->HandleCommandL(EWmlCmdSetAsHomePage);
+            break;
+            }
+#endif			
         case EAknSoftkeyBack:
         case EWmlCmdBack:
             {

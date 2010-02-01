@@ -75,14 +75,16 @@ CFeedsTopicView::CFeedsTopicView(MApiProvider& aApiProvider):
 void CFeedsTopicView::ConstructL(TRect& aRect)
     {
     BaseConstructL(R_FEEDS_TOPIC_VIEW);
-    
+
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
     iContainer = CFeedsTopicContainer::NewL( this, ApiProvider(), aRect );
     iContainer->MakeVisible(EFalse);
-        
+    
     if(iPenEnabled)
         {
-        Toolbar()->SetToolbarObserver(this);;        
+        Toolbar()->SetToolbarObserver(this);       
         }
+#endif    
     }
 
 
@@ -180,6 +182,14 @@ void CFeedsTopicView::DoActivateL(const TVwsViewId& /*aPrevViewId*/,
         TUid /*aCustomMessageId*/, const TDesC8& /*aCustomMessage*/)
     {
 
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+    if (!iContainer)
+        {
+        iContainer = CFeedsTopicContainer::NewL( this, ApiProvider(), ClientRect() );
+        iContainer->MakeVisible(EFalse);
+        }
+    Toolbar()->SetToolbarVisibility(EFalse,EFalse);
+#endif    
     // If need be, add the container to the control stack.
     if (!iContainerOnStack)
         {
@@ -276,6 +286,10 @@ void CFeedsTopicView::SetInitialItem(TInt aItemIndex)
 
 void CFeedsTopicView::UpdateToolbarButtonsState()
     {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+    Toolbar()->SetToolbarVisibility(EFalse,EFalse);
+    return;
+#endif    
     if (iApiProvider.IsPageLoaded())
         {
         Toolbar()->SetItemDimmed(EFeedsBackToPage, EFalse, ETrue);     

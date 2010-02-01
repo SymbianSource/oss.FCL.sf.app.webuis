@@ -291,6 +291,7 @@ void CBrowserSettingsView::HandleForegroundEventL (TBool aForeground)
 // ---------------------------------------------------------------------------
 void CBrowserSettingsView::DynInitMenuPaneL( TInt aResourceId, CEikMenuPane* aMenuPane )
     {
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF					    	
     if ( aResourceId == R_BROWSER_SETTINGS_SETTINGS_MENU )    
         {
         // Show the appropriate menu items, depending on whether
@@ -305,7 +306,7 @@ void CBrowserSettingsView::DynInitMenuPaneL( TInt aResourceId, CEikMenuPane* aMe
             }
 
         }
-        
+#endif        
     }
 
 // ---------------------------------------------------------------------------

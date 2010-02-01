@@ -79,8 +79,10 @@ void CFeedsFolderView::ConstructL(TRect& aRect)
     {
     BaseConstructL(R_FEEDS_FOLDER_VIEW);
     
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF	
     iContainer = CFeedsFolderContainer::NewL( this, ApiProvider(), aRect );
     iContainer->MakeVisible(EFalse);
+#endif	
     
     if(iPenEnabled)
         {
@@ -347,6 +349,7 @@ void CFeedsFolderView::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPan
         iApiProvider.FeedsClientUtilities().AddCascadeL(*aMenuPane,EFeedsOptionsGoto,
             R_FEEDS_OPTIONS_GOTO, R_FEEDS_OPTIONS_GOTO_SUBMENU);
 
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
         iApiProvider.FeedsClientUtilities().AddCascadeL(*aMenuPane,EFeedsOptionsFeedsActions,
             R_FEEDS_OPTIONS_FEEDSACTIONS, R_FEEDS_OPTIONS_FEEDSACTIONS_SUBMENU);
 
@@ -360,11 +363,60 @@ void CFeedsFolderView::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPan
             iApiProvider.FeedsClientUtilities().AddCascadeL(*aMenuPane,EFeedsOptionsMarkUnmark,
                 R_FEEDS_OPTIONS_MARKUNMARK, R_FEEDS_OPTIONS_MARKUNMARK_SUBMENU);
             }
-
+#else
         // ie, privacy submenu
         //iApiProvider.FeedsClientUtilities().AddCascadeL(*aMenuPane,EFeedsOptionsClear,
         //    R_FEEDS_OPTIONS_CLEAR, R_FEEDS_OPTIONS_CLEAR_SUBMENU);
         
+        iApiProvider.FeedsClientUtilities().AddItemL( *aMenuPane, EFeedsUpdateAll, R_FEEDS_UPDATE_ALL);
+        iApiProvider.FeedsClientUtilities().AddItemL( *aMenuPane, EFeedsNewFeed, R_FEEDS_NEW_FEED);
+        if(iContainer->iCurrentFolder && ( iContainer->iCurrentFolder == iRootFolder) )
+        iApiProvider.FeedsClientUtilities().AddItemL( *aMenuPane, EFeedsNewFolder, R_OPTIONS_ORG_NEW_FOLDER);
+        iApiProvider.FeedsClientUtilities().AddItemL( *aMenuPane, EFeedsImport, R_OPTIONS_IMPORT_FEEDS);
+        if( item && iContainer->iCurrentFolder )
+            {
+            if ( (item->GetType() == EFolder) )
+                {
+                iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsRename, R_FLDR_RENAME);
+                aMenuPane->SetItemSpecific(EFeedsRename,ETrue);
+                iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsMove, R_OPTIONS_ORG_MOVE);
+                aMenuPane->SetItemSpecific(EFeedsMove,ETrue);
+                iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsDelete, R_FEEDS_DELETE);
+                aMenuPane->SetItemSpecific(EFeedsDelete,ETrue);
+                }
+        else
+            {
+            // Update (only if feed has focus)
+            iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsUpdate, R_FEEDS_UPDATE);
+            aMenuPane->SetItemSpecific(EFeedsUpdate,ETrue);
+            iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsExport, R_OPTIONS_EXPORT_FEEDS);
+            aMenuPane->SetItemSpecific(EFeedsExport,ETrue);
+            iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsEdit, R_FEEDS_EDIT);
+            aMenuPane->SetItemSpecific(EFeedsEdit,ETrue);
+            iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsDelete, R_FEEDS_DELETE);
+            aMenuPane->SetItemSpecific(EFeedsDelete,ETrue);
+            
+            if ( iContainer &&
+                             iContainer->iCurrentFolder &&
+                         iContainer->iCurrentFolder->GetChildren().Count() >= 2 )
+                            {
+                            iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsMove, R_OPTIONS_ORG_MOVE);
+                            aMenuPane->SetItemSpecific(EFeedsMove,ETrue);
+                            }
+            if (!(item->GetType() == EFolder))
+               {            
+               TInt folderCount = 0;
+               iContainer->CountFolderFolders(iContainer->iRootFolder, folderCount);
+               if(iContainer && (folderCount> 0) && !iContainer->IsMarkedItemFolder())
+                   {   
+                   iApiProvider.FeedsClientUtilities().AddItemL(*aMenuPane, EFeedsMoveToFolder, R_OPTIONS_ORG_MOVE_TO_FOLDER);
+                   aMenuPane->SetItemSpecific(EFeedsMoveToFolder,ETrue); 
+                   }            
+               }
+            }
+       }
+#endif	   
+                        
         iApiProvider.FeedsClientUtilities().AddCascadeL(*aMenuPane,EFeedsOptionsClear,
             R_FEEDS_OPTIONS_CLEAR, R_CLEAR_SUBMENU);
         }

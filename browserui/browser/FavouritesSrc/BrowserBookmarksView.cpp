@@ -494,6 +494,14 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
             {
             iSoftKeyUpdate = EFalse;
             DimToolbarButtons(ETrue);
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF            
+            CEikButtonGroupContainer* cba = Cba()->Current();
+            CEikCba* eikCba = static_cast<CEikCba*>( cba->ButtonGroup() );
+            if( eikCba )
+                {
+                eikCba->EnableItemSpecificSoftkey( EFalse );
+                }
+#endif            
             TheContainer()->SetGotoActiveL();
             break;
             }
@@ -1158,8 +1166,15 @@ void CBrowserBookmarksView::HandleListBoxEventL(
         {
         switch ( aEventType )
             {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+            case MEikListBoxObserver::EEventEmptyListClicked:
+                return;
+#endif
             case MEikListBoxObserver::EEventEnterKeyPressed:
             case MEikListBoxObserver::EEventItemDoubleClicked:
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+            case MEikListBoxObserver::EEventItemSingleClicked:
+#endif                
                 {
                 if ( iManualItemMovingGoingOn )
                     {
@@ -1235,16 +1250,30 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdManageBookmarks, ETrue );
                 }
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+            // add bookmark
+            if ( iInAdaptiveBookmarksFolder )
+                {
+                aMenuPane->SetItemDimmed( EWmlCmdAddBookmark, ETrue );
+                }
+
+            // create folder
+            if ( iCurrentFolder != KFavouritesRootUid || iInAdaptiveBookmarksFolder )
+                {
+                aMenuPane->SetItemDimmed( EWmlCmdNewFolder, ETrue );
+                }
+#endif    
 
             if ( iInAdaptiveBookmarksFolder && aState.IsEmpty() )
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdBmActions, ETrue );
                 }
-
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
             if (!item)
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMarkUnmark, ETrue );
                 }
+#endif				
 /*
             if (BRDO_BROWSER_UPDATE_UI_FF)
                {
@@ -1327,13 +1356,13 @@ void CBrowserBookmarksView::DynInitMenuPaneL
 
                 aMenuPane->SetItemDimmed( EWmlCmdSetAsHomePage, dimSaveAsHomePage );
                 }
-
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
             // add bookmark
             if ( iInAdaptiveBookmarksFolder )
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdAddBookmark, ETrue );
                 }
-
+#endif            
             // set preferred/unpreferred
             if ( !iContainer->Listbox()->CurrentItem() )
                 {
@@ -1421,13 +1450,13 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
                 }
-
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
             // create folder
             if ( iCurrentFolder != KFavouritesRootUid || iInAdaptiveBookmarksFolder )
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdNewFolder, ETrue );
                 }
-
+#endif            
 
             break;
             }

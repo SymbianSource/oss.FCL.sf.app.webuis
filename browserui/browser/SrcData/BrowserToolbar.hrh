@@ -21,8 +21,9 @@
 #ifndef BROWSERTOOLBAR_HRH
 #define BROWSERTOOLBAR_HRH
 
-
+#include <browser_platform_variant.hrh>
 #include <AknsConstants.hrh>
+
 
 //----------------------------------------------------
 //
@@ -362,5 +363,14 @@ RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_goto_and
     bmbSkinIdMajor = EAknsMajorGeneric;
     bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbGotoAndSearch;
     //skin KAknsIIDQgnIndiBrowserTbGotoAndSearch
+    }                                   
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF    
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_exit
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbExit;
+    //skin KAknsIIDQgnIndiBrowserTbGotoAndSearch
     }
+#endif    
 #endif // BROWSERTOOLBAR_HRH

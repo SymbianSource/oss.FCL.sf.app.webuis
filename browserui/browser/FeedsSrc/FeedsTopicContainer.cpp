@@ -230,7 +230,11 @@ void CFeedsTopicContainer::HandleListBoxEventL(CEikListBox* /*aListBox*/, TListB
     {
     // An item was selected.
     if ((aEventType == MEikListBoxObserver::EEventEnterKeyPressed) ||
-        (aEventType == MEikListBoxObserver::EEventItemDoubleClicked))
+        (aEventType == MEikListBoxObserver::EEventItemDoubleClicked) 
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF        
+        || (aEventType == MEikListBoxObserver::EEventItemSingleClicked)
+#endif        
+        )
         {
         HandleOpenL();
         }

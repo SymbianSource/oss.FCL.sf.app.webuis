@@ -55,6 +55,7 @@
 
 #include <StringLoader.h>
 
+const TInt KMaxTitleLength = 512;
 
 // ---------------------------------------------------------------------------
 // CBrowserGotoPane::NewL
@@ -1197,7 +1198,22 @@ void CBrowserGotoPane::ConstructSearchPaneL()
         // Set the default text if not active//
         if ( ! iSearchPaneActive )
             {
-            SetSearchTextL( *iDefaultSearchText );
+            HBufC* searchProvider = HBufC::NewLC( KMaxTitleLength );
+            TPtr searchProviderPtr = searchProvider->Des();
+            iContentView->ApiProvider().Preferences().GetStringValueL( KBrowserSearchProviderTitle,
+                KMaxTitleLength , searchProviderPtr);
+            if( searchProvider->Length() == 0 )
+                {
+                 SetSearchTextL( *iDefaultSearchText );
+                }
+            else
+                {
+                SetSearchTextL( *searchProvider );
+                delete iDefaultSearchText;
+                iDefaultSearchText = NULL;
+                iDefaultSearchText = searchProvider->AllocL();
+                }
+            CleanupStack::PopAndDestroy(searchProvider);
             }
         iSearchInputFrame->ActivateL();
         }
@@ -1221,7 +1237,19 @@ void CBrowserGotoPane::SetGotoPaneActiveL()
         // if searchpane is empty add default text
         if ( !SearchTextLength() )
             {
-            SetSearchTextL( *iDefaultSearchText );
+            HBufC* searchProvider = HBufC::NewLC( KMaxTitleLength );
+            TPtr searchProviderPtr = searchProvider->Des();
+            iContentView->ApiProvider().Preferences().GetStringValueL( KBrowserSearchProviderTitle,
+                KMaxTitleLength , searchProviderPtr);
+            if( searchProvider->Length() == 0 )
+                {
+                SetSearchTextL( *iDefaultSearchText );
+                }
+            else
+                {
+                SetSearchTextL( *searchProvider );
+                }
+            CleanupStack::PopAndDestroy(searchProvider);
             }
 
         // if gotopane is empty add default text

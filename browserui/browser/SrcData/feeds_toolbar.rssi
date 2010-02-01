@@ -37,6 +37,76 @@ RESOURCE AVKON_TOOLBAR r_feeds_folder_view_toolbar
     flags = KAknToolbarFixed | KAknToolbarWithoutCba;
     items =
         {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+		
+	TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsNewFeed;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_new_feed;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_prop_file_rss_new;
+                        bmpmask = EMbmBrowserQgn_prop_file_rss_new_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_feeds;
+                        }
+                    };
+                };
+            }, 
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsUpdateAll;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_folder_update_all_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_update_all;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_update_all_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_updateall;
+                        }
+                    };
+                };
+            },
+           
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdPreferences;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_browser_setting_settings;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_settings;
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_settings_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_settings;
+                        }
+                    };
+                };
+            }
+#else 	    		
         TBAR_CTRL
             {
             type = EAknCtButton;
@@ -104,6 +174,7 @@ RESOURCE AVKON_TOOLBAR r_feeds_folder_view_toolbar
                     };
                 };
             }
+#endif	    
         };
     }
 

@@ -120,6 +120,9 @@ void CBrowserPopupList::ConstructL(const CCoeControl* aParent, TInt aFlags)
 //
 void CBrowserPopupList::SetHighLight(TBool aHighLight)
     {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+    iItemDrawer->SetFlags( CListItemDrawer::ESingleClickEnabled );
+#endif    
     iListBoxFlags = ( aHighLight ?  iListBoxFlags &~ CEikListBox::EDisableHighlight : iListBoxFlags | CEikListBox::EDisableHighlight );
     if ( aHighLight )
         {
@@ -220,7 +223,11 @@ void CBrowserAdaptiveListPopup::ConstructL( )
     CreateWindowL();
 //-------- list ------
     iList = new(ELeave) CBrowserPopupList( iParentType );
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+    iList->ConstructL( this , CEikListBox::EDisableItemSpecificMenu );
+#else
     iList->ConstructL( this , CEikListBox::ELeftDownInViewRect );
+#endif
     iList->SetContainerWindowL( *this );
     if (iTouchSupported)
         {
@@ -320,6 +327,9 @@ void CBrowserAdaptiveListPopup::HandleListBoxEventL(CEikListBox* aListBox,TListB
                 }
                 break;
             case  MEikListBoxObserver::EEventItemClicked:
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF                
+            case  MEikListBoxObserver::EEventItemSingleClicked:      
+#endif                
                 HandleItemClickedL( aListBox );
                 break;
             default:

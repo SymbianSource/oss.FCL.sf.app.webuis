@@ -43,6 +43,7 @@ RESOURCE AVKON_TOOLBAR r_content_view_toolbar
                 helptxt = qtn_browser_ext_tb_tt;
                 items =
                     {
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF		    
                     TBAR_CTRL
                         {
                         type = EAknCtButton;
@@ -65,6 +66,7 @@ RESOURCE AVKON_TOOLBAR r_content_view_toolbar
                                 };
                             };
                         },
+#endif
                     TBAR_CTRL
                         {
                         type = EAknCtButton;
@@ -306,8 +308,35 @@ RESOURCE AVKON_TOOLBAR r_content_view_toolbar
                                     }
                                 };
                             };
-                        }
-                        
+	#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+			}
+	#else
+			},
+						
+		TBAR_CTRL
+                       {
+                       type = EAknCtButton;
+                       id = EWmlCmdCloseWindow;
+                       
+                       control = AVKON_BUTTON
+                           {
+                           flags = KAknButtonRequestExitOnButtonUpEvent;
+                           states =
+                               {
+                               AVKON_BUTTON_STATE
+                                   {
+                                   txt     = qtn_options_exit; //qtn_browser_list_close_window;
+                                   helptxt = qtn_options_exit; //qtn_browser_list_close_window;
+                                   bmpfile = "\\Resource\\apps\\browser.mif";
+                                   bmpid   = EMbmBrowserQgn_indi_browser_tb_exit;         
+                                   bmpmask = EMbmBrowserQgn_indi_browser_tb_exit_mask;
+                                   extension = r_browser_ext_qgn_indi_browser_tb_exit;
+                                   }
+                               };
+                           };
+                       }     
+	#endif
+                      
                     };
                 };
             },
@@ -464,6 +493,32 @@ RESOURCE AVKON_TOOLBAR r_content_view_toolbar
                     };
                 };
             },
+	    
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+
+	TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdFavourites;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {                      
+                        txt     = "";  
+                        helptxt = qtn_browser_ext_tb_bm_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_bm;         
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_bm_mask;   
+                        extension = r_browser_ext_qgn_indi_browser_tb_bm;
+                        }
+                    };
+                };
+            }
+#else	    
         TBAR_CTRL
             {
             type = EAknCtButton;
@@ -486,6 +541,7 @@ RESOURCE AVKON_TOOLBAR r_content_view_toolbar
                     };
                 };
             }
+#endif
         };
     }
 

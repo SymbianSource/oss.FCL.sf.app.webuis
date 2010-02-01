@@ -76,24 +76,45 @@ RESOURCE MENU_PANE  r_browser_bookmarks_menu_pane
             cascade = r_goto_submenu;
             txt = qtn_browser_options_goto;
             },
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF       
+        MENU_ITEM
+            {
+            command = EWmlCmdAddBookmark;
+            txt = text_wmlbm_option_enter_new;
+            },
+        
+        MENU_ITEM 
+            { 
+            command = EWmlCmdNewFolder; 
+            txt = qtn_options_org_new_folder; 
+            },
+#endif
         MENU_ITEM
             {
             cascade = r_bmactions_submenu;
             command = EWmlCmdBmActions;
             txt = qtn_browser_options_bmactions;
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF	    
+	    flags = EEikMenuItemSpecific;
+#endif	    
             },
         MENU_ITEM
             {
             cascade = r_bookmarks_edit_submenu;
             command = EWmlCmdManageBookmarks;
             txt = qtn_wmlbm_manage_bm;
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF	    
+	    flags = EEikMenuItemSpecific;
+#endif	    
             },
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF	   
         MENU_ITEM
             {
             cascade = r_browser_favourites_menu_pane_mark_unmark;
             command = EWmlCmdMarkUnmark;
             txt = qtn_browser_options_markunmark;
             },
+#endif            
         MENU_ITEM 
             { 
             cascade = r_clear_submenu; 
@@ -164,12 +185,15 @@ RESOURCE MENU_PANE r_bookmarks_edit_submenu
             {
             command = EWmlCmdMoveToFolder;
             txt = qtn_options_org_move_to_folder;
-            },
+            }
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+	,	    
         MENU_ITEM 
             { 
             command = EWmlCmdNewFolder; 
             txt = qtn_options_org_new_folder; 
             }
+#endif	    
          };
     }
 
@@ -187,7 +211,9 @@ RESOURCE MENU_PANE r_bmactions_submenu
 		MENU_ITEM { command = EWmlCmdSendAddressViaUnifiedMessage; txt=qtn_options_send_via; },
 		MENU_ITEM { command = EWmlCmdSendBookmarkViaUnifiedMessage; txt =qtn_options_send_via; },
 		MENU_ITEM { command = EWmlCmdSetAsHomePage; txt=qtn_browserbm_list_set_as_home_page_sm; },
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF		
         MENU_ITEM { command = EWmlCmdAddBookmark; txt = text_wmlbm_option_enter_new; },
+#endif	
         MENU_ITEM { command = EWmlCmdCopyToBookmarks; txt = qtn_browserbm_options_copy_to_bookmarks_sm; },
         MENU_ITEM { command = EWmlCmdSetPreferredBookmark; txt = qtn_browserbm_list_set_as_preferred; },
         MENU_ITEM { command = EWmlCmdSetUnPreferredBookmark; txt = qtn_browserbm_list_unset_from_preferred; }

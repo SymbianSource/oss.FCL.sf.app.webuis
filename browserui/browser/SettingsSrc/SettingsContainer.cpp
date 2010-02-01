@@ -241,12 +241,14 @@ void CSettingsContainer::DisplaySettingCategoriesL()
     iSettingIndex->AppendL( EWmlSettingsPrivacy );
 
 #ifdef __RSS_FEEDS
+    #if !defined(BRDO_OCC_ENABLED_FF)
     // Web feeds Category item
     if (!ApiProvider().IsEmbeddedModeOn())
         {
         AddCategoryListBoxItemL( R_SETTINGS_CATEGORY_WEBFEEDS, *itemArray );
         iSettingIndex->AppendL( EWmlSettingsWebFeeds );
         }
+    #endif
 #endif // __RSS_FEEDS
 
     
@@ -368,7 +370,10 @@ void CSettingsContainer::DisplayGeneralSettingsL()
     // Default Access Point
     if ( !ApiProvider().Preferences().CustomAccessPointDefined() )
         {
+        #if !defined(BRDO_OCC_ENABLED_FF)
+        //Access point setting is not required if OCC is enabled
         AppendDefaultAccessPointL( itemArray, itemText );
+        #endif
         }
 
     // Home Page
@@ -3359,6 +3364,7 @@ TKeyResponse CSettingsContainer::OfferKeyEventL( const TKeyEvent& aKeyEvent, TEv
 //
 void CSettingsContainer::HandleListBoxEventL(CEikListBox* aListBox,TListBoxEvent aEventType)
     {
+    TKeyResponse ret = EKeyWasNotConsumed;
     if (iPenEnabled)
         {
         if (iSettingListBox && aListBox == iSettingListBox)
@@ -3378,6 +3384,77 @@ void CSettingsContainer::HandleListBoxEventL(CEikListBox* aListBox,TListBoxEvent
                     CCoeEnv::Static()->SimulateKeyEventL( keyEvent, EEventKey );
                     }
                     break;
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF					
+                case MEikListBoxObserver::EEventItemSingleClicked:
+
+                    switch ( iSettingIndex->At( iSettingListBox->CurrentItemIndex() ) )
+                        {
+                        case EWmlSettingsGeneral:
+                        case EWmlSettingsPrivacy:
+                        case EWmlSettingsPage:
+                        case EWmlSettingsWebFeeds:
+                        case EWmlSettingsToolbar:
+                        case EWmlSettingsShortcuts:
+                        {
+                            DisplayCorrectSettingCategoryListL();
+                            break;
+                        }
+                        
+                        // Individual Settings
+                        case EWmlSettingsAccesspoint:
+                        case EWmlSettingsHomePage:
+                        case EWmlSettingsBackList:
+                        case EWmlSettingsHttpSecurityWarnings:
+                        case EWmlSettingsEcma:
+                        case EWmlSettingsScriptLog:
+                        case EWmlSettingsDownloadsOpen:
+                        case EWmlSettingsAutoLoadContent:
+                        case EWmlSettingsFullScreen:
+                        case EWmlSettingsPageOverview:
+                        case EWmlSettingsMediaVolume:
+                        case EWmlSettingsEncoding:
+                        case EWmlSettingsPopupBlocking:
+                        case EWmlSettingsAutoRefresh:
+                        case EWmlSettingsAdaptiveBookmarks:
+                        case EWmlSettingsFormDataSaving:
+        #ifdef __WIM
+                        case EWmlSettingsSaveReceipt:
+        #endif
+                        case EWmlSettingsCookies:
+                        case EWmlSettingsIMEINotification:
+                        case EWmlSettingsAutomaticUpdatingAP:
+                        case EWmlSettingsAutomaticUpdatingWhileRoaming:
+                        case EWmlSettingsUrlSuffix:
+                        case EWmlSettingsFontSize:
+                        case EWmlSettingsToolbarButton1Cmd:
+                        case EWmlSettingsToolbarButton2Cmd:
+                        case EWmlSettingsToolbarButton3Cmd:
+                        case EWmlSettingsToolbarButton4Cmd:
+                        case EWmlSettingsToolbarButton5Cmd:
+                        case EWmlSettingsToolbarButton6Cmd:
+                        case EWmlSettingsToolbarButton7Cmd:
+                        case EWmlSettingsShortCutKey1Cmd:
+                        case EWmlSettingsShortCutKey2Cmd:
+                        case EWmlSettingsShortCutKey3Cmd:
+                        case EWmlSettingsShortCutKey4Cmd:
+                        case EWmlSettingsShortCutKey5Cmd:
+                        case EWmlSettingsShortCutKey6Cmd:
+                        case EWmlSettingsShortCutKey7Cmd:
+                        case EWmlSettingsShortCutKey8Cmd:
+                        case EWmlSettingsShortCutKey9Cmd:
+                        case EWmlSettingsShortCutKey0Cmd:
+                        case EWmlSettingsShortCutKeyStarCmd:
+                        case EWmlSettingsShortCutKeyHashCmd:
+                        case EWmlSettingsSearchProvider:
+                        {
+                            ChangeItemL( ETrue );
+                            ret = EKeyWasConsumed;
+                            break;
+                        }
+                        default:
+                            break;
+                        }	
+#endif					
                 default:
                     break;
                 }

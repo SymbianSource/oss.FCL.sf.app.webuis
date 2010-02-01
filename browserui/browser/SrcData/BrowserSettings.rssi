@@ -97,8 +97,10 @@ RESOURCE MENU_PANE r_browser_settings_settings_menu
  {
     items=
   {
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
   MENU_ITEM { command=EWmlCmdSettingsOpen; txt=qtn_options_open; },
         MENU_ITEM { command=EWmlCmdSettingsChange; txt=qtn_wmls_local_set_opt_change; },
+#endif	
  MENU_ITEM {cascade = r_help_submenu; txt=qtn_options_help;},
         MENU_ITEM { command=EWmlCmdUserExit; txt=qtn_options_exit; }
   };
@@ -148,7 +150,11 @@ RESOURCE LISTBOX r_browser_settings_settings_listbox
 //
 RESOURCE AVKON_SETTING_PAGE r_radio_button_setting_page
  { 
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
  softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+#else
+ softkey_resource = R_AVKON_SOFTKEYS_CANCEL;
+#endif 
  type =  EAknSetListBox;
  editor_resource_id= r_setting_app_listbox;
  }
