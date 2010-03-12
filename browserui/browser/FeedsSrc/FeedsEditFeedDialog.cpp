@@ -135,14 +135,11 @@ void CFeedsEditFeedDialog::HandlePointerEventL(const TPointerEvent& aPointerEven
         }
     else
         {
+        CAknForm::HandlePointerEventL(aPointerEvent);
         if ((iSelectedDlgLine == EFeedsEditAutomaticUpdatingId) && (aPointerEvent.iType == TPointerEvent::EButton1Up))
             {
             HandleFreqCmdL();
             }
-        else
-            {
-            CAknForm::HandlePointerEventL(aPointerEvent);
-            }   
         }
     }
 

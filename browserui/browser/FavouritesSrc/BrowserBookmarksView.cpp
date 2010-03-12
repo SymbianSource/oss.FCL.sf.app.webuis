@@ -2192,7 +2192,9 @@ void CBrowserBookmarksView::ExitAdaptiveBookmarks()
 //
 void CBrowserBookmarksView::DimToolbarButtons(TBool aDimButtons)
     {
-    Toolbar()->SetDimmed(aDimButtons);
+    Toolbar()->SetItemDimmed( EWmlCmdAddBookmark, aDimButtons , ETrue );
+    Toolbar()->SetItemDimmed( EWmlCmdGoToAddress, aDimButtons , ETrue );
+    Toolbar()->SetItemDimmed( EWmlCmdDelete, aDimButtons , ETrue );
     if (!aDimButtons)
         {
         // when undimming buttons we may not want them all back on
@@ -2393,8 +2395,7 @@ void CBrowserBookmarksView::SendBookmarksL( )
         sender.SendAddressL( );
         }
 
-    Container()->Listbox()->ClearSelection();
-    Container()->Listbox()->SetCurrentItemIndexAndDraw( 0 );
+    Container()->Listbox()->SetCurrentItemIndexAndDraw( Container()->Listbox()->CurrentItemIndex());
     }
 
 

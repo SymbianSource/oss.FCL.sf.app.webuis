@@ -1,19 +1,31 @@
+#!perl
+# ============================================================================
+# Name: createIADPackages.pl 
 #
-# Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
-# All rights reserved.
-# This component and the accompanying materials are made available
-# under the terms of the License "Eclipse Public License v1.0"
-# which accompanies this distribution, and is available
-# at the URL "http://www.eclipse.org/legal/epl-v10.html".
-#
-# Initial Contributors:
-# Nokia Corporation - initial contribution.
-#
-# Contributors:
-#
-# Description:  This script generate various SIS package files depeding on the 
+# Description: This script generate various SIS package files depeding on the 
 #							 depending on the variant selection. for example variant 01 will create
 #							 a package support English, French, Germany and Portuguese. 
+# 
+# Example for using this script: 
+# perl %name create_package.pl -v 15 -p armv5 -r urel -bmajor 7 -bminor 1 -bnumber 32 
+#
+# Copyright © 2008 Nokia.  All rights reserved.
+# This material, including documentation and any related computer
+# programs, is protected by copyright controlled by Nokia.  All
+# rights are reserved.  Copying, including reproducing, storing,
+# adapting or translating, any or all of this material requires the
+# prior written consent of Nokia.  This material also contains
+# confidential information which may not be disclosed to others
+# without the prior written consent of Nokia.
+# ============================================================================
+#
+# TODOs
+#			If possible, make all the components configurable 
+#			Support 5.0 and onward
+# Notes: 
+# 		Currently only armv5 is supported, winscw is not supported
+#			Currently only urel is supported. udeb is not supported 
+#			Currently variant support only CCB on 323
 #
 use Getopt::Long;
 use File::Copy;
@@ -26,12 +38,13 @@ use Data::Dumper;
 use fcntl; 
 
 my $usage = q{
-Description: This script generate browser SISx package file automatically. 
+Description: This script generate browser sisx package file automatically. 
 This script usually is called by buildIADsis.pl. However it can be used separately as well. 
 	
-Example: create_package.pl -v 01 -p armv5 -r urel -bmajor 7 -bminor 1 -bnumber 32  
+Example: create_package.pl -s S60.323 -v 01 -p armv5 -r urel -bmajor 7 -bminor 1 -bnumber 32  
 
 Mandatory arguments: 
+-s: S60 platform. Value such as S60.323 or  S60.50
 -v: S60 language variant number
 -p: Build target platform. Valid values are: armv5 or winscw, only armv5 supported right now
 -r: Release build. Valid values are: urel or udeb, only urel supported right now 
@@ -43,8 +56,8 @@ Optional arguments:
 - None
 
 Limitations
-- This script is currently valid only for 'armv5 urel' builds on S60 3.2.3 platform.
-
+- This script only support armv5 urel currently
+- This script is valid for CCB on 323 build currently 
 }; 
 
 my %num_lang = (
@@ -81,16 +94,20 @@ die $usage unless @ARGV;
 print @ARGV; 
 print "\n"; 
 
-my ($variant_num,$platform,$release,$bmajor,$bminor,$bnumber); 
+my ($s60,$variant_num,$platform,$release,$bmajor,$bminor,$bnumber,$udeburel); 
+$s60 = "S60.323"; # Initialize the default value
+$udeburel = "urel";
 #my ($test1, $test2, $test3); 
-GetOptions("v=s", => \$variant_num, "p=s",=> \$platform, "r=s",=> \$release,
-           "bmajor=s", => \$bmajor, "bminor=s",=> \$bminor, "bnumber=s",=> \$bnumber) or die $usage; 
+GetOptions("s=s", => \$s60, "v=s", => \$variant_num, "p=s",=> \$platform, "r=s",=> \$release,
+           "bmajor=s", => \$bmajor, "bminor=s",=> \$bminor, "bnumber=s",=> \$bnumber, 
+           "build=s", => \$udeburel) or die $usage; 
 print "variant $variant_num \n";
-print "platform $platform \n"; 
+print "s60platform $s60 \n"; 
 print "release $release \n";
 print "bmajor, $bmajor \n"; 
 print "bminor, $bminor \n"; 
 print "bnumber, $bnumber \n"; 
+print "build $udeburel \n"; 
  
 print "... package variant $variant_num\n";
 print "... package platform $platform \n";
@@ -115,9 +132,20 @@ print CENPKGFILE <<ENDHEADER0;
 :"Nokia"
 
 ;Supports S60 3rd Edition
-[0x102032BE], 0, 0, 0, {"Series60ProductID"}
-
 ENDHEADER0
+# consider the platform support
+# [0x102032BE], 0, 0, 0, {"Series60ProductID"}
+# [0x1028315F], 0, 0, 0, {"Series60ProductID"}
+# if ( $s60platform eq "S60.50" ) 
+if ( $s60 eq "S60.323" ) 
+{
+    print CENPKGFILE "[0x102032BE], 0, 0, 0, \{\"Series60ProductID\"\} \n\n";
+}    
+if ( $s60 eq "S60.50" ) 
+{
+    print CENPKGFILE "[0x1028315F], 0, 0, 0, \{\"Series60ProductID\"\} \n\n";
+}    
+
 print CENPKGFILE "\; CenRep ini file\n";
 my $SrcDir = "\\epoc32\\data\\z\\private\\10202be9\\";
 my $TargetDir = "c:\\private\\10202be9\\"; 
@@ -153,9 +181,17 @@ print PKGFILE <<ENDHEADER;
 :"Nokia"
 
 ;Supports S60 3rd Edition
-[0x102032BE], 0, 0, 0, {"Series60ProductID"}
-
 ENDHEADER
+#[0x102032BE], 0, 0, 0, {"Series60ProductID"}
+#[0x1028315F], 0, 0, 0, {"Series60ProductID"}
+if ( $s60 eq "S60.323" ) 
+{
+    print PKGFILE "[0x102032BE], 0, 0, 0, \{\"Series60ProductID\"\} \n\n";
+}    
+if ( $s60 eq "S60.50" ) 
+{
+    print PKGFILE "[0x1028315F], 0, 0, 0, \{\"Series60ProductID\"\} \n\n";
+}
 
 # MIF resource files ot install
 $SrcDir = "\\epoc32\\data\\Z\\resource\\apps\\";
@@ -292,6 +328,8 @@ print PKGFILE "ENDIF \n";
 $SrcDir = "\\epoc32\\data\\z\\resource\\plugins\\";
 $TargetDir = "!:\\resource\\plugins\\"; 
 print PKGFILE "\n";
+if ( $s60 eq "S60.323" ) 
+{
 @install_files = (
 	"AiwBrowserProvider",
 	"BrowserRec",
@@ -301,8 +339,6 @@ print PKGFILE "\n";
 	"DeflateFilter",
 	"HttpFilterAcceptHeader",
 	"HttpFilterAuthentication",
-	"HttpFilterCache",
-	"HttpFilterPipeliningConfig",
 	"PushMtmPushContentHandler",
 	"PushMtmWhiteListAdapter",
 	"SchemeDispatcher",
@@ -317,16 +353,52 @@ print PKGFILE "\n";
 	"npSystemInfoPlugin", 
 	"uaproffilter",
 	"widgetmemoryplugin"	
-);
+  );
+}
+# Note: Some way of figuring out what need to be on the packages and 
+#       hope we will be able to develp an algorithms for it 
+# 1. The components change you're aware of. For example gesture lib addition to browser
+# 2. Build system, you can find out what's are builded from the build system
+# 3. Search for iby files
+if ( $s60 eq "S60.50" ) 
+{
+@install_files = (
+	"AiwBrowserProvider",
+	"BrowserRec",
+	"CodRecog",
+	"CookieFilter",
+	"DdRecog",
+	"DeflateFilter",
+	"HttpFilterAcceptHeader",
+	"HttpFilterAuthentication",
+	"PushMtmPushContentHandler",
+	"PushMtmWhiteListAdapter",
+	"SchemeDispatcher",
+	"WidgetInstallerUI", 
+	"widgetRecognizer",
+	"httpfilterIop",
+	"httpfilterconnhandler",
+	"httpfilterproxy",
+	"memoryplugin",
+	"npBrowserAudioVideoPlugin",
+	"npGpsPlugin",
+	"npSystemInfoPlugin", 
+	"uaproffilter",
+	"widgetmemoryplugin"
+  );
+}
 print PKGFILE "\n";
 for my$install_file (@install_files) {
 print PKGFILE "\"$SrcDir$install_file.rsc\"\n - \"$TargetDir$install_file.rsc\" \n"; 
 }
 
 # Files to install (binaries - DLL)
-$SrcDir = "\\epoc32\\release\\armv5\\urel\\";
+$SrcDir = "\\epoc32\\release\\armv5\\" . $udeburel . "\\";
 $TargetDir = "!:\\sys\\bin\\"; 
 print PKGFILE "\n";
+
+if ( $s60 eq "S60.323" ) 
+{
 @install_files = (
 	"AiwBrowserProvider",
 	"BrowserCache",
@@ -345,13 +417,10 @@ print PKGFILE "\n";
 	"FavouritesEngine",
 	"FeedsServerApi",
 	"FeedsServerClient",
-	"HttpCacheManager",
 	"HttpDMServEng",
 	"HttpFilterAcceptHeader",
 	"HttpFilterAuthentication",
-	"HttpFilterCache",
 	"HttpFilterCommon", 
-	"HttpFilterPipeliningConfig",
 	"JavaScriptCore",
 	"MemMan",
 	"Multipartparser",
@@ -384,14 +453,77 @@ print PKGFILE "\n";
 	"widgetengine",
 	"WidgetInstaller",
 	"widgetmemoryplugin",
-	"wmlEngine"
+	"wmlEngine",
+	"jsdevice",
 );	
+}
+if ( $s60 eq "S60.50" ) 
+{
+@install_files = (
+	"AiwBrowserProvider",
+	"BrowserCache",
+	"BrowserLauncher",
+	"BrowserRec",
+	"BrowserTelService",
+	"CodDownload",
+	"CodEng",
+	"CodRecog",
+	"CodUi",
+	"ConnectionManager",
+	"DdRecog",
+	"DeflateFilter",
+	"DownloadMgr",
+	"DownloadMgrUiLib", 
+	"FavouritesEngine",
+	"FeedsServerApi",
+	"FeedsServerClient",
+	"HttpDMServEng",
+	"HttpFilterAcceptHeader",
+	"HttpFilterAuthentication",
+	"HttpFilterCommon", 
+	"JavaScriptCore",
+	"MemMan",
+	"Multipartparser",
+	"PushMtmCliSrv",
+	"PushMtmPushContentHandler",
+	"PushMtmUi",
+	"PushMtmUtil",
+	"PushMtmWhiteListAdapter",
+	"RECENTURLSTORE",
+	"SchemeDispatcher",
+	"WidgetInstallerUI",
+	"WidgetRecognizer",
+	"WidgetRegistryClient",
+	"browserdialogsprovider",
+	"browserengine",
+	"cXmlParser",
+	"cookiefilter",
+	"cookiemanager",
+	"httpfilterIop",
+	"httpfilterconnhandler",
+	"httpfilterproxy",
+	"memoryplugin",
+	"npBrowserAudioVideoPlugin",
+	"npGpsPlugin",
+	"npSystemInfoPlugin",
+	"pagescaler",
+	"uaproffilter",
+	"webkitutils",
+	"webutils",
+	"widgetengine",
+	"WidgetInstaller",
+	"widgetmemoryplugin",
+	"wmlEngine",
+	"stmgesturefw",
+	"jsdevice",
+  );		
+}
 for my$install_file (@install_files) {
 print PKGFILE "\"$SrcDir$install_file.dll\"\n - \"$TargetDir$install_file.dll\" \n"; 
 }
 
 # Files to install (binaries - EXE)
-$SrcDir = "\\epoc32\\release\\armv5\\urel\\";
+$SrcDir = "\\epoc32\\release\\armv5\\" . $udeburel . "\\";
 $TargetDir = "!:\\sys\\bin\\"; 
 print PKGFILE "\n";
 @install_files = (

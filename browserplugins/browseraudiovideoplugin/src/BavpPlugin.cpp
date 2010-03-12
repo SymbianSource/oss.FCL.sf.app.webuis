@@ -43,7 +43,8 @@ _LIT( KBrowserAVPluginRscFile, "\\resource\\BrowserAudioVideoPlugin.rsc");
 // -----------------------------------------------------------------------------
 CBavpPlugin::CBavpPlugin()
     : iError( EFalse ),
-    iMimeType( NULL )
+    iMimeType( NULL ), 
+    iPauseState ( EFalse )
     {
     
     }
@@ -344,9 +345,51 @@ TInt CBavpPlugin::NotifyL( TNotificationType aCallType, void* aParam )
                 // If Browser in-focus, we send this plugin aParam=ETrue, if
                 // the plugin is (was) in-focus or activated.
                 iBavpController->HandleBrowserNotification( TBool(aParam) );
+ 				if(!aParam) //app background
+                    {
+                    if(EBavpPlaying == iBavpController->State()) 
+                        { 
+                        iPauseState = ETrue; 
+                        iBavpController->PauseL(); 
+                        }
+                    }
+                else    //app foreground  
+                    { 
+                    if(EBavpPaused == iBavpController->State() && iPauseState) 
+                       { 
+                       iPauseState = EFalse; 
+                       iBavpController->PlayL();
+                       }
+                    
+                    }
+                
                 }
             break;
 
+        case EPluginPause :
+            if( !aParam )
+               {
+                if(iBavpController  && iPauseState && (iBavpController->State() == EBavpPaused))
+                    { 
+                    iPauseState = EFalse; 
+                    iBavpController->PlayL(); 
+                    }
+               } 
+
+            break; 
+        case EPluginInvisible : 
+            if( !aParam )
+                {
+                if ( iBavpController  && (!iPauseState) ) //plugin background 
+                       { 
+                       if(EBavpPlaying == iBavpController->State()) 
+                           { 
+                           iPauseState = ETrue; 
+                           iBavpController->PauseL(); 
+                           }
+                       }
+                } 
+				break; 
         default:
             // Not implemented
             break;

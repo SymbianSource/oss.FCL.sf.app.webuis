@@ -277,7 +277,8 @@ class CBavpPlugin : public CBase,
         // Mime type. Added for scripting functionality
         HBufC8* iMimeType;
         NPP iNPP;
-
+        //browser plugin state, used for play and resume 
+        TBool iPauseState; 
     };
 
 /**

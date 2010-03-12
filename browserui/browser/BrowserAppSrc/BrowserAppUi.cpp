@@ -39,6 +39,7 @@
 #include <AiwGenericParam.h>
 #include <AknDef.h>
 #include <DocumentHandler.h>
+#include <SysUtil.h>
 
 #ifdef BRDO_APP_GALLERY_SUPPORTED_FF
 #include <MGXFileManagerFactory.h>
@@ -120,6 +121,8 @@ const TUint KDot('.');
 const TUint KSlash('/');
 _LIT( KDefaultSchema, "http://" );
 const TInt KDefaultSchemaLength = 7;
+
+const TInt KMinimumCDriveDiskSpace = 512 * 1024;
 
 // ================= MEMBER FUNCTIONS =======================
 
@@ -272,6 +275,19 @@ PERFLOG_STOP_WRITE("BrowserUI::ConstructL");
 //
 void CBrowserAppUi::InitBrowserL()
     {
+    RFs fs;
+    User::LeaveIfError(fs.Connect());
+    TInt drive( EDriveC );
+    TBool isSpace( EFalse );
+    TInt err( KErrNone );
+    TRAP( err, isSpace = !SysUtil::DiskSpaceBelowCriticalLevelL(
+                                                &fs,
+                                                KMinimumCDriveDiskSpace,
+                                                drive ));
+    fs.Close();
+    if (!isSpace)
+        User::Leave(KErrDiskFull);
+
     if (!iStartedUp)
         {
         LOG_ENTERFN( "CBrowserAppUi::InitBrowser" );
@@ -1236,7 +1252,13 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
             if ( (Preferences().AccessPointSelectionMode() == EConnectionMethod) || 
                  (Preferences().AccessPointSelectionMode() == EAlwaysAsk) )
                 {
-    			iRequestedAp = Preferences().DefaultAccessPoint();
+                iRequestedAp = Preferences().DefaultAccessPoint();
+#ifdef BRDO_OCC_ENABLED_FF //Setting ap should not be taken if OCC is enabled, instead bookmark ap should be taken
+#ifndef __WINS__
+                iRequestedAp = aAccessPoint.ApId();
+                BROWSER_LOG( ( _L( "Bookmark Iap id : %d" ), iRequestedAp ) );
+#endif
+#endif                
                 }
             else if ( Preferences().AccessPointSelectionMode() == EDestination ) 
                 {
@@ -1254,6 +1276,7 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
         // it's ok to assign in the case of EDest, since CBrCtl doesn't use the apId passed in LoadUrlL()
         TUint32 IAPid = iRequestedAp;
         TUint32 defaultSnap =  iPreferences->DefaultSnapId();
+#ifndef BRDO_OCC_ENABLED_FF
         // if no AP or SNAP is defined, define it
         if( (iRequestedAp == KWmlNoDefaultAccessPoint && iPreferences->AccessPointSelectionMode() == EConnectionMethod) || 
             (defaultSnap == KWmlNoDefaultSnapId && iPreferences->AccessPointSelectionMode() == EDestination) )
@@ -1285,7 +1308,7 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
     		IAPid = Util::IapIdFromWapIdL( *this, iRequestedAp );  // Get currently active ap
     		BROWSER_LOG( ( _L( "No AP 2" ) ) );
             }
-
+#endif // BRDO_OCC_ENABLED_FF
 #else	//we can use any numbers here
         // alr: snap on emulator should not exist; use cm mode instead?
 		iRequestedAp = 2;
@@ -1888,7 +1911,8 @@ TBool CBrowserAppUi::ProcessCommandParametersL( TApaCommand aCommand,
            
 	        if( !specialSchemeInHomePageAddress )
 	            {
-	        	ActivateLocalViewL( LastActiveViewId() );
+                if( iCurrentView != iLastViewId )
+                    ActivateLocalViewL( LastActiveViewId() );
 	            }
         	}        	   	  
         }

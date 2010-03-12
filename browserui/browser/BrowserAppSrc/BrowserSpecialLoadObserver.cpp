@@ -18,6 +18,7 @@
 
 
 // INCLUDE FILES
+#include <browser_platform_variant.hrh>
 #include "BrowserContentView.h"  // not used, to be removed
 #include "BrowserSpecialLoadObserver.h"
 #include "BrowserLoadObserver.h"
@@ -142,7 +143,7 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
         TBool isValid( EFalse );
         TUint32 ap( 0 );
         TInt err( KErrNone );
-
+#ifndef BRDO_OCC_ENABLED_FF
 		BROWSER_LOG((_L("AP selectionMode: %d."),
     	iApiProvider->Preferences().AccessPointSelectionMode() ));
 
@@ -257,8 +258,10 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
         		{
         		BROWSER_LOG((_L("wrong type of connection")));	
         		}
-        	} //switch	
- 		
+        	} //switch
+#else //BRDO_OCC_ENABLED_FF
+        isValid = ETrue; 
+#endif //BRDO_OCC_ENABLED_FF
 		BROWSER_LOG((_L("isValid 2: %d"), isValid));
         if( isValid )
             {

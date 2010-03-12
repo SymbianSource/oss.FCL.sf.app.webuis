@@ -863,6 +863,10 @@ void CBavpControllerVideo::PlayL()
     iBavpView->UpdateView();
 
     iVideoPlayer->SetPositionL( iClipInfo->iPosition );
+    //Fix for "EABU-7ZW9YT" if the pause is initiated for foreground to background and also for plugin invisible and plugin playpause
+    if(iCurrentState == EBavpPaused)
+        iCurrentState = EBavpPlaying;
+
     iVideoPlayer->Play();
   // ETwelveOClock: Timer tick is on the second - from Symbian
   if (!iBackLightUpdater->IsActive())

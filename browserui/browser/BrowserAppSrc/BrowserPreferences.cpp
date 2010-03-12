@@ -20,6 +20,7 @@
 
 
 // INCLUDE FILES
+#include <browser_platform_variant.hrh>
 #include <s32stor.h>
 #include <eikappui.h>
 #include <eikapp.h>
@@ -544,7 +545,11 @@ void CBrowserPreferences::RestoreSettingsL()
     TInt ap;
 
     // Read Accesss point selection mode for advanced settings
+#ifdef BRDO_OCC_ENABLED_FF
+    const TInt selectionMode = EBrowserCenRepApSelModeAlwaysAsk;
+#else
     const TInt selectionMode = GetIntValue( KBrowserAccessPointSelectionMode );
+#endif
     switch ( selectionMode )
         {
         case EBrowserCenRepApSelModeUserDefined:

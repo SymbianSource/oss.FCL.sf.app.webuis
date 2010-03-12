@@ -1,23 +1,22 @@
+#!/usr/local/bin/perl -w
+# ============================================================================
+# Name        : buildIADsis.pl
+# Description: Creates SIS installation packages for S60 Browser that
+#	     meets Arrow/IAD program requirements for delivery to end-user devices.
+#	    Also generates R&D signed SIS packages for Nokia R&D internal use.
 #
-# Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
-# All rights reserved.
-# This component and the accompanying materials are made available
-# under the terms of the License "Eclipse Public License v1.0"
-# which accompanies this distribution, and is available
-# at the URL "http://www.eclipse.org/legal/epl-v10.html".
-#
-# Initial Contributors:
-# Nokia Corporation - initial contribution.
-#
-# Contributors:
-#
-# Description:  Creates SIS installation packages for S60 Browser that
-#       meets Arrow/IAD program requirements for delivery to end-user devices.
-#       Also generates R&D signed SIS packages for Nokia R&D internal use.
-#
+# Copyright © 2008 Nokia.  All rights reserved.
+# This material, including documentation and any related computer
+# programs, is protected by copyright controlled by Nokia.  All
+# rights are reserved.  Copying, including reproducing, storing,
+# adapting or translating, any or all of this material requires the
+# prior written consent of Nokia.  This material also contains
+# confidential information which may not be disclosed to others
+# without the prior written consent of Nokia.
+# ============================================================================
 
 # TODOs
-#       Baseline whatlog and build whatlog need to be processed and compared 
+#			Baseline whatlog and build whatlog need to be processed and compared 
 
 # Notes for maintainers:
 # Versioning guide:
@@ -40,31 +39,36 @@ my $usage = q{
 Usage: buildIADsis.pl -opmode dev -appversion 7.1.2 -binversion 10.1 -variant 01  -nocache -verbose
 
 Mandatory arguments: 
-  -opmode : either dev or integration. If integration, use filelist argument below
-  -appversion: Browser version as a string e.g 7.1.420 (major.minor.build). Minor must be 1 digit.
-  -variant: S60 platform specific variant code. E.g for 3.23: 01->English, 22->Chinese etc.
+ -opmode : either dev or integration. If integration, use filelist argument below
+ -appversion: Browser version as a string e.g 7.1.420 (major.minor.build). Minor must be 1 digit.
+ -platform: S60 platform. E.g 3.23 or 5.0 
+ -variant: S60 platform specific variant code. E.g for 3.23: 01->English, 22->Chinese etc.
 
-Optional arguments:
-  -filelist:     A text file containing list of files to include in the PKG 
-                    File paths must be of the form \epoc32\dir\urel\file.ext
-  -binversion:   version to inject inside all EXEs and DLLs. Must be 10.0 or higher.
-  -nocache:      does everything cleanly, no old data used
-  -verbose:      Turns on debug statements
-  -webkey:       Web signing key filename 
-  -webcert:      Web signing certificate filename
-  -cenrepkey:    Cenrep signing key filename
-  -cenrepcert:   Cenrep signing certificate filename
-
+Optional arguments:  
+ -platform:     S60 platform. Such as S60.323 or S60.50 
+ -filelist: 		A text file containing list of files to include in the PKG 
+            		File paths must be of the form \epoc32\dir\urel\file.ext
+ -binversion: 	version to inject inside all EXEs and DLLs. Must be 10.0 or higher.
+ -nocache: 			does everything cleanly, no old data used
+ -verbose: 			Turns on debug statements
+ -webkey:				Web signing key filename 
+ -webcert: 			Web signing certificate filename
+ -cenrepkey: 		Cenrep signing key filename
+ -cenrepcert: 	Cenrep signing certificate filename
+			 
+  For quick primer on differences between Application version and Binary version, see: 
+  http://s60wiki.nokia.com/S60Wiki/How_to_guide_for_versioning
 };
 
-my ($rawFilelist,$appVersion, $binVersion, $variant,$opmode,$lang_code);
+my ($s60platform, $rawFilelist,$appVersion, $binVersion, $variant,$opmode,$lang_code);
 my (@variants);
 my $langgroup;
 my $type = "rnd";
 my $brExe_UID3 = "0x10008D39"; #Unique ID for Browser application
 my $packageTypeMajor = "RU";  # even though we use SA,RU, mention the RU in filename since it sounds more important
 #TODO: We should be able to query the S60 platform by parsing some file in epoc32. Dunno how to do this. This should NOT be hardcoded. 
-my $s60platform = "S60.323";
+# Inital value for s60Platform is S60.323
+$s60platform = "S60.323";
 my $cenrepPkg = ".\\pkg\\BrowserNG_Cenrep.pkg";
 my $cenrepSis = "BrowserNG_Cenrep.sis";
 my $finalBrowserPkg = ".\\pkg\\BrowserNG.pkg";
@@ -76,10 +80,13 @@ my $webkey = ".\\cert\\RDTest_02.key";
 my $webcert = ".\\cert\\RDTest_02.der";
 my $cenrepkey = ".\\cert\\RDTest_02.key";
 my $cenrepcert = ".\\cert\\RDTest_02.der";
+my $buildType = "urel";
 
 my @cleanupList = ();
 
-GetOptions( "appversion=s",\$appVersion,
+GetOptions(
+      "platform=s", \$s60platform,  
+      "appversion=s",\$appVersion,
 			"binversion=s",\$binVersion,
             "variant=s",\$variant,
 			"opmode=s",\$opmode,
@@ -89,7 +96,8 @@ GetOptions( "appversion=s",\$appVersion,
 			"webkey=s", \$webkey,
 			"webcert=s", \$webcert,
 			"cenrepkey=s", \$cenrepkey,
-			"cenrepcert=s", \$cenrepcert
+			"cenrepcert=s", \$cenrepcert,
+			"build=s", \$buildType
 			);
 
 
@@ -143,9 +151,14 @@ if ( $s60platform eq "S60.323" )
   }
   print STDOUT "\n=== SIS filename: $browserSIS \n" ;
 }
+# Handle S60.50 situations 
+if ( $s60platform eq "S60.50" ) 
+{
+# May need special handling later 
+}
 
 ### Call pkg generation perl script 
-system("CreateIADpackages.pl -v $variant -p armv5 -r urel -bmajor $parsedAppVer[0] -bminor $parsedAppVer[1] -bnumber $parsedAppVer[2]"); 
+system("CreateIADpackages.pl -s $s60platform -v $variant -p armv5 -r urel -bmajor $parsedAppVer[0] -bminor $parsedAppVer[1] -bnumber $parsedAppVer[2] -build $buildType"); 
 
 # Pick up any files from the WHAT output that match any of these regex patterns
 my $filenameRegEx = join '|', qw( 
@@ -161,7 +174,7 @@ my $binariesRegEx = join '|', qw(
 								[.]exe$);
 
 							
-my $buildType = "urel";
+
 
 
 

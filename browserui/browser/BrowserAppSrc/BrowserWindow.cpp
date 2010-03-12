@@ -229,6 +229,7 @@ PERFLOG_STOPWATCH_START
 		TBrCtlDefs::ECapabilityFavicon |
         TBrCtlDefs::ECapabilityToolBar |
         TBrCtlDefs::ECapabilityFitToScreen |
+        TBrCtlDefs::ECapabilityPinchZoom |  
         autoLaunch );
         
 	if ( Preferences().UiLocalFeatureSupported( KBrowserGraphicalPage ))
