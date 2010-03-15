@@ -706,6 +706,8 @@ class CBrowserAppUi : public CAknViewAppUi,
         
         // This member is public, so BrowserLauncher.dll can close the browser.
         CBrowserAsyncExit *iBrowserAsyncExit;
+    public:
+        void StopConnectionObserving();
 
 	private:    
 	

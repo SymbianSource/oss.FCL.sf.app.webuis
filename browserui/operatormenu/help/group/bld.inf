@@ -20,7 +20,7 @@
 #include <platform_paths.hrh>
 #include "../../../../../../mw/web/web_plat/browser_platform_api/inc/browser_platform_variant.hrh"
 			
-#if !defined(__PLATFORM_VERSION_32__) && !defined(__PLATFORM_VERSION_50__) && !defined(__PLATFORM_VERSION_50_TUBE__)
+#if !defined(__PLATFORM_VERSION_32__) && !defined(__PLATFORM_VERSION_5250__) && !defined(__PLATFORM_VERSION_S60_50__)
 				
 PRJ_EXPORTS
 :zip ../data/xhtml.zip   /epoc32/data/z/resource/ overwrite

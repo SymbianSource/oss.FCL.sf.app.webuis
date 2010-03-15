@@ -548,8 +548,6 @@ class CBrowserBookmarksView:
         // Re-Entry Gate flag for Delete Bookmark routine
         TBool iHandleDeleteInProgress;
 
-        // updates the softkey
-        TBool iSoftKeyUpdate;
 
 	};
 

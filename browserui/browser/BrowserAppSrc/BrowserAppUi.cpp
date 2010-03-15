@@ -1215,7 +1215,28 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
 		{
         CancelFetch();
 		}
+#ifndef __WINS__
+//Fix for bookmark specific access point
+    if( iConnection && iConnection->Connected() )
+       {
+       TUint32 passedIap( 0 );
+       if ( aAccessPoint.ApId() != KWmlNoDefaultAccessPoint )
+           {
+           passedIap = Util::IapIdFromWapIdL( *this, aAccessPoint.ApId());
+           BROWSER_LOG((_L("CBrowserAppUi::FetchL Passed Iap: %d"), passedIap));
+           TUint32 connectedAp = iConnection->CurrentAPId();
+           BROWSER_LOG((_L("CBrowserAppUi::FetchL Existing connected Iap: %d"), connectedAp));
+           if(passedIap != connectedAp)
+               {
+               StopConnectionObserving();
+               BROWSER_LOG((_L("CBrowserAppUi::FetchL Stopped the connection observation.")));
+               DisconnectL();
+               BROWSER_LOG((_L("CBrowserAppUi::FetchL Given iap and Connected iap are not same. Disconnected the existing connection.")));
+               }
+           }
 
+       }
+#endif // __WINS__
     // iDoNotRestoreContentFlag = EFalse;
 
     TInt toPop = 0;
@@ -1290,24 +1311,13 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
             BROWSER_LOG( ( _L( "AP or SNAP was not added set to Always ask mode" ) ) );
             iPreferences->SetAccessPointSelectionModeL(EAlwaysAsk );
             }
-        if ( iRequestedAp == KWmlNoDefaultAccessPoint )
+        if ( iRequestedAp != KWmlNoDefaultAccessPoint )
             {
-            // For all cases just set dummy id to IAPid not to let Ap engine or Ap util to leave
-            // In the cases of EDest, EAA, since ap will not be used, it's ok to do so as well
-            // In the case of EDest, need to preserve KWmlNoDefaultAccessPoint as the value
-            // it'll be used in BrowserSpecialLoadObserver.cpp for for bug fix MLAN-7EKFV4
-            if ( Preferences().AccessPointSelectionMode() != EDestination )
-                {
-    		    iRequestedAp = 2;
-                }
-            IAPid = 2;
+    		    BROWSER_LOG( ( _L( "AP added" ) ) );
+            IAPid = Util::IapIdFromWapIdL( *this, iRequestedAp );  // Get currently active ap
+            BROWSER_LOG( ( _L( "Access point: %d" ), IAPid ) );
             }
-        else
-            {
-    		BROWSER_LOG( ( _L( "AP added" ) ) );
-    		IAPid = Util::IapIdFromWapIdL( *this, iRequestedAp );  // Get currently active ap
-    		BROWSER_LOG( ( _L( "No AP 2" ) ) );
-            }
+
 #endif // BRDO_OCC_ENABLED_FF
 #else	//we can use any numbers here
         // alr: snap on emulator should not exist; use cm mode instead?
@@ -1340,24 +1350,23 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
             err = uriParser.Parse(serviceSchemePtr);
             if (!err)
                 serviceSchemePtr = uriParser.Extract( EUriScheme );
-            
-            if( scheme.Length() != 0 )
+
+
+            if( scheme.Length() != 0 && (!scheme.Compare(serviceSchemePtr) || !scheme.Compare(searchSchemePtr)) )
                 {
-                if( !scheme.Compare(serviceSchemePtr) || !scheme.Compare(searchSchemePtr) )
-                	{
-                	iSpecialSchemeinAddress = ETrue;
-                	TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
-                	}
-                else
-                	{
-                	LoadObserver().DoStartLoad( aUrlType );
-                    TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
-                	}            
+                iSpecialSchemeinAddress = ETrue;
+                TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
                 }
+            else
+                {
+                LoadObserver().DoStartLoad( aUrlType );
+                TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
+                }            
 	        }
 	    else
 	        {
 	        LoadObserver().DoStartLoad( aUrlType );
+	        BROWSER_LOG( ( _L( "PASSED IAP: %d" ), IAPid ) );
             TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
 	        }
         
@@ -2176,7 +2185,11 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                                 // Cancel history view, mini map, toolbar or any other active control on the current window 
                                 BrCtlInterface().HandleCommandL( TBrCtlDefs::ECommandCancel + TBrCtlDefs::ECommandIdBase );
                                 // there is already a window, so create a new one
-                                CBrowserWindow *win = WindowMgr().CreateWindowL( 0, &KNullDesC );
+                                CBrowserWindow *win = NULL; 
+                                if(WindowMgr().CurrentWindow()) 
+                                    win = WindowMgr().CreateWindowL( (WindowMgr().CurrentWindow()->WindowId()) ? WindowMgr().CurrentWindow()->WindowId() : 0, &KNullDesC );
+                                else
+                                    win = WindowMgr().CreateWindowL( 0, &KNullDesC );
                                 if (win != NULL)
                                     {
                                         
@@ -2326,6 +2339,15 @@ void CBrowserAppUi::WaitCVInit()
         iParametrizedLaunchInProgress = 2;
         }
     }
+void CBrowserAppUi::StopConnectionObserving()
+    {
+    LOG_ENTERFN("CBrowserAppUi::StopConnectionObserving");
+    if ( iConnStageNotifier && iConnStageNotifier->IsActive() )
+        {
+        BROWSER_LOG( ( _L( " CBrowserAppUi::StopConnectionObserving Cancelling Observer" ) ) );
+        iConnStageNotifier->Cancel();
+        }
+    }
 
 // -----------------------------------------------------------------------------
 // CBrowserAppUi::ConnNeededStatusL
@@ -2333,6 +2355,7 @@ void CBrowserAppUi::WaitCVInit()
 //
 void CBrowserAppUi::ConnNeededStatusL( TInt aErr )
     {
+    LOG_ENTERFN("CBrowserAppUi::ConnNeededStatusL");
     UpdateSoftKeys();
     if (iSuppressAlwaysAsk)
         {
@@ -2356,6 +2379,7 @@ void CBrowserAppUi::ConnNeededStatusL( TInt aErr )
 
     if ( !iConnStageNotifier->IsActive() )
         {
+        BROWSER_LOG( ( _L( " CBrowserAppUi::ConnNeededStatusL Starting Connection Observer" ) ) );
         TName* connectionName = Connection().ConnectionNameL();
         CleanupStack::PushL( connectionName );
         iConnStageNotifier->StartNotificationL(

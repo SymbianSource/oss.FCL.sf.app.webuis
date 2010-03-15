@@ -279,6 +279,8 @@ class CBavpPlugin : public CBase,
         NPP iNPP;
         //browser plugin state, used for play and resume 
         TBool iPauseState; 
+        TBool iIsForeGround;
+        TBool iPauseInBackground;
     };
 
 /**

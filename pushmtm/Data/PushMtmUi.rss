@@ -20,7 +20,7 @@
 NAME PMTM
 
 //  INCLUDES
-
+#include <browser_platform_variant.hrh>
 #include "PushMtmCommands.hrh"
 #include "PushMtmUi.hrh"
 #include <pushmtmui.loc>
@@ -34,6 +34,7 @@ NAME PMTM
 #include <MTMExtendedCapabilities.hrh>
 #include <bldvariant.hrh>
 #include <Muiu.mbg>
+
 
 //  RESOURCE DEFINITIONS 
 
@@ -109,6 +110,9 @@ RESOURCE MENU_PANE r_pushsd_options_menu_pane
             {
             command = EPushSettingsDialogCmdChange;
             txt = qtn_mce_settings_change;
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF    
+            flags = EEikMenuItemAction;
+#endif         
             },
 #ifdef __SERIES60_HELP
         MENU_ITEM

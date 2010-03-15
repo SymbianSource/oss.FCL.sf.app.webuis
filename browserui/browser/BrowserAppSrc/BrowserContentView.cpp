@@ -282,7 +282,6 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
         }
     switch ( aCommand )
         {
-#ifdef BRDO_SINGLE_CLICK_ENABLED_FF		
         case EWmlCmdSetAsHomePage:
             {
             HBufC* url = ApiProvider().BrCtlInterface().PageInfoLC(TBrCtlDefs::EPageInfoUrl);
@@ -293,8 +292,7 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
                 }
             CleanupStack::PopAndDestroy(); // url
             break;
-            } 
-#endif			      
+            } 			      
         case EWmlCmdFavourites:
             {
             ApiProvider().SetViewToBeActivatedIfNeededL(
@@ -327,6 +325,14 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
 		// Set search pane active and then launch editor.	
         case EIsCmdSearchWeb:
             {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF 
+            CEikButtonGroupContainer* cba = Cba()->Current();
+            CEikCba* eikCba = static_cast<CEikCba*>( cba->ButtonGroup() );
+            if( eikCba )
+                {
+                eikCba->EnableItemSpecificSoftkey( EFalse );
+                }
+#endif
             iContainer->GotoPane()->SetSearchPaneActiveL();
             LaunchGotoAddressEditorL();
             break;

@@ -3379,8 +3379,8 @@ void CSettingsContainer::HandleListBoxEventL(CEikListBox* aListBox,TListBoxEvent
                     TKeyEvent keyEvent;
                     keyEvent.iModifiers = 0;
                     keyEvent.iRepeats = 0;
-                    keyEvent.iCode = EKeyDevice3;
-                    keyEvent.iScanCode = EStdKeyDevice3;
+                    keyEvent.iCode = EKeyEnter;
+                    keyEvent.iScanCode = EStdKeyEnter;
                     CCoeEnv::Static()->SimulateKeyEventL( keyEvent, EEventKey );
                     }
                     break;

@@ -14,7 +14,7 @@
 &EN
 
 ;Header
-#{"Web Browser"},(0x10008D39),7,1,0, TYPE=SA
+#{"Web Browser"},(0x10008D39),7,2,3, TYPE=SA
 
 ;Localised Vendor name
 %{"Nokia"}

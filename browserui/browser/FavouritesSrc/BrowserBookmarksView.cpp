@@ -492,7 +492,6 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
         case EWmlCmdGoToAddress: // MSK for Recent Url page
         case EWmlCmdSwitchToGotoActive:
             {
-            iSoftKeyUpdate = EFalse;
             DimToolbarButtons(ETrue);
 #ifdef BRDO_SINGLE_CLICK_ENABLED_FF            
             CEikButtonGroupContainer* cba = Cba()->Current();
@@ -509,6 +508,14 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
         case EIsCmdSearchWeb:
         	{
         	DimToolbarButtons(ETrue);
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF 
+            CEikButtonGroupContainer* cba = Cba()->Current();
+            CEikCba* eikCba = static_cast<CEikCba*>( cba->ButtonGroup() );
+            if( eikCba )
+                {
+                eikCba->EnableItemSpecificSoftkey( EFalse );
+                }
+#endif
         	TheContainer()->SetSearchActiveL();
         	break;
         	}
@@ -829,7 +836,7 @@ void CBrowserBookmarksView::CommandSetResourceDynL(TSKPair& aLsk, TSKPair& aRsk,
     CBrowserBookmarksContainer* theContainer = TheContainer();
 
     // if the container doesn't exist, leave gotoPanePtr at NULL
-    if (theContainer && !iSoftKeyUpdate)
+    if (theContainer)
         {
         gotoPanePtr = theContainer->GotoPane();
         }
@@ -2075,11 +2082,6 @@ PERFLOG_STOPWATCH_START
         {
         iInAdaptiveBookmarksFolder = ETrue;
         }
-
-    if( iPreviousViewID == KUidBrowserBookmarksViewId )
-       {
-       iSoftKeyUpdate = ETrue;
-       }
     CBrowserFavouritesView::DoActivateL
                             ( aPrevViewId, aCustomMessageId, aCustomMessage );
     ApiProvider().BrCtlInterface().AddLoadEventObserverL( this );
@@ -2128,7 +2130,6 @@ void CBrowserBookmarksView::DoDeactivate()
         {
         ExitAdaptiveBookmarks();
         }
-    iSoftKeyUpdate = EFalse;
     if ( !ApiProvider().ExitInProgress() )
         {
         ApiProvider().BrCtlInterface().RemoveLoadEventObserver( this );

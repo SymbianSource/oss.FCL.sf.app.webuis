@@ -44,7 +44,9 @@ _LIT( KBrowserAVPluginRscFile, "\\resource\\BrowserAudioVideoPlugin.rsc");
 CBavpPlugin::CBavpPlugin()
     : iError( EFalse ),
     iMimeType( NULL ), 
-    iPauseState ( EFalse )
+    iPauseState ( EFalse ), 
+    iIsForeGround ( ETrue ), 
+    iPauseInBackground (EFalse)
     {
     
     }
@@ -333,6 +335,16 @@ void CBavpPlugin::SetRtspUriL( const TDesC& aRtspUri )
 // -----------------------------------------------------------------------------
 TInt CBavpPlugin::NotifyL( TNotificationType aCallType, void* aParam )
     {
+    if(iBavpController)
+        { 
+        //if player is paused due to focus change or Visual history back and manually pressed Play, then we need 
+        //to clear the pause state. 
+        if(EBavpPlaying == iBavpController->State() && iPauseState)
+            { 
+            iPauseState = EFalse; 
+            }
+        }
+    
     switch ( aCallType )
         {
         case EApplicationFocusChanged:
@@ -345,19 +357,23 @@ TInt CBavpPlugin::NotifyL( TNotificationType aCallType, void* aParam )
                 // If Browser in-focus, we send this plugin aParam=ETrue, if
                 // the plugin is (was) in-focus or activated.
                 iBavpController->HandleBrowserNotification( TBool(aParam) );
- 				if(!aParam) //app background
+ 					if(!aParam) //app background
                     {
+                    iIsForeGround = EFalse; 
                     if(EBavpPlaying == iBavpController->State()) 
                         { 
                         iPauseState = ETrue; 
-                        iBavpController->PauseL(); 
+                        iPauseInBackground = ETrue; 
+                        iBavpController->PauseL();
                         }
                     }
                 else    //app foreground  
                     { 
-                    if(EBavpPaused == iBavpController->State() && iPauseState) 
+                    iIsForeGround = ETrue;
+                    if(EBavpPaused == iBavpController->State() && iPauseInBackground) 
                        { 
                        iPauseState = EFalse; 
+                       iPauseInBackground = EFalse;
                        iBavpController->PlayL();
                        }
                     
@@ -369,7 +385,7 @@ TInt CBavpPlugin::NotifyL( TNotificationType aCallType, void* aParam )
         case EPluginPause :
             if( !aParam )
                {
-                if(iBavpController  && iPauseState && (iBavpController->State() == EBavpPaused))
+                if(iBavpController  && iPauseState && (iBavpController->State() == EBavpPaused) && (iIsForeGround))
                     { 
                     iPauseState = EFalse; 
                     iBavpController->PlayL(); 

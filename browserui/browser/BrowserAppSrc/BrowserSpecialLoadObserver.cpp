@@ -284,6 +284,22 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
 
 				BROWSER_LOG((_L("StartConnection params, query: %d, temp: %d"), query, disableConnDlgs));
                 iConnectionStarted = ETrue; // is true when connection request submited.
+#ifndef __WINS__
+                TUint32 bookmarkIap( 0 );
+                //If bookmark has defined its AP, use it
+                if ( iApiProvider->RequestedAp() != KWmlNoDefaultAccessPoint )
+                    {
+                    bookmarkIap = Util::IapIdFromWapIdL( *iApiProvider, iApiProvider->RequestedAp() );
+                    BROWSER_LOG((_L("Bookmark Iap: %d"), bookmarkIap));
+                    iApiProvider->Connection().SetRequestedAP( bookmarkIap );
+                    iApiProvider->Connection().SetConnectionType( EConnectionMethod );
+                    }
+                else
+                    {
+                    iApiProvider->Connection().SetRequestedAP( bookmarkIap );
+                    BROWSER_LOG((_L("Setting Bookmark Iap: %d"), bookmarkIap));
+                    }
+#endif
                 // might leave, don't TRAP. OK.
                 err = iApiProvider->Connection().StartConnectionL( disableConnDlgs );
                 iConnectionStarted = EFalse; // is false when connection response completed.

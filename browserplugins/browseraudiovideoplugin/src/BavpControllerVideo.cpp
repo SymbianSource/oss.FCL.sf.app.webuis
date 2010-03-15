@@ -1293,9 +1293,9 @@ TBool CBavpControllerVideo::NoScreenSaverMode()
 // -----------------------------------------------------------------------------
 /*
  * This function was added for consistency with mmplayer.
- * Not used is 5.0 (tube) since we want to preserve correct 
+ * Not used is 5.0 (S60_50) since we want to preserve correct
  * aspect ratio and this function will stretch the video to
- * the full screen, which due to tube screen size doesn't match
+ * the full screen, which due to S60_50 screen size doesn't match
  * to correct ratio.
  * If needed it should be called in  WaitForScreenSwitchL() after 
  * screen mode changed.

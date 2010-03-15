@@ -263,7 +263,9 @@ void CBrowserCommsModel::DoGetAccessPointsL( CApListItemList& aList ) const
 //        KEApIspTypeAll | KEApIspTypeWAPMandatory,
         EApBearerTypeAll,
         KEApSortNameAscending,
-		EIPv4 | EIPv6
+		EIPv4 | EIPv6,
+		EVpnFilterBoth, //For VPNs
+        ETrue    //Easy Wlan ap
         );
     (void)apSelect->AllListItemDataL( aList );
     CleanupStack::PopAndDestroy();  // apSelect
