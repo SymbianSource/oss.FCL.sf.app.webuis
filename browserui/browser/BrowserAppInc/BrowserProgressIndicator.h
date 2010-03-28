@@ -56,7 +56,7 @@ class CBrowserProgressIndicator : public CBase
         * @param aApiProvider Reference to API provider
         * @return Pointer to instance of CBrowserAnimation
         */
-        static CBrowserProgressIndicator* CBrowserProgressIndicator::NewL( MApiProvider& aApiProvider );
+        static CBrowserProgressIndicator* NewL( MApiProvider& aApiProvider );
         /**
         * Constructor.
         * @param aApiProvider Reference to API provider

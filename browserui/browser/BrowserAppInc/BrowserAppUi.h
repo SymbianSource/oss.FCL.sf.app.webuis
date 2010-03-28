@@ -293,7 +293,7 @@ class CBrowserAppUi : public CAknViewAppUi,
 		* @param an RFile filehandle, and an allocated buffer to hold
 		*   discovered mime type
 		*/
-		TBool CBrowserAppUi::RecognizeUiFileL( RFile& aFileHandle, TBuf<KMaxDataTypeLength>& aDataTypeDes );
+		TBool RecognizeUiFileL( RFile& aFileHandle, TBuf<KMaxDataTypeLength>& aDataTypeDes );
 			
 		/** 
 		* Confirm with the user that a file should be handled by
@@ -823,19 +823,19 @@ class CBrowserAppUi : public CAknViewAppUi,
         /**
         * Clear History of all open windows
         */
-        void CBrowserAppUi::ClearHistoryL();
+        void ClearHistoryL();
         
         
         /**
         * Prompt before clearing history
         */
-        void CBrowserAppUi::ClearHistoryWithPromptL();
+        void ClearHistoryWithPromptL();
 
         
         /**
         * Clear All Privacy Data
         */
-        void CBrowserAppUi::ClearAllPrivacyL();
+        void ClearAllPrivacyL();
 
         /**
         * Disconnect.
