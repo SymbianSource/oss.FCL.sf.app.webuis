@@ -75,7 +75,6 @@ endif
 	if exist "$(TARGETMTMDIRDLL)\$(TARGETMTMDLL)" del "$(TARGETMTMDIRDLL)\$(TARGETMTMDLL)"
 
 do_nothing:
-	rem do nothing
 
 #
 # The targets invoked by abld 

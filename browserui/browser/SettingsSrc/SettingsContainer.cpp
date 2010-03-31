@@ -370,10 +370,8 @@ void CSettingsContainer::DisplayGeneralSettingsL()
     // Default Access Point
     if ( !ApiProvider().Preferences().CustomAccessPointDefined() )
         {
-        #if !defined(BRDO_OCC_ENABLED_FF)
         //Access point setting is not required if OCC is enabled
         AppendDefaultAccessPointL( itemArray, itemText );
-        #endif
         }
 
     // Home Page

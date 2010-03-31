@@ -39,7 +39,8 @@
 #include <msvapi.h>
 #include <data_caging_path_literals.hrh>
 #include <f32file.h>
-
+#include "PushMtmPrivateCRKeys.h"
+#include <centralrepository.h> 
 // ================= MEMBER FUNCTIONS =======================
 
 // ---------------------------------------------------------
@@ -75,6 +76,11 @@ void CPushSettingsDialog::ExecuteLD()
 void CPushSettingsDialog::ConstructL()
     {
     // Add resource file.
+    CRepository* PushSL = CRepository::NewL( KCRUidPushMtm );
+    CleanupStack::PushL( PushSL );
+    User::LeaveIfError( PushSL->Get( KPushMtmServiceEnabled , iPushSLEnabled ) );
+    CleanupStack::PopAndDestroy( PushSL ); 
+    
     TParse* fileParser = new (ELeave) TParse;
     // Unnecessary to call CleanupStack::PushL( fileParser );
     fileParser->Set( KPushMtmUiResourceFileAndDrive, &KDC_MTM_RESOURCE_DIR, NULL ); 
@@ -192,15 +198,15 @@ void CPushSettingsDialog::UpdateSettingListBoxModelL()
         ( EServiceReception, R_PUSHSD_RECEPT, 
         iModel->ServiceReception() ? R_PUSHSD_RECEP_ON : R_PUSHSD_RECEP_OFF );
 
-#ifdef __SERIES60_PUSH_SL
 
+if(iPushSLEnabled)
+    {
     // Service loading (SL specific).
     ConstructAndAppendItemTextL
         ( EServiceLoadingType, R_PUSHSD_LOADING, 
         ( iModel->ServiceLoadingType() == CPushMtmSettings::EAutomatic ) ? 
         R_PUSHSD_LOAD_AUTOM : R_PUSHSD_LOAD_MAN );
-
-#endif //__SERIES60_PUSH_SL
+    }
     }
 
 // ---------------------------------------------------------
@@ -288,10 +294,9 @@ void CPushSettingsDialog::ChangeCurrentSettingWithoutSettingPageL()
             break;
             }
 
-#ifdef __SERIES60_PUSH_SL
-
         case EServiceLoadingType:
             {
+            if(iPushSLEnabled){
             if ( iModel->ServiceLoadingType() == CPushMtmSettings::EManual )
                 {
                 // Display a confirmation dialog first.
@@ -306,10 +311,10 @@ void CPushSettingsDialog::ChangeCurrentSettingWithoutSettingPageL()
                 // Do not show confirmation dialog.
                 iModel->SetServiceLoadingType( CPushMtmSettings::EManual );
                 }
+            }//End iPushSLEnabled
             break;
             }
 
-#endif //__SERIES60_PUSH_SL
 
         default:
             {
@@ -383,13 +388,21 @@ void CPushSettingsDialog::ConstructAndAppendItemTextL
 HBufC* CPushSettingsDialog::ConstructSettingTitleL
 ( const TSettingType aSettingType ) const
     {
-    const TInt titleResId = 
-        aSettingType == EServiceReception           ? R_PUSHSD_RECEPT : 
-#ifdef __SERIES60_PUSH_SL
-        aSettingType == EServiceLoadingType         ? R_PUSHSD_LOADING : 
-#endif //__SERIES60_PUSH_SL
-        KErrNotFound;
+    TInt titleResId = 0;
 
+    if(aSettingType == EServiceReception )
+         titleResId = R_PUSHSD_RECEPT;
+    
+    else if (aSettingType == EServiceLoadingType)
+        {
+        if(iPushSLEnabled )
+            titleResId = R_PUSHSD_LOADING;
+        }
+    
+    else
+        titleResId = KErrNotFound;
+    
+    
     __ASSERT_DEBUG( titleResId != KErrNotFound, 
         UiPanic( EPushMtmUiPanNotInitialized ) );
 
@@ -407,20 +420,25 @@ void CPushSettingsDialog::ConstructSettingValueArray
         TInt& aVal2ResId 
     ) const
     {
-    aVal1ResId = 
-        aSettingType == EServiceReception           ? R_PUSHSD_RECEP_ON : 
-#ifdef __SERIES60_PUSH_SL
-        aSettingType == EServiceLoadingType         ? R_PUSHSD_LOAD_AUTOM : 
-#endif //__SERIES60_PUSH_SL
-        KErrNotFound;
-
-    aVal2ResId = 
-        aSettingType == EServiceReception           ? R_PUSHSD_RECEP_OFF : 
-#ifdef __SERIES60_PUSH_SL
-        aSettingType == EServiceLoadingType         ? R_PUSHSD_LOAD_MAN : 
-#endif //__SERIES60_PUSH_SL
-        KErrNotFound;
-
+    if(  aSettingType == EServiceReception)
+        aVal1ResId = R_PUSHSD_RECEP_ON;
+    
+    else if((aSettingType == EServiceLoadingType) && iPushSLEnabled  )
+        {
+         aVal1ResId = R_PUSHSD_LOAD_AUTOM;
+        }
+    else
+        aVal1ResId =  KErrNotFound;
+    
+    
+    if( aSettingType == EServiceReception )
+        aVal2ResId = R_PUSHSD_RECEP_OFF;
+    else if( aSettingType == EServiceLoadingType && iPushSLEnabled)
+        aVal2ResId = R_PUSHSD_LOAD_MAN;
+    else
+        aVal2ResId = KErrNotFound; 
+    
+    
     __ASSERT_DEBUG( aVal1ResId != KErrNotFound && 
                     aVal2ResId != KErrNotFound, 
         UiPanic( EPushMtmUiPanNotInitialized ) );
@@ -437,14 +455,20 @@ TInt CPushSettingsDialog::CurrentlySelectedSettingValueResId
     TInt val2ResId( KErrNotFound );
     ConstructSettingValueArray( aSettingType, val1ResId, val2ResId );
 
-    const TBool firstSelected = 
-        aSettingType == EServiceReception ? iModel->ServiceReception() : 
-#ifdef __SERIES60_PUSH_SL
-        aSettingType == EServiceLoadingType ? iModel->ServiceLoadingType() == 
-                                              CPushMtmSettings::EAutomatic : 
-#endif //__SERIES60_PUSH_SL
-        EFalse;
-
+    TBool firstSelected;
+    
+    if(aSettingType == EServiceReception ) 
+        firstSelected = iModel->ServiceReception();
+    
+    else if( aSettingType == EServiceLoadingType && iPushSLEnabled )
+        {
+            firstSelected = (iModel->ServiceLoadingType() == CPushMtmSettings::EAutomatic);
+        }
+    else
+        firstSelected = EFalse;
+    
+    
+    
     aIndex = firstSelected ? 0 : 1;
     return firstSelected ? val1ResId : val2ResId;
     }
@@ -490,29 +514,28 @@ void CPushSettingsDialog::UpdateSettingL
             break;
             }
 
-#ifdef __SERIES60_PUSH_SL
-
         case EServiceLoadingType:
             {
-            if ( aIndex == 0 )
-            // iModel->ServiceLoadingType() == CPushMtmSettings::EManual
+            if(iPushSLEnabled)
                 {
-                // Display a confirmation dialog first.
-                if ( ShowServiceLoadingTypeConfirmationL() )
+                if ( aIndex == 0 )
+                    // iModel->ServiceLoadingType() == CPushMtmSettings::EManual
                     {
-                    iModel->SetServiceLoadingType
-                        ( CPushMtmSettings::EAutomatic );
+                    // Display a confirmation dialog first.
+                    if ( ShowServiceLoadingTypeConfirmationL() )
+                        {
+                        iModel->SetServiceLoadingType
+                            ( CPushMtmSettings::EAutomatic );
+                        }
                     }
-                }
-            else
-                {
-                // Do not show confirmation dialog.
-                iModel->SetServiceLoadingType( CPushMtmSettings::EManual );
+                else
+                 {
+                    // Do not show confirmation dialog.
+                    iModel->SetServiceLoadingType( CPushMtmSettings::EManual );
+                 }
                 }
             break;
             }
-
-#endif //__SERIES60_PUSH_SL
 
         default:
             {

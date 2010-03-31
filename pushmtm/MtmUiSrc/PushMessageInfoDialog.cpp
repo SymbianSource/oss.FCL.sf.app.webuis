@@ -39,9 +39,9 @@
 #include <f32file.h>
 #include <AknUtils.h>
 #include <AknBidiTextUtils.h>
-
+#include "PushMtmPrivateCRKeys.h"
+#include <centralrepository.h> 
 // CONSTANTS
-
 LOCAL_D const TInt KNoResource = 0;
 LOCAL_D const TInt KArrayGranularity = 16;
 LOCAL_D const TReal KReal1024 = 1024.0;
@@ -91,12 +91,17 @@ void CPushMessageInfoDialog::ExecuteLD( CMsvSession& aMsvSession, TMsvId aId )
 void CPushMessageInfoDialog::ConstructL( CMsvSession& aMsvSession, TMsvId aId )
     {
     PUSHLOG_ENTERFN("CPushMessageInfoDialog::ConstructL");
-
     __ASSERT_DEBUG( !iListBox &&
                     !iListBoxModel,
                     UiPanic( EPushMtmUiPanAlreadyInitialized ) );
 
     FeatureManager::InitializeLibL();
+    
+    CRepository* PushSL = CRepository::NewL( KCRUidPushMtm );
+    CleanupStack::PushL( PushSL );
+    User::LeaveIfError( PushSL->Get( KPushMtmServiceEnabled , iPushSLEnabled ) );
+    PUSHLOG_WRITE_FORMAT(" iPushSLEnabled: <%d>",iPushSLEnabled);
+    CleanupStack::PopAndDestroy( PushSL ); 
 
     // Add resource file.
     TParse* fileParser = new (ELeave) TParse;
@@ -299,13 +304,11 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
         msg = CSIPushMsgEntry::NewL();
         PUSHLOG_WRITE(" SI");
         }
-#ifdef __SERIES60_PUSH_SL
-    else if ( bioType == KUidWapPushMsgSL.iUid )
+    else if(iPushSLEnabled && bioType == KUidWapPushMsgSL.iUid)
         {
         msg = CSLPushMsgEntry::NewL();
         PUSHLOG_WRITE(" SL");
         }
-#endif // __SERIES60_PUSH_SL
 #ifdef __SERIES60_PUSH_SP
     else if ( bioType == KUidWapPushMsgUnknown.iUid )
         {
@@ -365,8 +368,7 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
             CleanupStack::PopAndDestroy( convertedUrl );
             }
         }
-#ifdef __SERIES60_PUSH_SL
-    else if ( msg->PushMsgType() == KUidWapPushMsgSL.iUid )
+    else if ( iPushSLEnabled && msg->PushMsgType() == KUidWapPushMsgSL.iUid )
         {
         CSLPushMsgEntry* sl = STATIC_CAST( CSLPushMsgEntry*, msg );
         const TPtrC url = sl->Url();
@@ -383,7 +385,6 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
             CleanupStack::PopAndDestroy( convertedUrl );
             }
         }
-#endif // __SERIES60_PUSH_SL
 
     // ************************************************************************
     // Information item: Message body/text (SI specific).
@@ -496,13 +497,11 @@ void CPushMessageInfoDialog::AddMessageInfoItemsL( CMsvSession& aMsvSession,
         CSIPushMsgEntry* si = STATIC_CAST( CSIPushMsgEntry*, msg );
         messageSize = (TReal)si->Text().Size() / KReal1024;
         }
-#ifdef __SERIES60_PUSH_SL
-    else if ( msg->PushMsgType() == KUidWapPushMsgSL.iUid )
+    else if ( iPushSLEnabled && msg->PushMsgType() == KUidWapPushMsgSL.iUid )
         {
         CSLPushMsgEntry* sl = STATIC_CAST( CSLPushMsgEntry*, msg );
         messageSize = (TReal)sl->Url().Size() / KReal1024;
         }
-#endif // __SERIES60_PUSH_SL
 #ifdef __SERIES60_PUSH_SP
     else if ( msg->PushMsgType() == KUidWapPushMsgUnknown.iUid )
         {

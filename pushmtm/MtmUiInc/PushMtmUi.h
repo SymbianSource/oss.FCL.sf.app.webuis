@@ -360,6 +360,8 @@ class CPushMtmUi: public CBaseMtmUi
         * Get the resource file name for this MTM UI.
         */
         void GetResourceFileName( TFileName& aFileName ) const;
+    private:
+        TInt   iPushSLEnabled;
     };
 
 #endif // PUSHMTMUI_H

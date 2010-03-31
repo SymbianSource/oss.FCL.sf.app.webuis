@@ -74,6 +74,9 @@ CBavpControllerVideo::~CBavpControllerVideo()
     if ( iVideoPlayer )
         {
         iVideoPlayer->Close();
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+        iVideoPlayer->RemoveDisplayWindow(iBavpView->WindowInst());
+#endif
         delete iVideoPlayer;
         }
 
@@ -101,7 +104,7 @@ CBavpControllerVideo::~CBavpControllerVideo()
 // might leave.
 // -----------------------------------------------------------------------------
 CBavpControllerVideo::CBavpControllerVideo( MBavpView* aView, TUint aAccessPtId )
-    : CBavpController( aView, aAccessPtId )
+    : CBavpController( aView, aAccessPtId ), iActiveWindow(NULL)
     {
     }
 
@@ -187,6 +190,27 @@ void CBavpControllerVideo::PrepareCompleteL()
         {
         iVideoPlayer->SetPositionL( iClipInfo->iPosition );
         }
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+	TRect rect( iBavpView->CoeControl().Rect() );
+    CEikonEnv* eikon = CEikonEnv::Static();
+    RWsSession& ws = eikon->WsSession();
+    CWsScreenDevice* screenDevice = eikon->ScreenDevice();
+    // Clip rect manipulation.
+    // Calculate the rect for display, including title and status pane
+    TRect clipRect = GetClipRect( rect );
+    TRAPD(errAdd, iVideoPlayer->AddDisplayWindowL(CCoeEnv::Static()->WsSession(),
+                                                    *screenDevice,
+                                                    iBavpView->WindowInst(),
+                                                            rect,
+                                                            clipRect));
+    TRAPD(errScale, iVideoPlayer->SetAutoScaleL(iBavpView->WindowInst(), EAutoScaleBestFit));
+    if( ( errAdd != KErrNone ) && (iActiveWindow != &iBavpView->WindowInst()) )
+        {
+        iActiveWindow = &iBavpView->WindowInst();
+        }
+    Log( EFalse, _L("CBavpControllerVideo::InitVideoPlayerL() AddDisplayWindowL %d"), errAdd );
+    Log( EFalse, _L("CBavpControllerVideo::InitVideoPlayerL() SetAutoScaleL %d"), errScale );
+#endif
     }
 
 // -----------------------------------------------------------------------------
@@ -211,6 +235,9 @@ void CBavpControllerVideo::InitVideoPlayerL()
     if ( iVideoPlayer )
         {
         iVideoPlayer->Close();
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+        iVideoPlayer->RemoveDisplayWindow(iBavpView->WindowInst());
+#endif
         delete iVideoPlayer;
         iVideoPlayer = NULL;
         }
@@ -231,11 +258,16 @@ void CBavpControllerVideo::InitVideoPlayerL()
     Log( EFalse, _L("InitVideoPlayerL() - calling CVideoPlayerUtility::NewL") );
 
     // Initialize the videoplayer
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+	iVideoPlayer = CVideoPlayerUtility2::NewL( *this, EMdaPriorityNormal,
+                                              EMdaPriorityPreferenceNone);
+#else
     iVideoPlayer = CVideoPlayerUtility::NewL( *this, EMdaPriorityNormal,
                                               EMdaPriorityPreferenceNone,
                                               ws, *screenDevice,
                                               iBavpView->WindowInst(), rect,
                                               clipRect);
+#endif
 
     // Register for loading notification
     iVideoPlayer->RegisterForVideoLoadingNotification( *this );
@@ -276,6 +308,9 @@ void CBavpControllerVideo::UnInitVideoPlayer()
     if ( iVideoPlayer )
         {
         iVideoPlayer->Close();
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+        iVideoPlayer->RemoveDisplayWindow(iBavpView->WindowInst());
+#endif
         delete iVideoPlayer;
         iVideoPlayer = NULL;
         }
@@ -297,7 +332,12 @@ void CBavpControllerVideo::RotateScreen90()
     // Rotate only if screen rect height is greater than its width
     if ( screenRect.Height() > screenRect.Width() )
         {
-        TRAP_IGNORE( iVideoPlayer->SetRotationL( EVideoRotationClockwise90 ) );
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+		TRAP_IGNORE( iVideoPlayer->SetRotationL(iBavpView->WindowInst(), EVideoRotationClockwise90 ) );
+#else
+		TRAP_IGNORE( iVideoPlayer->SetRotationL( EVideoRotationClockwise90 ) );
+#endif
+
         }
     }
 
@@ -310,8 +350,13 @@ void CBavpControllerVideo::RevertToFullScreenL()
     Log( EFalse, _L("CBavpControllerVideo::RevertToFullScreenL()"));
     CBavpPluginEcomMain* npm = (CBavpPluginEcomMain*)Dll::Tls();
     bool fullscreen = true;
-    
-    iVideoPlayer->StopDirectScreenAccessL();
+
+    //This method is not supported when using CVideoPlayerUtility2, and will 
+    //always leave with KErrNotSupported. instead of variating for new player 
+    //we are ignoring the Leave
+	TRAP_IGNORE( iVideoPlayer->StopDirectScreenAccessL() );
+
+
     iClipInfo->iInFullScreenMode = ETrue;
 
     npm->Funcs()->setvalue(iBavpView->bavPlugin()->getNPP(), 
@@ -331,12 +376,21 @@ void CBavpControllerVideo::RevertToFullScreenL()
     CCoeControl* parentView = iBavpView->CoeControl().Parent();
     parentView->SetRect(screenRect);
     iBavpView->CoeControl().SetExtent(TPoint(0,0), screenRect.Size());
-    
-    iVideoPlayer->SetDisplayWindowL( ws, *screenDevice,
+
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+
+    iVideoPlayer->RemoveDisplayWindow(iBavpView->WindowInst());
+    TRAPD(errAdd, iVideoPlayer->AddDisplayWindowL(ws,*screenDevice,iBavpView->WindowInst(), screenRect, screenRect));
+    TRAPD(errScale, iVideoPlayer->SetAutoScaleL(iBavpView->WindowInst(), EAutoScaleBestFit));
+    Log( EFalse, _L("CBavpControllerVideo::RevertToFullScreenL() errAdd %d"), errAdd);
+    Log( EFalse, _L("CBavpControllerVideo::RevertToFullScreenL() errScale %d"), errScale);
+#else
+	iVideoPlayer->SetDisplayWindowL( ws, *screenDevice,
                                      iBavpView->WindowInst(),
                                      screenRect, screenRect );
                                          
     RotateScreen90();
+#endif
     }
 
 // -----------------------------------------------------------------------------
@@ -352,7 +406,10 @@ void CBavpControllerVideo::RevertToNormalScreenL()
     CBavpPluginEcomMain* npm = (CBavpPluginEcomMain*)Dll::Tls();
     bool fullscreen = false;
     
-    iVideoPlayer->StopDirectScreenAccessL();
+    //This method is not supported when using CVideoPlayerUtility2, and will 
+    //always leave with KErrNotSupported. instead of variating for new player 
+    //we are ignoring the Leave
+    TRAP_IGNORE( iVideoPlayer->StopDirectScreenAccessL() );
     
     npm->Funcs()->setvalue(iBavpView->bavPlugin()->getNPP(), 
                                NPPVpluginFullScreenBool, 
@@ -364,7 +421,12 @@ void CBavpControllerVideo::RevertToNormalScreenL()
 
     iClipInfo->iInFullScreenMode = EFalse;
     RefreshRectCoordinatesL();
-    iVideoPlayer->SetRotationL( EVideoRotationNone );
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+	iVideoPlayer->SetRotationL(iBavpView->WindowInst(), EVideoRotationNone );
+#else
+	iVideoPlayer->SetRotationL( EVideoRotationNone );
+#endif
+
     iBavpView->ControllerStateChangedL();
     }
 
@@ -397,21 +459,24 @@ void CBavpControllerVideo::RefreshRectCoordinatesL()
     }
     if ( iVideoPlayer )
         {
+
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+        UpdateWindowSize();
+#else
         TRect rect( iBavpView->CoeControl().Rect() );
 
         TRect wr(iBavpView->WindowRect()); //can have negative coordinates 
                                            //if video scrolled out of viewport
-        // Windows' absolute position, relative to the current screen
-        TPoint pt = iBavpView->WindowInst().AbsPosition();
-        rect.Move( pt.iX, pt.iY );
-        wr.Move( pt.iX, pt.iY );
-
-
         CEikonEnv* eikon = CEikonEnv::Static();
         RWsSession& ws = eikon->WsSession();
         CWsScreenDevice* screenDevice = eikon->ScreenDevice();
 
-        // Reset clipRect
+		// Windows' absolute position, relative to the current screen
+        TPoint pt = iBavpView->WindowInst().AbsPosition();
+        rect.Move( pt.iX, pt.iY );
+        wr.Move( pt.iX, pt.iY );
+
+	 	// Reset clipRect
         TRect clipRect = rect;
         clipRect = GetClipRect( rect );
 
@@ -427,11 +492,14 @@ void CBavpControllerVideo::RefreshRectCoordinatesL()
             							     iBavpView->WindowInst(),
             							     wr, clipRect );
 		    );
-    if( iCurrentState == EBavpPaused || iCurrentState == EBavpStopped || iCurrentState == EBavpPlayComplete )
-        {
-        iVideoPlayer->RefreshFrameL();
-        }
-        }
+
+#endif
+        if( iCurrentState == EBavpPaused || iCurrentState == EBavpStopped || iCurrentState == EBavpPlayComplete )
+            {
+            iVideoPlayer->RefreshFrameL();
+            }
+
+        } //end of iVideoPlayer
     }
 
 // -----------------------------------------------------------------------------
@@ -1373,4 +1441,47 @@ TBool CBavpControllerVideo::HandleGesture(TGestureEvent *gesture)
         }
     return ret;
 }
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+// -----------------------------------------------------------------------------
+// CBavpControllerVideo::UpdateWindowSize
+// Refreshing the window co-ordinates.
+// -----------------------------------------------------------------------------
+/*
+ * MMF Client API has updated with new methods to control video display 
+ * Windows and video picture positioning to produce a new version of the API, 
+ * CVideoPlayerUtility2. The new API is the preferred way to play video on graphics
+ * surfaces, and will support new features such as more flexible window positioning.
+ * Updatewindow has made in separate method so that in future, timer can be 
+ * implemented for redusing the call to update window. 
+ */
+void CBavpControllerVideo::UpdateWindowSize()
+    {
+    TRect rect( iBavpView->CoeControl().Rect() );
+    TRect wr(iBavpView->WindowRect()); //can have negative coordinates
+    //if video scrolled out of viewport
+    CEikonEnv* eikon = CEikonEnv::Static();
+    RWsSession& ws = eikon->WsSession();
+    CWsScreenDevice* screenDevice = eikon->ScreenDevice();
+    // Reset clipRect
+    TRect clipRect = rect;
+    clipRect = GetClipRect( rect );
+    if( ( iActiveWindow != &iBavpView->WindowInst() ) && ( iActiveWindow != NULL ) )
+        {
+        //Remove the active window and add the new window
+        iVideoPlayer->RemoveDisplayWindow(iBavpView->WindowInst());
+        TRAPD(errAdd, iVideoPlayer->AddDisplayWindowL(ws,*screenDevice,iBavpView->WindowInst(), wr, clipRect));
+        TRAP_IGNORE(iVideoPlayer->SetAutoScaleL(iBavpView->WindowInst(), EAutoScaleBestFit));
+        if( errAdd == KErrNone )
+            iActiveWindow = &iBavpView->WindowInst();
+        }
+    else
+        {
+        //window is already active, only needs the window size changed or position change
+        TRAPD(err1,iVideoPlayer->SetVideoExtentL(iBavpView->WindowInst(),wr));
+        TRAPD(err2,iVideoPlayer->SetWindowClipRectL(iBavpView->WindowInst(),clipRect));
+        Log( EFalse, _L("SetVideoExtent err1 = %d"), err1 );
+        Log( EFalse, _L("SetVideoExtent err2 = %d"), err2 );
+        }
+    }
+#endif
 //  End of File

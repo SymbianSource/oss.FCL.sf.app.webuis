@@ -20,7 +20,13 @@
 #define BAVPCONTROLLERVIDEO_H
 
 // INCLUDES
+#include <browser_platform_variant.hrh>
+
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+#include <VideoPlayer2.h>
+#else 
 #include <VideoPlayer.h>
+#endif
 #include "BavpController.h"
 
 // FORWARD DECLARATIONS
@@ -385,19 +391,39 @@ class CBavpControllerVideo : public CBavpController,
 
     TBool NoScreenSaverMode();
     void SetDefaultAspectRatioL();
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+    /**
+    * Handles a window rect update timer event where the timer completes the KWindowChangeUpdateTimeout 
+    * with the system clock
+    * @since S60 v5.2
+    * @param none
+    * @return void
+    */
+    void UpdateWindowSize();
+#endif
     private:      // Data
     
         // Used to call MMF for video functionality
-        CVideoPlayerUtility* iVideoPlayer;
-
-        // Active object for display update
-        CIdle* iDisplayUpdater;
-
-        // The full screen view
-        CBavpViewFullScreen* iBavpViewFullScreen;
-      //heart beat progress
-      CHeartbeat* iBackLightUpdater;
-      TRect   iNormalScreenRect;
+#ifdef BRDO_VIDEOPLAYER2_ENABLED_FF
+    /** 
+     * MMF Client API has updated with new methods to control video display
+     *windows and video picture positioning to produce a new version of the API, 
+     *CVideoPlayerUtility2. The new API is the preferred way to play video on graphics 
+     *surfaces, and will support new features such as more flexible window positioning.  
+     */
+	CVideoPlayerUtility2*   iVideoPlayer;
+#else   
+	CVideoPlayerUtility*    iVideoPlayer;
+#endif
+    // Active object for display update
+    CIdle*                  iDisplayUpdater;
+    
+    // The full screen view
+    CBavpViewFullScreen*    iBavpViewFullScreen;
+    //heart beat progress
+    CHeartbeat*             iBackLightUpdater;
+    TRect                   iNormalScreenRect;
+    RWindow*                iActiveWindow; 
     };
 
 #endif      // CBAVPCONTROLLERVIDEO_H

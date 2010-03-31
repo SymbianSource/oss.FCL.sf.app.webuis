@@ -40,6 +40,7 @@
 #include <AknRadioButtonSettingPage.h>
 
 #include "FeedsEditFeedDialog.h"
+#define   pixelOffset   36
 
 //Constants
 const TInt KAutoUpdatingOff = 0;
@@ -135,11 +136,30 @@ void CFeedsEditFeedDialog::HandlePointerEventL(const TPointerEvent& aPointerEven
         }
     else
         {
-        CAknForm::HandlePointerEventL(aPointerEvent);
-        if ((iSelectedDlgLine == EFeedsEditAutomaticUpdatingId) && (aPointerEvent.iType == TPointerEvent::EButton1Up))
+        CAknForm::HandlePointerEventL(aPointerEvent);        
+        if ( aPointerEvent.iType == TPointerEvent::EButton1Down)
             {
-            HandleFreqCmdL();
+                iPointerEvent =  aPointerEvent;
             }
+        else if ( aPointerEvent.iType == TPointerEvent::EDrag )
+                 {
+                 if((Abs(iPointerEvent.iPosition.iX - aPointerEvent.iPosition.iX) > pixelOffset ) ||
+                    (Abs(iPointerEvent.iPosition.iY - aPointerEvent.iPosition.iY) > pixelOffset ))
+                     {
+                         iDrag = ETrue;
+                     }
+                 }
+        else if ((iSelectedDlgLine == EFeedsEditAutomaticUpdatingId) && (aPointerEvent.iType == TPointerEvent::EButton1Up))
+                 {
+                 if(!iDrag)
+                    {
+                        HandleFreqCmdL();
+                    }
+                 else
+                    {
+                        iDrag = EFalse;
+                    }
+                 }
         }
     }
 

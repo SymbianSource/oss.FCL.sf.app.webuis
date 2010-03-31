@@ -263,6 +263,7 @@ class CPushSettingsDialog : public CAknDialog,
         HBufC*              iPreviousTitleText;             ///< Restore it on termination. Has.
         TBool               iRestoreSP;     /**< EFalse, if it is not necessary 
                                             * to restore status pane. */
+        TInt                iPushSLEnabled;        
     };
 
 #endif // PUSHSETTINGSDIALOG_H

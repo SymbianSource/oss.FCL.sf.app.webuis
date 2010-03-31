@@ -44,6 +44,8 @@
 #include <MuiuMsgEditorLauncher.h>
 #include <data_caging_path_literals.hrh>
 #include <f32file.h>
+#include "PushMtmPrivateCRKeys.h"
+#include <centralrepository.h> 
 
 // ================= MEMBER FUNCTIONS =======================
 
@@ -77,6 +79,10 @@ CPushMtmUi::CPushMtmUi( CBaseMtm& aBaseMtm,
                         CRegisteredMtmDll& aRegisteredMtmDll )
 :   CBaseMtmUi( aBaseMtm, aRegisteredMtmDll )
     {
+    CRepository* PushSL = CRepository::NewL( KCRUidPushMtm );
+    CleanupStack::PushL( PushSL );   
+    User::LeaveIfError( PushSL->Get( KPushMtmServiceEnabled , iPushSLEnabled ) );
+    CleanupStack::PopAndDestroy( PushSL ); 
     }
 
 // ---------------------------------------------------------
@@ -248,10 +254,7 @@ CMsvOperation* CPushMtmUi::ViewL( TRequestStatus& aStatus )
     CMsvOperation* operation = NULL;
 
     if ( 
-         tEntry.iBioType == KUidWapPushMsgSI.iUid 
-#ifdef __SERIES60_PUSH_SL
-         || tEntry.iBioType == KUidWapPushMsgSL.iUid
-#endif // __SERIES60_PUSH_SL
+         tEntry.iBioType == KUidWapPushMsgSI.iUid || (iPushSLEnabled && tEntry.iBioType == KUidWapPushMsgSL.iUid)
        )
         {
         TEditorParameters editorParameters;

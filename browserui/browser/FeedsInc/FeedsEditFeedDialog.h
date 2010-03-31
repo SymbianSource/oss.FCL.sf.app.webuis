@@ -271,6 +271,8 @@ class CFeedsEditFeedDialog: public CAknForm
         TInt                      iPreviousFreq;
         TInt                      iSelectedDlgLine;
         TBool                     iActionCancelled;
+        TBool                     iDrag;
+        TPointerEvent             iPointerEvent;
 	};
 
 #endif      // FEEDS_EDIT_FEED_DIALOG_H

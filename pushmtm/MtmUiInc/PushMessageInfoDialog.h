@@ -118,6 +118,8 @@ class CPushMessageInfoDialog : public CAknPopupList
         // The following members help wrapping text.
         const CFont* iSecondColumnFont; ///< Reference to the font. Not owned.
         TInt         iSecondColumnWidth;
+        TInt         iPushSLEnabled;
+;
     };
 
 #endif // PUSHMESSAGEINFODIALOG_H

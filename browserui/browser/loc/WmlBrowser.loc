@@ -3221,4 +3221,9 @@
 //r: 5.0
 //
 #define qtn_is_recommendations "Here and Now"
+
+//d: Confirmation to install add-on browser
+//l: popup_note_window
+//r: 7.2
+#define qtn_install_addon_browser  "A new browser is available.  Would you like to install it?"
 // End of File

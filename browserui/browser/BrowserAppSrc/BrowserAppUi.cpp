@@ -107,6 +107,12 @@
 
 #include "BrowserPushMtmObserver.h"
 
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+#include <iaupdate.h>
+#include <iaupdateparameters.h>
+#include <iaupdateresult.h>
+#endif
+
 //CONSTANTS
 const TUint KBookmarkId = 1;
 const TUint KUrlId = 4;
@@ -123,6 +129,14 @@ _LIT( KDefaultSchema, "http://" );
 const TInt KDefaultSchemaLength = 7;
 
 const TInt KMinimumCDriveDiskSpace = 512 * 1024;
+
+const TInt KRetryConnectivityTimeout( 2*1000*1000 ); // 2 seconds
+
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+const TUint KBrowser8xUID = 0x200267CC;
+_LIT( KUpdateFileName, "lastupdatechecked.txt" );
+const TInt64 KMaxTimeToPostponeUpdate = 604800000000;
+#endif
 
 // ================= MEMBER FUNCTIONS =======================
 
@@ -158,6 +172,10 @@ CBrowserAppUi::~CBrowserAppUi()
     {
     LOG_ENTERFN("CBrowserAppUi::~CBrowserAppUi");
 
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+    iFs.Close();
+#endif
+    
     SetExitInProgress( ETrue );
     if(iBrowserAsyncExit)
     	{
@@ -234,6 +252,9 @@ CBrowserAppUi::~CBrowserAppUi()
 
     iFavouritesSess.Close();
     LOG_WRITE( " iFavouritesSess.Close() deleted" );
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+    CleanUpdateParams(); 
+#endif
     }
 
 // -----------------------------------------------------------------------------
@@ -264,11 +285,159 @@ PERFLOG_STOPWATCH_START;
 		iStartedUp = EFalse;
 		LOG_WRITE( "Browser started embedded" );
 		}
-
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+    User::LeaveIfError(iFs.Connect());
+    // Check updates from IAD, continue UI launching even if something fails there  
+    TRAP_IGNORE( CheckUpdatesL() );
+#endif
+        
 PERFLOG_STOP_WRITE("BrowserUI::ConstructL");
 
     }
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+// ---------------------------------------------------------
+// CBrowserAppUi::CheckUpdatesL
+// ---------------------------------------------------------
+void CBrowserAppUi::CheckUpdatesL()
+    {
+    LOG_ENTERFN("CBrowserAppUi::CheckUpdatesL");
+    LOG_WRITE( "CBrowserAppUi::CheckUpdatesL() entering" );
+    if ( FeatureManager::FeatureSupported( KFeatureIdIAUpdate ) )
+        {
+        LOG_WRITE( "CBrowserAppUi::CheckUpdatesL() IAD Update supported" );
+        TRAP_IGNORE( iUpdate = CIAUpdate::NewL( *this ) );
+        LOG_WRITE( "CBrowserAppUi::CheckUpdatesL() IAD Update Client Created" );
+        if ( iUpdate )
+            {
+            LOG_WRITE( "CBrowserAppUi::CheckUpdatesL() creating IAD Update paramentes" );
+            iParameters = CIAUpdateParameters::NewL();
+            // Search for updates using SIS package UID
+            iParameters->SetUid( TUid::Uid( KBrowser8xUID ) );
+            //check the updates
+            iUpdate->CheckUpdates( *iParameters );
+            }
+        }
+    LOG_WRITE( "CBrowserAppUi::CheckUpdatesL() exiting" );
+    }
 
+// ---------------------------------------------------------
+// CBrowserAppUi::CheckUpdatesComplete
+// rest of the details commented in the header
+// ---------------------------------------------------------
+//
+void CBrowserAppUi::CheckUpdatesComplete( TInt aErrorCode, TInt aAvailableUpdates )
+    {
+    LOG_ENTERFN("CBrowserAppUi::CheckUpdatesComplete");
+    LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - Entry" );
+    TInt err;
+    TBool result;
+    TBool showDialog = EFalse;
+
+    if ( aErrorCode == KErrNone )
+        {
+		if ( aAvailableUpdates > 0 )
+            {
+            LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - update available" );
+            //Check if the file is available in folder or not
+            if(CheckUpdateFileAvailable())
+                {
+                LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - update file available" );
+                TTime timenow;
+                timenow.HomeTime();
+                TInt64 time = timenow.Int64();
+                TInt64 dataValue = ReadUpdateFile();
+                //If the diference of the current time and the Previous Check time is more than 1 Week
+                //then show the dialog
+                if((time - dataValue)>KMaxTimeToPostponeUpdate)
+                    {
+                    LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - diference of the current time and the time available in th file is more than 7 days" );
+                    showDialog = ETrue;
+                    }
+                }
+            else
+                {
+                LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - update file is not available" );
+                showDialog = ETrue;
+                }
+                    
+            if(showDialog)
+                {
+                HBufC* message = StringLoader::LoadLC(R_INSTALL_ADDON_BROWSER);
+                HBufC* lsc_now = StringLoader::LoadLC(R_INSTALL_BROWSER_NOW);
+                HBufC* rsc_later = StringLoader::LoadLC(R_INSTALL_BROWSER_LATER);
+                
+                TRAPD(err, result = iDialogsProvider->DialogConfirmL(_L(""),
+                *message,
+                *lsc_now,
+                *rsc_later));
+                                   
+                CleanupStack::PopAndDestroy(3); //message, lsc_now, rsc_later
+                
+                if (err != KErrNone)
+                    {
+                    return ;
+                    }
+                if ( result )  //  user selected NOW
+                    {
+                    LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - if file exists, just delete it." );
+                    // if file exists, just delete it.
+                    DeleteUpdateFile();
+                    iUpdate->ShowUpdates( *iParameters );
+                    }
+                if ( !result )  // user selected LATER
+                    {
+                    LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - create the file and store the current time." );
+                    //create the file and store the current time.
+                    WriteUpdateFile();
+                    }
+                }
+            LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - update available" );
+            }
+        else
+            {
+            LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - no update available" );
+            // The answer was 'Later'. CIAUpdate object could be deleted
+            CleanUpdateParams();
+            }
+        }
+    LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - Exit" );
+    }
+
+// -----------------------------------------------------------------------------
+// CBrowserAppUi::CleanUpdateParams
+// -----------------------------------------------------------------------------
+//
+void CBrowserAppUi::CleanUpdateParams()
+    {
+    LOG_ENTERFN("CBrowserAppUi::CleanUpdateParams");
+    LOG_WRITE( "CBrowserAppUi::CleanUpdateParams() entering" );
+    if(iUpdate)
+        {
+        delete iUpdate;
+        iUpdate = NULL;
+        }
+    if(iParameters)
+        {
+        delete iParameters;
+        iParameters = NULL;
+        }
+    LOG_WRITE( "CBrowserAppUi::CleanUpdateParams() exiting" );
+    }
+
+// ---------------------------------------------------------
+// CBrowserAppUi::UpdateComplete
+// rest of the details commented in the header
+// ---------------------------------------------------------
+//
+void CBrowserAppUi::UpdateComplete( TInt aErrorCode, CIAUpdateResult* aResult )
+    {
+    LOG_ENTERFN("CBrowserAppUi::UpdateComplete");
+    LOG_WRITE( "CBrowserAppUi::UpdateComplete - Entry" );
+    delete aResult; // Ownership was transferred, so this must be deleted by the client
+    CleanUpdateParams();
+    LOG_WRITE( "CBrowserAppUi::UpdateComplete - Exit" );
+    }
+#endif
 // -----------------------------------------------------------------------------
 // CBrowserAppUi::InitBrowser()
 // -----------------------------------------------------------------------------
@@ -362,6 +531,10 @@ void CBrowserAppUi::InitBrowserL()
 
         PERFLOG_STOPWATCH_START;
         iConnStageNotifier = CConnectionStageNotifierWCB::NewL();
+		
+        //this is required, browser's connection oberver should be hit first. (incase of netscape plgins, transactions will be closed.)
+        iConnStageNotifier->SetPriority(CActive::EPriorityHigh);
+
         PERFLOG_STOP_WRITE("\t StageNotif NewL");
         BROWSER_LOG( ( _L( "StageNofier up" ) ) );
 
@@ -483,6 +656,9 @@ void CBrowserAppUi::InitBrowserL()
 
 	    iPushMtmObserver = CBrowserPushMtmObserver::NewL( this );
 	    iPushMtmObserver->StartObserver();
+#ifdef BRDO_OCC_ENABLED_FF
+        iRetryConnectivity = CPeriodic::NewL(CActive::EPriorityStandard);
+#endif
         } //if (iStartedUp)
     }
 
@@ -1274,12 +1450,6 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
                  (Preferences().AccessPointSelectionMode() == EAlwaysAsk) )
                 {
                 iRequestedAp = Preferences().DefaultAccessPoint();
-#ifdef BRDO_OCC_ENABLED_FF //Setting ap should not be taken if OCC is enabled, instead bookmark ap should be taken
-#ifndef __WINS__
-                iRequestedAp = aAccessPoint.ApId();
-                BROWSER_LOG( ( _L( "Bookmark Iap id : %d" ), iRequestedAp ) );
-#endif
-#endif                
                 }
             else if ( Preferences().AccessPointSelectionMode() == EDestination ) 
                 {
@@ -2375,6 +2545,8 @@ void CBrowserAppUi::ConnNeededStatusL( TInt aErr )
         return;
         }
 
+    BROWSER_LOG( ( _L( " CBrowserAppUi::ConnNeededStatusL First Stop Connection Observer" ) ) );
+    StopConnectionObserving(); //Need to stop the connection observer first
 
 
     if ( !iConnStageNotifier->IsActive() )
@@ -2382,8 +2554,9 @@ void CBrowserAppUi::ConnNeededStatusL( TInt aErr )
         BROWSER_LOG( ( _L( " CBrowserAppUi::ConnNeededStatusL Starting Connection Observer" ) ) );
         TName* connectionName = Connection().ConnectionNameL();
         CleanupStack::PushL( connectionName );
-        iConnStageNotifier->StartNotificationL(
-            connectionName, KConnectionUninitialised, this);
+
+        iConnStageNotifier->StartNotificationL(connectionName, KLinkLayerClosed, this);
+
         CleanupStack::PopAndDestroy();  //connectionName
         }
     }
@@ -2432,7 +2605,88 @@ HBufC* CBrowserAppUi::CreateWindowInfoLC( const CBrowserWindow& aWindow )
         }
     return buf;
     }
+	
+#ifdef BRDO_OCC_ENABLED_FF
+// -----------------------------------------------------------------------------
+// CBrowserContentView::SetRetryFlag
+// -----------------------------------------------------------------------------
+//
+void CBrowserAppUi::SetRetryFlag(TBool flag)
+     {
+     LOG_ENTERFN("CBrowserAppUi::SetRetryFlag");
+     BROWSER_LOG( ( _L(" CBrowserAppUi::SetRetryFlag flag: %d"), flag ) );
+     reConnectivityFlag = flag;
+     }
 
+// -----------------------------------------------------------------------------
+// CBrowserContentView::GetRetryFlag
+// -----------------------------------------------------------------------------
+//
+ TBool CBrowserAppUi::GetRetryFlag()
+      {
+      LOG_ENTERFN("CBrowserAppUi::GetRetryFlag");
+      BROWSER_LOG( ( _L(" CBrowserAppUi::GetRetryFlag flag: %d"), reConnectivityFlag ) );
+      return reConnectivityFlag;
+      }
+	  
+// -----------------------------------------------------------------------------
+// CBrowserContentView::RetryConnectivity
+// -----------------------------------------------------------------------------
+//
+TInt CBrowserAppUi::RetryConnectivity(TAny* aCBrowserAppUi)
+    {
+    LOG_ENTERFN("CBrowserAppUi::RetryConnectivity");
+    __ASSERT_DEBUG(aCBrowserAppUi, Util::Panic( Util::EUninitializedData ));
+  
+    TInt err = ((CBrowserAppUi*)aCBrowserAppUi)->RetryInternetConnection();
+    
+    BROWSER_LOG( ( _L(" CBrowserAppUi::RetryConnectivity Error: %d"), err ) );
+    return err;
+    }
+	
+TInt CBrowserAppUi::RetryInternetConnection()
+    {
+    LOG_ENTERFN("CBrowserAppUi::RetryInternetConnection");
+    //First cancel the timer
+    if ( iRetryConnectivity && iRetryConnectivity->IsActive() )
+    {
+        iRetryConnectivity->Cancel();
+        BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection Timer Cancelled successfully " ) ) );
+    }
+    TInt err = KErrNone;
+    if ( !iConnection->Connected() )
+       {
+       TRAP_IGNORE( err = iConnection->StartConnectionL( ETrue ) );
+       }
+    if( err == KErrNone )
+       { 
+       BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection Connection restablished successfully " ) ) );
+       
+       BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection UNSET retry flags " ) ) );
+       TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandUnSetRetryConnectivityFlag + (TInt)TBrCtlDefs::ECommandIdBase ) );
+       SetRetryFlag(EFalse);
+       
+       TRAP_IGNORE(ConnNeededStatusL(err)); //Start the observer again
+       TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandRetryTransactions + (TInt)TBrCtlDefs::ECommandIdBase ) );
+       //Let download manager knows about this new connection
+       TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandConnToDownloadManager + (TInt)TBrCtlDefs::ECommandIdBase ) );
+       }
+    else
+        {
+        BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection Connection failed " ) ) );
+        BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection unset retry flags " ) ) );
+        TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandUnSetRetryConnectivityFlag + (TInt)TBrCtlDefs::ECommandIdBase ) );
+        SetRetryFlag(EFalse);
+        BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection clear queued transactions " ) ) );
+        TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandClearQuedTransactions + (TInt)TBrCtlDefs::ECommandIdBase ) );
+        Display().StopProgressAnimationL(); //Stop Progress animation
+        iDialogsProvider->UploadProgressNoteL(0, 0, ETrue, (MBrowserDialogsProviderObserver *)this ); //Close the uploading dialog.
+        iDialogsProvider->CancelAll(); //connection has been lost, so cancel the authentication dialog.
+        }
+    
+    return err;
+    }
+#endif
 
 // -----------------------------------------------------------------------------
 // CBrowserAppUi::ConnectionStageAchievedL()
@@ -2440,6 +2694,24 @@ HBufC* CBrowserAppUi::CreateWindowInfoLC( const CBrowserWindow& aWindow )
 //
 void CBrowserAppUi::ConnectionStageAchievedL()
     {
+#ifdef BRDO_OCC_ENABLED_FF
+    LOG_ENTERFN("CBrowserAppUi::ConnectionStageAchievedL");
+    //Disconnect first
+    BROWSER_LOG( ( _L( "CBrowserAppUi::ConnectionStageAchievedL Disconnecting..." ) ) );
+    iConnection->Disconnect();
+
+    BROWSER_LOG( ( _L( "CBrowserAppUi::ConnectionStageAchievedL Some transactions are on-going. Need to reconnect. " ) ) );
+    BROWSER_LOG( ( _L( "CBrowserAppUi::ConnectionStageAchievedL Set retry flags " ) ) );
+    TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandSetRetryConnectivityFlag + (TInt)TBrCtlDefs::ECommandIdBase ) );
+    SetRetryFlag(ETrue);    
+    
+    if( iRetryConnectivity && iRetryConnectivity->IsActive())
+       {
+       iRetryConnectivity->Cancel();
+       }
+    iRetryConnectivity->Start(KRetryConnectivityTimeout, 0,TCallBack(RetryConnectivity,this));
+
+#else
     // this function is called only when network is lost
     // because we set notifier for KAgentUnconnected only
     Display().StopProgressAnimationL();
@@ -2456,6 +2728,7 @@ void CBrowserAppUi::ConnectionStageAchievedL()
     // not needed as by that point HTTPSession was already shutdown by executing disconnect menu option
     // will cause a crash when user tries to quickly reconnect right after disconnecting, as HTTP session
     // is starting to initialize, while this call is trying to close it.
+#endif
     }
 
 
@@ -4205,5 +4478,102 @@ void CBrowserAppUi::StartFetchHomePageL(void)
         CloseContentViewL();
         }                
     }
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+// ---------------------------------------------------------
+// CBrowserAppUi::CheckUpdateFileAvailable
+// ---------------------------------------------------------
+TBool CBrowserAppUi::CheckUpdateFileAvailable()
+    {
+    TBuf<KMaxFileName> privatePath;
+    TBuf<KMaxFileName> updateFileName;
+    iFs.PrivatePath( privatePath );
+    updateFileName.Copy( privatePath );
+    updateFileName.Append( KUpdateFileName );
+    RFile updatefile;   
+    TInt err = updatefile.Open( iFs, updateFileName, EFileRead );
+    if ( err == KErrNotFound ) 
+        {
+        LOG_WRITE( "CBrowserAppUi::CheckUpdateFileAvailable - update file not available" );
+        return EFalse;
+        }
+    else
+        {
+        LOG_WRITE( "CBrowserAppUi::CheckUpdateFileAvailable - update file available" );
+        updatefile.Close();
+        }
+    return ETrue;       
+    }
 
+// ---------------------------------------------------------
+// CBrowserAppUi::WriteUpdateFile
+// ---------------------------------------------------------
+void CBrowserAppUi::WriteUpdateFile()
+    {
+    TBuf<KMaxFileName> privatePath;
+    TBuf<KMaxFileName> updateFileName;
+    iFs.PrivatePath( privatePath );
+    updateFileName.Copy( privatePath );
+    updateFileName.Append( KUpdateFileName );
+    RFile updatefile;
+    TInt err = updatefile.Open( iFs, updateFileName, EFileWrite | EFileShareExclusive );
+    if(err == KErrNotFound)
+        {
+        LOG_WRITE( "CBrowserAppUi::WriteUpdateFile - update file not available so create it" );
+        err = updatefile.Create( iFs, updateFileName, EFileWrite | EFileShareExclusive );
+        }
+    //Get the current time
+    TTime timenow;
+    timenow.HomeTime();
+    TInt64 time = timenow.Int64();
+    TBuf8<50> data;
+    data.AppendNum(time);
+    LOG_WRITE( "CBrowserAppUi::WriteUpdateFile - write the current time in update file" );
+    updatefile.Write(data);
+    updatefile.Close();
+    }
+
+// ---------------------------------------------------------
+// CBrowserAppUi::DeleteUpdateFile
+// ---------------------------------------------------------
+void CBrowserAppUi::DeleteUpdateFile()
+    {
+    TBuf<KMaxFileName> privatePath;
+    TBuf<KMaxFileName> updateFileName;
+    iFs.PrivatePath( privatePath );
+    updateFileName.Copy( privatePath );
+    updateFileName.Append( KUpdateFileName );
+    iFs.Delete(updateFileName);  
+    }
+
+// ---------------------------------------------------------
+// CBrowserAppUi::ReadUpdateFile
+// ---------------------------------------------------------
+TInt64 CBrowserAppUi::ReadUpdateFile()
+    {
+    TBool returnvalue = ETrue;
+    TBuf<KMaxFileName> privatePath;
+    TBuf<KMaxFileName> updateFileName;
+    //Get the private path then append the filename
+    iFs.PrivatePath( privatePath );
+    updateFileName.Copy( privatePath );
+    updateFileName.Append( KUpdateFileName );
+    RFile updatefile;
+    TInt err = updatefile.Open( iFs, updateFileName, EFileRead );
+    TInt64 dataValue = 0;
+    //If file is found
+    if ( err != KErrNotFound ) 
+        {
+        TBuf8<50> readBuf;
+        err = updatefile.Read(readBuf);
+        updatefile.Close();
+        if((err == KErrNone) && (readBuf.Length()>NULL))
+            {
+            //Convert from TBuf8 to TInt64
+            TLex8 lex(readBuf);
+            lex.Val(dataValue);
+            }
+        }        
+    return dataValue;
+    }
+#endif
 // End of File

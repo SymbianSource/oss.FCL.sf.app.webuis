@@ -110,10 +110,10 @@ void CBrowserGotoPane::MakeVisibleL( TBool aVisible )
             SetSearchTextL( KNullDesC );
             }
         }
-
+    
+    SetPointerCapture(aVisible);
     if (AknLayoutUtils::PenEnabled() &&  ( !iSearchEditor )  )
-        {
-        SetPointerCapture(aVisible);
+        {      
         if (aVisible)
             {
             ActivateVKB();

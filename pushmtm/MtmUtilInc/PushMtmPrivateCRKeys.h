@@ -28,4 +28,7 @@ const TUint32 KPushMtmServiceLoading =      0x0000002;
 // Read only White List
 const TUint32 KPushMtmWhiteList =           0x0000003;
 
+//To Enable to Disable PUSH_SL Service in Run-time
+const TUint32 KPushMtmServiceEnabled   =   0x0000004; 
+
 #endif      // PUSHMTMPRIVATECRKEYS_H

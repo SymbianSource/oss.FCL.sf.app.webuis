@@ -125,6 +125,15 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
 	__ASSERT_DEBUG( (aNewConn != NULL), Util::Panic( Util::EUninitializedData ) );
 	__ASSERT_DEBUG( (aBearerType != NULL), Util::Panic( Util::EUninitializedData ) );
 	
+#ifdef BRDO_OCC_ENABLED_FF
+	TBool retryFlag = CBrowserAppUi::Static()->GetRetryFlag();
+	if( retryFlag )
+	    {
+	    BROWSER_LOG((_L("Retry is in progress")));
+	    return;
+	    }
+#endif
+	
     iApiProvider->SetProgressShown( ETrue );
     TBool query( EFalse );
     if( iApiProvider->Connection().Connected() )
@@ -143,7 +152,7 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
         TBool isValid( EFalse );
         TUint32 ap( 0 );
         TInt err( KErrNone );
-#ifndef BRDO_OCC_ENABLED_FF
+
 		BROWSER_LOG((_L("AP selectionMode: %d."),
     	iApiProvider->Preferences().AccessPointSelectionMode() ));
 
@@ -259,9 +268,7 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
         		BROWSER_LOG((_L("wrong type of connection")));	
         		}
         	} //switch
-#else //BRDO_OCC_ENABLED_FF
-        isValid = ETrue; 
-#endif //BRDO_OCC_ENABLED_FF
+
 		BROWSER_LOG((_L("isValid 2: %d"), isValid));
         if( isValid )
             {

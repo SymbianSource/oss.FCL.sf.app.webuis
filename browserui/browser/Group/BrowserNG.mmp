@@ -84,3 +84,6 @@ LIBRARY aknpictograph.lib
 LIBRARY         touchfeedback.lib
 #endif // RD_TACTILE_FEEDBACK
 LIBRARY         AknLayout2Scalable.lib
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+LIBRARY     iaupdateapi.lib
+#endif

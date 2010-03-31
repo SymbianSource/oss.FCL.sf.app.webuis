@@ -23,7 +23,7 @@
 NAME    SERV // for Services
 
 //  INCLUDES
-
+#include <browser_platform_variant.hrh>
 #include "WmlBrowserBuild.h"
 #include <apcaptionfile.rh>
 #include <eikon.rh>
@@ -39,6 +39,9 @@ NAME    SERV // for Services
 #include <CommonDialogs.hrh>
 #include <CommonDialogs.rh>
 #include <data_caging_paths_strings.hrh>
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+#include <iaupdate.loc>
+#endif
 
 RESOURCE RSS_SIGNATURE { }
 
@@ -933,4 +936,8 @@ RESOURCE TBUF r_is_recommendations_title { buf = qtn_is_recommendations_title; }
 RESOURCE TBUF r_browsers_sett_web_search_provider { buf = qtn_browsers_sett_web_search_provider; }
 RESOURCE TBUF r_is_web_search { buf = qtn_is_web_search; }
 RESOURCE TBUF r_is_label_not_selected { buf = qtn_is_label_not_selected; } 
-
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+RESOURCE TBUF r_install_addon_browser      { buf = qtn_install_addon_browser; }
+RESOURCE TBUF r_install_browser_now                    { buf = qtn_swupdate_now; }
+RESOURCE TBUF r_install_browser_later                   { buf = qtn_swupdate_later ; }
+#endif

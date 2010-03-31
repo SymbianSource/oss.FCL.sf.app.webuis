@@ -33,7 +33,9 @@
 #include <downloadedcontenthandler.h>
 #include "WindowInfoProvider.h"
 #include <browseroverriddensettings.h>
-
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+#include <iaupdateobserver.h>
+#endif
 // FORWARD DECLARATIONS
 class CBrowserViewBase;
 class MCommsModel;
@@ -74,7 +76,10 @@ _LIT(KMimeTypeRDF,       "application/rdf+xml");
 
 
 class CBrowserPushMtmObserver;
-
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+class CIAUpdate; 
+class CIAUpdateParameters;
+#endif
 // CLASS DECLARATION
 
 /**
@@ -88,6 +93,9 @@ class CBrowserAppUi : public CAknViewAppUi,
                       public MConnectionStageObserver,
                       public MDownloadedContentHandler,
                       public MWindowInfoProvider
+					#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+                     ,public MIAUpdateObserver
+					#endif
     {
     public:     // Constructors and destructor
         /**
@@ -709,6 +717,12 @@ class CBrowserAppUi : public CAknViewAppUi,
     public:
         void StopConnectionObserving();
 
+#ifdef BRDO_OCC_ENABLED_FF
+        //Retry flags
+        void SetRetryFlag(TBool flag);
+        TBool GetRetryFlag();
+#endif
+
 	private:    
 	
         /**
@@ -783,8 +797,85 @@ class CBrowserAppUi : public CAknViewAppUi,
         * @param none
         */		
 		void StartFetchHomePageL();		
-
 		
+#ifdef BRDO_OCC_ENABLED_FF
+        //For Call back for reconnectivity
+        static TInt RetryConnectivity(TAny* aCBrowserAppUi);
+        TInt RetryInternetConnection();		
+#endif
+
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+		/**
+        * Check updates
+        */
+        void CheckUpdatesL(); 
+
+        /**
+        * Clean IAD update parameters
+        */
+        void CleanUpdateParams(); 
+
+        /**
+        * This callback function is called when the update checking operation has completed.
+        *
+        * @param aErrorCode The error code of the observed update operation.
+        *                   KErrNone for successful completion,
+        *                   otherwise a system wide error code.
+        * @param aAvailableUpdates Number of the updates that were found available.
+        */
+        void CheckUpdatesComplete( TInt aErrorCode, TInt aAvailableUpdates );
+
+        /**
+        * This callback function is called when an update operation has completed.
+        *
+        * @param aErrorCode The error code of the completed update operation.
+        *                   KErrNone for successful completion,
+        *                   otherwise a system wide error code.
+        * @param aResult Details about the completed update operation.
+        *                Ownership is transferred.
+        */
+        void UpdateComplete( TInt aErrorCode, CIAUpdateResult* aResultDetails );
+
+		/**
+        * This callback function is called when an update query operation has completed.
+        *
+        * @param aErrorCode The error code of the observed query operation.
+        *                   KErrNone for successful completion,
+        *                   otherwise a system wide error code.
+        * @param aUpdateNow ETrue informs that an update operation should be started.
+        *                   EFalse informs that there is no need to start an update
+        *                   operation.
+        */
+        void UpdateQueryComplete( TInt aErrorCode, TBool aUpdateNow ){return;}
+
+        /**
+        * This function is checking the existence of the file containing last update time
+        * @param None
+        * @return TBool.
+        */
+        TBool CheckUpdateFileAvailable();
+        
+        /**
+        * This function is deleting of the file(if exist) containing last update time
+        * @param None
+        * @return None.
+        */
+        void DeleteUpdateFile();
+        
+        /**
+        * This function is will write the current time in file
+        * @param None
+        * @return None.
+        */
+        void WriteUpdateFile();
+        
+        /**
+        * This function will read the content of the file if it exists
+        * @param None
+        * @return TBool.
+        */
+        TInt64 ReadUpdateFile();
+#endif		    
 	protected:
 
         /**
@@ -984,6 +1075,17 @@ class CBrowserAppUi : public CAknViewAppUi,
 		
 		TBool iBrowserAlreadyRunning; 
 		
+#ifdef BRDO_OCC_ENABLED_FF
+        CPeriodic *iRetryConnectivity;
+        TBool reConnectivityFlag;
+#endif		
+
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF		
+        CIAUpdate* iUpdate;  
+        CIAUpdateParameters* iParameters; 
+        RFs iFs;
+#endif        
+        
 	protected:
 
 		CBrowserCommsModel* iCommsModel;

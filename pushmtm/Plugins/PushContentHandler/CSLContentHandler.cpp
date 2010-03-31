@@ -42,6 +42,8 @@
 #include <nw_dom_text.h>
 #include <nw_wbxml_dictionary.h>
 #include <nw_string_char.h>
+#include "PushMtmPrivateCRKeys.h"
+#include <centralrepository.h> 
 
 // CONSTANTS
 
@@ -119,10 +121,14 @@ CSLContentHandler::CSLContentHandler()
 void CSLContentHandler::ConstructL()
 	{
     PUSHLOG_ENTERFN("CSLContentHandler::ConstructL")
-
+    
+    CRepository* PushSL = CRepository::NewL( KCRUidPushMtm );
+    CleanupStack::PushL( PushSL );
+    User::LeaveIfError( PushSL->Get( KPushMtmServiceEnabled , iPushSLEnabled ) );
+    CleanupStack::PopAndDestroy( PushSL ); 
+    
     CPushContentHandlerBase::ConstructL();
     // Added to Active Scheduler.
-
     PUSHLOG_LEAVEFN("CSLContentHandler::ConstructL")
     }
 
@@ -136,18 +142,16 @@ void CSLContentHandler::CollectGarbageL()
 
     DoCollectGarbageL();
 
-#ifdef __SERIES60_PUSH_SL
-	iState = EFilteringAndParsing;
-#else // __SERIES60_PUSH_SL
-    // Do nothing - message is discarded.
-	iState = EDone;
-#endif // __SERIES60_PUSH_SL
+	if(iPushSLEnabled)
+	    iState = EFilteringAndParsing;
+	else
+	    iState = EDone;
+	
 	IdleComplete();
 
     PUSHLOG_LEAVEFN("CSLContentHandler::CollectGarbageL")
     }
 
-#ifdef __SERIES60_PUSH_SL
 
 // ---------------------------------------------------------
 // CSLContentHandler::ParsePushMsgL
@@ -1015,7 +1019,6 @@ void CSLContentHandler::StoreSLMessageL( TMsvId aMatchingEntryId )
     PUSHLOG_LEAVEFN("CSLContentHandler::StoreSLMessageL")
 	}
 
-#endif // __SERIES60_PUSH_SL
 
 // ---------------------------------------------------------
 // CSLContentHandler::HandleMessageL
@@ -1127,58 +1130,63 @@ void CSLContentHandler::RunL()
 		    break;
             }
 
-#ifdef __SERIES60_PUSH_SL
 
         case EFilteringAndParsing:
             {
-            if ( !FilterPushMsgL() )
+            if(iPushSLEnabled)
                 {
-                // It did not pass the filter. Done.
-	            iState = EDone;
-	            IdleComplete();
-                }
-            else
-                {
-                // Continue.
-		        TInt ret = KErrNone;
-				PUSHLOG_WRITE("CSLContentHandler::RunL : before trapping parsing.")
-				TRAP(ret, ParsePushMsgL());
-				PUSHLOG_WRITE_FORMAT("CSLContentHandler::RunL : after trapping parsing. ret = %d", ret)
-				if ( ret != KErrNone)
-					{
-					PUSHLOG_WRITE("CSLContentHandler::RunL : Parsing failed. discarding message.")
-					iState = EDone;
-					IdleComplete();
-					}
+                if ( !FilterPushMsgL() )
+                    {
+                    // It did not pass the filter. Done.
+                    iState = EDone;
+                    IdleComplete();
+                    }
+                else
+                    {
+                    // Continue.
+                    TInt ret = KErrNone;
+                    PUSHLOG_WRITE("CSLContentHandler::RunL : before trapping parsing.")
+                    TRAP(ret, ParsePushMsgL());
+                    PUSHLOG_WRITE_FORMAT("CSLContentHandler::RunL : after trapping parsing. ret = %d", ret)
+                    if ( ret != KErrNone)
+                        {
+                        PUSHLOG_WRITE("CSLContentHandler::RunL : Parsing failed. discarding message.")
+                        iState = EDone;
+                        IdleComplete();
+                        }
+                    }
                 }
 			break;
             }
 
         case EProcessing:
             {
+            if(iPushSLEnabled)
 			ProcessingPushMsgEntryL();
 			break;
             }
 
 		case EFetching:
             {
+            if(iPushSLEnabled)
 			FetchPushMsgEntryL();
 			break;
             }
 
 		case EFetchCompleted:
             {
+            if(iPushSLEnabled)
 			FetchCompletedL();
 			break;
             }
 
 		case ESavePushMsgEntry:
             {
+            if(iPushSLEnabled)
 			SavePushMsgEntryL();
 			break;
             }
 
-#endif // __SERIES60_PUSH_SL
 
         case EDone:
             {

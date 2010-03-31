@@ -17,7 +17,6 @@
 
 
 
-#ifdef __SERIES60_PUSH_SL
 
 inline void CSLContentHandler::SetActionFlag( TBool aAction )
 	{
@@ -53,5 +52,4 @@ inline TBool CSLContentHandler::HrefFlag() const
 	return iAttributes & EHref;
 	}
 
-#endif // __SERIES60_PUSH_SL
 

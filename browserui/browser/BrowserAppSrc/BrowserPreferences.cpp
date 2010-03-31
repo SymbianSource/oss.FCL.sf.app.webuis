@@ -545,11 +545,8 @@ void CBrowserPreferences::RestoreSettingsL()
     TInt ap;
 
     // Read Accesss point selection mode for advanced settings
-#ifdef BRDO_OCC_ENABLED_FF
-    const TInt selectionMode = EBrowserCenRepApSelModeAlwaysAsk;
-#else
     const TInt selectionMode = GetIntValue( KBrowserAccessPointSelectionMode );
-#endif
+
     switch ( selectionMode )
         {
         case EBrowserCenRepApSelModeUserDefined:

@@ -405,6 +405,11 @@ TInt CBavpPlugin::NotifyL( TNotificationType aCallType, void* aParam )
                            }
                        }
                 } 
+            else if(iBavpController  && iPauseState && (iBavpController->State() == EBavpPaused) && (iIsForeGround))
+                { 
+                iPauseState = EFalse; 
+                iBavpController->PlayL(); 
+                }
 				break; 
         default:
             // Not implemented

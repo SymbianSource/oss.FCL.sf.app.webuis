@@ -1524,7 +1524,10 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
                 }
-            const CFavouritesItem* item =  TheContainer()->Listbox()->CurrentItem();
+            const CFavouritesItem* item;
+            if(TheContainer() && TheContainer()->Listbox()) 
+               item =  TheContainer()->Listbox()->CurrentItem();
+               
             if  ( ( item ) &&
                   ( ( item->Uid() == KFavouritesAdaptiveItemsFolderUid ) ||
                     ( item->ContextId() != NULL ) )
@@ -2195,7 +2198,10 @@ void CBrowserBookmarksView::DimToolbarButtons(TBool aDimButtons)
     {
     Toolbar()->SetItemDimmed( EWmlCmdAddBookmark, aDimButtons , ETrue );
     Toolbar()->SetItemDimmed( EWmlCmdGoToAddress, aDimButtons , ETrue );
+    Toolbar()->SetItemDimmed( EWmlCmdGoToAddressAndSearch, aDimButtons , ETrue );
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
     Toolbar()->SetItemDimmed( EWmlCmdDelete, aDimButtons , ETrue );
+#endif
     if (!aDimButtons)
         {
         // when undimming buttons we may not want them all back on

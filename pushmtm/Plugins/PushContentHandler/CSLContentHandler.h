@@ -88,7 +88,6 @@ class CSLContentHandler : public CPushContentHandlerBase
         */
 	    void  CollectGarbageL();
 
-#ifdef __SERIES60_PUSH_SL
 
         /**
         * Parse the Push SL message using XML parser.
@@ -208,7 +207,6 @@ class CSLContentHandler : public CPushContentHandlerBase
         */
 	    inline TBool HrefFlag() const;
 
-#endif // __SERIES60_PUSH_SL
 
     private: // Methods from CPushHandlerBase
 	    
@@ -296,6 +294,7 @@ class CSLContentHandler : public CPushContentHandlerBase
 
         NW_Uint32       iCharEncoding; ///< Char encoding of the current msg.
         TBool           iSaveAsRead; ///< Mark the message 'read' after saving.
+        TInt            iPushSLEnabled;
     };
 
 #include "CSLContentHandler.inl"

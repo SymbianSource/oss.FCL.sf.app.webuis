@@ -15,7 +15,8 @@
 *
 */
 
-
+#include <platform_paths.hrh>
+#include "../../../../../mw/web/web_plat/browser_platform_api/inc/browser_platform_variant.hrh"
 
 PRJ_PLATFORMS
 
@@ -26,7 +27,7 @@ PRJ_EXPORTS
 
 
 PRJ_MMPFILES
-#if defined( __S60_32__) || defined( __S60_50__) 
+#if defined( __S60_32__) || defined( __PLATFORM_VERSION_S60_50__)  || defined( __PLATFORM_VERSION_5250__)
 // Remove Symbian Push Content Handler
 gnumakefile PushContentHandlerClean.mk
 #endif

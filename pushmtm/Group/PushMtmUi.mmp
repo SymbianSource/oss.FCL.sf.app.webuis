@@ -100,6 +100,7 @@ LIBRARY         muiu.lib
 LIBRARY         PushMtmUtil.lib
 LIBRARY         PushMsgEntry.lib
 LIBRARY         SISLPushMsgUtils.lib
+LIBRARY         CENTRALREPOSITORY.lib
 
 #ifdef __SERIES60_HELP
 LIBRARY         hlplch.lib // for "Help" options menu
