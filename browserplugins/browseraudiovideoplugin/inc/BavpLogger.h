@@ -26,4 +26,4 @@ void Log( TBool aWrite, TPtrC aData, TInt aInt );
 void Log( TBool aWrite, const TPtrC s, const TPtrC p);
 void Log( TBool aWrite, const TPtrC8 s, const TPtrC8 p);
 
-#endif BAVPLOGGER_H
+#endif // BAVPLOGGER_H
