@@ -63,9 +63,13 @@
 
 //
 // Feature to enable Page Overview and Graphical History
+// After 9.2 TB, This feature is used only to enable page overview
 //
-#define  KBrowserGraphicalPage    0x20
-
+#ifdef BRDO_MULTITOUCH_ENABLED_FF
+    #define  KBrowserGraphicalPage    0x00
+#else
+    #define  KBrowserGraphicalPage    0x20
+#endif
 //
 // Feature to enable Auto Form Fill and Password Management options
 //

@@ -167,14 +167,23 @@ void CBrowserWindowSelectionContainer::Draw(const TRect& aRect) const
     {
     CWindowGc& gc = SystemGc();
     
-    // example code...
-    gc.SetPenStyle( CGraphicsContext::ENullPen );
-    gc.SetBrushColor( KRgbWhite );
+    // Create a gray background...
+    gc.SetPenColor(TRgb(45,44,50));
+    gc.SetPenStyle(CGraphicsContext::ESolidPen);
+    gc.SetBrushColor( KRgbDarkGray );
     gc.SetBrushStyle( CGraphicsContext::ESolidBrush );
     gc.DrawRect( aRect );
-        
+    
     if ( iThumbnail )
         {
+#ifdef BRDO_MULTITOUCH_ENABLED_FF        
+        TSize viewSize(aRect.Width(), aRect.Height());
+        int centerImageWidth(viewSize.iWidth*60/100);
+        int centerImageHeight(viewSize.iHeight*75/100);
+        int centerImageX(viewSize.iWidth*20/100);
+        int centerImageY(viewSize.iHeight*(100-75)/(2*100));
+        TPoint centerImageOrigin(centerImageX, centerImageY);
+#endif        
         // Put in center        
         // release
         TSize bitmapSize = iThumbnail->Bitmap()->SizeInPixels();        
@@ -184,7 +193,11 @@ void CBrowserWindowSelectionContainer::Draw(const TRect& aRect) const
         TInt y = ( aRect.Height()-bitmapSize.iHeight ) / 2;    
         // Draw thumbnail
         // release
-        gc.BitBlt( TPoint(x,y), iThumbnail->Bitmap() );        
+#ifdef BRDO_MULTITOUCH_ENABLED_FF        
+        gc.BitBlt( centerImageOrigin, iThumbnail->Bitmap(), TRect(0, 0, centerImageWidth, centerImageHeight) );
+#else
+        gc.BitBlt( TPoint(x,y), iThumbnail->Bitmap() );
+#endif
         // test
         // gc.BitBlt( TPoint(x,y), iThumbnail );                
         }

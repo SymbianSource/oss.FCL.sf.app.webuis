@@ -316,7 +316,7 @@ RESOURCE AVKON_TOOLBAR r_content_view_toolbar
 		TBAR_CTRL
                        {
                        type = EAknCtButton;
-                       id = EWmlCmdCloseWindow;
+                       id = EWmlCmdUserExit;
                        
                        control = AVKON_BUTTON
                            {

@@ -615,7 +615,14 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
     else
         {
         // pointer outside of control
-        CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
+        if ( iFindKeywordMode )
+            {
+            CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdFindKeywordPaneClose);
+            }
+        else
+            {
+            CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
+            }
         }
     }
 

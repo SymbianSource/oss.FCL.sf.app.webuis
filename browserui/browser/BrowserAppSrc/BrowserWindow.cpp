@@ -236,9 +236,13 @@ PERFLOG_STOPWATCH_START
 		{
 		capabilityFlags = capabilityFlags | TBrCtlDefs::ECapabilityGraphicalPage;
 		}
-	if ( Preferences().UiLocalFeatureSupported( KBrowserGraphicalPage ) &&
-			Preferences().UiLocalFeatureSupported( KBrowserGraphicalHistory ))
-		{
+#ifdef  BRDO_MULTITOUCH_ENABLED_FF
+    if (Preferences().UiLocalFeatureSupported( KBrowserGraphicalHistory ))      
+#else
+    if ( Preferences().UiLocalFeatureSupported( KBrowserGraphicalPage ) &&
+                Preferences().UiLocalFeatureSupported( KBrowserGraphicalHistory ))
+#endif      
+        {
 		capabilityFlags = capabilityFlags | TBrCtlDefs::ECapabilityGraphicalHistory;
 		}
 	if ( Preferences().UiLocalFeatureSupported( KBrowserAutoFormFill ) )

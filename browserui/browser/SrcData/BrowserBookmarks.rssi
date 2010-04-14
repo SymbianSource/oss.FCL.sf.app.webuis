@@ -88,6 +88,24 @@ RESOURCE MENU_PANE  r_browser_bookmarks_menu_pane
             command = EWmlCmdNewFolder; 
             txt = qtn_options_org_new_folder; 
             },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdSendAddressViaUnifiedMessage; 
+            txt = qtn_options_send_via; 
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdSendBookmarkViaUnifiedMessage; 
+            txt = qtn_options_send_via; 
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdSetAsHomePage; 
+            txt = qtn_browserbm_list_set_as_home_page_sm; 
+            flags = EEikMenuItemSpecific;
+            },
 #endif
         MENU_ITEM
             {
@@ -114,6 +132,26 @@ RESOURCE MENU_PANE  r_browser_bookmarks_menu_pane
             command = EWmlCmdMarkUnmark;
             txt = qtn_browser_options_markunmark;
             },
+#else
+        MENU_ITEM 
+            { 
+            command = EWmlCmdDelete; 
+            txt = qtn_fldr_delete; 
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdMove; 
+            txt = qtn_options_org_move; 
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdMoveToFolder; 
+            txt = qtn_options_org_move_to_folder; 
+            flags = EEikMenuItemSpecific;
+            },
+        
 #endif            
         MENU_ITEM 
             { 
@@ -170,7 +208,9 @@ RESOURCE MENU_PANE r_bookmarks_edit_submenu
             {
             command = EWmlCmdRename;
             txt = qtn_fldr_rename;
-            },
+            }
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+            ,
         MENU_ITEM
             {
             command = EWmlCmdDelete;
@@ -185,9 +225,7 @@ RESOURCE MENU_PANE r_bookmarks_edit_submenu
             {
             command = EWmlCmdMoveToFolder;
             txt = qtn_options_org_move_to_folder;
-            }
-#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
-	,	    
+            },
         MENU_ITEM 
             { 
             command = EWmlCmdNewFolder; 
@@ -208,10 +246,10 @@ RESOURCE MENU_PANE r_bmactions_submenu
     {
     items =
         {
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF                
 		MENU_ITEM { command = EWmlCmdSendAddressViaUnifiedMessage; txt=qtn_options_send_via; },
 		MENU_ITEM { command = EWmlCmdSendBookmarkViaUnifiedMessage; txt =qtn_options_send_via; },
 		MENU_ITEM { command = EWmlCmdSetAsHomePage; txt=qtn_browserbm_list_set_as_home_page_sm; },
-#ifndef BRDO_SINGLE_CLICK_ENABLED_FF		
         MENU_ITEM { command = EWmlCmdAddBookmark; txt = text_wmlbm_option_enter_new; },
 #endif	
         MENU_ITEM { command = EWmlCmdCopyToBookmarks; txt = qtn_browserbm_options_copy_to_bookmarks_sm; },

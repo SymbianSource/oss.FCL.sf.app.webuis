@@ -468,6 +468,16 @@ class CFeedsFolderContainer : public CCoeControl, public MEikListBoxObserver,
         * @return ETrue if feed item is found
         */
         TBool SearchForFeedL(const CFeedsEntity* item);
+		
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+		/**
+        * To know Whether any feed item selected for move
+        *
+        * @since 7.2
+        * @return ETrue if feed item is selected for move
+        */
+        TBool isMoveActive(){ return iMoveActive;}
+#endif        
 
     private:
         /**

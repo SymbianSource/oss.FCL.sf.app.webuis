@@ -416,7 +416,7 @@ BROWSER_LOG( ( _L("aType: %d, aKeyEvent.iCode: %d, iScanCode: %d, iRepeats: %d")
 
     // If the Goto Pane exists and we're not fetching, decide
     // if we should pass key event to the goto pane
-    if ( iGotoPane && !CBrowserAppUi::Static()->Fetching() )
+    if ( iGotoPane && ( !CBrowserAppUi::Static()->Fetching() || iGotoPaneActive ) )
         {
         // If the key hadn't been consumed, so far, determine if the keystroke
         // should be handled by goto pane

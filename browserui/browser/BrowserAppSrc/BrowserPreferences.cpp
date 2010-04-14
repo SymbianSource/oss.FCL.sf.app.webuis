@@ -484,19 +484,13 @@ void CBrowserPreferences::RestoreSettingsL()
 
     //Read show connection queries setting
     iAllPreferences.iConnDialogs = GetIntValue( KBrowserConnectionDialogs );
-
-    if( !iAllPreferences.iHTTPSecuritySupressed )
-        {
-        // Read HTTP security warnings setting
-	    iAllPreferences.iHttpSecurityWarnings = GetIntValue (
-		                            KBrowserNGShowSecurityWarnings );
-        }
-    else
-        {
-        //we don't want to see sec warning because they're supressed
-        iAllPreferences.iHttpSecurityWarnings = EFalse;
-        }
-
+   
+    // Read HTTP security warnings setting
+    // value 0 :we don't want to see sec warning because they're supressed
+    // value 1 : want to see sec warning and warnings are enabled
+    iAllPreferences.iHttpSecurityWarnings = GetIntValue (
+    		                            KBrowserNGShowSecurityWarnings );
+    	    
     // Media Volume uses different SD ini. Revert to Browser SD ini after use
     iAllPreferences.iMediaVolume = GetIntValue( KBrowserMediaVolumeControl );
 
@@ -545,7 +539,12 @@ void CBrowserPreferences::RestoreSettingsL()
     TInt ap;
 
     // Read Accesss point selection mode for advanced settings
+#ifdef BRDO_OCC_ENABLED_FF
+    const TInt selectionMode = GetIntValue( KBrowserOccAccessPointSelectionMode ); //2 Destination
+    BROWSER_LOG( ( _L( " OCC Ap Selection mode : %d" ), selectionMode ) );
+#else
     const TInt selectionMode = GetIntValue( KBrowserAccessPointSelectionMode );
+#endif
 
     switch ( selectionMode )
         {
@@ -581,7 +580,36 @@ void CBrowserPreferences::RestoreSettingsL()
 		}
     else if (iAllPreferences.iAccessPointSelectionMode == EDestination)
 		{
+#ifdef BRDO_OCC_ENABLED_FF
+        iAllPreferences.iDefaultSnapId = GetIntValue( KBrowserOccNGDefaultSnapId );
+        if ( iAllPreferences.iDefaultSnapId == 0)
+            {
+            BROWSER_LOG( ( _L( " Cenrep OCC Default Snap id is : %d" ), iAllPreferences.iDefaultSnapId ) );
+            TUint32 snapId(0);
+            RCmManager manager;
+            manager.OpenLC();
+            RArray<TUint32> destIdArray;
+            CleanupClosePushL(destIdArray);
+            manager.AllDestinationsL( destIdArray );
+            const TInt count = destIdArray.Count();
+            for ( TInt i = 0; i < count && !snapId; i++ )
+                {
+                RCmDestination dests = manager.DestinationL( destIdArray[i] );
+                CleanupClosePushL( dests );
+                if ( CMManager::TSnapPurpose( dests.MetadataL( CMManager::ESnapMetadataPurpose ) ) 
+                        == CMManager::ESnapPurposeInternet )
+                    {
+                    BROWSER_LOG( ( _L( " Using Internet snap for connection" ) ) );
+                    snapId = destIdArray[i];
+                    SetDefaultSnapId(snapId);
+                    }
+                CleanupStack::PopAndDestroy( 1 ); //dests
+                }
+                CleanupStack::PopAndDestroy( 2 ); //  destIdArray, manager
+           }
+#else
    		iAllPreferences.iDefaultSnapId = GetIntValue( KBrowserNGDefaultSnapId );
+#endif
 		}
 
     // For Short Cut keys
@@ -963,13 +991,16 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
 //
  void CBrowserPreferences::SetDefaultSnapId (TUint aSnapId)
 		{
-
-		//storing the value of the default snap ID
-		iAllPreferences.iDefaultSnapId = aSnapId;
-
+        LOG_ENTERFN("CBrowserPreferences::SetDefaultSnapId");
+        //storing the value of the default snap ID
+        iAllPreferences.iDefaultSnapId = aSnapId;
+#ifdef BRDO_OCC_ENABLED_FF
+        SetIntValueL ( KBrowserOccNGDefaultSnapId, iAllPreferences.iDefaultSnapId );
+        BROWSER_LOG( ( _L( " Setting OCC Snap id : %d" ), iAllPreferences.iDefaultSnapId ) );
+#else
         SetIntValueL ( KBrowserNGDefaultSnapId,
                                         iAllPreferences.iDefaultSnapId );
-
+#endif
 		}
 
 
@@ -1901,31 +1932,37 @@ void CBrowserPreferences::SetAccessPointSelectionModeL(
 	if ( aAccessPointSelectionMode != iAllPreferences.iAccessPointSelectionMode )
 		{
 		iAllPreferences.iAccessPointSelectionMode = aAccessPointSelectionMode;
-
+        TUint32 cenrepKey;
+#ifdef BRDO_OCC_ENABLED_FF
+        BROWSER_LOG( ( _L( " Setting OCC parameter " )) );
+        cenrepKey= KBrowserOccAccessPointSelectionMode;
+#else
+        cenrepKey = KBrowserAccessPointSelectionMode;
+#endif
         switch ( aAccessPointSelectionMode )
-            {
-            case EAlwaysAsk:
-                {
-                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeAlwaysAsk );
-                break;
-                }
-            case EDestination:
-                {
-                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeDestination );
-                break;
-                }
-            case EConnectionMethod:
-                {
-                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeUserDefined );
-                break;
-                }
-            default:
-                {
-                SetIntValueL ( KBrowserAccessPointSelectionMode, EBrowserCenRepApSelModeAlwaysAsk );
-                break;
-                }
-            }
-		}
+           {
+           case EAlwaysAsk:
+               {
+               SetIntValueL ( cenrepKey, EBrowserCenRepApSelModeAlwaysAsk );
+               break;
+               }
+           case EDestination:
+               {
+               SetIntValueL ( cenrepKey, EBrowserCenRepApSelModeDestination );
+               break;
+               }
+           case EConnectionMethod:
+               {
+               SetIntValueL ( cenrepKey, EBrowserCenRepApSelModeUserDefined );
+               break;
+               }
+           default:
+               {
+               SetIntValueL ( cenrepKey, EBrowserCenRepApSelModeAlwaysAsk );
+               break;
+               }
+           }
+       }
     }
 
 // ----------------------------------------------------------------------------

@@ -1094,7 +1094,7 @@ class CBrowserAppUi : public CAknViewAppUi,
         MConnection* iConnection;
 
 		CBrowserDialogsProvider* iDialogsProvider;
-        CBrowserPopupEngine* iPopupEngine;
+        mutable CBrowserPopupEngine* iPopupEngine;
         CBrowserLauncherService* iBrowserLauncherService; // Not owned
         CActiveSchedulerWait iLauncherServiceWait;
 		TBool iClientWantsToContinue;

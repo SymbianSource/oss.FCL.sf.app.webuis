@@ -96,9 +96,8 @@ void CPushMessageInfoOp::RunL()
     // when iDialog->ExecuteLD() is running. It means that this object must 
     // be active in that time in order DoCancel() will be called.
     iStatus = KRequestPending;
-    SetActive();
     iDialog->ExecuteLD( iMsvSession, iEntryId );
-
+    SetActive();
     // Ready.
     if ( !deleted )
         {

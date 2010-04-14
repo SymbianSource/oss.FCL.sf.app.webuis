@@ -373,7 +373,7 @@ void CFeedsFolderView::DynInitMenuPaneL(TInt aResourceId, CEikMenuPane* aMenuPan
         if(iContainer->iCurrentFolder && ( iContainer->iCurrentFolder == iRootFolder) )
         iApiProvider.FeedsClientUtilities().AddItemL( *aMenuPane, EFeedsNewFolder, R_OPTIONS_ORG_NEW_FOLDER);
         iApiProvider.FeedsClientUtilities().AddItemL( *aMenuPane, EFeedsImport, R_OPTIONS_IMPORT_FEEDS);
-        if( item && iContainer->iCurrentFolder )
+        if( item && iContainer->iCurrentFolder && !iContainer->isMoveActive() )
             {
             if ( (item->GetType() == EFolder) )
                 {

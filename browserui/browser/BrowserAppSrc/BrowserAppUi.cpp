@@ -612,13 +612,7 @@ void CBrowserAppUi::InitBrowserL()
                     KMaxNumOfOpenedWindows );
                 }
             LOG_WRITE_FORMAT("WindowManager Up. Max windows number. %d",
-                KMaxNumOfOpenedWindows );
-
-            // bug fix for: EMBI-6NBAYM
-            // Be very careful of the location to initialize the iPopupEngine before
-            // PopupEngine is improved.
-            iPopupEngine = CBrowserPopupEngine::NewL();
-            BROWSER_LOG( ( _L( "PopupEngine up" ) ) );
+                KMaxNumOfOpenedWindows );            
             }
         else
             {
@@ -915,8 +909,14 @@ void CBrowserAppUi::HandleCommandL(TInt aCommand)
             {
             if(WindowMgr().WindowCount() > 1)
 	            {
+#ifdef BRDO_MULTITOUCH_ENABLED_FF
 	            // use switch window tab view if pageoverview bitmaps are available
-	            if (Preferences().UiLocalFeatureSupported( KBrowserGraphicalPage ))
+	            if (Preferences().UiLocalFeatureSupported( KBrowserGraphicalPage ) 
+	                    || Preferences().UiLocalFeatureSupported( KBrowserGraphicalHistory ))
+#else	                
+                // use switch window tab view if pageoverview bitmaps are available
+                if (Preferences().UiLocalFeatureSupported( KBrowserGraphicalPage ))
+#endif                    
 	            	{
 	            	SetViewToBeActivatedIfNeededL( KUidBrowserWindowSelectionViewId );
 	            	}
@@ -1794,6 +1794,14 @@ CBrowserDialogsProvider& CBrowserAppUi::DialogsProvider() const
 //
 CBrowserPopupEngine& CBrowserAppUi::PopupEngine() const
     {
+    if(!iPopupEngine)
+        { 
+            if ( Preferences().UiLocalFeatureSupported( KBrowserMultipleWindows ) )
+                {
+                    iPopupEngine = CBrowserPopupEngine::NewL();
+                    BROWSER_LOG( ( _L( "PopupEngine up" ) ) );
+                }
+        }
     return *iPopupEngine;
     }
 

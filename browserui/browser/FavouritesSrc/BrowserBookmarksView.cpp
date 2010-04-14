@@ -882,13 +882,7 @@ void CBrowserBookmarksView::SetLSKDynL(TSKPair& aLsk,
         // default for goto is go
         aLsk.setPair(EWmlCmdGotoPaneGoTo, R_BROWSER_BOOKMARKS_DYN_SK_QTN_WML_SOFTK_GO);
 
-        // special goto cases
-        if ( ApiProvider().Fetching() )
-            {
-            // No assignment. Set as default
-            aLsk.setPair(EBrowserBookmarksCmdSoftkeyEmpty, R_BROWSER_BOOKMARKS_DYN_SK_TEXT_SOFTKEY_EMPTY);
-            }
-        else if (aGotoPane->PopupList() &&
+         if (aGotoPane->PopupList() &&
                 aGotoPane->PopupList()->IsOpenDirToShow() )
             {
             aLsk.setPair(EBrowserBookmarksCmdOpen, R_BROWSER_BOOKMARKS_DYN_SK_TEXT_SOFTKEY_OPEN);
@@ -1125,21 +1119,6 @@ LOG_ENTERFN("BookmarksView::ConstructL");
 BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
     iCursorPos = -1;
 
-    // The following code gets all bookmarks and saves them back in the correct
-    // order in Favourites db. It was important to add this piece of code here
-    // in the constructor so that the first time when a bookmark is added
-    // through content view the correct index is used to insert the bookmark.
-    // TSW Error report id# MLEN-6Z8HMM
-
-    iSaveBMOrder = ETrue;
-
-    if ( Model().BeginL( /*aWrite=*/ETrue, /*aDbErrorNote*/ EFalse ) ==
-            KErrNone )
-        {
-        CFavouritesItemList* items = GetItemsLC( KFavouritesRootUid );
-        CleanupStack::PopAndDestroy();
-        Model().CommitL();
-        }
        
     //Since the webcore will be reading the bookmark information in background
     //thread, its important to refresh when the thread notifies the fresh data.
@@ -1249,6 +1228,70 @@ void CBrowserBookmarksView::DynInitMenuPaneL
         {
         case R_BROWSER_BOOKMARKS_MENU_PANE:
             {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF            
+            if(iItemsToMove )
+                {
+                aMenuPane->SetItemDimmed( EWmlCmdMove, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdDelete, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdSendAddressViaUnifiedMessage, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdSendBookmarkViaUnifiedMessage, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdSetAsHomePage, ETrue );
+                }
+            else
+                {
+                if ( ApiProvider().Preferences().UiLocalFeatureSupported( KBrowserUiHomePageSetting ) )
+                    {
+                    TBool dimSaveAsHomePage = EFalse;
+    
+                    if ( (item && (item->IsFolder() ||
+                          item->Uid() == KFavouritesAdaptiveItemsFolderUid ||
+                          item->ContextId())))
+                        {
+                        dimSaveAsHomePage = ETrue;
+                        }
+                    else
+                        {
+                        dimSaveAsHomePage = ApiProvider().IsEmbeddedModeOn() || !aState.CurrentIsItem()
+                         || ( aState.MarkedCount() > 1 );
+                        }
+    
+                    aMenuPane->SetItemDimmed( EWmlCmdSetAsHomePage, dimSaveAsHomePage );
+                    }
+                if (!item)
+                    {
+                    aMenuPane->SetItemDimmed( EWmlCmdSendBookmarkViaUnifiedMessage, ETrue );
+                    }
+                else if ( (item && (item->IsFolder() ||
+                     item->Uid() == KFavouritesAdaptiveItemsFolderUid ||
+                     item->ContextId())))
+                    {
+                    aMenuPane->SetItemDimmed( EWmlCmdSendBookmarkViaUnifiedMessage, ETrue );
+                    }
+                }
+            
+            aMenuPane->SetItemDimmed( EWmlCmdSendAddressViaUnifiedMessage, ETrue );
+    
+            if(iInAdaptiveBookmarksFolder)
+                {
+                aMenuPane->SetItemDimmed( EWmlCmdMove, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
+                }
+            if  ( ( item ) &&
+                              ( ( item->Uid() == KFavouritesAdaptiveItemsFolderUid ) ||
+                                ( item->ContextId() != NULL ) )
+                            )
+                {
+                // We can't delete adaptive bookmarks folder,
+                //   or seamless folders
+                aMenuPane->SetItemDimmed( EWmlCmdDelete, ETrue );
+                aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
+                }
+            if( item && item->IsFolder())
+                {
+                aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
+                }
+#endif                    
             // downloads
             aMenuPane->SetItemDimmed( EWmlCmdDownloads, !ApiProvider().BrCtlInterface().BrowserSettingL( TBrCtlDefs::ESettingsNumOfDownloads ) );
 
@@ -1324,6 +1367,7 @@ void CBrowserBookmarksView::DynInitMenuPaneL
             }
         case R_BMACTIONS_SUBMENU:
             {
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF            
             // send
             aMenuPane->SetItemDimmed( EWmlCmdSendAddressViaUnifiedMessage, ETrue );
 
@@ -1337,13 +1381,13 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdSendBookmarkViaUnifiedMessage, ETrue );
                 }
-
+#endif            
             // copy to bookmarks
             if ( !iInAdaptiveBookmarksFolder )
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdCopyToBookmarks, ETrue );
                 }
-
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF 
             // set as homepage
             if ( ApiProvider().Preferences().UiLocalFeatureSupported( KBrowserUiHomePageSetting ) )
                 {
@@ -1363,7 +1407,6 @@ void CBrowserBookmarksView::DynInitMenuPaneL
 
                 aMenuPane->SetItemDimmed( EWmlCmdSetAsHomePage, dimSaveAsHomePage );
                 }
-#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
             // add bookmark
             if ( iInAdaptiveBookmarksFolder )
                 {
@@ -1432,7 +1475,7 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 aMenuPane->SetItemDimmed( EWmlCmdRename, ETrue );
                 }
 
-
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF 
             // delete
             if (!item)
                 {
@@ -1457,7 +1500,6 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
                 }
-#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
             // create folder
             if ( iCurrentFolder != KFavouritesRootUid || iInAdaptiveBookmarksFolder )
                 {
@@ -2201,6 +2243,8 @@ void CBrowserBookmarksView::DimToolbarButtons(TBool aDimButtons)
     Toolbar()->SetItemDimmed( EWmlCmdGoToAddressAndSearch, aDimButtons , ETrue );
 #ifndef BRDO_SINGLE_CLICK_ENABLED_FF
     Toolbar()->SetItemDimmed( EWmlCmdDelete, aDimButtons , ETrue );
+#else
+    Toolbar()->SetItemDimmed( EWmlCmdPreferences, aDimButtons , ETrue );
 #endif
     if (!aDimButtons)
         {

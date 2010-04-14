@@ -36,7 +36,6 @@
 
 #include "Logger.h"
 
-
 // -----------------------------------------------------------------------------
 // CFeedsFeedView::NewL
 //
@@ -84,6 +83,8 @@ void CFeedsFeedView::ConstructL(TRect& aRect)
 
 	iContainer = CFeedsFeedContainer::NewL( this, ApiProvider() );
 	iContainer->SetRect( aRect );
+    iOrigRect.iTl = aRect.iTl;
+    iOrigRect.iBr = aRect.iBr;
     iContainer->MakeVisible(EFalse);
     
     if(iPenEnabled)
@@ -202,7 +203,7 @@ void CFeedsFeedView::DoActivateL(const TVwsViewId& /*aPrevViewId*/,
         //Make button group invisible in order to let container have correct Rect.
         //Patch is based on comments received from AVKON
         if(pButtonGroupContainer) pButtonGroupContainer->MakeVisible(EFalse);
-        iContainer->SetRect(ClientRect());
+        iContainer->SetRect(iOrigRect);
         if(iContainer->iBrowserControl->BrowserSettingL(TBrCtlDefs::ESettingsPageOverview))
             {
             TRAP_IGNORE(iContainer->iBrowserControl->SetBrowserSettingL(TBrCtlDefs::ESettingsPageOverview, EFalse));

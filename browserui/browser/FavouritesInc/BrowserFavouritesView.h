@@ -110,6 +110,7 @@ class CBrowserFavouritesView:public CBrowserViewBase,
         */
         void ConfigContextMenu();
 
+        static TInt RefeshFavoriteListBox( TAny* aFavouritesView );
 
 	public:		// public methods from CAknView (CBrowserViewBase)
 
@@ -462,7 +463,6 @@ class CBrowserFavouritesView:public CBrowserViewBase,
         */
         void RenameAndMoveItemsL
             ( const CArrayFix<TInt>& aUids, TInt aFolder );
-
     protected:    // new methods
 
         /**
@@ -555,7 +555,8 @@ class CBrowserFavouritesView:public CBrowserViewBase,
         CBrowserFavouritesIncrementalOp* iIncrementalOp;
         /// ETrue if data update is missed due to incremental operation.
         TBool iUpdatePending;
-
+        /// Asynchronously update the favourite item's List Box
+        CIdle* iFavViewRefresh;
     protected:
 
         TBool iRefresh; // Flag to indicate that Bookmarks list should be refreshed.

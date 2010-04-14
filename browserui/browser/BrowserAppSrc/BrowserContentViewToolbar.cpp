@@ -181,7 +181,13 @@ void CBrowserContentViewToolbar::UpdateButtonsStateL()
     	    iBrowserContentView->ApiProvider().WindowMgr().WindowCount() < 2);
               
     iBrowserContentView->Toolbar()->ToolbarExtension()->SetItemDimmed( EWmlCmdFindKeyword, wmlMode );
+//Disable page overview for TB9.2 
+//TODO: Removed this code when Downloads icon is available for extended toolbar    
+#ifdef BRDO_MULTITOUCH_ENABLED_FF
+    iBrowserContentView->Toolbar()->ToolbarExtension()->SetItemDimmed( EWmlCmdShowMiniature, true );
+#else
     iBrowserContentView->Toolbar()->ToolbarExtension()->SetItemDimmed( EWmlCmdShowMiniature, wmlMode );
+#endif    
     iBrowserContentView->Toolbar()->ToolbarExtension()->SetItemDimmed( EWmlCmdShowSubscribeList, 
         (!subscribeToItems || wmlMode) );
     iBrowserContentView->Toolbar()->ToolbarExtension()->SetItemDimmed( EWmlCmdSwitchWindow, noMultiWin );

@@ -2043,7 +2043,11 @@ void CFeedsFolderContainer::UpdateCbaL()
 
     if (iMoveActive)
         {
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
         commandSet = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+#else        
+        commandSet = R_AVKON_SOFTKEYS_CANCEL;
+#endif        
         }
 
     iView->UpdateCbaL(commandSet);
@@ -2182,7 +2186,9 @@ void CFeedsFolderContainer::DynInitMarkUnmarkMenuPane( CEikMenuPane *aMenuPane )
 //
 void CFeedsFolderContainer::DimToolbar(TBool aDim)
 {
-    iView->Toolbar()->SetDimmed(aDim);
+    iView->Toolbar()->SetItemDimmed(EFeedsNewFeed, aDim, ETrue);
+    iView->Toolbar()->SetItemDimmed(EFeedsUpdateAll, aDim, ETrue);
+    iView->Toolbar()->SetItemDimmed(EWmlCmdPreferences, aDim, ETrue);
     iView->Toolbar()->DrawNow();
 }
 
@@ -2273,4 +2279,5 @@ void CFeedsFolderContainer::UpdateNavigationPaneL()
     // it to top and draws.
     naviPane->PushL(*iNaviDecorator);
     }
+
 

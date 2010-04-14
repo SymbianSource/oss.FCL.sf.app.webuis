@@ -161,7 +161,6 @@ CBrowserContentView::~CBrowserContentView()
     delete iNaviDecorator;
     delete iBookmarksModel;
     delete iContainer;
-    delete iEnteredURL;
     delete iEnteredKeyword;
     delete iTextZoomLevelArray;
     delete iFontSizeArray;
@@ -197,7 +196,6 @@ void CBrowserContentView::ConstructL( TRect& aRect )
     iContainer->FindKeywordPane()->SetGPObserver(this);
     iEnteredKeyword = NULL;
 
-    iEnteredURL = NULL;
     // get the StatusPane pointer
     if ( !iNaviPane )
         {
@@ -1683,10 +1681,8 @@ void CBrowserContentView::GotoUrlInGotoPaneL()
     {
     if ( iContainer->GotoPane() )
         {
-        delete iEnteredURL;
-        iEnteredURL = NULL;
-        iEnteredURL = iContainer->GotoPane()->GetTextL(); // the url
-        if( iEnteredURL )
+        HBufC* url  = iContainer->GotoPane()->GetTextL(); // the url
+        if( url )
             {
             iContainer->ShutDownGotoURLEditorL();
 
@@ -1706,7 +1702,7 @@ void CBrowserContentView::GotoUrlInGotoPaneL()
             UpdateCbaL();
             UpdateFullScreenL();
 
-            ApiProvider().FetchL(   iEnteredURL->Des(),
+            ApiProvider().FetchL(   url->Des(),
                                     KNullDesC,
                                     KNullDesC,
                                     accessPoint,
@@ -1762,14 +1758,17 @@ void CBrowserContentView::LaunchGotoAddressEditorL()
     CCoeEnv::Static()->AppUi()->RemoveFromStack( iContainer->GotoPane() );
     CCoeEnv::Static()->AppUi()->AddToStackL( iContainer->GotoPane(), ECoeStackPriorityMenu );
     iContainer->GotoPane()->MakeVisible( ETrue );
-    if ( iEnteredURL && iEnteredURL->Length() )
+    HBufC* url = ApiProvider().BrCtlInterface().PageInfoLC(
+            TBrCtlDefs::EPageInfoUrl );
+    if ( url && url->Length() )
        {
-            iContainer->GotoPane()->SetTextL(*iEnteredURL);
+            iContainer->GotoPane()->SetTextL(*url);
             iContainer->GotoPane()->SelectAllL();
+            CleanupStack::PopAndDestroy(); // url
        }
     else
         {
-            // nor iEnteredURL; use default name.
+            // nor url; use default name.
             // set "http://www." per Browser UI spec
             iContainer->GotoPane()->SetTextL(KWWWString  );
         }

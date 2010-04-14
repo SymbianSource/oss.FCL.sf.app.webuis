@@ -339,6 +339,10 @@ void CFeedsEditFeedDialog::LineChangedL( TInt aControlId )
         {
         // make the 'Change' button invisible
         cba.MakeCommandVisible(EAknSoftkeyChange, EFalse);
+        CEikEdwin* edwin = NULL;
+        edwin = static_cast<CEikEdwin*>(ControlOrNull(EFeedsEditDialogUrlId));
+        if(edwin)
+        edwin->SetAknEditorFlags(EAknEditorFlagNoT9);
         }
     else if(aControlId == EFeedsEditAutomaticUpdatingId) 
         {

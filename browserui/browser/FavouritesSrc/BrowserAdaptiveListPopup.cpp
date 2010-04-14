@@ -42,6 +42,8 @@
 #include "CommonConstants.h"
 #include "BrowserAppViewBase.h"
 #include <data_caging_path_literals.hrh>
+#include <Uri8.h>
+#include <utf.h>
 
 #include "eikon.hrh"
 
@@ -54,6 +56,8 @@ const TInt KArrayGranularity = 10;
 _LIT( KProtocolIdentifier,"://" );
 const TUint KSlash('/');
 const TUint KPeriod('.');
+const TInt KListHeight = 45;
+const TInt KFontHeight = 150;
 
 static void TextPos(TPoint *aResultArray, const TAknTextLineLayout
 &aLayout, TSize aItemSize)
@@ -472,6 +476,62 @@ void CBrowserAdaptiveListPopup::ShowPopupListL(TBool aRelayout)
         iUrlCompletionMode = EFalse;
         //only include recent URLs if not including the url completion items
         iRecentUrlStore->GetData( *iItems, *iItemNames, trimmedContent );
+        
+        //sort alphabetically and...
+        for(TInt i=0; i<iItems->Count(); i++)
+            {
+            for(TInt j=0; j<iItems->Count()-1; j++)
+                {
+                    if ((*iItems)[j].CompareF((*iItems)[j+1]) > 0)
+                    {  
+                       RBuf tmp;
+                       CleanupClosePushL(tmp);
+                       tmp.Create((*iItems)[j]);
+                       iItems->Delete(j);
+                       iItems->InsertL( j+1, tmp );
+                       tmp.Close();
+                       tmp.Create((*iItemNames)[j]);
+                       iItemNames->Delete(j);
+                       iItemNames->InsertL( j+1, tmp );
+                       CleanupStack::PopAndDestroy( &tmp );                   
+                    }          
+                }
+            }  
+        //and move url with params i.e google.fi/m=q?xyz do the back of list
+        TInt i = 0;                 //iterator
+        TInt j = 0;                 //counter
+        while (i < (iItems->Count()-1) && j < iItems->Count())
+            {
+                TUriParser8 parser;
+                RBuf8 out;
+                CleanupClosePushL( out );
+                out.Create( (*iItems)[i].Length() );
+                RBuf in;
+                CleanupClosePushL( in );              
+                in.Create( (*iItems)[i] );
+                
+                CnvUtfConverter::ConvertFromUnicodeToUtf8(out, in );
+                
+                if (( parser.Parse( out ) == KErrNone ) &&       //if parse ok and 
+                    ( parser.Extract( EUriPath ).Length() > 0 || //url contains path
+                      parser.Extract( EUriQuery ).Length() > 0 )) //or query item
+                    {
+                    iItems->AppendL( (*iItems)[i] );//move item to back of the list
+                    iItems->Delete( i );
+                    iItemNames->AppendL( (*iItemNames)[i] );
+                    iItemNames->Delete( i );
+                    }
+                else
+                    {
+                    i++;
+                    }
+                j++;
+                
+                CleanupStack::PopAndDestroy( &in );
+                CleanupStack::PopAndDestroy( &out );
+            };   
+            
+
         }
     iDirectoryMode = EFalse;
     CleanupStack::PopAndDestroy();//newText
@@ -546,8 +606,13 @@ void CBrowserAdaptiveListPopup::ShowPopupListL(TBool aRelayout)
         // force listbox on top of goto pane
         rectTemp.iBr.iY = iParent->PositionRelativeToScreen().iY;
         rectTemp.iTl.iX = iParent->PositionRelativeToScreen().iX;
-        // shrink list box to size of list
-        rectTemp.iTl.iY =  rectTemp.iBr.iY - (AppLayout::list_single_graphic_popup_wml_pane( 0 ).iH * itemstoshow);
+        // shrink list box to size of list  
+#ifdef BRDO_TOUCH_ENABLED_FF
+        TInt listH = KListHeight;
+#else
+        TInt listH = AppLayout::list_single_graphic_popup_wml_pane( 0 ).iH;
+#endif
+        rectTemp.iTl.iY =  rectTemp.iBr.iY - (listH * itemstoshow);
         // set bottom right x axis to full width
         rectTemp.iBr.iX = rect.iBr.iX;
         
@@ -572,6 +637,24 @@ void CBrowserAdaptiveListPopup::ShowPopupListL(TBool aRelayout)
             }
         //the last item is visible
         iList->ScrollToMakeItemVisible( iList->Model()->NumberOfItems()-1 );
+#ifdef BRDO_TOUCH_ENABLED_FF
+        const CFont* pFont = AknLayoutUtils::FontFromId(EAknLogicalFontPrimaryFont);
+        TFontSpec fontSpec = pFont->FontSpecInTwips();
+        fontSpec.iHeight =KFontHeight; 
+        
+        CFont* fontNew;
+        CEikonEnv::Static()->ScreenDevice()->GetNearestFontInTwips( ( CFont*&)fontNew, fontSpec );
+        CFormattedCellListBoxData *pLBData = iList->ItemDrawer()->ColumnData();
+        iList->SetItemHeightL(KListHeight);
+        
+        if(pLBData && pFont)
+        {
+            pLBData->SetSubCellFontL(1,fontNew);
+        }        
+        
+        CEikonEnv::Static()->ScreenDevice()->ReleaseFont(fontNew);
+#endif        
+        
         MakeVisible( ETrue );
         iPoppedUp = ETrue;
         DrawNow();

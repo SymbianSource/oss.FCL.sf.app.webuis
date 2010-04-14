@@ -187,6 +187,7 @@ class CFeedsFeedView: public CBrowserViewBase,
         TInt             iInitialItem;
         TBool            iPageScalerEnabled;
         TBool            iPenEnabled;
+        TRect            iOrigRect;
     };
 
 #endif      // FEED_VIEW_H

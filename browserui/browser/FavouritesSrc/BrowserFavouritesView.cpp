@@ -111,6 +111,7 @@ LOCAL_C CArrayFix<TInt>* NewUidListLC()
 //
 CBrowserFavouritesView::~CBrowserFavouritesView()
     {
+    delete iFavViewRefresh;
     delete iIncrementalOp;
     delete iContainer;
     delete iModel;
@@ -241,7 +242,8 @@ CBrowserFavouritesView::CBrowserFavouritesView( MApiProvider& aApiProvider,
           iIsActivated( EFalse ),
           iLastSelection( 0 ),
           iUpdatePending( EFalse ),
-          iRefresh( ETrue )
+          iRefresh( ETrue ),
+          iFavViewRefresh(0)
     {
     }
 
@@ -506,6 +508,22 @@ void CBrowserFavouritesView::DoActivateL(
         iContainer->Listbox()->SetStateL(*iSavedListboxState);
         }
     iIsActivated = ETrue;
+    
+    PERFLOG_STOPWATCH_START;
+    if(!iFavViewRefresh)
+         iFavViewRefresh  = CIdle::NewL( CActive::EPriorityIdle );
+    iFavViewRefresh ->Start( TCallBack( RefeshFavoriteListBox, this ) );
+    PERFLOG_STOP_WRITE("\t Favourite view NewL");
+    }
+
+
+TInt CBrowserFavouritesView::RefeshFavoriteListBox(TAny* aFavouritesView)
+    {
+   __ASSERT_DEBUG(aFavouritesView, Util::Panic( Util::EUninitializedData ));
+   TRAP_IGNORE(
+                ((CBrowserFavouritesView*)aFavouritesView)->RefreshL();
+                );
+    return KErrNone;
     }
 
 // ----------------------------------------------------------------------------
@@ -529,6 +547,12 @@ void CBrowserFavouritesView::DoDeactivate()
     {
     iIsActivated = EFalse;
     TRAP_IGNORE(ApiProvider().StopProgressAnimationL());
+    
+    if(iFavViewRefresh)
+        {
+        iFavViewRefresh->Cancel();
+        }
+    
     if ( iContainer )
         {
         iLastSelection = iContainer->Listbox()->CurrentItemIndex();
@@ -1107,6 +1131,7 @@ void CBrowserFavouritesView::OpenFolderL( TInt aFolder )
 
         iCurrentFolder = aFolder;
         FillListboxL( aFolder, /*aKeepState=*/EFalse );
+                
         Container()->Listbox()->ClearSelection();
         UpdateCbaL();
         UpdateNaviPaneL();
@@ -1278,7 +1303,6 @@ void CBrowserFavouritesView::FillListboxL( TInt aFolder, TBool aKeepState )
     iContainer->HandleCursorChangedL( listbox );
     listbox->View()->SetDisableRedraw( redrawDisabled );
     listbox->DrawNow();
-
     UpdateCbaL();
     UpdateNaviPaneL();
     }

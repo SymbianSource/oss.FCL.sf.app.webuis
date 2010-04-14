@@ -643,9 +643,6 @@ class CBrowserContentView : public CBrowserViewBase,
         CBrowserContentViewContainer* iContainer;
 
 
-        // Goto Pane's entered URL
-        HBufC* iEnteredURL;
-
         // Find keyword pane's keyword
         HBufC* iEnteredKeyword;
 
