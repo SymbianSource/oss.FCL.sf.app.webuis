@@ -1345,9 +1345,7 @@ void CBrowserAppUi::HandleForegroundEventL( TBool aForeground )
     CAknViewAppUi::HandleForegroundEventL( aForeground );
             
     if( iIsForeground )
-        {	               
-        // We need to refresh the softkeys
-        UpdateCbaL();
+        {
         if ( Preferences().FullScreen() == EWmlSettingsFullScreenFullScreen )
             {
             ContentView()->UpdateFullScreenL();

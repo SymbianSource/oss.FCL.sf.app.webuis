@@ -102,6 +102,12 @@ CBrowserContentViewContainer::~CBrowserContentViewContainer()
 void CBrowserContentViewContainer::ConstructL()
     {
     CreateWindowL();
+
+#if defined(BRDO_MULTITOUCH_ENABLED_FF) && !defined (__WINSCW__)       
+    //Enable advance pointer info for multi-touch.
+    Window().EnableAdvancedPointers();
+#endif  
+    
     SetAllowStrayPointers();
     SetMopParent( iView );
 
@@ -317,6 +323,11 @@ TKeyResponse CBrowserContentViewContainer::OfferKeyEventL(const TKeyEvent& aKeyE
     // Ignore key event in zoom mode
     if ( result == EKeyWasNotConsumed && !iView->isZoomMode())
         {
+        if ( !iView->PenEnabled() && iView->FullScreenMode() && keyEvent.iRepeats) 
+            {
+                iView->setFullScreenFlag();
+                iView->EnableFullScreenModeL( EFalse );
+            }
         TRAP_IGNORE(result = iApiProvider.BrCtlInterface().OfferKeyEventL(keyEvent, aType));
         }
 

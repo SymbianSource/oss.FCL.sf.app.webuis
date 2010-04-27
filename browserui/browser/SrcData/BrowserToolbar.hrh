@@ -373,4 +373,14 @@ RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_exit
     //skin KAknsIIDQgnIndiBrowserTbGotoAndSearch
     }
 #endif    
+#ifdef BRDO_MULTITOUCH_ENABLED_FF
+
+RESOURCE AVKON_BUTTON_STATE_EXTENSION r_browser_ext_qgn_indi_browser_tb_downloads
+    {
+    bmbSkinIdMajor = EAknsMajorGeneric;
+    bmbSkinIdMinor = EAknsMinorGenericQgnIndiBrowserTbDownloads;
+    //skin KAknsIIDQgnIndiBrowserTbDownloads
+    }
+    
+#endif 
 #endif // BROWSERTOOLBAR_HRH

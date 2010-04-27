@@ -115,8 +115,9 @@ void CBrowserContentViewToolbar::UpdateButtonsStateL()
     TBool wmlMode = iBrowserContentView->ApiProvider().WindowMgr().CurrentWindow()->WMLMode();
     TBool DimHomePage = iBrowserContentView->ApiProvider().IsLaunchHomePageDimmedL();
     TBool searchMode = iBrowserContentView->ApiProvider().Preferences().SearchFeature();
-
-    
+    TBool embeddedMode = iBrowserContentView->ApiProvider().IsEmbeddedModeOn();
+    TBool embeddedOperatorMenu = CBrowserAppUi::Static()->IsEmbeddedInOperatorMenu();
+    iBrowserContentView->Toolbar()->SetItemDimmed(EWmlCmdFavourites, (embeddedMode || embeddedOperatorMenu), ETrue);
     // Extended Toolbar
     iBrowserContentView->Toolbar()->SetItemDimmed( EWmlCmdToolbarExtensionContentView, 
             (pageOverview), ETrue );
@@ -181,10 +182,11 @@ void CBrowserContentViewToolbar::UpdateButtonsStateL()
     	    iBrowserContentView->ApiProvider().WindowMgr().WindowCount() < 2);
               
     iBrowserContentView->Toolbar()->ToolbarExtension()->SetItemDimmed( EWmlCmdFindKeyword, wmlMode );
+
 //Disable page overview for TB9.2 
-//TODO: Removed this code when Downloads icon is available for extended toolbar    
 #ifdef BRDO_MULTITOUCH_ENABLED_FF
-    iBrowserContentView->Toolbar()->ToolbarExtension()->SetItemDimmed( EWmlCmdShowMiniature, true );
+    TBool dimDownloads = iBrowserContentView->ApiProvider().BrCtlInterface().BrowserSettingL(TBrCtlDefs::ESettingsNumOfDownloads) ? EFalse : ETrue;
+    iBrowserContentView->Toolbar()->ToolbarExtension()->SetItemDimmed( EWmlCmdDownloads, dimDownloads );
 #else
     iBrowserContentView->Toolbar()->ToolbarExtension()->SetItemDimmed( EWmlCmdShowMiniature, wmlMode );
 #endif    

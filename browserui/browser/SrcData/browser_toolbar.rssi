@@ -177,6 +177,7 @@ RESOURCE AVKON_TOOLBAR r_content_view_toolbar
                                 };
                             };
                         },
+#ifndef BRDO_MULTITOUCH_ENABLED_FF	                        
                     TBAR_CTRL
                         {
                         type = EAknCtButton;
@@ -199,6 +200,30 @@ RESOURCE AVKON_TOOLBAR r_content_view_toolbar
                                 };
                             };
                         },
+#else
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdDownloads;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_list_downloads;  
+                                    helptxt = qtn_browser_list_downloads;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_downloads;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_downloads_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_downloads;
+                                    }
+                                };
+                            };
+                        },
+#endif                        
                     TBAR_CTRL
                         {
                         type = EAknCtButton;

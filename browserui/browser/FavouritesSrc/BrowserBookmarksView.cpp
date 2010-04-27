@@ -1118,26 +1118,32 @@ LOG_ENTERFN("BookmarksView::ConstructL");
     iEnteredURL = NULL;
 BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
     iCursorPos = -1;
-
-       
+ 
     //Since the webcore will be reading the bookmark information in background
     //thread, its important to refresh when the thread notifies the fresh data.
     //Call to GetItemsLC above, which inturn calls ManualBMSortL will set iRefresh to false
     //Make it true so that latest FavIcon db info is shown     
     iRefresh = ETrue;
 
+    Toolbar()->HideItem( EWmlCmdAddBookmark, ETrue , EFalse);
+    
+    //disable both the goto items and activate one of them depending on availability of search feature during bookmarks activation 
+    Toolbar()->HideItem( EWmlCmdGoToAddress, ETrue , EFalse);
+    Toolbar()->HideItem( EWmlCmdGoToAddressAndSearch, ETrue , EFalse ); 
+
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+    Toolbar()->HideItem( EWmlCmdDelete, ETrue , EFalse);
+#else
+    Toolbar()->HideItem( EWmlCmdPreferences, ETrue , EFalse);
+#endif
+    
+    Cba()->MakeVisible( EFalse);
+    StatusPane()->MakeVisible( EFalse );
+    
     if (iPenEnabled)
         {
         Toolbar()->SetToolbarObserver(this);
-        }
-    if ( ApiProvider().Preferences().SearchFeature() )
-        {
-        Toolbar()->HideItem( EWmlCmdGoToAddress, ETrue, ETrue );
-        }
-    else
-        {
-        Toolbar()->HideItem( EWmlCmdGoToAddressAndSearch, ETrue, EFalse );
-        }
+        }      
     }
 
 // ----------------------------------------------------------------------------
@@ -2117,6 +2123,25 @@ PERFLOG_STOPWATCH_START
     LOG_ENTERFN("CBrowserBookmarksView::DoActivateL");
     LOG_WRITE_FORMAT(" aCustomMessageId: %d", aCustomMessageId);
 
+    Toolbar()->HideItem( EWmlCmdAddBookmark, EFalse , ETrue);
+
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+    Toolbar()->HideItem( EWmlCmdDelete, EFalse , ETrue);
+#else
+    Toolbar()->HideItem( EWmlCmdPreferences, EFalse , ETrue);
+#endif    
+    
+    if ( ApiProvider().Preferences().SearchFeature() )
+        {
+        Toolbar()->HideItem( EWmlCmdGoToAddressAndSearch, EFalse, ETrue);
+        }
+    else
+        {
+        Toolbar()->HideItem( EWmlCmdGoToAddress, EFalse, ETrue);
+        }
+    
+    Cba()->MakeVisible( ETrue);
+    
     StatusPane()->SwitchLayoutL( R_AVKON_STATUS_PANE_LAYOUT_USUAL );
     StatusPane()->MakeVisible( ETrue );
     ApiProvider().Display().ClearMessageInfo();

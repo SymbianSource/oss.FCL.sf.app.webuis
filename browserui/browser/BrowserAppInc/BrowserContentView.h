@@ -633,7 +633,9 @@ class CBrowserContentView : public CBrowserViewBase,
         * @return void
         */
         void ShowFsStatusPane(TBool aShow);
-
+        
+        void setFullScreenFlag(){ iWasContentFullScreenMode = iContentFullScreenMode; }
+        
     private:
 
         CAknNavigationControlContainer* iNaviPane;
