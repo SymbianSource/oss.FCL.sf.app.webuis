@@ -253,6 +253,9 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
         EnableFullScreenModeL( EFalse );
         }
 
+    // resume js timers 
+    ApiProvider().BrCtlInterface().HandleCommandL((TInt)TBrCtlDefs::ECommandIdBase + (TInt)TBrCtlDefs::ECommandResumeScriptTimers );
+    
 #ifdef RD_SCALABLE_UI_V2
     // Close the extended toolbar whenever any item on it is selected
     if ( iPenEnabled && Toolbar()->ToolbarExtension()->IsShown() )
@@ -348,6 +351,9 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
 #endif  
 			iContainer->GotoPane()->SetGotoPaneActiveL();
             LaunchGotoAddressEditorL();
+            
+            // pause js timer to allow quicke vkb response
+            ApiProvider().BrCtlInterface().HandleCommandL((TInt)TBrCtlDefs::ECommandIdBase + (TInt)TBrCtlDefs::ECommandPauseScriptTimers );
             break;
             }
 
@@ -1069,10 +1075,33 @@ void CBrowserContentView::UpdateFullScreenL()
             StatusPane()->ApplyCurrentSettingsL();
             if ( resIdChanged || sizeChangedCba || sizeChangedSP  )
                 {
-                iContainer->SetRect( ClientRect() );
+                
+                SetContentContainerRect();
                 }
             }
         }
+    }
+
+TRect CBrowserContentView::ResizeClientRect()
+    {
+    TRect clientRect = ClientRect();
+        
+    if (Layout_Meta_Data::IsLandscapeOrientation() &&
+         StatusPane()->IsVisible() && !Cba()->IsVisible())
+        {
+        TRect screenRect;
+        AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EScreen, screenRect);
+        clientRect.iBr.iY = screenRect.iBr.iY;
+    
+        }
+    
+    return clientRect;
+    }
+
+void CBrowserContentView::SetContentContainerRect()
+    {
+    TRect clientRect = ResizeClientRect();
+    iContainer->SetRect(clientRect);
     }
 
 // -----------------------------------------------------------------------------
@@ -1275,6 +1304,9 @@ void CBrowserContentView::DynInitMenuPaneL( TInt aResourceId,
     LOG_ENTERFN("CBrowserContentView::DynInitMenuPaneL");
     __ASSERT_DEBUG(aMenuPane, Util::Panic(Util::EUninitializedData));
 
+    // pasue js timers
+    ApiProvider().BrCtlInterface().HandleCommandL((TInt)TBrCtlDefs::ECommandIdBase + (TInt)TBrCtlDefs::ECommandPauseScriptTimers );
+    
     if ( aResourceId == R_MENU_PANE )
         {
         // web feeds
@@ -1764,7 +1796,6 @@ void CBrowserContentView::LaunchGotoAddressEditorL()
        {
             iContainer->GotoPane()->SetTextL(*url);
             iContainer->GotoPane()->SelectAllL();
-            CleanupStack::PopAndDestroy(); // url
        }
     else
         {
@@ -1772,6 +1803,7 @@ void CBrowserContentView::LaunchGotoAddressEditorL()
             // set "http://www." per Browser UI spec
             iContainer->GotoPane()->SetTextL(KWWWString  );
         }
+    CleanupStack::PopAndDestroy(); // url
     iContainer->GotoPane()->SetFocus( ETrue );
     UpdateCbaL();
 
@@ -2211,7 +2243,7 @@ TBool CBrowserContentView::FindItemIsInProgress()
 //
 void CBrowserContentView::HandleStatusPaneSizeChange()
     {
-    iContainer->SetRect(ClientRect());
+    SetContentContainerRect();
     }
 
 // ---------------------------------------------------------------------------
@@ -2402,6 +2434,10 @@ void CBrowserContentView::HandleCommandL(
     const CArrayFix<TPtrC>& /*aAttributesNames*/,
     const CArrayFix<TPtrC>& aAttributeValues)
     {
+    
+    // resume js timers
+    ApiProvider().BrCtlInterface().HandleCommandL((TInt)TBrCtlDefs::ECommandIdBase + (TInt)TBrCtlDefs::ECommandResumeScriptTimers );
+    
     switch(aCommand)
         {
         case TBrCtlDefs::EClientCommandLaunchFindKeyword:
@@ -3168,14 +3204,21 @@ void CBrowserContentView::HandlePluginFullScreen(TBool aFullScreen)
     UpdateFullScreenL();
   }
   else {
+        TInt command( KErrNotFound );
+        command = TBrCtlDefs::ECommandLeaveFullscreenBrowsing;
+        ApiProvider().BrCtlInterface().HandleCommandL(
+            command + (TInt)TBrCtlDefs::ECommandIdBase );
     TRAP_IGNORE(AppUi()->SetOrientationL(iOrientation));
     if (iPenEnabled) {
       Toolbar()->SetToolbarVisibility( ETrue, EFalse );
     }
     iContentFullScreenMode = EFalse;
     SetFullScreenOffL();
+        if (iPenEnabled)
+           {
+           StartAutoFullScreenIdleTimer();
   }
-
+        }
 }
 
 // -----------------------------------------------------------------------------
@@ -3192,7 +3235,9 @@ void CBrowserContentView::ShowFsStatusPane(TBool aShow)
            StatusPane()->SwitchLayoutL(R_AVKON_WIDESCREEN_PANE_LAYOUT_USUAL_FLAT_NO_SOFTKEYS);
 #endif
         StatusPane()->MakeVisible( ETrue );
-        iContainer->SetRect(ClientRect());
+        
+        SetContentContainerRect();
+        
         // Remove any timer that has already been set
         if ( iPeriodic )
             {
@@ -3231,7 +3276,8 @@ void CBrowserContentView::HideFsStatusPane()
     if (iContentFullScreenMode && ApiProvider().LastActiveViewId() == KUidBrowserContentViewId )
         {
         StatusPane()->MakeVisible( EFalse );
-        iContainer->SetRect(ClientRect());
+        
+        SetContentContainerRect();
         }
     }
 // -----------------------------------------------------------------------------

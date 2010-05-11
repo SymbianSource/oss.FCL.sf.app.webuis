@@ -361,6 +361,10 @@ class CBrowserContentView : public CBrowserViewBase,
 	     *          focus.
 	     */
         void SetEmphasis(CCoeControl* aMenuControl,TBool aEmphasis);
+        
+        TRect ResizeClientRect();
+        void SetContentContainerRect();
+        
     private:
 
         /**

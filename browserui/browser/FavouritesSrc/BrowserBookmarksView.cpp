@@ -1285,8 +1285,9 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 }
             if  ( ( item ) &&
                               ( ( item->Uid() == KFavouritesAdaptiveItemsFolderUid ) ||
-                                ( item->ContextId() != NULL ) )
-                            )
+                                ( item->ContextId() != NULL ) || 
+                                (item->IsReadOnly()) )  //If the bookmarks are the default provided by operator
+                )
                 {
                 // We can't delete adaptive bookmarks folder,
                 //   or seamless folders
@@ -1297,6 +1298,7 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
                 }
+
 #endif                    
             // downloads
             aMenuPane->SetItemDimmed( EWmlCmdDownloads, !ApiProvider().BrCtlInterface().BrowserSettingL( TBrCtlDefs::ESettingsNumOfDownloads ) );
@@ -1456,9 +1458,13 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdEditBookmark, ETrue );
                 }
-            else if ( (item && (item->IsFolder() ||
+            else if (( (item && (item->IsFolder() ||
                  item->Uid() == KFavouritesAdaptiveItemsFolderUid ||
                  item->ContextId() || aState.CurrentIsSpecial() || iInAdaptiveBookmarksFolder)))
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF                 
+                 ||(item->IsReadOnly())//If the bookmarks are readonly(set by the operator)
+#endif              
+                 )
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdEditBookmark, ETrue );
                 }
@@ -2239,6 +2245,10 @@ LOG_ENTERFN("BookmarksView::GotoUrlInGotoPaneL");
             container->GotoPane()->CancelEditingL();
 
             ApiProvider().FetchL( iEnteredURL->Des(), CBrowserLoadObserver::ELoadUrlTypeOther );
+            if ( !ApiProvider().Fetching() )
+              {
+                  container->SetGotoInactiveL();
+              }
             }
         }
     }

@@ -582,6 +582,9 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
                 if ( iSearchPaneActive )
                     {
                     iSearchEditor->HandlePointerEventL(aPointerEvent);
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+                    ActivateVKB();
+#endif
                     }
                 else
                     {
@@ -596,6 +599,9 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
                 if ( iGotoPaneActive )
                     {
                     iEditor->HandlePointerEventL(aPointerEvent);
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+                    ActivateVKB();
+#endif
                     }
                 else
                     {
@@ -1105,6 +1111,9 @@ void CBrowserGotoPane::ActivateVKB()
             iEditor->SetSelectionL(pos,pos);
             TRAP_IGNORE(iEditor->HandlePointerEventL(pe));
             }
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+        TRAP_IGNORE(SelectAllL());
+#endif
         }
     }
 

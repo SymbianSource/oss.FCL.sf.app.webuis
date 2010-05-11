@@ -2710,6 +2710,7 @@ void CBrowserAppUi::ConnectionStageAchievedL()
     BROWSER_LOG( ( _L( "CBrowserAppUi::ConnectionStageAchievedL Set retry flags " ) ) );
     TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandSetRetryConnectivityFlag + (TInt)TBrCtlDefs::ECommandIdBase ) );
     SetRetryFlag(ETrue);    
+    TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandCancelQueuedTransactions + (TInt)TBrCtlDefs::ECommandIdBase ) );
     
     if( iRetryConnectivity && iRetryConnectivity->IsActive())
        {

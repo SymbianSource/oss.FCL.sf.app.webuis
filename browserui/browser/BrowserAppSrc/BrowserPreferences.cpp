@@ -796,6 +796,7 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
         //get the destination identifyer based on the snap Id
         case EDestination:
         	{
+            BROWSER_LOG( ( _L( "CBrowserPreferences::SetDefaultAccessPointL EDestination" ) ) );
 		    RCmManager        cmManager;
 		    cmManager.OpenL();
 
@@ -830,6 +831,7 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
         //if connecting with Iap Id
         case EConnectionMethod:
             {
+            BROWSER_LOG( ( _L( "CBrowserPreferences::SetDefaultAccessPointL EConnectionMethod" ) ) );
             // if user-defined access point then check that access point still exists.
             // if it doesn't, reset access point to always ask and homepage to blank access point home page.
   	        CApListItem* apItem = iCommsModel.AccessPointsL()->ItemForUid( aDefaultAccessPoint );
@@ -845,6 +847,7 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
                         break;
                         }
                 }
+                BROWSER_LOG( ( _L( "CBrowserPreferences::SetDefaultAccessPointL Ap is not exist, Setting to Always Ask" ) ) );
     	    	aDefaultAccessPoint = KWmlNoDefaultAccessPoint;
     	    	aAssocVpn = KWmlNoDefaultAccessPoint;
     	    	delete iAllPreferences.iDefaultAPDetails;
@@ -927,39 +930,11 @@ void CBrowserPreferences::SetDefaultAccessPointL( TUint aDefaultAccessPoint, TUi
 	//Reset default AP pointer and delete the data
 	delete iAllPreferences.iDefaultAPDetails;
 	iAllPreferences.iDefaultAPDetails = NULL;
-	if  ( err != KErrNone )//Let's select the first
+	if  ( err != KErrNone )// Set it to always ask
 		{
-#ifndef __WINSCW__ //we will not select on Wins (defaultap will be assigned a uid indicating that there is
-					//no default ap) but rather let ConnMan show the Conn Dlg
-		// The first valid access point has to be selected if exists
-		LOG_WRITE("WE SHOULD NOT BE HERE!!!");
-		CApSelect* apSelect = CApSelect::NewLC
-			(
-			iCommsModel.CommsDb(),
-			KEApIspTypeAll, //KEApIspTypeWAPMandatory,
-			EApBearerTypeAll,
-			KEApSortNameAscending,
-			EIPv4 | EIPv6
-			);
-		if ( apSelect->MoveToFirst() )
-			{
-			iAllPreferences.iDefaultAccessPoint = apSelect->Uid();
-			iApDH->AccessPointDataL( iAllPreferences.iDefaultAccessPoint, *api );
-			iAllPreferences.iDefaultAPDetails = api;//save the ap details
-			}
-		else
-			{
-			iAllPreferences.iDefaultAccessPoint = KWmlNoDefaultAccessPoint;
-			iAllPreferences.iDefaultAPDetails = NULL;
-			delete api;
-			}
-		CleanupStack::PopAndDestroy(); // apSelect
-		CleanupStack::Pop();//api
-#else
-		iAllPreferences.iDefaultAccessPoint = KWmlNoDefaultAccessPoint;
-		iAllPreferences.iDefaultAPDetails = NULL;
-		CleanupStack::PopAndDestroy( api );
-#endif//WINSCW
+        iAllPreferences.iDefaultAccessPoint = KWmlNoDefaultAccessPoint;
+        iAllPreferences.iDefaultAPDetails = NULL;
+        CleanupStack::PopAndDestroy( api );
 		}
 	else
 		{

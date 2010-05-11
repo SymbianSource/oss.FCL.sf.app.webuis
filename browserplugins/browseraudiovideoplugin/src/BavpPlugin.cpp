@@ -360,7 +360,9 @@ TInt CBavpPlugin::NotifyL( TNotificationType aCallType, void* aParam )
  					if(!aParam) //app background
                     {
                     iIsForeGround = EFalse; 
-                    if(EBavpPlaying == iBavpController->State()) 
+                    //Pause for Live stream will Leave with KErrNotSupported from Helix player 
+                    //and intern session will be closed. For Live stream Pause should not be done  
+                    if(EBavpPlaying == iBavpController->State() && ( !iBavpController->IsClipLive()) ) 
                         { 
                         iPauseState = ETrue; 
                         iPauseInBackground = ETrue; 
@@ -398,7 +400,9 @@ TInt CBavpPlugin::NotifyL( TNotificationType aCallType, void* aParam )
                 {
                 if ( iBavpController  && (!iPauseState) ) //plugin background 
                        { 
-                       if(EBavpPlaying == iBavpController->State()) 
+                        //Pause for Live stream will Leave with KErrNotSupported from Helix player 
+                        //and intern session will be closed. For Live stream Pause should not be done  
+                       if( (EBavpPlaying == iBavpController->State() ) && ( !iBavpController->IsClipLive()) ) 
                            { 
                            iPauseState = ETrue; 
                            iBavpController->PauseL(); 

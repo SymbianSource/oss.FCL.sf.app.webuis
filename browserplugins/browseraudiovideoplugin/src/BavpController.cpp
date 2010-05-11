@@ -447,6 +447,12 @@ TRect CBavpController::GetClipRect( TRect aRect )
     TRect clipRect ( aRect );
     Log( EFalse, _L("GetClipRect") );
 
+#ifndef __PLATFORM_VERSION_32__
+    //For non touch device the Child rect is relative to view port, 
+    //where as for Touch device the child rect is relative to the application view rect (excluding the 
+    //status Pane
+    return aRect; 
+#else 
     AknLayoutUtils::LayoutMetricsRect( AknLayoutUtils::EMainPane, iNormalScreenRect );
 
   // Calculate not to cover the bottom or the top of the rect.
@@ -471,6 +477,7 @@ TRect CBavpController::GetClipRect( TRect aRect )
     }
 
     return clipRect;
+#endif 
     }
 
 // -----------------------------------------------------------------------------

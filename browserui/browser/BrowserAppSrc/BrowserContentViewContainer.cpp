@@ -31,6 +31,8 @@
 #include "BrowserWindowManager.h"
 #include <FeatMgr.h>
 
+#include <LayoutMetaData.cdl.h> // For Layout_Meta_Data landscape/portrait status
+
 #include <eikrted.h>
 #include <eikbctrl.h>
 #include <Eikmenub.h>
@@ -652,7 +654,7 @@ void CBrowserContentViewContainer::HandleResourceChange(TInt aType)
             iApiProvider.Display().RestoreTitleL();
             }
 
-        SetRect(iView->ClientRect());
+        iView->SetContentContainerRect();
         
         if( iApiProvider.Preferences().SearchFeature() )
           {

@@ -270,7 +270,7 @@ void CBrowserAdaptiveListPopup::ConstructL( )
         {
         User::Leave(KErrCouldNotConnect);
         }
-
+    iListScrollTimer = CPeriodic::NewL(CActive::EPriorityIdle);
     }
 
 // ---------------------------------------------------------
@@ -285,6 +285,11 @@ CBrowserAdaptiveListPopup::~CBrowserAdaptiveListPopup()
     delete iItemNamesToShow;
     delete iPrevGotoContent;
     delete iFirstGotoContent;
+    if(iListScrollTimer)
+    {
+    iListScrollTimer->Cancel();
+    delete iListScrollTimer;
+    }
 }
 
 // ---------------------------------------------------------
@@ -636,7 +641,13 @@ void CBrowserAdaptiveListPopup::ShowPopupListL(TBool aRelayout)
             AknListBoxLayouts::SetupListboxPos( *iList, AppLayout::list_single_graphic_popup_wml_pane( 0 ));
             }
         //the last item is visible
-        iList->ScrollToMakeItemVisible( iList->Model()->NumberOfItems()-1 );
+        //ScrollToMakeItemVisible scrolls only after some delay        
+        if(!iListScrollTimer->IsActive())
+            {
+	        iListScrollTimer->Start(20, 0, 
+	                TCallBack(ListScrollTimerCallBack, this));
+            }
+                
 #ifdef BRDO_TOUCH_ENABLED_FF
         const CFont* pFont = AknLayoutUtils::FontFromId(EAknLogicalFontPrimaryFont);
         TFontSpec fontSpec = pFont->FontSpecInTwips();
@@ -1293,5 +1304,17 @@ void CBrowserAdaptiveListPopup::SetMaxRecentUrls (TInt maxRecentUrls)
     iMaxRecentUrlsToShow = maxRecentUrls;
     }
 
+TInt CBrowserAdaptiveListPopup::ListScrollTimerCallBack(TAny* aAny)
+    {
+    CBrowserAdaptiveListPopup* self = static_cast<CBrowserAdaptiveListPopup*>( aAny ); 
+    self->DoListScrolling();    
+    self->iListScrollTimer->Cancel();
+    return KErrNone;
+    }
+ 
+void CBrowserAdaptiveListPopup::DoListScrolling()
+    {
+    iList->ScrollToMakeItemVisible( iList->Model()->NumberOfItems()-1 );
+    }
 
 // End of File

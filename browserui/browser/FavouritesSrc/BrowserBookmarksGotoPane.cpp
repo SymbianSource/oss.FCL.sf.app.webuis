@@ -705,6 +705,9 @@ void CBrowserBookmarksGotoPane::HandlePointerEventL(const TPointerEvent& aPointe
         if(iEditor && Rect().Contains(aPointerEvent.iPosition))
             {
             iEditor->HandlePointerEventL(aPointerEvent);
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+            ActivateVkbL();
+#endif
             if ( !iEditing )
                 {
                 SetEditingL( ETrue );

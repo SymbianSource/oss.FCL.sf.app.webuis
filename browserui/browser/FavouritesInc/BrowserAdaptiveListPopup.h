@@ -152,7 +152,8 @@ class CBrowserAdaptiveListPopup :
         void UpdateScrollBarPositionL(const TInt aPosition);
 		void HandleItemClickedL(CEikListBox* aListBox );
 
-		
+		static TInt ListScrollTimerCallBack(TAny* aAny);
+        void DoListScrolling();		
 
 
     private: // from CCoeControl
@@ -184,6 +185,7 @@ class CBrowserAdaptiveListPopup :
         TInt iMaxRecentUrlsToShow;
         // shows whether search feature is enabled or not.
         TBool iSearchFeature; 
+        CPeriodic* iListScrollTimer;
     };
 
 #endif  // BROWSERADAPTIVELISTPOPUP_H
