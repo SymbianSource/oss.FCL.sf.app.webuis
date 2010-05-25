@@ -628,6 +628,7 @@ void CBrowserContentView::HandleCommandL( TInt aCommand )
 
         case EWmlCmdFindKeywordPaneClose :
             {
+            iContainer->FindKeywordPane()->ResetPrevText();
             CCoeEnv::Static()->AppUi()->RemoveFromStack( iContainer->FindKeywordPane() );
             // Cancel editing and sets Goto Pane text back.
             iContainer->ShutDownFindKeywordEditorL();

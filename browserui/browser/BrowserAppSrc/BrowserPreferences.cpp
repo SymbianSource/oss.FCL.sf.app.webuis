@@ -63,7 +63,7 @@
 #include <cmdestination.h>
 
 // CONSTANTS
-
+#define KSearchAppUid 0x2001f3a9
 //Shared data values for Full Screen setting
 const TInt KBrowserFullScreenSettingDataSoftkeysOff			 = 0; //full screen
 const TInt KBrowserFullScreenSettingDataSoftkeysOn			 = 1; //softkeys displayed
@@ -748,8 +748,13 @@ void CBrowserPreferences::RestoreSettingsL()
 
     iAllPreferences.iMaxRecentUrlsToShow = GetIntValue( KBrowserNGMaxRecentUrls );
 
-    iAllPreferences.iSearch = GetIntValue( KBrowserSearch );
-    iAllPreferences.iService = GetIntValue( KBrowserServices );
+    RApaLsSession aLs;
+    User::LeaveIfError(aLs.Connect());
+    CleanupClosePushL(aLs);
+    iAllPreferences.iSearch = GetSearchFeatureStatusL( KBrowserSearch, aLs );
+    iAllPreferences.iService = GetSearchFeatureStatusL( KBrowserServices, aLs );
+    CleanupStack::PopAndDestroy(&aLs);
+
     iAllPreferences.iCursorShowMode = (TBrCtlDefs::TCursorSettings)GetIntValue( KBrowserCursorShowMode );
     iAllPreferences.iEnterKeyMode = (TBrCtlDefs::TEnterKeySettings)GetIntValue( KBrowserEnterKeyMode );
     }
@@ -2269,4 +2274,22 @@ void CBrowserPreferences::SetURLSuffixList( HBufC* aSetting )
     ptr.Copy( aSetting->Des() );
     }
 
+//Following function is specific for Search application.
+//It will check if search application present in device and will turn the feature ON.
+TInt CBrowserPreferences::GetSearchFeatureStatusL( TUint32 aKey, RApaLsSession& aLs)
+{
+    TInt aVal = EFalse;
+    //Search for 'Search' application. If its there then only enable feature, otherwise disable.
+    TApaAppInfo aInfo;
+    aLs.GetAppInfo(aInfo, TUid::Uid( KSearchAppUid ));
+    if(aInfo.iUid == TUid::Uid( KSearchAppUid ))
+    {
+        //Now, Turn on the Search feature.
+        aVal = ETrue;
+    }
+    //Set value to key;
+    SetIntValueL(aKey, aVal);
+    //Again Read if feature is enabled.
+    return GetIntValue(aKey);
+}
 // End of File

@@ -624,6 +624,7 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
         if ( iFindKeywordMode )
             {
             CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdFindKeywordPaneClose);
+            ResetPrevText();
             }
         else
             {
@@ -1378,5 +1379,9 @@ void CBrowserGotoPane::SetTextModeItalicL()
         }
    }
 
+void CBrowserGotoPane::ResetPrevText()
+    {
+    iPrevKeyword->Des().SetLength(0);
+    }
 
 //  END OF FILE

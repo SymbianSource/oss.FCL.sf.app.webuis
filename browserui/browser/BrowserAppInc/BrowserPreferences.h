@@ -989,7 +989,7 @@ class CBrowserPreferences : public CBase,
         * By default constructor is private.
         */
         void ConstructL( TBrowserOverriddenSettings* aSettings );
-
+        TInt GetSearchFeatureStatusL( TUint32 aKey, RApaLsSession& aLs );
     private: 
 
         MApiProvider& iApiProvider; // enables access to CBrowserAppUi

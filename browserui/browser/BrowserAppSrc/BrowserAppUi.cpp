@@ -138,6 +138,9 @@ _LIT( KUpdateFileName, "lastupdatechecked.txt" );
 const TInt64 KMaxTimeToPostponeUpdate = 604800000000;
 #endif
 
+//Following array stores Uids for external applications. 
+//This can be appended. This is used in HandleMessageL to enable Single Window browsing.
+static TInt mArrayOfExternalAppUid[] = { 0x2001f3a9, 0x200159D0};
 // ================= MEMBER FUNCTIONS =======================
 
 // -----------------------------------------------------------------------------
@@ -158,7 +161,8 @@ iFeatureManager( EFalse ),
 iUserExit( EFalse ),
 iPgNotFound( EFalse ),
 iOverriddenLaunchContextId( EBrowserContextIdNormal ),
-iBrowserAlreadyRunning (EFalse)
+iBrowserAlreadyRunning (EFalse),
+iCalledFromExternApp( EFalse )
     {
     iViewToBeActivatedIfNeeded.iUid = 0;
     iViewToReturnOnClose.iUid = 0;
@@ -211,6 +215,14 @@ CBrowserAppUi::~CBrowserAppUi()
         }
     delete iWindowManager;
     LOG_WRITE( " iWindowManager deleted" );
+    
+#ifdef BRDO_OCC_ENABLED_FF    
+    if(iRetryConnectivity)
+    	iRetryConnectivity->Cancel();
+    	
+    delete iRetryConnectivity;
+    iRetryConnectivity = NULL;
+#endif    
 
     // Delete the inetconman after deleting window manager
     CInternetConnectionManager* inetconman = (CInternetConnectionManager*)iConnection;
@@ -1686,7 +1698,23 @@ void CBrowserAppUi::ExitBrowser( TBool aUserInitiated )
 			TRAP_IGNORE( iFeedsClientUtilities->DisconnectManualUpdateConnectionL() );
 #endif
     		}
-        Exit();
+    	if (SpecialLoadObserver().IsConnectionStarted()) // If Connection request is in processing calling CAknAppUI::Exit() causes crash (JSAA-84RG9R)
+    	    {                                               
+    	    //ensure that the params are saved in BrCtl            
+    	    if ( iWindowManager ) 
+    	       {
+    	       BROWSER_LOG( ( _L( " iWindowManager->SetUserExit( iUserExit )" ) ) );
+    	       iWindowManager->SetUserExit( iUserExit );
+    	       }
+    	       delete iWindowManager;
+    	       BROWSER_LOG( ( _L( " User::Exit(KErrNone)" ) ) );
+    	       User::Exit(KErrNone);                      
+    	     }
+        else
+    	     {      
+    	     // normal exit
+             Exit();
+    	     }
     	}
     }
 
@@ -1792,6 +1820,7 @@ CBrowserDialogsProvider& CBrowserAppUi::DialogsProvider() const
 //
 CBrowserPopupEngine& CBrowserAppUi::PopupEngine() const
     {
+    LOG_ENTERFN("CBrowserAppUi::PopupEngine");
     if(!iPopupEngine)
         { 
             if ( Preferences().UiLocalFeatureSupported( KBrowserMultipleWindows ) )
@@ -2363,7 +2392,20 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                                 // there is already a window, so create a new one
                                 CBrowserWindow *win = NULL; 
                                 if(WindowMgr().CurrentWindow()) 
-                                    win = WindowMgr().CreateWindowL( (WindowMgr().CurrentWindow()->WindowId()) ? WindowMgr().CurrentWindow()->WindowId() : 0, &KNullDesC );
+                                {
+                                    if(iCalledFromExternApp)
+                                    {
+                                        //We will be using same/already opened window if call is from external
+                                        //application. So no new windows will be opened.
+                                        win = WindowMgr().CurrentWindow();
+                                        iWindowIdFromFromExternApp = win->WindowId();
+                                    }
+                                    if(!win)
+                                    {
+                                        //If not called from external app, then create window.
+                                        win = WindowMgr().CreateWindowL( (WindowMgr().CurrentWindow()->WindowId()) ? WindowMgr().CurrentWindow()->WindowId() : 0, &KNullDesC );
+                                    }
+                                }
                                 else
                                     win = WindowMgr().CreateWindowL( 0, &KNullDesC );
                                 if (win != NULL)
@@ -2692,6 +2734,42 @@ TInt CBrowserAppUi::RetryInternetConnection()
     
     return err;
     }
+
+void CBrowserAppUi::CheckOccConnectionStage()
+    {
+    LOG_ENTERFN("CBrowserAppUi::CheckOccConnectionStage");
+    
+    //Disconnect first
+    BROWSER_LOG( ( _L( "CBrowserAppUi::CheckOccConnectionStage Disconnecting..." ) ) );
+    iConnection->Disconnect();
+    
+    TNifProgressBuf buf = iConnStageNotifier->GetProgressBuffer();
+    if( buf().iError == KErrDisconnected )
+        {
+        BROWSER_LOG( ( _L("CBrowserAppUi::CheckOccConnectionStage This is OCC roaming error : %d"), buf().iError ) );
+        BROWSER_LOG( ( _L( "CBrowserAppUi::CheckOccConnectionStage Set retry flags " ) ) );
+        TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandSetRetryConnectivityFlag + (TInt)TBrCtlDefs::ECommandIdBase ) );
+        SetRetryFlag(ETrue);    
+        TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandCancelQueuedTransactions + (TInt)TBrCtlDefs::ECommandIdBase ) );
+        
+        if( iRetryConnectivity && iRetryConnectivity->IsActive())
+            {
+            iRetryConnectivity->Cancel();
+            }
+        iRetryConnectivity->Start(KRetryConnectivityTimeout, 0,TCallBack(RetryConnectivity,this));
+        }
+    else
+        {
+        BROWSER_LOG( ( _L("CBrowserAppUi::CheckOccConnectionStage This is NOT OCC roaming error : %d"), buf().iError ) );
+        Display().StopProgressAnimationL();
+        if ( Fetching() )
+            {
+            CancelFetch();
+            }
+        iDialogsProvider->UploadProgressNoteL(0, 0, ETrue, (MBrowserDialogsProviderObserver *)this );
+        iDialogsProvider->CancelAll();
+        }  
+    }
 #endif
 
 // -----------------------------------------------------------------------------
@@ -2702,22 +2780,7 @@ void CBrowserAppUi::ConnectionStageAchievedL()
     {
 #ifdef BRDO_OCC_ENABLED_FF
     LOG_ENTERFN("CBrowserAppUi::ConnectionStageAchievedL");
-    //Disconnect first
-    BROWSER_LOG( ( _L( "CBrowserAppUi::ConnectionStageAchievedL Disconnecting..." ) ) );
-    iConnection->Disconnect();
-
-    BROWSER_LOG( ( _L( "CBrowserAppUi::ConnectionStageAchievedL Some transactions are on-going. Need to reconnect. " ) ) );
-    BROWSER_LOG( ( _L( "CBrowserAppUi::ConnectionStageAchievedL Set retry flags " ) ) );
-    TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandSetRetryConnectivityFlag + (TInt)TBrCtlDefs::ECommandIdBase ) );
-    SetRetryFlag(ETrue);    
-    TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandCancelQueuedTransactions + (TInt)TBrCtlDefs::ECommandIdBase ) );
-    
-    if( iRetryConnectivity && iRetryConnectivity->IsActive())
-       {
-       iRetryConnectivity->Cancel();
-       }
-    iRetryConnectivity->Start(KRetryConnectivityTimeout, 0,TCallBack(RetryConnectivity,this));
-
+    CheckOccConnectionStage();
 #else
     // this function is called only when network is lost
     // because we set notifier for KAgentUnconnected only
@@ -3041,6 +3104,13 @@ MCoeMessageObserver::TMessageResponse CBrowserAppUi::HandleMessageL(
     TUid wapUid = KUidBrowserApplication;
     TApaTask task = taskList.FindApp( wapUid );
     task.BringToForeground();
+    //Check for aMessageUid. If it is in array then set iCalledFromExternApp = ETrue
+    TUid aAppId;
+    TRAPD(err, aAppId = FindAppIdL(aMessageUid););
+    if(!err && (aMessageUid == aAppId))
+    {
+        iCalledFromExternApp = ETrue;
+    }
     if ( aMessageParameters.Compare( KLongZeroIdString ) )
         {
         ParseAndProcessParametersL( aMessageParameters );
@@ -3950,7 +4020,12 @@ LOG_ENTERFN("AppUi::CloseWindowL");
         // so if user initiated the process, we really delete the window
         forceDelete = ETrue;
         }
-
+    //If this window has been created from Search app
+    if(aWindowId == iWindowIdFromFromExternApp)
+    {
+        //Make it false as window is going to close down
+        iCalledFromExternApp = EFalse;
+    }
 #ifdef __RSS_FEEDS
 	// If we are closing a Feeds Full Story then go back to feeds
 	TBool feedsWindow(EFalse);
@@ -4491,6 +4566,7 @@ void CBrowserAppUi::StartFetchHomePageL(void)
 // ---------------------------------------------------------
 TBool CBrowserAppUi::CheckUpdateFileAvailable()
     {
+    LOG_ENTERFN("CBrowserAppUi::CheckUpdateFileAvailable");
     TBuf<KMaxFileName> privatePath;
     TBuf<KMaxFileName> updateFileName;
     iFs.PrivatePath( privatePath );
@@ -4516,6 +4592,7 @@ TBool CBrowserAppUi::CheckUpdateFileAvailable()
 // ---------------------------------------------------------
 void CBrowserAppUi::WriteUpdateFile()
     {
+    LOG_ENTERFN("CBrowserAppUi::WriteUpdateFile");
     TBuf<KMaxFileName> privatePath;
     TBuf<KMaxFileName> updateFileName;
     iFs.PrivatePath( privatePath );
@@ -4583,4 +4660,19 @@ TInt64 CBrowserAppUi::ReadUpdateFile()
     return dataValue;
     }
 #endif
+
+TUid CBrowserAppUi::FindAppIdL(TUid aMessageUid)
+{
+    TUid aRetVal = TUid::Uid(NULL);
+    TInt nElements = sizeof(mArrayOfExternalAppUid)/sizeof(TInt);
+    for(TInt nIndex = 0;nIndex < nElements; nIndex++)
+    {
+        if(aMessageUid == TUid::Uid(mArrayOfExternalAppUid[nIndex]))
+        {
+            aRetVal = TUid::Uid(mArrayOfExternalAppUid[nIndex]);
+            break;
+        }
+    }
+    return aRetVal;
+}
 // End of File

@@ -56,7 +56,8 @@ const TInt KArrayGranularity = 10;
 _LIT( KProtocolIdentifier,"://" );
 const TUint KSlash('/');
 const TUint KPeriod('.');
-const TInt KListHeight = 45;
+const TInt KListHeight = 36;
+const TInt KLandscapeListItems = 5;
 const TInt KFontHeight = 150;
 
 static void TextPos(TPoint *aResultArray, const TAknTextLineLayout
@@ -576,8 +577,15 @@ void CBrowserAdaptiveListPopup::ShowPopupListL(TBool aRelayout)
             iItemNamesToShow->AppendL( buf );
             }
         //set how many item will be shown
+        
+#ifdef BRDO_TOUCH_ENABLED_FF        
+        TInt appWidth = iEikonEnv->EikAppUi()->ApplicationRect().Width();
+        TInt appHeight = iEikonEnv->EikAppUi()->ApplicationRect().Height();
+        //For landscape mode only 5 items can be shown on the screen
+        if(appWidth > appHeight) 
+            iMaxRecentUrlsToShow = KLandscapeListItems;
+#endif     
         TInt itemstoshow;
-
         if ( k >  iMaxRecentUrlsToShow)
             {
             itemstoshow = iMaxRecentUrlsToShow;
@@ -586,7 +594,9 @@ void CBrowserAdaptiveListPopup::ShowPopupListL(TBool aRelayout)
             {
             itemstoshow = k;
             }
-
+        //resetting to original value
+        iMaxRecentUrlsToShow = CBrowserAppUi::Static()->ContentView()->ApiProvider().Preferences().MaxRecentUrls(); 
+        
         //set the main rect of the window
         // fixing bug RFON-7E2PPV, don't use ApplicationRect()
         TRect  rect;

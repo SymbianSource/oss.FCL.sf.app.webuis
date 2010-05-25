@@ -130,13 +130,13 @@ TKeyResponse CFeedsEditFeedDialog::OfferKeyEventL(const TKeyEvent& aKeyEvent,
 //
 void CFeedsEditFeedDialog::HandlePointerEventL(const TPointerEvent& aPointerEvent) 
     {
+    CAknForm::HandlePointerEventL(aPointerEvent); 
     if ((iSelectedDlgLine != IdOfFocusControl()) && (aPointerEvent.iType == TPointerEvent::EButton1Up))
         {
         LineChangedL(IdOfFocusControl());
         }
     else
-        {
-        CAknForm::HandlePointerEventL(aPointerEvent);        
+        {               
         if ( aPointerEvent.iType == TPointerEvent::EButton1Down)
             {
                 iPointerEvent =  aPointerEvent;

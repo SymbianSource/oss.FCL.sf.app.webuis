@@ -362,6 +362,8 @@ class CBrowserGotoPane:
         * @return editor control of goto pane
         */
         CEikEdwin* Editor() const;
+        
+        void ResetPrevText();
 
     public:     // observer support
 

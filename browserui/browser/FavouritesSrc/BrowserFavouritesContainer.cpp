@@ -221,7 +221,6 @@ TKeyResponse CBrowserFavouritesContainer::OfferKeyEventL
         
         if( (aKeyEvent.iCode == EKeyDownArrow) || (aKeyEvent.iCode == EKeyUpArrow) )  
                 {  
-                BROWSER_LOG( ( _L("Need to update tool bar buttons") ) );  
                 iView->UpdateToolbarButtonsState();  
                 }  
 

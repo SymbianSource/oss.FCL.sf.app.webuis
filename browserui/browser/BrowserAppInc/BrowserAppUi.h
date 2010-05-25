@@ -797,11 +797,12 @@ class CBrowserAppUi : public CAknViewAppUi,
         * @param none
         */		
 		void StartFetchHomePageL();		
-		
+        TUid FindAppIdL(TUid aMessageUid);
 #ifdef BRDO_OCC_ENABLED_FF
         //For Call back for reconnectivity
         static TInt RetryConnectivity(TAny* aCBrowserAppUi);
         TInt RetryInternetConnection();		
+        void CheckOccConnectionStage();
 #endif
 
 #ifdef BRDO_IAD_UPDATE_ENABLED_FF
@@ -1085,7 +1086,8 @@ class CBrowserAppUi : public CAknViewAppUi,
         CIAUpdateParameters* iParameters; 
         RFs iFs;
 #endif        
-        
+        TBool iCalledFromExternApp;
+        TInt iWindowIdFromFromExternApp;
 	protected:
 
 		CBrowserCommsModel* iCommsModel;
