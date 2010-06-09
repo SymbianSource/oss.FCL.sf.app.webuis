@@ -132,7 +132,8 @@ CBrowserContentView::CBrowserContentView( MApiProvider& aApiProvider ) :
     iZoomMode(EFalse),
     iContentFullScreenMode( EFalse ),
     iIsPluginFullScreenMode( EFalse),
-    iWasContentFullScreenMode( EFalse )
+    iWasContentFullScreenMode( EFalse ),
+    iTitle( NULL )
     {
     iFindItemIsInProgress = EFalse;
     iWasInFeedsView = EFalse;
@@ -175,6 +176,7 @@ CBrowserContentView::~CBrowserContentView()
     delete iPeriodic;
     delete iAutoFSPeriodic;
     delete iIdlePeriodic;
+    delete iTitle;
     }
 
 
@@ -191,9 +193,6 @@ void CBrowserContentView::ConstructL( TRect& aRect )
 
     iContainer = CBrowserContentViewContainer::NewL( this, ApiProvider() );
 
-    iContainer->SetRect( aRect );
-    iContainer->GotoPane()->SetGPObserver(this);
-    iContainer->FindKeywordPane()->SetGPObserver(this);
     iEnteredKeyword = NULL;
 
     // get the StatusPane pointer
@@ -972,7 +971,7 @@ PERFLOG_STOPWATCH_START
         }
     else
         {
-        UpdateFullScreenL();
+        HandleStatusPaneCallBack();
         ApiProvider().SetLastActiveViewId(Id());
         }
 
@@ -980,6 +979,10 @@ PERFLOG_STOPWATCH_START
 
     AppUi()->AddToViewStackL( *this, iContainer );
 
+    //Reset the title before updating the title in case of view activation
+    delete iTitle;
+    iTitle = NULL;
+    
     UpdateTitleL( ApiProvider() );
 
     ApiProvider().BrCtlInterface().MakeVisible(ETrue);
@@ -1030,35 +1033,35 @@ void CBrowserContentView::UpdateFullScreenL()
             {
             TBool sizeChangedCba = EFalse;
             TBool sizeChangedSP = EFalse;
-            TBool resIdChanged = EFalse;
-            TInt resId = StatusPane()->CurrentLayoutResId();
-
-            if ( Layout_Meta_Data::IsLandscapeOrientation() )
-                {
-                resIdChanged = resId != R_AVKON_STATUS_PANE_LAYOUT_USUAL;
-                StatusPane()->SwitchLayoutL(R_AVKON_STATUS_PANE_LAYOUT_USUAL);
-                }
-            else //Portrait
-                {
-                resIdChanged = resId != R_AVKON_STATUS_PANE_LAYOUT_SMALL;
-                StatusPane()->SwitchLayoutL(R_AVKON_STATUS_PANE_LAYOUT_SMALL);
-                }
-
+            
             if ( iContentFullScreenMode )
                 {
-                sizeChangedCba = Cba()->IsVisible();
+                SetContentContainerRect();
+                if (iPenEnabled)
+                    {
+					Toolbar()->SetToolbarVisibility( EFalse, EFalse );
+                    Toolbar()->MakeVisible( EFalse );
+                    }
+                if(Cba()->IsVisible())
+                {
                 Cba()->MakeVisible( EFalse );
                 UpdateCbaL();
-
+                }
                 if (!ApiProvider().Fetching())
                     {
-                    sizeChangedSP = StatusPane()->IsVisible();
-                    StatusPane()->MakeVisible( EFalse );
+                    if(StatusPane()->IsVisible())
+                        {
+                        sizeChangedSP = ETrue;
+                        StatusPane()->MakeVisible(EFalse);
+                        }
                     }
                 else
                     {
-                    sizeChangedSP = !StatusPane()->IsVisible();
-                    ShowFsStatusPane(ETrue);
+                    if(!StatusPane()->IsVisible())
+                        {
+                        sizeChangedSP = ETrue;
+                        ShowFsStatusPane(ETrue);
+                        }
                     }
                 }
             else
@@ -1071,14 +1074,13 @@ void CBrowserContentView::UpdateFullScreenL()
 
             ApiProvider().Display().FSPaneOnL( );
             ApiProvider().Display().SetGPRSIndicatorOnL();
+            
+            //Reset the title before updating the title in case of view activation
+            delete iTitle;
+            iTitle = NULL;
             UpdateTitleL(ApiProvider());
             ApiProvider().Display().RestoreTitleL();
             StatusPane()->ApplyCurrentSettingsL();
-            if ( resIdChanged || sizeChangedCba || sizeChangedSP  )
-                {
-                
-                SetContentContainerRect();
-                }
             }
         }
     }
@@ -1086,9 +1088,16 @@ void CBrowserContentView::UpdateFullScreenL()
 TRect CBrowserContentView::ResizeClientRect()
     {
     TRect clientRect = ClientRect();
-        
+	
+    if(iContentFullScreenMode &&  (Toolbar() && Toolbar()->IsVisible()) && Cba()->IsVisible()) 
+        {
+        TRect screenRect;
+        AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EApplicationWindow, screenRect);
+        clientRect = screenRect;
+        }
+		
     if (Layout_Meta_Data::IsLandscapeOrientation() &&
-         StatusPane()->IsVisible() && !Cba()->IsVisible())
+        (StatusPane() && StatusPane()->IsVisible()) && !Cba()->IsVisible())
         {
         TRect screenRect;
         AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EScreen, screenRect);
@@ -1859,7 +1868,12 @@ void CBrowserContentView::UpdateTitleL( MApiProvider& aApiProvider )
         TBrCtlDefs::EPageInfoTitle );
     if ( title && title->Length() )
         {
-        aApiProvider.Display().SetTitleL( title->Des() );
+            if( !iTitle || (iTitle && (iTitle->Des().Compare( title->Des())!= 0)))
+              {
+              delete iTitle;
+              iTitle = title->Des().AllocL();
+              aApiProvider.Display().SetTitleL( title->Des() );
+              }
         }
     else
         {
@@ -3159,11 +3173,6 @@ void CBrowserContentView::EnableFullScreenModeL( TBool aEnableFullScreen )
     TInt command( KErrNotFound );
     if ( aEnableFullScreen )
         {
-        if (iPenEnabled)
-            {
-            Toolbar()->SetToolbarVisibility( EFalse, EFalse );
-            Toolbar()->MakeVisible( EFalse );
-            }
         iContentFullScreenMode = ETrue;
         UpdateFullScreenL();
         command = TBrCtlDefs::ECommandEnterFullscreenBrowsing;
@@ -3430,5 +3439,31 @@ TBool CBrowserContentView::IsEditMode()
                     (focusedElementType == TBrCtlDefs:: EElementTextAreaBox));
 	return  (retVal);
 	}
+
+void  CBrowserContentView::HandleStatusPaneCallBack()
+    {
+    TVwsViewId activeViewId;
+    TBool resIdChanged(EFalse);
+    TInt resId = StatusPane()->CurrentLayoutResId();
+
+    if ( AppUi()->GetActiveViewId( activeViewId ) == KErrNone )
+        {
+        if ( activeViewId.iViewUid == KUidBrowserContentViewId )
+            {
+            if ( Layout_Meta_Data::IsLandscapeOrientation() )
+                {
+                resIdChanged = resId != R_AVKON_STATUS_PANE_LAYOUT_USUAL;
+                StatusPane()->SwitchLayoutL(R_AVKON_STATUS_PANE_LAYOUT_USUAL);
+                }
+            else //Portrait
+                {
+                resIdChanged = resId != R_AVKON_STATUS_PANE_LAYOUT_SMALL;
+                StatusPane()->SwitchLayoutL(R_AVKON_STATUS_PANE_LAYOUT_SMALL);
+                }
+            }
+        }
+    if(resIdChanged)
+    SetContentContainerRect();
+}
 
 // End of File

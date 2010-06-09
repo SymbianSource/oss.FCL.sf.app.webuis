@@ -876,6 +876,13 @@ class CBrowserAppUi : public CAknViewAppUi,
         * @return TBool.
         */
         TInt64 ReadUpdateFile();
+        
+        /**
+        * Callback function to complete the IAD udated check on CIdle::RunL
+        * @param None
+        * @return TBool.
+        */
+        static TInt CompleteIADUpdateCallback( TAny* aBrowserAppUi );
 #endif		    
 	protected:
 
@@ -1085,6 +1092,7 @@ class CBrowserAppUi : public CAknViewAppUi,
         CIAUpdate* iUpdate;  
         CIAUpdateParameters* iParameters; 
         RFs iFs;
+        CIdle* iDelayedUpdate;
 #endif        
         TBool iCalledFromExternApp;
         TInt iWindowIdFromFromExternApp;

@@ -177,6 +177,7 @@ CBrowserAppUi::~CBrowserAppUi()
     LOG_ENTERFN("CBrowserAppUi::~CBrowserAppUi");
 
 #ifdef BRDO_IAD_UPDATE_ENABLED_FF
+    delete iDelayedUpdate;
     iFs.Close();
 #endif
     
@@ -296,13 +297,7 @@ PERFLOG_STOPWATCH_START;
 		{
 		iStartedUp = EFalse;
 		LOG_WRITE( "Browser started embedded" );
-		}
-#ifdef BRDO_IAD_UPDATE_ENABLED_FF
-    User::LeaveIfError(iFs.Connect());
-    // Check updates from IAD, continue UI launching even if something fails there  
-    TRAP_IGNORE( CheckUpdatesL() );
-#endif
-        
+		}        
 PERFLOG_STOP_WRITE("BrowserUI::ConstructL");
 
     }
@@ -314,6 +309,7 @@ void CBrowserAppUi::CheckUpdatesL()
     {
     LOG_ENTERFN("CBrowserAppUi::CheckUpdatesL");
     LOG_WRITE( "CBrowserAppUi::CheckUpdatesL() entering" );
+    User::LeaveIfError(iFs.Connect());
     if ( FeatureManager::FeatureSupported( KFeatureIdIAUpdate ) )
         {
         LOG_WRITE( "CBrowserAppUi::CheckUpdatesL() IAD Update supported" );
@@ -635,8 +631,6 @@ void CBrowserAppUi::InitBrowserL()
 
         PERFLOG_STOP_WRITE("\t WindowMgr + PopUp Engine");
         contentView->SetZoomLevelL();
-        contentView->Container()->FindKeywordPane()->SetOrdinalPosition( 0 );
-        contentView->Container()->GotoPane()->SetOrdinalPosition( 0 );
 
         //-------------------------------------------------------------------------
 
@@ -662,8 +656,36 @@ void CBrowserAppUi::InitBrowserL()
 
 	    iPushMtmObserver = CBrowserPushMtmObserver::NewL( this );
 	    iPushMtmObserver->StartObserver();
+        // Create two Panes of CBrowserContentViewContainer
+        CBrowserGotoPane* gotoPane = CBrowserGotoPane::NewL( contentView->Container(),
+                 EMbmAvkonQgn_indi_find_goto,
+                 EMbmAvkonQgn_indi_find_goto_mask,
+                 ETrue,
+                 contentView );
+                          
+        // Create the find pane with magnifier glass icon, and
+        // without adaptive popup list...
+        CBrowserGotoPane* findKeywordPane = CBrowserGotoPane::NewL( contentView->Container(),
+                 EMbmAvkonQgn_indi_find_glass,
+                 EMbmAvkonQgn_indi_find_glass_mask,
+                 EFalse,
+                 contentView,
+                 ETrue );
+        contentView->Container()->SetGotoPane(gotoPane);
+        contentView->Container()->SetFindKeywordPane(findKeywordPane);
+        contentView->Container()->SetRect( rect );
+        contentView->Container()->GotoPane()->SetGPObserver(contentView);
+        contentView->Container()->FindKeywordPane()->SetGPObserver(contentView);
+        contentView->Container()->FindKeywordPane()->SetOrdinalPosition( 0 );
+        contentView->Container()->GotoPane()->SetOrdinalPosition( 0 );
+
 #ifdef BRDO_OCC_ENABLED_FF
         iRetryConnectivity = CPeriodic::NewL(CActive::EPriorityStandard);
+#endif
+
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+    iDelayedUpdate = CIdle::NewL( CActive::EPriorityIdle );
+    iDelayedUpdate->Start(TCallBack( CompleteIADUpdateCallback, this ));
 #endif
         } //if (iStartedUp)
     }
@@ -1681,8 +1703,22 @@ void CBrowserAppUi::ExitBrowser( TBool aUserInitiated )
             TRAP_IGNORE( iFeedsClientUtilities->DisconnectManualUpdateConnectionL() );
 #endif
     		}
-        PrepareToExit();
-        Exit();
+        if (SpecialLoadObserver().IsConnectionStarted()) 
+            {
+            if ( iWindowManager ) 
+               {
+               BROWSER_LOG( ( _L( " iWindowManager->SetUserExit( iUserExit )" ) ) );
+               iWindowManager->SetUserExit( iUserExit );
+               }
+               delete iWindowManager;
+               BROWSER_LOG( ( _L( " User::Exit(KErrNone)" ) ) );
+               User::Exit(KErrNone);
+            }
+        else
+            {
+            PrepareToExit();
+            Exit();
+            }
     	}
     else
     	{
@@ -2728,6 +2764,11 @@ TInt CBrowserAppUi::RetryInternetConnection()
         BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection clear queued transactions " ) ) );
         TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandClearQuedTransactions + (TInt)TBrCtlDefs::ECommandIdBase ) );
         Display().StopProgressAnimationL(); //Stop Progress animation
+        if ( Fetching() )
+            {
+            BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection cancel fetch " ) ) );
+            CancelFetch();
+            }
         iDialogsProvider->UploadProgressNoteL(0, 0, ETrue, (MBrowserDialogsProviderObserver *)this ); //Close the uploading dialog.
         iDialogsProvider->CancelAll(); //connection has been lost, so cancel the authentication dialog.
         }
@@ -3403,7 +3444,7 @@ LOG_ENTERFN( "CBrowserAppUi::FetchHomePageL" );
                 	{                         
                 	TRAP( err, homePgFound = Preferences().HomePageUrlL( ptr, ETrue ) );
                 	}
-                }
+                	}
             // we have a url to load
             if( err == KErrNone &&
                 homePgFound == KErrNone &&
@@ -4560,7 +4601,18 @@ void CBrowserAppUi::StartFetchHomePageL(void)
         CloseContentViewL();
         }                
     }
+    
 #ifdef BRDO_IAD_UPDATE_ENABLED_FF
+// ---------------------------------------------------------
+// CBrowserAppUi::CompleteIADUpdateCallback
+// ---------------------------------------------------------
+TInt CBrowserAppUi::CompleteIADUpdateCallback( TAny* aBrowserAppUi )
+    {
+    TRAP_IGNORE( ((CBrowserAppUi*)aBrowserAppUi)->CheckUpdatesL() )
+    return KErrNone;
+    }
+
+
 // ---------------------------------------------------------
 // CBrowserAppUi::CheckUpdateFileAvailable
 // ---------------------------------------------------------

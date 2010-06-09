@@ -639,6 +639,8 @@ class CBrowserContentView : public CBrowserViewBase,
         void ShowFsStatusPane(TBool aShow);
         
         void setFullScreenFlag(){ iWasContentFullScreenMode = iContentFullScreenMode; }
+		
+		void  CBrowserContentView::HandleStatusPaneCallBack();
         
     private:
 
@@ -704,7 +706,7 @@ class CBrowserContentView : public CBrowserViewBase,
         CPeriodic *iAutoFSPeriodic;
         CPeriodic *iIdlePeriodic;
         TBool iFullScreenBeforeEditModeEntry;
-
+        HBufC* iTitle;
     };
 
 #endif

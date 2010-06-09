@@ -351,6 +351,9 @@ void CBrowserGotoPane::HandleControlEventL ( CCoeControl* /*aControl*/,
             // When the user copies and paste's content to the find dialog, the editor
             // is in Text Input mode, The engine should still get the find keyword request
             || iEditor->AknEditorCurrentInputMode() == EAknEditorTextInputMode
+            // Also Chinese and Japanese input modes should apply here
+            || iEditor->AknEditorCurrentInputMode() == EAknEditorFullWidthKatakanaInputMode 
+            || iEditor->AknEditorCurrentInputMode() == EAknEditorHiraganaInputMode 
             )
             {
             if ( aEventType == MCoeControlObserver::EEventStateChanged )

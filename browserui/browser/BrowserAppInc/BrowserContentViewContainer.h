@@ -72,6 +72,16 @@ class CBrowserContentViewContainer : public CCoeControl
         */
 		CBrowserGotoPane* FindKeywordPane() { return iFindKeywordPane; } ;
 
+        /*
+         * set the iGotoPane 
+         */
+        void SetGotoPane(CBrowserGotoPane* aGotoPane) { iGotoPane = aGotoPane; };
+
+        /*
+         * set the iFindKeywordPane 
+         */
+        void SetFindKeywordPane(CBrowserGotoPane* aFindKeywordPane) { iFindKeywordPane = aFindKeywordPane; };
+
         /**
         * Shut down Goto URL editor.
         * @since Series 60 1.2

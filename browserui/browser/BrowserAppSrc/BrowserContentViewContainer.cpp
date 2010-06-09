@@ -113,20 +113,6 @@ void CBrowserContentViewContainer::ConstructL()
     SetAllowStrayPointers();
     SetMopParent( iView );
 
-    iGotoPane = CBrowserGotoPane::NewL( this,
-                                        EMbmAvkonQgn_indi_find_goto,
-                                        EMbmAvkonQgn_indi_find_goto_mask,
-                                        GOTOPANE_POPUPLIST_ENABLE,
-                                        iView );
-
-    // Create the find pane with magnifier glass icon, and
-    // without adaptive popup list...
-    iFindKeywordPane = CBrowserGotoPane::NewL( this,
-                                               EMbmAvkonQgn_indi_find_glass,
-                                               EMbmAvkonQgn_indi_find_glass_mask,
-                                               GOTOPANE_POPUPLIST_DISABLE,
-                                               iView,
-                                               ETrue );
     }
 
 // -----------------------------------------------------------------------------
@@ -650,7 +636,7 @@ void CBrowserContentViewContainer::HandleResourceChange(TInt aType)
         {
         if (!iView->FindItemIsInProgress())
             {
-            iView->UpdateFullScreenL();
+            iView->HandleStatusPaneCallBack();
             iApiProvider.Display().RestoreTitleL();
             }
 
