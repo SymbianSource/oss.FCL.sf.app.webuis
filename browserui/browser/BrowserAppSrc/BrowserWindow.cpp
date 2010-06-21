@@ -63,6 +63,10 @@ TBool CBrowserWindow::iIsPageOverviewSupported = EFalse;
 // CBrowserWindow::NewLC()
 // -----------------------------------------------------------------------------
 //
+TBool CBrowserWindow::CompleteDelayedInit()
+    {    
+    }
+
 CBrowserWindow* CBrowserWindow::NewLC(
         TInt aWindowId,
         const TDesC* aTargetName,

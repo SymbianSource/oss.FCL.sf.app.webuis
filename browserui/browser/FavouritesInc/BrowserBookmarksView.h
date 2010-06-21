@@ -467,9 +467,26 @@ class CBrowserBookmarksView:
         * Dim or Un-dim Toolbar buttons.
         */
         void UpdateToolbarButtonsState();
+        
+        /**
+        * Check to show downloads.
+        */
+        void CheckForDownloads();
+
+        /**
+        * Initiates update for favicons
+        */
+        void UpdateFavIconsL();
 
     private:    // data
-
+        /**
+         * Callback for completing the Browser App init. Normally only
+         * BookmarksView is initialized first on startup. When bookmarks
+         * view is shown then this callback is scheduled to complete the
+         * remaining initialization. 
+         */
+        static TInt CompleteAppInitCallback( TAny* aApiProvider );        
+        
         /**
         * Uid of AP which is to be used for creating Start Page bookmark.
         */
@@ -548,7 +565,10 @@ class CBrowserBookmarksView:
         // Re-Entry Gate flag for Delete Bookmark routine
         TBool iHandleDeleteInProgress;
 
-
+        // Async callback object for delayed App init
+        CIdle *iAsyncComplete;
+        
+        TBool iShowDownlods;
 	};
 
 #endif

@@ -106,7 +106,17 @@ class CBrowserFaviconHandler :	public  CActive,
         
         
         /**
-        * Initiates getting favicons for the favourites list
+        * Initiates decoding of favicons for the favourites list in browserengine.
+        * This will request icon database thread to start decoding requested icons in background.
+        * @param aFavItems a list of favourites items
+        */
+        void RequestFavicons( CFavouritesItemList* aFavItems );
+        
+        /**
+        * This is async fetch operation from engine. One icon at a time is fetched and asynchronously
+        * scaled. E.g. if there are 5 icons to be fetched, then this will cause the BitmapScaler to be
+        * Active for 5 times.
+        * overall fetching is Async 
         * @param aFavItems a list of favourites items
         */
         void StartGetFaviconsL( CFavouritesItemList* aFavItems );

@@ -19,6 +19,11 @@
 
 
 // INCLUDE FILES
+#include <aknappui.h>
+#include <akntitle.h>
+#include <eikenv.h>
+#include <eikspane.h>
+
 #include <aknsfld.h>
 #include <eikbtgpc.h>
 #include <eikmenub.h>
@@ -258,6 +263,7 @@ void CBrowserFavouritesView::ConstructL( TInt aViewResourceId )
     iInitialFolder = iCurrentFolder;
     // Ap model cannot be created without opening it; so that's not done here.
     // DoActivateL / DoDecativateL does that.
+    Cba()->MakeVisible(EFalse); // avoid multiple redraws
     }
 
 // ---------------------------------------------------------
@@ -459,7 +465,7 @@ void CBrowserFavouritesView::DoActivateL(
     iPreviousViewID = ApiProvider().LastActiveViewId( );
     ApiProvider().SetLastActiveViewId( Id() );
     ApiProvider().CommsModel().AddObserverL( *this );
-    iContainer = CreateContainerL();
+    iContainer = CreateContainerL(); // can this be created during construct ?
     iModel->AddObserverL( *this );
     AppUi()->AddToViewStackL( *this, iContainer );
 
@@ -489,7 +495,7 @@ void CBrowserFavouritesView::DoActivateL(
             }
 
         iContainer->Listbox()->View()->SetDisableRedraw( redrawDisabled );
-        iContainer->Listbox()->DrawNow();
+        iContainer->Listbox()->DrawDeferred();
         }
     else
         {
@@ -509,11 +515,13 @@ void CBrowserFavouritesView::DoActivateL(
         }
     iIsActivated = ETrue;
     
-    PERFLOG_STOPWATCH_START;
+#ifndef BRDO_PERF_IMPROVEMENTS_ENABLED_FF
+    // TODO: Remove this crapy refresh once favicon callback interface
+    // with engine is implemented. 
     if(!iFavViewRefresh)
          iFavViewRefresh  = CIdle::NewL( CActive::EPriorityIdle );
     iFavViewRefresh ->Start( TCallBack( RefeshFavoriteListBox, this ) );
-    PERFLOG_STOP_WRITE("\t Favourite view NewL");
+#endif    
     }
 
 
@@ -1106,7 +1114,17 @@ void CBrowserFavouritesView::OpenFolderL( TInt aFolder )
         if ( aFolder == KFavouritesRootUid )
             {
             UpdateNaviPaneL(); // remove NaviPane before setting title - SetTitleL redraws
-            ApiProvider().Display().SetTitleL( RootTitleResourceId() );
+            if(ApiProvider().StartedUp())
+                ApiProvider().Display().SetTitleL( RootTitleResourceId() );
+            else
+                {
+                // Set title to be page title
+                CEikStatusPane* sp = STATIC_CAST( CAknAppUi*, CEikonEnv::Static()->EikAppUi() )->StatusPane();
+                CAknTitlePane* title = STATIC_CAST( CAknTitlePane*, sp->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
+                HBufC* name = CEikonEnv::Static()->AllocReadResourceLC( R_BROWSER_OPTION_BOOKMARKS );
+                title->SetTextL( *name );            
+                CleanupStack::PopAndDestroy();   // name
+                }
             }
         else
             {
@@ -1132,7 +1150,7 @@ void CBrowserFavouritesView::OpenFolderL( TInt aFolder )
         iCurrentFolder = aFolder;
         FillListboxL( aFolder, /*aKeepState=*/EFalse );
                 
-        Container()->Listbox()->ClearSelection();
+        Container()->Listbox()->ClearSelection(); // is it needed ?
         UpdateCbaL();
         UpdateNaviPaneL();
         }
@@ -1296,15 +1314,20 @@ void CBrowserFavouritesView::FillListboxL( TInt aFolder, TBool aKeepState )
         aknview->SetFindEmptyListState(ETrue);
         }
 
-    iContainer->SizeChanged();  // Needed to show/hide Find Pane!
+    if(ApiProvider().StartedUp())
+    	iContainer->SizeChanged();  // Needed to show/hide Find Pane!
     iCurrentFolder = aFolder;
 
     HighlightPreferredL();
     iContainer->HandleCursorChangedL( listbox );
     listbox->View()->SetDisableRedraw( redrawDisabled );
-    listbox->DrawNow();
-    UpdateCbaL();
-    UpdateNaviPaneL();
+    
+    if(ApiProvider().StartedUp())
+        {
+        listbox->DrawDeferred();
+        UpdateCbaL();
+        UpdateNaviPaneL();
+        }
     }
 
 // ----------------------------------------------------------------------------

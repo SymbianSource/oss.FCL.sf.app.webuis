@@ -107,6 +107,8 @@ CBrowserFavouritesListbox::~CBrowserFavouritesListbox()
     delete iIconIndexes;
     delete iItems;
     delete iNewState;
+    if(iIconUpdateCallback) iIconUpdateCallback->Cancel();
+    delete iIconUpdateCallback;
     
     if ( iFontItalic )
         {
@@ -144,7 +146,16 @@ void CBrowserFavouritesListbox::SetDataL
     CleanupStack::PushL( aItems );
 
     // Get all favicons asynchronously by iteration on icon array
+    /* TODO: There should a callback from engine when favIcon are decode
+       otherwise it takes some redundant calls to engine in order to get 
+     the favIcons to UI. */
+#ifdef BRDO_PERF_IMPROVEMENTS_ENABLED_FF    
+    if(iApiProvider.StartedUp())
+        UpdateFavIconsL();
+#else
     iFaviconHandler->StartGetFaviconsL( aItems );
+#endif     
+
 
     // Get icon indexes into new list. Replace the existing
     // data only if successfully gotten. This ensures that they don't go out
@@ -186,6 +197,33 @@ void CBrowserFavouritesListbox::SetDataL
         iNewState = NULL;
         }
     }
+
+// ---------------------------------------------------------
+// CBrowserFavouritesListbox::UpdateFavIcons
+// ---------------------------------------------------------
+//
+void CBrowserFavouritesListbox::UpdateFavIconsL()
+    {
+    if(iIconUpdateCallback)
+        iIconUpdateCallback->Cancel();
+    else 
+        iIconUpdateCallback = CIdle::NewL(CActive::EPriorityIdle);
+
+    iFaviconHandler->RequestFavicons(iItems);
+    iIconUpdateCallback->Start(TCallBack(UpdateFavIconsCallback, this));
+    }
+
+// ----------------------------------------------------------------------------
+// CBrowserBookmarksView::CompleteAppInitCallback
+// ----------------------------------------------------------------------------
+//
+TInt CBrowserFavouritesListbox::UpdateFavIconsCallback( TAny* aParam )
+    {
+    CBrowserFavouritesListbox  *favListBox = STATIC_CAST(CBrowserFavouritesListbox*, aParam);
+    TRAP_IGNORE( (favListBox->iFaviconHandler->StartGetFaviconsL(favListBox->iItems)) )
+    return EFalse;
+    }
+
 
 // ---------------------------------------------------------
 // CBrowserFavouritesListbox::DrawFavicons

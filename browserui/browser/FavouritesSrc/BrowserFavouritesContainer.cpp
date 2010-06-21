@@ -291,8 +291,7 @@ void CBrowserFavouritesContainer::ConstructL
 	{
     iView = &aView;
 
-	CAknNavigationControlContainer* naviPane =
-        iView->ApiProvider().Display().NaviPaneL();
+	//CAknNavigationControlContainer* naviPane = iView->ApiProvider().Display().NaviPaneL();
 
     CreateWindowL();
     SetMopParent( iView );

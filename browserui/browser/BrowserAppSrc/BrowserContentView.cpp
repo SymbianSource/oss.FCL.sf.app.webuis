@@ -983,6 +983,9 @@ PERFLOG_STOPWATCH_START
     delete iTitle;
     iTitle = NULL;
     
+    ApiProvider().Display().FSPaneOnL( );
+    ApiProvider().Display().SetGPRSIndicatorOnL();
+    
     UpdateTitleL( ApiProvider() );
 
     ApiProvider().BrCtlInterface().MakeVisible(ETrue);
@@ -1097,7 +1100,7 @@ TRect CBrowserContentView::ResizeClientRect()
         }
 		
     if (Layout_Meta_Data::IsLandscapeOrientation() &&
-        (StatusPane() && StatusPane()->IsVisible()) && !Cba()->IsVisible())
+        (StatusPane() && StatusPane()->IsVisible()) && !Cba()->IsVisible() && IsForeground())
         {
         TRect screenRect;
         AknLayoutUtils::LayoutMetricsRect(AknLayoutUtils::EScreen, screenRect);

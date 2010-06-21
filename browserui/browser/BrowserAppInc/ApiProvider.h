@@ -397,6 +397,14 @@ class MApiProvider
 		* @param none
 		*/		        
 		virtual TBool IsDisplayingMenuOrDialog() = 0;
+		
+		/**
+		* API to complete the delayed UI initialization. Invoked once after first view is up.
+		* @return ETrue if successful
+		*         EFalse otherwise
+		* @param none
+		*/
+	    virtual TBool CompleteDelayedInit() = 0;
 
 };
 

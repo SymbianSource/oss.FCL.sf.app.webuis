@@ -278,7 +278,7 @@ class CBrowserWindow :  public CBase,
         TBool CalledFromAnotherApp();
 		TBool BrowserWasLaunchedIntoFeeds();
 		TBool IsDisplayingMenuOrDialog();
-	
+		TBool CompleteDelayedInit();
 
     //-------------------------------------------------------------------------
     // Preferences Handling

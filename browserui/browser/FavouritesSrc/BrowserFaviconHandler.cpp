@@ -121,6 +121,31 @@ void CBrowserFaviconHandler::ConstructL( CArrayPtr<CGulIcon>* aIconArray )
 	}
 
 // ----------------------------------------------------------------------------
+// CBrowserFaviconHandler::RequestFavicons()
+// ----------------------------------------------------------------------------
+//      
+void CBrowserFaviconHandler::RequestFavicons( CFavouritesItemList* aFavItems )
+    {
+    TInt count = aFavItems->Count();
+    while(count)
+        {            
+            CFavouritesItem& item = *aFavItems->At( count - 1); // index starts from 0
+            CGulIcon *favIcon = NULL;           
+                        
+            // Request Favicon from Engine  - there should be new API for request, but no har to use it
+            if ( item.Url().Length() )
+                iFavicon = iApiProvider.BrCtlInterface().GetBitmapData(item.Url(), TBrCtlDefs::EBitmapFavicon );
+
+            if ( favIcon )
+                {                
+                delete iFavicon;
+                iFavicon = NULL;
+                }
+            count--;
+        }
+    }
+
+// ----------------------------------------------------------------------------
 // CBrowserFaviconHandler::StartGetFaviconsL()
 // ----------------------------------------------------------------------------
 //		
@@ -162,10 +187,7 @@ void CBrowserFaviconHandler::GetFaviconL()
 			{
 			iWasLastItemFavicon = EFalse;
 			
-			CFavouritesItem& item = *iFavItems->At( iFavItemsCurrentIndex );
-			HBufC* url = HBufC::NewLC( item.Url().Length() );
-			url->Des().Copy( item.Url() );
-			
+			CFavouritesItem& item = *iFavItems->At( iFavItemsCurrentIndex );			
 			if ( iFavicon )
 				{
 				// Make sure ongoing scaling is cancelled (if any)
@@ -179,10 +201,9 @@ void CBrowserFaviconHandler::GetFaviconL()
 			// Get Favicon from Engine
 			if ( item.Url().Length() )
 				{
-				iFavicon = iApiProvider.BrCtlInterface().GetBitmapData( 
-										*url, TBrCtlDefs::EBitmapFavicon );
+				iFavicon = iApiProvider.BrCtlInterface().GetBitmapData(item.Url(), TBrCtlDefs::EBitmapFavicon );
 				}
-            CleanupStack::PopAndDestroy();//url
+
 			// Asynchronously scales the favicon and stores it in an array
 			if ( iFavicon )
 				{

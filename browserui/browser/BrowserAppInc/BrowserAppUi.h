@@ -672,6 +672,14 @@ class CBrowserAppUi : public CAknViewAppUi,
 		* @param none
 		*/		
 		TBool IsDisplayingMenuOrDialog();
+
+		/**
+		* Function to complete the delayed intialization of Browser
+		* @return ETrue if initialization was successful
+		*         EFalse otherwise
+		* @param none
+		*/	
+        TBool CompleteDelayedInit();  
 		        
         
     public:  // from MWindowInfoProvider
@@ -684,10 +692,22 @@ class CBrowserAppUi : public CAknViewAppUi,
 		* In embedded mode the browser is initialized later, not when it
 		* is constructed. First the browser must wait for the embedding
 		* application to send the startup parameters, and only after that
-		* can be initialized.
-		* This method is required and used by new embedding architecture.
-		*/
-		void InitBrowserL();
+		* can be initialized. This method is required and used by new
+		* embedding architecture.
+		*/       
+		void InitBrowserL(); 
+		
+        /* This method is used for normal startup and when the first view is Bookmarks. 
+         * In order to show the Bookmarks view, initialize only bookmarks and delay the
+         * remaining initialization. 
+         */
+		void InitBookmarksL();
+		
+        /* This method is used for normal startup and when the first view is Bookmarks. 
+         * This method includes intialization stuff which are not necessary for Bookmarks
+         * view. This is done using async CIdle approach. 
+         */
+		void DelayedInitL();		
 		
         /**
         * From CAknViewAppUi, CEikAppUi

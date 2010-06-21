@@ -125,7 +125,7 @@ LOG_ENTERFN("CBrowserBookmarksView::~CBrowserBookmarksView");
     delete iItemsToMove;
     delete iCurrentOrder;
     delete iEnteredURL;
-    iEnteredURL = NULL;
+    delete iAsyncComplete;
 BROWSER_LOG( ( _L("delete iEnteredUrl 1") ) );
     iCursorPos = -1;
     }
@@ -930,7 +930,8 @@ void CBrowserBookmarksView::SetRSKDynL(TSKPair& aRsk,
         aRsk.setPair(EBrowserBookmarksCmdBack, R_BROWSER_BOOKMARKS_DYN_SK_TEXT_SOFTKEY_BACK);
 
         // OR, it could be exit under these conditions
-        if ( !iInAdaptiveBookmarksFolder && !ApiProvider().IsPageLoaded() && !ApiProvider().Fetching() )
+        if ( !ApiProvider().StartedUp() ||
+             (!iInAdaptiveBookmarksFolder && !ApiProvider().IsPageLoaded() && !ApiProvider().Fetching())  )
             {
             if ( iCurrentFolder == KFavouritesRootUid )
                 {
@@ -1125,6 +1126,7 @@ BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
     //Make it true so that latest FavIcon db info is shown     
     iRefresh = ETrue;
 
+#ifndef BRDO_PERF_IMPROVEMENTS_ENABLED_FF
     Toolbar()->HideItem( EWmlCmdAddBookmark, ETrue , EFalse);
     
     //disable both the goto items and activate one of them depending on availability of search feature during bookmarks activation 
@@ -1139,6 +1141,7 @@ BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
     
     Cba()->MakeVisible( EFalse);
     StatusPane()->MakeVisible( EFalse );
+#endif
     
     if (iPenEnabled)
         {
@@ -1175,6 +1178,10 @@ void CBrowserBookmarksView::HandleListBoxEventL(
                     }
                 else if ( Container()->Listbox()->CurrentItem() )
                     {
+                    //complete remaining startup in Browser and then proceed
+                    if ( !ApiProvider().StartedUp() )
+                        ApiProvider().CompleteDelayedInit();
+                    
                     if ( Container()->Listbox()->CurrentItem()->IsItem())
                         {
                         ActivateCurrentBookmarkL();
@@ -1301,7 +1308,8 @@ void CBrowserBookmarksView::DynInitMenuPaneL
 
 #endif                    
             // downloads
-            aMenuPane->SetItemDimmed( EWmlCmdDownloads, !ApiProvider().BrCtlInterface().BrowserSettingL( TBrCtlDefs::ESettingsNumOfDownloads ) );
+            if(ApiProvider().StartedUp())
+                aMenuPane->SetItemDimmed( EWmlCmdDownloads, !ApiProvider().BrCtlInterface().BrowserSettingL( TBrCtlDefs::ESettingsNumOfDownloads ) );
 
             // edit
             if ( !item || (iInAdaptiveBookmarksFolder && aState.IsEmpty() ))
@@ -1347,7 +1355,7 @@ void CBrowserBookmarksView::DynInitMenuPaneL
         case R_GOTO_SUBMENU:
             {
             // back to page
-            if ( !ApiProvider().IsPageLoaded() && !ApiProvider().Fetching())
+            if ( !ApiProvider().StartedUp() || (!ApiProvider().IsPageLoaded() && !ApiProvider().Fetching()))
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdBackToPage, ETrue );
                 }
@@ -2129,6 +2137,24 @@ PERFLOG_STOPWATCH_START
     LOG_ENTERFN("CBrowserBookmarksView::DoActivateL");
     LOG_WRITE_FORMAT(" aCustomMessageId: %d", aCustomMessageId);
 
+#ifdef BRDO_PERF_IMPROVEMENTS_ENABLED_FF
+    // Quick activation for first time only to show bookmarks view fast
+    if(!ApiProvider().StartedUp()) 
+        {
+        CBrowserFavouritesView::DoActivateL( aPrevViewId, aCustomMessageId, aCustomMessage );
+        if ( aCustomMessageId == KUidCustomMsgDownloadsList )
+            {
+            iShowDownlods = ETrue;
+            // Show the downloads later since contentview has not initialized yet
+            }
+        
+        // complete remaining application launch process, aynchronously
+        iAsyncComplete  = CIdle::NewL( CActive::EPriorityIdle );
+        iAsyncComplete->Start( TCallBack( CompleteAppInitCallback, &iApiProvider ) );
+        return;
+        }
+#endif
+    
     Toolbar()->HideItem( EWmlCmdAddBookmark, EFalse , ETrue);
 
 #ifndef BRDO_SINGLE_CLICK_ENABLED_FF
@@ -2197,6 +2223,40 @@ PERFLOG_STOP_WRITE("BMView DoActivate")
     }
 
 // ----------------------------------------------------------------------------
+// CBrowserBookmarksView::CompleteAppInitCallback
+// ----------------------------------------------------------------------------
+//
+TInt CBrowserBookmarksView::CompleteAppInitCallback( TAny* aProvider )
+    {
+    MApiProvider  *apiProvider = STATIC_CAST(MApiProvider*, aProvider);
+    TBool result = apiProvider->CompleteDelayedInit();
+    return result;
+    }
+
+// ----------------------------------------------------------------------------
+// CBrowserBookmarksView::UpdateFavIcons
+// ----------------------------------------------------------------------------
+//
+void CBrowserBookmarksView::UpdateFavIconsL()
+    {
+    Container()->Listbox()->UpdateFavIconsL();
+    }
+
+
+// ----------------------------------------------------------------------------
+// CBrowserBookmarksView::CheckForDownloads
+// ----------------------------------------------------------------------------
+//
+void CBrowserBookmarksView::CheckForDownloads()
+    {
+    if(iShowDownlods)
+        {
+        if ( iDownloadsListExecuter == 0 )
+            iDownloadsListExecuter = new (ELeave) CAsyncDownloadsListExecuter( ApiProvider() );
+        iDownloadsListExecuter->Start();
+        }
+    }
+// ----------------------------------------------------------------------------
 // CBrowserBookmarksView::DoDeactivate
 // ----------------------------------------------------------------------------
 //
@@ -2208,7 +2268,8 @@ void CBrowserBookmarksView::DoDeactivate()
         }
     if ( !ApiProvider().ExitInProgress() )
         {
-        ApiProvider().BrCtlInterface().RemoveLoadEventObserver( this );
+        if ( ApiProvider().StartedUp() )
+            ApiProvider().BrCtlInterface().RemoveLoadEventObserver( this );
         }
     CBrowserFavouritesView::DoDeactivate();
     iManualItemMovingGoingOn = EFalse;

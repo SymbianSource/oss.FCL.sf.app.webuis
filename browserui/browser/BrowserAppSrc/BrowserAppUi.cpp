@@ -162,7 +162,8 @@ iUserExit( EFalse ),
 iPgNotFound( EFalse ),
 iOverriddenLaunchContextId( EBrowserContextIdNormal ),
 iBrowserAlreadyRunning (EFalse),
-iCalledFromExternApp( EFalse )
+iCalledFromExternApp( EFalse ),
+iFeedsClientUtilities( 0 )
     {
     iViewToBeActivatedIfNeeded.iUid = 0;
     iViewToReturnOnClose.iUid = 0;
@@ -290,7 +291,11 @@ PERFLOG_STOPWATCH_START;
 #endif
     if ( !IsEmbeddedModeOn( ) )
     	{
-    	InitBrowserL();
+#ifdef BRDO_PERF_IMPROVEMENTS_ENABLED_FF     
+        InitBookmarksL();
+#else
+        InitBrowserL();
+#endif        
     	LOG_WRITE( "Browser started standalone" );
     	}
 	else
@@ -446,249 +451,241 @@ void CBrowserAppUi::UpdateComplete( TInt aErrorCode, CIAUpdateResult* aResult )
     LOG_WRITE( "CBrowserAppUi::UpdateComplete - Exit" );
     }
 #endif
+
+
 // -----------------------------------------------------------------------------
-// CBrowserAppUi::InitBrowser()
+// CBrowserAppUi::InitBookmarksL()
+// Initialize only bookmarks view related dependencies here.
+// Note - Do not add unnecessary code here, it increases startup time for bookmarks view.
 // -----------------------------------------------------------------------------
 //
-void CBrowserAppUi::InitBrowserL()
+void CBrowserAppUi::InitBookmarksL()
+    {  
+    //New constructor that just replaces the default primary storage size with this one.
+    iRecentUrlStore = CRecentUrlStore::NewL();
+
+    // Init CommsModel
+    iCommsModel = CBrowserCommsModel::NewL();
+
+    // check if it can be delayed ??
+#ifdef BRDO_OCC_ENABLED_FF
+    iConnection = CInternetConnectionManager::NewL( &iCommsModel->CommsDb(), ETrue );
+#else
+    iConnection = CInternetConnectionManager::NewL( &iCommsModel->CommsDb(), EFalse );
+#endif    
+
+    // Creating object to hold application settings
+    CBrowserAppDocument* doc = STATIC_CAST(CBrowserAppDocument*, Document());    
+    iPreferences = CBrowserPreferences::NewL( *iCommsModel, *this, doc->GetOverriddenSettings());
+    
+    // Create bookmarkview
+     CBrowserBookmarksView* bookmarksView = NULL;
+     TInt folderUid = doc->GetFolderToOpen();
+     if ( IsEmbeddedModeOn() && folderUid!= KFavouritesRootUid)
+         {
+         bookmarksView = CBrowserBookmarksView::NewLC( *this, *iRecentUrlStore, folderUid );
+         }
+     else
+         {
+         bookmarksView = CBrowserBookmarksView::NewLC( *this, *iRecentUrlStore );
+         }
+
+     iBookmarksView = bookmarksView;
+     AddViewL( bookmarksView );  // transfer ownership to CAknViewAppUi    
+     CleanupStack::Pop(); // bookmarksView	           
+    }
+
+
+// -----------------------------------------------------------------------------
+// CBrowserAppUi::CompleteDelayedInit()
+// Delayed (async) init callback. This method can be invoked explicitly in case
+// some early startup cases fail if Browser has not initialized fully. No harm
+// if called multiple times since there is check in the beginning of thsi function.
+// -----------------------------------------------------------------------------
+//
+TBool CBrowserAppUi::CompleteDelayedInit()
+    { 
+    // Should not be called for other that 9.2 onward devices
+#ifdef BRDO_PERF_IMPROVEMENTS_ENABLED_FF
+    if ( iStartedUp )
+        return EFalse; // no need to re-invoke automatically
+    // complete initialization
+    TRAP_IGNORE(DelayedInitL());
+    
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+    // complete the IAD check asynchronously
+    iDelayedUpdate = CIdle::NewL( CActive::EPriorityIdle );
+    iDelayedUpdate->Start(TCallBack( CompleteIADUpdateCallback, this ));
+#endif    
+#endif    
+    
+    return EFalse; // no need to re-invoke automatically
+    }
+
+// -----------------------------------------------------------------------------
+// CBrowserAppUi::DelayedInitL()
+// Delayed (Async) initialization - whatever remains after InitBookmarksL(), do it here. 
+// Note: - Do not add unnecessary code here, it increases startup time for contenview.
+// -----------------------------------------------------------------------------
+//
+void CBrowserAppUi::DelayedInitL()
     {
+    LOG_ENTERFN("CBrowserAppUi::DelayedInitL");
+    // Check for ciritical disk space
     RFs fs;
     User::LeaveIfError(fs.Connect());
     TInt drive( EDriveC );
     TBool isSpace( EFalse );
     TInt err( KErrNone );
-    TRAP( err, isSpace = !SysUtil::DiskSpaceBelowCriticalLevelL(
-                                                &fs,
-                                                KMinimumCDriveDiskSpace,
-                                                drive ));
+    TRAP( err, isSpace = !SysUtil::DiskSpaceBelowCriticalLevelL(&fs, KMinimumCDriveDiskSpace, drive ));
     fs.Close();
-    if (!isSpace)
-        User::Leave(KErrDiskFull);
+    if (!isSpace)  User::Leave(KErrDiskFull);
 
-    if (!iStartedUp)
-        {
-        LOG_ENTERFN( "CBrowserAppUi::InitBrowser" );
+    // Create Favengine session
+    User::LeaveIfError( iFavouritesSess.Connect() );
+        
+    // Init FeatureManager
+    FeatureManager::InitializeLibL();
+    iFeatureManager = ETrue;
+    
+    // check flash present
+    iFlashPresent = CheckFlashPresent();    
 
-        User::LeaveIfError( iFavouritesSess.Connect() );
+    // this is required, browser's connection oberver should be hit first.
+	// (incase of netscape plgins, transactions will be closed.)
+    iConnStageNotifier = CConnectionStageNotifierWCB::NewL();    
+    iConnStageNotifier->SetPriority(CActive::EPriorityHigh);
 
-        PERFLOG_LOCAL_INIT;
-
-        PERFLOG_STOPWATCH_START;
-
-        // Replace the original synchronous creation with this async
-        // creation. A new method was added to the interface stub that was
-        // not added to the MAHLEClientAPI (it is owned by another group).
-        //  // Init AHLE Interface
-        //  TAHLEScore adaptationSpeed;
-        //  TUint      primarySize;
-        //  TUint      secondarySize;
-        //  iAHLEClient=CAHLEInterface::NewL();
-        //  iAHLEClient->GetConfigurationL( primarySize, secondarySize, adaptationSpeed  );
-        //  iAHLEClient->ReconfigureL( KAhlePrimaryStorage, secondarySize, adaptationSpeed  );
-/*
-    // Write to the file only if we are not below critical disk level
-    if (SysUtil::DiskSpaceBelowCriticalLevelL (&rfs, aData.Length(), EDriveC))
-        {
-        User::Leave(KErrDiskFull);
-        }
-
-    TMemoryInfoV1Buf info;
-    UserHal::MemoryInfo( info );
-    TInt freeRamInBytes = 10*1024*1024;
-    TInt dataSize = iContext->iDataPtr.Length();
-    if( UserHal::MemoryInfo( info ) == KErrNone )
-        freeRamInBytes = info().iFreeRamInBytes;
-
-*/
-        //New constructor that just replaces the default primary storage size with this one.
-        iRecentUrlStore = CRecentUrlStore::NewL();
-
-        iFlashPresent = CheckFlashPresent();
-        PERFLOG_STOP_WRITE("\t AhleInterface Creation + Configuration");
-        BROWSER_LOG( ( _L( "AHLE Interface inited" ) ) );
-
-        // Init FeatureManager
-        FeatureManager::InitializeLibL();
-        iFeatureManager = ETrue;
-
-        // Init CommsModel
-
-        PERFLOG_STOPWATCH_START;
-        iCommsModel = CBrowserCommsModel::NewL();
-        PERFLOG_STOP_WRITE("\t CommsModel NewL");
-        BROWSER_LOG( ( _L( "CommsModel up" ) ) );
-
-        CBrowserAppDocument* doc = STATIC_CAST(CBrowserAppDocument*, Document());
-
-        // Creating object to hold application settings
-        PERFLOG_STOPWATCH_START;
-        iPreferences = CBrowserPreferences::NewL( *iCommsModel, *this, doc->GetOverriddenSettings());
-        PERFLOG_STOP_WRITE("\t Preferences NewL");
-        BROWSER_LOG( ( _L( "Preferences up" ) ) );
-
-        PERFLOG_STOPWATCH_START;
-        #ifdef BRDO_OCC_ENABLED_FF
-          iConnection = CInternetConnectionManager::NewL( &iCommsModel->CommsDb(), ETrue );
-        #else
-          iConnection = CInternetConnectionManager::NewL( &iCommsModel->CommsDb(), EFalse );
-        #endif
-        	
-        PERFLOG_STOP_WRITE("\t ConnMan NewL");
-        BROWSER_LOG( ( _L( "ConnectionManager up" ) ) );
-
-
-        PERFLOG_STOPWATCH_START;
-        iConnStageNotifier = CConnectionStageNotifierWCB::NewL();
-		
-        //this is required, browser's connection oberver should be hit first. (incase of netscape plgins, transactions will be closed.)
-        iConnStageNotifier->SetPriority(CActive::EPriorityHigh);
-
-        PERFLOG_STOP_WRITE("\t StageNotif NewL");
-        BROWSER_LOG( ( _L( "StageNofier up" ) ) );
-
-        // Starts a background processing, so it must be started early, to get
-        // finished before the first send operation! Or it must be synchronized!
-        PERFLOG_STOPWATCH_START;
-        iLateSendUi  = CIdle::NewL( CActive::EPriorityIdle );
-        iLateSendUi ->Start( TCallBack( DelayedSendUiConstructL, this ) );
-        PERFLOG_STOP_WRITE("\t OtaSender NewL");
-
-        iHTTPSecurityIndicatorSupressed = iPreferences->HttpSecurityWarningsStatSupressed();
-
-        // set AP to be a default one (for Push messages)
-        SetRequestedAP( Preferences().DefaultAccessPoint() );
-        // get client rect before hiding CBAs
-        TRect rect = ClientRect();
-        Cba()->MakeVisible( EFalse );
-        //-------------------------------------------------------------------------
-        // Create bookmarkview
-        PERFLOG_STOPWATCH_START;
-        CBrowserBookmarksView* bookmarksView = NULL;
-        TInt folderUid = doc->GetFolderToOpen();
-        if ( IsEmbeddedModeOn() && folderUid!= KFavouritesRootUid)
-            {
-            bookmarksView = CBrowserBookmarksView::NewLC( *this, *iRecentUrlStore, folderUid );
-            }
-        else
-            {
-            bookmarksView = CBrowserBookmarksView::NewLC( *this, *iRecentUrlStore );
-            }
-        PERFLOG_STOP_WRITE("\t BMView NewL")
-
-        iBookmarksView = bookmarksView;
-
-        AddViewL( bookmarksView );  // transfer ownership to CAknViewAppUi
-        CleanupStack::Pop(); // bookmarksView
-        BROWSER_LOG( ( _L( "Bookmarksview up" ) ) );
-
-        //-------------------------------------------------------------------------
-        // Create ContentView
-
-        PERFLOG_STOPWATCH_START;
-        CBrowserContentView* contentView =
-            CBrowserContentView::NewLC( *this, rect );
-        AddViewL( contentView ); // transfer ownership to CAknViewAppUi
-        CleanupStack::Pop(); // contentView
-        PERFLOG_STOP_WRITE("\t ContentView NewL");
-        BROWSER_LOG( ( _L( "ContentView up" ) ) );
-
-        //-------------------------------------------------------------------------
-        // Create the Plugin Browser Engine
-
-        // proxy will handle dialog events through load observer
-        iDialogsProvider = CBrowserDialogsProvider::NewL( NULL);
-        BROWSER_LOG( ( _L( "CBrowserDialogsProvider UP" ) ) );
+    // Starts a background processing, so it must be started early, to get
+    // finished before the first send operation! Or it must be synchronized!
+    iLateSendUi  = CIdle::NewL( CActive::EPriorityIdle );
+    iLateSendUi ->Start( TCallBack( DelayedSendUiConstructL, this ) );
+    
+    iHTTPSecurityIndicatorSupressed = iPreferences->HttpSecurityWarningsStatSupressed();
+    
+    // set AP to be a default one (for Push messages)
+    SetRequestedAP( Preferences().DefaultAccessPoint() );
+    
+    // Create ContentView
+    TRect rect = ClientRect();
+    CBrowserContentView* contentView = CBrowserContentView::NewLC( *this, rect );
+    AddViewL( contentView ); // transfer ownership to CAknViewAppUi
+    CleanupStack::Pop(); // contentView
+    
+    // proxy will handle dialog events through load observer
+    iDialogsProvider = CBrowserDialogsProvider::NewL( NULL);
 
 #ifdef __RSS_FEEDS
-        iFeedsClientUtilities = CFeedsClientUtilities::NewL( *this, *this );
-
-        BROWSER_LOG( ( _L("Feeds up.") ) );
+    iFeedsClientUtilities = CFeedsClientUtilities::NewL( *this, *this );
+    BROWSER_LOG( ( _L("Feeds up.") ) );
 #endif //__RSS_FEEDS
-
-        PERFLOG_STOPWATCH_START;
-        // Is Multiple Window feature suported?
-        if ( Preferences().UiLocalFeatureSupported( KBrowserMultipleWindows ) )
+    
+    // Is Multiple Window feature suported?
+    if ( Preferences().UiLocalFeatureSupported( KBrowserMultipleWindows ) )
+        {
+        if (Preferences().UiLocalFeatureSupported( KBrowserMinimalMultipleWindows ))//midrange
             {
-            if (Preferences().UiLocalFeatureSupported( KBrowserMinimalMultipleWindows ))//midrange
-                {
-                iWindowManager = CBrowserWindowManager::NewL( *this, *contentView,
-                    KMinNumOfOpenedWindows );
-                }
-            else
-                {
-                iWindowManager = CBrowserWindowManager::NewL( *this, *contentView,
-                    KMaxNumOfOpenedWindows );
-                }
-            LOG_WRITE_FORMAT("WindowManager Up. Max windows number. %d",
-                KMaxNumOfOpenedWindows );            
+            iWindowManager = CBrowserWindowManager::NewL( *this, *contentView, KMinNumOfOpenedWindows );
             }
         else
             {
-            iWindowManager = CBrowserWindowManager::NewL( *this, *contentView,
-                KMinNumOfOpenedWindows );
-            BROWSER_LOG( ( _L( "WindowManager Up. MWs not supported." ) ) );
+            iWindowManager = CBrowserWindowManager::NewL( *this, *contentView, KMaxNumOfOpenedWindows );
             }
+        LOG_WRITE_FORMAT("WindowManager Up. Max windows number. %d", KMaxNumOfOpenedWindows );            
+        }
+    else
+        {
+        iWindowManager = CBrowserWindowManager::NewL( *this, *contentView, KMinNumOfOpenedWindows );
+        BROWSER_LOG( ( _L( "WindowManager Up. MWs not supported." ) ) );
+        }
+    
+    contentView->SetZoomLevelL();
+    BrCtlInterface().AddLoadEventObserverL(iBookmarksView);        
+    
+    // create settings view
+    CBrowserSettingsView* settingsView = CBrowserSettingsView::NewLC( *this );
+    AddViewL( settingsView );   // transfer ownership to CAknViewAppUi
+    CleanupStack::Pop(); // settingsView
+    BROWSER_LOG( ( _L( "SettingsView up" ) ) );
 
-        PERFLOG_STOP_WRITE("\t WindowMgr + PopUp Engine");
-        contentView->SetZoomLevelL();
-
-        //-------------------------------------------------------------------------
-
-
-        CBrowserSettingsView* settingsView = CBrowserSettingsView::NewLC( *this );
-        AddViewL( settingsView );   // transfer ownership to CAknViewAppUi
-        CleanupStack::Pop(); // settingsView
-        BROWSER_LOG( ( _L( "SettingsView up" ) ) );
-
-        CBrowserWindowSelectionView* windowSelectionView = CBrowserWindowSelectionView::NewLC( *this );
-        AddViewL( windowSelectionView );   // transfer ownership to CAknViewAppUi
-        CleanupStack::Pop(); // windowSelectionView
-        BROWSER_LOG( ( _L( "windowSelectionView up" ) ) );
-
-        //-------------------------------------------------------------------------
-
-        iIdle = CIdle::NewL( CActive::EPriorityIdle );
-
-        // Create asyncronous object to call when exit requires it.
-        iBrowserAsyncExit = CBrowserAsyncExit::NewL( this );
-        iStartedUp = ETrue;
-        iSecureSiteVisited = EFalse;
-
-	    iPushMtmObserver = CBrowserPushMtmObserver::NewL( this );
-	    iPushMtmObserver->StartObserver();
-        // Create two Panes of CBrowserContentViewContainer
-        CBrowserGotoPane* gotoPane = CBrowserGotoPane::NewL( contentView->Container(),
-                 EMbmAvkonQgn_indi_find_goto,
-                 EMbmAvkonQgn_indi_find_goto_mask,
-                 ETrue,
-                 contentView );
-                          
-        // Create the find pane with magnifier glass icon, and
-        // without adaptive popup list...
-        CBrowserGotoPane* findKeywordPane = CBrowserGotoPane::NewL( contentView->Container(),
-                 EMbmAvkonQgn_indi_find_glass,
-                 EMbmAvkonQgn_indi_find_glass_mask,
-                 EFalse,
-                 contentView,
-                 ETrue );
-        contentView->Container()->SetGotoPane(gotoPane);
-        contentView->Container()->SetFindKeywordPane(findKeywordPane);
-        contentView->Container()->SetRect( rect );
-        contentView->Container()->GotoPane()->SetGPObserver(contentView);
-        contentView->Container()->FindKeywordPane()->SetGPObserver(contentView);
-        contentView->Container()->FindKeywordPane()->SetOrdinalPosition( 0 );
-        contentView->Container()->GotoPane()->SetOrdinalPosition( 0 );
-
+    // window selection view
+    CBrowserWindowSelectionView* windowSelectionView = CBrowserWindowSelectionView::NewLC( *this );
+    AddViewL( windowSelectionView );   // transfer ownership to CAknViewAppUi
+    CleanupStack::Pop(); // windowSelectionView
+    BROWSER_LOG( ( _L( "windowSelectionView up" ) ) );
+    
+    // Create asyncronous object to call when exit requires it.
+    iBrowserAsyncExit = CBrowserAsyncExit::NewL( this );
+    iIdle = CIdle::NewL( CActive::EPriorityIdle );
+    
+    iPushMtmObserver = CBrowserPushMtmObserver::NewL( this );
+    iPushMtmObserver->StartObserver();
+    
 #ifdef BRDO_OCC_ENABLED_FF
-        iRetryConnectivity = CPeriodic::NewL(CActive::EPriorityStandard);
+    iRetryConnectivity = CPeriodic::NewL(CActive::EPriorityStandard);
 #endif
-
-#ifdef BRDO_IAD_UPDATE_ENABLED_FF
-    iDelayedUpdate = CIdle::NewL( CActive::EPriorityIdle );
-    iDelayedUpdate->Start(TCallBack( CompleteIADUpdateCallback, this ));
-#endif
-        } //if (iStartedUp)
+    
+    // Create two Panes of CBrowserContentViewContainer
+    CBrowserGotoPane* gotoPane = CBrowserGotoPane::NewL( contentView->Container(),
+             EMbmAvkonQgn_indi_find_goto,
+             EMbmAvkonQgn_indi_find_goto_mask,
+             ETrue,
+             contentView );
+                      
+    // Create the find pane with magnifier glass icon, and
+    // without adaptive popup list...
+    CBrowserGotoPane* findKeywordPane = CBrowserGotoPane::NewL( contentView->Container(),
+             EMbmAvkonQgn_indi_find_glass,
+             EMbmAvkonQgn_indi_find_glass_mask,
+             EFalse,
+             contentView,
+             ETrue );
+    contentView->Container()->SetGotoPane(gotoPane);
+    contentView->Container()->SetFindKeywordPane(findKeywordPane);
+    //contentView->Container()->SetRect( rect ); // causes suncRepaint
+    contentView->Container()->GotoPane()->SetGPObserver(contentView);
+    contentView->Container()->FindKeywordPane()->SetGPObserver(contentView);
+    contentView->Container()->FindKeywordPane()->SetOrdinalPosition( 0 );
+    contentView->Container()->GotoPane()->SetOrdinalPosition( 0 );
+    
+    iStartedUp = ETrue;           
+    iSecureSiteVisited = EFalse;
+    
+#ifdef BRDO_PERF_IMPROVEMENTS_ENABLED_FF
+    if(LastActiveViewId() == KUidBrowserBookmarksViewId)
+        {
+        iBookmarksView->CheckForDownloads();
+        iBookmarksView->UpdateFavIconsL();
+        }
+#endif    
     }
+
+// -----------------------------------------------------------------------------
+// CBrowserAppUi::InitBrowserL() - THIS METHOD IS NOT USED FOR NORMAL STARTUP
+// This method is just for supporting Browser initialization if launched in Embedded mode
+// Normal initialization if split in BookmarksInit() and DelayedInit(). iStartedUp is FALSE
+// if BRowser has not initialized or partially initialized.
+// NOTE: DO NOT ADD ANY CODE HERE. IT IS JUST A WRAPPER.
+// -----------------------------------------------------------------------------
+//
+void CBrowserAppUi::InitBrowserL()
+    {
+    // Bookmarks initialization
+    InitBookmarksL();
+    
+    // 2nd part of initialization
+    DelayedInitL();
+    
+#ifdef BRDO_IAD_UPDATE_ENABLED_FF
+    // complete the IAD check asynchronously
+    if(!IsEmbeddedModeOn())
+        {
+        iDelayedUpdate = CIdle::NewL( CActive::EPriorityIdle );
+        iDelayedUpdate->Start(TCallBack( CompleteIADUpdateCallback, this ));
+        }
+#endif
+    }
+
 
 // -----------------------------------------------------------------------------
 // CBrowserAppUi::ProcessCommandL(TInt aCommand)
@@ -1183,6 +1180,11 @@ void CBrowserAppUi::SetContentDisplayed(TBool aValue)
 //
 void CBrowserAppUi::FetchBookmarkL( TInt aBookmarkUid )
     {
+    // complete initialization if not done yet, can happen if user selects
+    // a bookmark quickly after launch (within 1 second)
+    if ( !iStartedUp )
+        CompleteDelayedInit();
+        
     SetViewToReturnOnClose( KUidBrowserBookmarksViewId );
     if ( aBookmarkUid == KFavouritesStartPageUid )
         {
@@ -1221,6 +1223,11 @@ void CBrowserAppUi::FetchBookmarkL( TInt aBookmarkUid )
 //
 void CBrowserAppUi::FetchBookmarkL( const CFavouritesItem& aBookmarkItem )
     {
+    // complete initialization if not done yet, can happen if user selects
+    // a bookmark quickly after launch (within 1 second)
+    if ( !iStartedUp )
+        CompleteDelayedInit();
+    
     SetViewToReturnOnClose( KUidBrowserBookmarksViewId );
     if ( Util::CheckBookmarkApL( *this, aBookmarkItem.WapAp()) )
         FetchL
@@ -1263,7 +1270,7 @@ void CBrowserAppUi::SetViewToBeActivatedIfNeededL( TUid aUid, TInt aMessageId )
 		ContentView()->SetFullScreenOffL();
 		}
 	
-	if ( iWindowManager->ContentView()->FullScreenMode() )
+	if ( iWindowManager && iWindowManager->ContentView()->FullScreenMode() )
 	    {
     	if ( aUid == KUidBrowserFeedsFeedViewId )
     	    {
@@ -1285,6 +1292,10 @@ void CBrowserAppUi::SetViewToBeActivatedIfNeededL( TUid aUid, TInt aMessageId )
 		{
         if ( aUid == KUidBrowserSettingsViewId )
 	        {
+            //complete initialisation 
+            if( !iStartedUp )
+                CompleteDelayedInit();
+
             CEikStatusPane* sp = STATIC_CAST( CAknAppUi*,
 						  CEikonEnv::Static()->EikAppUi() )
 			                ->StatusPane();
@@ -1353,11 +1364,10 @@ TBool CBrowserAppUi::IsConnecting() const
 void CBrowserAppUi::HandleForegroundEventL( TBool aForeground )
     {
     // Handle this event only if the browser is started up
-    if ( !StartedUp() )
-    	{
-    	return;
-    	}
     iIsForeground = IsForeground();
+    if (!iStartedUp)
+    	return;
+
     if( iIsForeground )
     	{
  	    if (iViewToBeActivatedIfNeeded.iUid)
@@ -1418,6 +1428,11 @@ void CBrowserAppUi::FetchL(
                            CBrowserLoadObserver::TBrowserLoadUrlType aUrlType )
     {
 LOG_ENTERFN("CBrowserAppUi::FetchL");
+    
+    // complete the initialization if not done yet
+    if(!iStartedUp)
+        CompleteDelayedInit();
+    
     // Let's cancel the previous fetch if any
     if ( Fetching() )
 		{
@@ -1630,9 +1645,9 @@ void CBrowserAppUi::ExitBrowser( TBool aUserInitiated )
 	TBool isStandAlone = !IsEmbeddedModeOn();
 	BROWSER_LOG( ( _L( " isStandAlone: %d" ), isStandAlone ) );
 
-	if( isStandAlone && aUserInitiated )
+	if(isStandAlone && aUserInitiated )
 	    {
-		if( !BrCtlInterface().OkToExit() )
+		if( iStartedUp && !BrCtlInterface().OkToExit() )
 		    {
 		    return;
 		    }
@@ -1670,7 +1685,7 @@ void CBrowserAppUi::ExitBrowser( TBool aUserInitiated )
     if( ( IsEmbeddedInOperatorMenu() || IsEmbeddedModeOn() ) &&
             !ExitInProgress() &&
              ((LoadObserver().LoadUrlType() == CBrowserLoadObserver::ELoadUrlTypeEmbeddedBrowserWithUrl) ||
-              (LoadObserver().LoadUrlType() == CBrowserLoadObserver::ELoadUrlTypeOther)   ) )
+             (LoadObserver().LoadUrlType() == CBrowserLoadObserver::ELoadUrlTypeOther)   ) )
                // ELoadUrlTypeEmbeddedBrowserWithUrl is typical for load via Phonebook, MMS, OperatorMenu
                // ELoadUrlTypeOther is typical via Media download since those are via GotoPane entered urls
         {
@@ -1698,9 +1713,12 @@ void CBrowserAppUi::ExitBrowser( TBool aUserInitiated )
     		iConnection->Disconnect();
 #ifdef __RSS_FEEDS
             BROWSER_LOG( ( _L( " iFeedsClientUtilities->DisconnectFeedsViewL()" ) ) );
+            if ( iFeedsClientUtilities )
+                {
             TRAP_IGNORE( iFeedsClientUtilities->DisconnectFeedsViewL() );
             //notify feeds engine to close the connection
             TRAP_IGNORE( iFeedsClientUtilities->DisconnectManualUpdateConnectionL() );
+                } 
 #endif
     		}
         if (SpecialLoadObserver().IsConnectionStarted()) 
@@ -1728,10 +1746,13 @@ void CBrowserAppUi::ExitBrowser( TBool aUserInitiated )
             TRAP_IGNORE( SendDisconnectEventL() );
     		iConnection->Disconnect();
 #ifdef __RSS_FEEDS
+            if ( iFeedsClientUtilities )
+                {
     		BROWSER_LOG( ( _L( " iFeedsClientUtilities->DisconnectFeedsViewL()" ) ) );
     		TRAP_IGNORE( iFeedsClientUtilities->DisconnectFeedsViewL() );
     		//notify feeds engine to close the connection
 			TRAP_IGNORE( iFeedsClientUtilities->DisconnectManualUpdateConnectionL() );
+                }
 #endif
     		}
     	if (SpecialLoadObserver().IsConnectionStarted()) // If Connection request is in processing calling CAknAppUI::Exit() causes crash (JSAA-84RG9R)
@@ -2101,7 +2122,7 @@ TBool CBrowserAppUi::ProcessCommandParametersL( TApaCommand aCommand,
     LOG_WRITE_FORMAT(" aCommand: %d", aCommand);
 
     // The browser is in embedded mode and it is not initialized yet
-    if ( !StartedUp() )
+    if ( IsEmbeddedModeOn() && !iStartedUp)
     	{
     	return EFalse;
     	}
@@ -2146,16 +2167,19 @@ TBool CBrowserAppUi::ProcessCommandParametersL( TApaCommand aCommand,
 	            	{    
 	            	specialSchemeInHomePageAddress = ETrue;
 	            	SetLastActiveViewId(KUidBrowserBookmarksViewId);
+	            	SetViewToBeActivatedIfNeededL(KUidBrowserContentViewId, 0);
 	            	TRAPD( err, FetchL( ptr, CBrowserLoadObserver::ELoadUrlTypeOther ) );
 	            	}
 	            else
 	                {
+	                SetViewToBeActivatedIfNeededL(KUidBrowserContentViewId, 0);
                     StartFetchHomePageL();
 	            	}
     	        CleanupStack::PopAndDestroy( 3,buf );
     	        }
             else
             	{
+                SetViewToBeActivatedIfNeededL(KUidBrowserContentViewId, 0);
                 StartFetchHomePageL();
             	}
            
@@ -2262,6 +2286,11 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
     CleanupStack::PopAndDestroy( params );
     CleanupStack::PushL( command );
 
+
+    // complete the delayed initialization if bookmarks view is not the first view
+    if(ViewToActivate != KUidBrowserBookmarksViewId && !iStartedUp)
+        CompleteDelayedInit();
+
 	//wait a while, contentview initializing itself
     WaitCVInit();
     switch ( command->Count() )
@@ -2293,7 +2322,9 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                     }
                 else  
                     {
+                    if (iStartedUp)
                     ContentView()->SetFullScreenOffL();
+
                     if ( !IsEmbeddedModeOn() )
                         {
                         SetLastActiveViewId( KUidBrowserBookmarksViewId );
@@ -2584,7 +2615,7 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
 //
 void CBrowserAppUi::WaitCVInit()
     {
-    if( iParametrizedLaunchInProgress == 0 )
+    if( iParametrizedLaunchInProgress == 0 && iStartedUp)
         {
         iParametrizedLaunchInProgress = 1;
         iIdle->Cancel();
@@ -3855,7 +3886,7 @@ void CBrowserAppUi::HandleResourceChangeL( TInt aType )
         if( activeView != NULL )
             {
             activeView->HandleClientRectChange();
-            if (activeView != ContentView())
+            if ( ContentView() && (activeView != ContentView()) )
                 {
                 ContentView()->HandleClientRectChange();
                 }
@@ -4199,6 +4230,10 @@ void CBrowserAppUi::OpenLinkInNewWindowL( const CFavouritesItem& aBookmarkItem )
 void CBrowserAppUi::SendDisconnectEventL()
     {
     LOG_ENTERFN("CBrowserAppUi::SendDisconnectEventL");
+    
+    if(!iStartedUp)
+        return;
+        
     SpecialLoadObserver().CancelConnection();
     CArrayFixFlat<CWindowInfo*>* windows = iWindowManager->GetWindowInfoL( this );
     if( windows )
@@ -4220,13 +4255,7 @@ void CBrowserAppUi::SendDisconnectEventL()
         
         CBrowserWindow* window = NULL;
         iWindowManager->Window( windows->At( 0 )->iWindowId, window );
-        
-        // Close session only once
-        if (window)
-            {
-            window->BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandDisconnect + (TInt)TBrCtlDefs::ECommandIdBase );
-            }
-        
+                
         // delete the window items before deleting the array
         for( i=0; i<windows->Count(); ++i )
             delete windows->At( i );
@@ -4588,6 +4617,8 @@ void CBrowserAppUi::HandleSystemEventL(const TWsEvent& aEvent)
 // ---------------------------------------------------------
 void CBrowserAppUi::StartFetchHomePageL(void)
     {
+    if(!iStartedUp)
+        CompleteDelayedInit();
     
     // There's a homepage to be launched so start in content view
     SetLastActiveViewId(KUidBrowserContentViewId);      	    	          

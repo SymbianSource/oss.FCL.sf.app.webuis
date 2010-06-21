@@ -287,6 +287,12 @@ class CBrowserFavouritesListbox : 	public CAknSingleGraphicStyleListBox
         * @param aRowIndex - index of row to be italicized 
         */
 		void ItalicizeRowItemL(TInt aRowIndex);
+		
+        /**
+        * Updates the favourites icons in the list. Initiates async operation
+        * to fetch and draw icons in background during idle time.  
+        */		
+		void UpdateFavIconsL();
 
 
     protected:  // Construct / destruct
@@ -333,6 +339,11 @@ class CBrowserFavouritesListbox : 	public CAknSingleGraphicStyleListBox
         * returned state.
         */
         void CalcNewStateL( CFavouritesItemList& aNewItems );
+        
+        /**
+        * Callback for fetching and drawing favicons
+        */
+        static TInt UpdateFavIconsCallback( TAny* aParam );
 
 
     private:    // new methods: index <--> Uid conversion
@@ -454,6 +465,8 @@ class CBrowserFavouritesListbox : 	public CAknSingleGraphicStyleListBox
         * Italicized font for setting listbox rows to italics font.
         */
         CFbsFont *iFontItalic;
+        
+        CIdle *iIconUpdateCallback;
 
 
     };
