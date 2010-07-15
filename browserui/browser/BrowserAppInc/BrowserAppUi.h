@@ -817,7 +817,7 @@ class CBrowserAppUi : public CAknViewAppUi,
         * @param none
         */		
 		void StartFetchHomePageL();		
-        TUid FindAppIdL(TUid aMessageUid);
+        TBool IsSameWinApp(TUid aMessageUid);
 #ifdef BRDO_OCC_ENABLED_FF
         //For Call back for reconnectivity
         static TInt RetryConnectivity(TAny* aCBrowserAppUi);
@@ -1114,7 +1114,7 @@ class CBrowserAppUi : public CAknViewAppUi,
         RFs iFs;
         CIdle* iDelayedUpdate;
 #endif        
-        TBool iCalledFromExternApp;
+        TBool iSameWinApp;
         TInt iWindowIdFromFromExternApp;
 	protected:
 

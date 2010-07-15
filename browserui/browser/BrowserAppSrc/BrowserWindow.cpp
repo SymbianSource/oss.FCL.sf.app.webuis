@@ -65,6 +65,7 @@ TBool CBrowserWindow::iIsPageOverviewSupported = EFalse;
 //
 TBool CBrowserWindow::CompleteDelayedInit()
     {    
+    return EFalse;
     }
 
 CBrowserWindow* CBrowserWindow::NewLC(

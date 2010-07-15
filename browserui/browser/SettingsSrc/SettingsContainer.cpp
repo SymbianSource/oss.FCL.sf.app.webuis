@@ -1250,7 +1250,7 @@ void CSettingsContainer::AppendAutomaticUpdatingAPL(
     CleanupStack::PopAndDestroy(); // defaultAp
     aItemText.Append( KWmlSettingsListBoxItemPostfix );
     
-    if ( id == -1 )
+    if ( id == KWmlNoDefaultAccessPoint )
         {
         // If user hasn't selected an AP, show a blank list entry. Once user
         // selects an AP, it will be displayed.  Note: The browser's default AP
@@ -3362,7 +3362,6 @@ TKeyResponse CSettingsContainer::OfferKeyEventL( const TKeyEvent& aKeyEvent, TEv
 //
 void CSettingsContainer::HandleListBoxEventL(CEikListBox* aListBox,TListBoxEvent aEventType)
     {
-    TKeyResponse ret = EKeyWasNotConsumed;
     if (iPenEnabled)
         {
         if (iSettingListBox && aListBox == iSettingListBox)
@@ -3446,7 +3445,6 @@ void CSettingsContainer::HandleListBoxEventL(CEikListBox* aListBox,TListBoxEvent
                         case EWmlSettingsSearchProvider:
                         {
                             ChangeItemL( ETrue );
-                            ret = EKeyWasConsumed;
                             break;
                         }
                         default:

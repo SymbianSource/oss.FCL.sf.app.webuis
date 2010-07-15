@@ -81,7 +81,29 @@ RESOURCE AVKON_TOOLBAR r_bookmark_view_toolbar
                         }
                     };
                 };
-            },            
+            }, 
+           
+        TBAR_CTRL //Search Goto
+            {
+            type = EAknCtButton;
+            id = EWmlCmdGoToAddressAndSearch;     
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_is_tooltip_goto_search;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_goto_and_search;         
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_goto_and_search_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_goto_and_search;
+                        }
+                    };
+                };
+            }, 
 #ifdef BRDO_SINGLE_CLICK_ENABLED_FF	    
             TBAR_CTRL
                         {
@@ -127,31 +149,9 @@ RESOURCE AVKON_TOOLBAR r_bookmark_view_toolbar
                         }
                     };
                 };
-            }	
- #endif
-	,
-    TBAR_CTRL //Search Goto
-        {
-        type = EAknCtButton;
-        id = EWmlCmdGoToAddressAndSearch;     
-        control = AVKON_BUTTON
-            {
-            flags = 0;
-            states =
-                {
-                AVKON_BUTTON_STATE
-                    {
-                    txt     = "";  //Icon should always be visible instead of this
-                    helptxt = qtn_is_tooltip_goto_search;
-                    bmpfile = "\\Resource\\apps\\browser.mif";
-                    bmpid   = EMbmBrowserQgn_indi_browser_tb_goto_and_search;         
-                    bmpmask = EMbmBrowserQgn_indi_browser_tb_goto_and_search_mask;
-                    extension = r_browser_ext_qgn_indi_browser_tb_goto_and_search;
-                    }
-                };
-            };
-        }	
-      };
+            }		
+ #endif           
+        };
     }
 
 #else

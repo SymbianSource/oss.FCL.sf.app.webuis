@@ -1033,10 +1033,7 @@ void CBrowserContentView::UpdateFullScreenL()
     if ( AppUi()->GetActiveViewId( activeViewId ) == KErrNone )
         {
         if ( activeViewId.iViewUid == KUidBrowserContentViewId )
-            {
-            TBool sizeChangedCba = EFalse;
-            TBool sizeChangedSP = EFalse;
-            
+            { 
             if ( iContentFullScreenMode )
                 {
                 SetContentContainerRect();
@@ -1054,7 +1051,6 @@ void CBrowserContentView::UpdateFullScreenL()
                     {
                     if(StatusPane()->IsVisible())
                         {
-                        sizeChangedSP = ETrue;
                         StatusPane()->MakeVisible(EFalse);
                         }
                     }
@@ -1062,16 +1058,13 @@ void CBrowserContentView::UpdateFullScreenL()
                     {
                     if(!StatusPane()->IsVisible())
                         {
-                        sizeChangedSP = ETrue;
                         ShowFsStatusPane(ETrue);
                         }
                     }
                 }
             else
                 {
-                sizeChangedCba = !Cba()->IsVisible();
                 Cba()->MakeVisible( ETrue );
-                sizeChangedSP = !StatusPane()->IsVisible();
                 StatusPane()->MakeVisible( ETrue );
                 }
 

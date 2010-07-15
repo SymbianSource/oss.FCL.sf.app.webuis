@@ -46,6 +46,7 @@
 #include <feedattributes.h>
 #include <folderattributes.h>
 #include <feedsentity.h>
+#include <BidiText.h>
 
 #include "eikon.hrh"
 
@@ -61,7 +62,9 @@ _LIT(KTokenDescription, "#Description#");
 _LIT(KTokenEnclosure, "#Enclosure#");
 _LIT(KTokenShowPrev, "#ShowPrev#");
 _LIT(KTokenShowNext, "#ShowNext#");
-
+_LIT(KTokenTextDir, "#dir#");
+_LIT(KLTRTextDir, "\"ltr\"");
+_LIT(KRTLTextDir, "\"rtl\"");
 
 const TInt KDateSize = 30;          // Size of Date strings
 const TInt KTimeSize = 30;          // Size of Time strings
@@ -956,7 +959,26 @@ HBufC* CFeedsFeedContainer::ResolveTemplateL(const TDesC& aTitle,
     // Resolve the tokens.
     TPtr  ucs2Ptr(ucs2Buff->Des());
 
-    // Replace the title tokens.
+    // Add the text direction information here
+    TBool found(EFalse);
+	TBidiText::TDirectionality dir = TBidiText::TextDirectionality(aTitle, &found);
+	TBuf<5> textDirection;
+	if ( dir == TBidiText::ERightToLeft )
+		{
+		textDirection.Copy(KRTLTextDir);
+		}
+	else
+		{
+		textDirection.Copy(KLTRTextDir);
+		}
+	
+	// replace the text direction string
+	if ((loc = ucs2Ptr.Find(KTokenTextDir())) != KErrNotFound)
+		{
+		ucs2Ptr.Replace(loc, textDirection.Length(), textDirection);
+		}
+	
+	// Replace the title tokens.
     while ((loc = ucs2Ptr.Find(KTokenTitle())) != KErrNotFound)
         {
         ucs2Ptr.Replace(loc, KTokenTitle().Length(), aTitle);

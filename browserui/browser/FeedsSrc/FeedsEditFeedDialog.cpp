@@ -342,7 +342,7 @@ void CFeedsEditFeedDialog::LineChangedL( TInt aControlId )
         CEikEdwin* edwin = NULL;
         edwin = static_cast<CEikEdwin*>(ControlOrNull(EFeedsEditDialogUrlId));
         if(edwin)
-        edwin->SetAknEditorFlags(EAknEditorFlagNoT9);
+            edwin->SetAknEditorFlags(EAknEditorFlagNoT9 | EAknEditorFlagUseSCTNumericCharmap);
         }
     else if(aControlId == EFeedsEditAutomaticUpdatingId) 
         {

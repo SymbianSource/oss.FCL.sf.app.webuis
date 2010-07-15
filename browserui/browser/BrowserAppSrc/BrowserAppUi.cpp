@@ -162,7 +162,7 @@ iUserExit( EFalse ),
 iPgNotFound( EFalse ),
 iOverriddenLaunchContextId( EBrowserContextIdNormal ),
 iBrowserAlreadyRunning (EFalse),
-iCalledFromExternApp( EFalse ),
+iSameWinApp( EFalse ),
 iFeedsClientUtilities( 0 )
     {
     iViewToBeActivatedIfNeeded.iUid = 0;
@@ -342,8 +342,8 @@ void CBrowserAppUi::CheckUpdatesComplete( TInt aErrorCode, TInt aAvailableUpdate
     {
     LOG_ENTERFN("CBrowserAppUi::CheckUpdatesComplete");
     LOG_WRITE( "CBrowserAppUi::CheckUpdatesComplete - Entry" );
-    TInt err;
-    TBool result;
+
+    TBool result = EFalse;
     TBool showDialog = EFalse;
 
     if ( aErrorCode == KErrNone )
@@ -2150,8 +2150,6 @@ TBool CBrowserAppUi::ProcessCommandParametersL( TApaCommand aCommand,
     	        
     	        HBufC* buf = HBufC::NewLC( KMaxHomePgUrlLength );  // cleanupstack
     	        TPtr ptr( buf->Des() );
-    	        TInt pgFound( KErrNotFound );
-    	        pgFound = Preferences().HomePageUrlL( ptr );
     	        
     			HBufC* searchScheme = HBufC::NewLC( KMaxHomePgUrlLength );  // cleanupstack
     			TPtr searchSchemePtr( searchScheme->Des() );
@@ -2460,7 +2458,7 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                                 CBrowserWindow *win = NULL; 
                                 if(WindowMgr().CurrentWindow()) 
                                 {
-                                    if(iCalledFromExternApp)
+                                    if(iSameWinApp)
                                     {
                                         //We will be using same/already opened window if call is from external
                                         //application. So no new windows will be opened.
@@ -3176,13 +3174,8 @@ MCoeMessageObserver::TMessageResponse CBrowserAppUi::HandleMessageL(
     TUid wapUid = KUidBrowserApplication;
     TApaTask task = taskList.FindApp( wapUid );
     task.BringToForeground();
-    //Check for aMessageUid. If it is in array then set iCalledFromExternApp = ETrue
-    TUid aAppId;
-    TRAPD(err, aAppId = FindAppIdL(aMessageUid););
-    if(!err && (aMessageUid == aAppId))
-    {
-        iCalledFromExternApp = ETrue;
-    }
+    //Check for aMessageUid. If it is in array then set iSameWinApp = ETrue
+    iSameWinApp = IsSameWinApp(aMessageUid); 
     if ( aMessageParameters.Compare( KLongZeroIdString ) )
         {
         ParseAndProcessParametersL( aMessageParameters );
@@ -4096,7 +4089,7 @@ LOG_ENTERFN("AppUi::CloseWindowL");
     if(aWindowId == iWindowIdFromFromExternApp)
     {
         //Make it false as window is going to close down
-        iCalledFromExternApp = EFalse;
+        iSameWinApp = EFalse;
     }
 #ifdef __RSS_FEEDS
 	// If we are closing a Feeds Full Story then go back to feeds
@@ -4293,12 +4286,8 @@ void CBrowserAppUi::HandleApplicationSpecificEventL(TInt aEventType, const TWsEv
 	if(aEventType == KAppOomMonitor_FreeRam )
 		{
 		iWindowManager->CloseAllWindowsExceptCurrent();
-		// If we were really doing anything about this event, why do we not want to do it to the foreground?
-		if(!iIsForeground)
-		    {
             BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandFreeMemory + (TInt)TBrCtlDefs::ECommandIdBase);
 		    }
-		}
 	else if(aEventType == KAppOomMonitor_MemoryGood)
 		{
         BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandMemoryGood + (TInt)TBrCtlDefs::ECommandIdBase);
@@ -4717,7 +4706,6 @@ void CBrowserAppUi::DeleteUpdateFile()
 // ---------------------------------------------------------
 TInt64 CBrowserAppUi::ReadUpdateFile()
     {
-    TBool returnvalue = ETrue;
     TBuf<KMaxFileName> privatePath;
     TBuf<KMaxFileName> updateFileName;
     //Get the private path then append the filename
@@ -4744,18 +4732,16 @@ TInt64 CBrowserAppUi::ReadUpdateFile()
     }
 #endif
 
-TUid CBrowserAppUi::FindAppIdL(TUid aMessageUid)
-{
-    TUid aRetVal = TUid::Uid(NULL);
+TBool CBrowserAppUi::IsSameWinApp(TUid aMessageUid)
+{      
     TInt nElements = sizeof(mArrayOfExternalAppUid)/sizeof(TInt);
     for(TInt nIndex = 0;nIndex < nElements; nIndex++)
     {
         if(aMessageUid == TUid::Uid(mArrayOfExternalAppUid[nIndex]))
         {
-            aRetVal = TUid::Uid(mArrayOfExternalAppUid[nIndex]);
-            break;
+        return ETrue; 
         }
     }
-    return aRetVal;
+    return EFalse;
 }
 // End of File

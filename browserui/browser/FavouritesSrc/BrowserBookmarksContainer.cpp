@@ -767,8 +767,11 @@ void CBrowserBookmarksContainer::HandlePointerEventL(const TPointerEvent& aPoint
                      }
                  else
                      {
-                     CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
-                     SetGotoInactiveL();
+                         if(aPointerEvent.iType == TPointerEvent::EButton1Down )
+                         {
+                             CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
+                             SetGotoInactiveL();
+                         }
                      }
                 }
              else

@@ -195,7 +195,7 @@ void TBrowserDialogs::InfoNoteL( TInt aDialogResourceId,
 								( REINTERPRET_CAST( CEikDialog**, &dialog ) );
     dialog->PrepareLC( aDialogResourceId ) ;
     dialog->SetCurrentLabelL( EGeneralNote, aPrompt );
-    dialog->RunDlgLD( CAknNoteDialog::ELongTimeout, CAknNoteDialog::ENoTone );
+    dialog->RunDlgLD( CAknNoteDialog::EShortTimeout , CAknNoteDialog::ENoTone );
     }
 
 

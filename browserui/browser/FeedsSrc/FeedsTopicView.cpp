@@ -289,7 +289,7 @@ void CFeedsTopicView::UpdateToolbarButtonsState()
 #ifdef BRDO_SINGLE_CLICK_ENABLED_FF
     Toolbar()->SetToolbarVisibility(EFalse,EFalse);
     return;
-#endif    
+#else    
     if (iApiProvider.IsPageLoaded())
         {
         Toolbar()->SetItemDimmed(EFeedsBackToPage, EFalse, ETrue);     
@@ -306,6 +306,7 @@ void CFeedsTopicView::UpdateToolbarButtonsState()
         {
         Toolbar()->SetItemDimmed(EFeedsOpen, ETrue, ETrue);            
         }
+#endif
     }
 
 // ---------------------------------------------------------------------------

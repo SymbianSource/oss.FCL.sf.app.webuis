@@ -124,7 +124,7 @@ RESOURCE AVKON_VIEW r_browser_content_view
     {
     hotkeys = r_browser_hotkeys;
     menubar = r_menu_bar;
-    cba = r_browser_default_buttons;
+    cba = r_browser_options_menu_during_download;
 #ifdef RD_SCALABLE_UI_V2
     toolbar = r_content_view_toolbar;
 #endif

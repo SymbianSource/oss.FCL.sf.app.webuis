@@ -247,8 +247,9 @@ CBrowserFavouritesView::CBrowserFavouritesView( MApiProvider& aApiProvider,
           iIsActivated( EFalse ),
           iLastSelection( 0 ),
           iUpdatePending( EFalse ),
-          iRefresh( ETrue ),
-          iFavViewRefresh(0)
+          iFavViewRefresh(0),
+          iRefresh( ETrue )
+          
     {
     }
 
@@ -1149,9 +1150,13 @@ void CBrowserFavouritesView::OpenFolderL( TInt aFolder )
 
         iCurrentFolder = aFolder;
         FillListboxL( aFolder, /*aKeepState=*/EFalse );
-                
-        Container()->Listbox()->ClearSelection(); // is it needed ?
-        UpdateCbaL();
+        
+        if(ApiProvider().StartedUp())
+            {
+            Container()->Listbox()->ClearSelection();
+            UpdateCbaL();
+            }
+        
         UpdateNaviPaneL();
         }
     CleanupStack::PopAndDestroy();  // folder

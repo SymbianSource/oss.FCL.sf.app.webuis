@@ -44,7 +44,9 @@ using namespace RT_GestureHelper;
 
 // CONSTANTS
 const TInt KBavpMaxLinkFileSize = 5120; // 5kB
+#ifdef __PLATFORM_VERSION_32__
 const TInt KRectPadding = 2;
+#endif
 
 // Define our static BavpController array
 RPointerArray<CBavpController> CBavpController::iBavpControllerArray;

@@ -1126,7 +1126,12 @@ BROWSER_LOG( ( _L("delete iEnteredUrl 3") ) );
     //Make it true so that latest FavIcon db info is shown     
     iRefresh = ETrue;
 
-#ifndef BRDO_PERF_IMPROVEMENTS_ENABLED_FF
+#ifdef BRDO_PERF_IMPROVEMENTS_ENABLED_FF 
+    if ( ApiProvider().Preferences().SearchFeature() ) // hide the button which is not needed
+        Toolbar()->HideItem( EWmlCmdGoToAddress, ETrue , EFalse);
+    else
+        Toolbar()->HideItem( EWmlCmdGoToAddressAndSearch, ETrue , EFalse);
+#else
     Toolbar()->HideItem( EWmlCmdAddBookmark, ETrue , EFalse);
     
     //disable both the goto items and activate one of them depending on availability of search feature during bookmarks activation 
@@ -1586,7 +1591,7 @@ void CBrowserBookmarksView::DynInitMenuPaneL
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdMoveToFolder, ETrue );
                 }
-            const CFavouritesItem* item;
+            const CFavouritesItem* item = NULL;
             if(TheContainer() && TheContainer()->Listbox()) 
                item =  TheContainer()->Listbox()->CurrentItem();
                

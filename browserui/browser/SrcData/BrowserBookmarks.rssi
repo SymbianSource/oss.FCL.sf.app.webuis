@@ -34,7 +34,7 @@
 RESOURCE AVKON_VIEW r_browser_bookmarks_view
 	{
 	menubar = r_browser_bookmarks_menu_bar;
-	cba = R_AVKON_SOFTKEYS_EMPTY;   // CBA commands are set dynamically
+	cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;   // CBA commands are set dynamically
     toolbar = r_bookmark_view_toolbar; 	
 	}
 

@@ -717,8 +717,11 @@ void CBrowserBookmarksGotoPane::HandlePointerEventL(const TPointerEvent& aPointe
             }
         else
             {
-            // pointer outside of control
-            CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
+                if(aPointerEvent.iType == TPointerEvent::EButton1Down)
+                {
+                    // pointer outside of control
+                    CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
+                }
             }
         }
     }

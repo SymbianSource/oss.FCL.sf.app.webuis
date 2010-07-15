@@ -602,7 +602,15 @@ void CFeedsTopicContainer::UpdateNavigationPaneL()
         {
         iNaviDecorator = naviPane->CreateNavigationLabelL( timestamp );
         }
-
+    else
+        {
+        CAknNaviLabel* naviLabel = static_cast<CAknNaviLabel*>(iNaviDecorator->DecoratedControl());
+		if(naviLabel)
+			{
+	        naviLabel->SetTextL(timestamp);
+			}
+        }
+    
 
 	// If not yet pushed, this will do the push; if already there, this brings
     // it to top and draws.
