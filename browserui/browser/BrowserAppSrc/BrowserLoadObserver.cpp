@@ -123,6 +123,9 @@ void CBrowserLoadObserver::HandleLoadEventOtherL(
             {
             if(LoadStatus( ELoadStatusSecurePage ))
                 {
+                ClearStatus( ELoadStatusSecurePage );
+                ClearStatus( ELoadStatusAllItemIsSecure );
+                SetStatus ( ELoadStatusSecurePageVisited );
                 UpdateSecureIndicatorL();
                 }
             ClearStatus();

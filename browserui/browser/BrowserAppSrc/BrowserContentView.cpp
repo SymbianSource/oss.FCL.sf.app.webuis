@@ -1119,16 +1119,13 @@ void CBrowserContentView::SetFullScreenOffL()
     TVwsViewId activeViewId;
     if ( AppUi()->GetActiveViewId( activeViewId ) == KErrNone )
         {
-        if ( activeViewId.iViewUid == KUidBrowserContentViewId )
-            {
-            Cba()->MakeVisible( ETrue );
-            UpdateCbaL();
-            if ( Layout_Meta_Data::IsLandscapeOrientation() )
-	            StatusPane()->SwitchLayoutL(R_AVKON_STATUS_PANE_LAYOUT_USUAL);
-            StatusPane()->ApplyCurrentSettingsL();
-            StatusPane()->MakeVisible( ETrue );
-            iContainer->SetRect( ClientRect() );
-            }
+        Cba()->MakeVisible( ETrue );
+        UpdateCbaL();
+        if ( Layout_Meta_Data::IsLandscapeOrientation() )
+	        StatusPane()->SwitchLayoutL(R_AVKON_STATUS_PANE_LAYOUT_USUAL);
+        StatusPane()->ApplyCurrentSettingsL();
+        StatusPane()->MakeVisible( ETrue );
+        iContainer->SetRect( ClientRect() );
         }
     }
 
@@ -1161,7 +1158,9 @@ void CBrowserContentView::DoDeactivate()
         TRAP_IGNORE( ApiProvider().Display().UpdateSecureIndicatorL(
             EAknIndicatorStateOff ));
         iContainer->SetFocus( EFalse );
-
+        
+        EnableFullScreenModeL( EFalse);
+        
         TRAP_IGNORE( ApiProvider().BrCtlInterface().HandleCommandL(
             (TInt)TBrCtlDefs::ECommandLoseFocus +
             (TInt)TBrCtlDefs::ECommandIdBase ) );
@@ -2222,8 +2221,8 @@ void CBrowserContentView::SetNavipaneViewL()
                         {
                         iNaviDecorator = iNaviPane->CreateNavigationLabelL(_L(""));
                         }
-                    }
-                iNaviPane->PushL( *iNaviDecorator );
+                    iNaviPane->PushL( *iNaviDecorator );    
+                    }                
                 }
             else
                 {
@@ -3166,6 +3165,9 @@ void CBrowserContentView::RedrawKeymap()
 //
 void CBrowserContentView::EnableFullScreenModeL( TBool aEnableFullScreen )
     {
+    if( iContentFullScreenMode == aEnableFullScreen )
+        return;
+    
     TInt command( KErrNotFound );
     if ( aEnableFullScreen )
         {

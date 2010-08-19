@@ -582,34 +582,38 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
             {
             if ( iSearchInputFrame->Rect().Contains(aPointerEvent.iPosition))
                 {
-                if ( iSearchPaneActive )
-                    {
-                    iSearchEditor->HandlePointerEventL(aPointerEvent);
-#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
-                    ActivateVKB();
-#endif
-                    }
-                else
+                if ( !iSearchPaneActive )
                     {
                     SetSearchPaneActiveL();
                     }
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+                else
+                    {
+#endif
+                    iSearchEditor->HandlePointerEventL(aPointerEvent);
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+                    }
+#endif
+
 #if defined(BRDO_SEARCH_INTEGRATION_FF)
                 iSearchEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB);
 #endif
                 }
             else
                 {
-                if ( iGotoPaneActive )
-                    {
-                    iEditor->HandlePointerEventL(aPointerEvent);
-#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
-                    ActivateVKB();
-#endif
-                    }
-                else
+                if ( !iGotoPaneActive )
                     {
                     SetGotoPaneActiveL();
                     }
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+                else
+                    {
+#endif
+                    iEditor->HandlePointerEventL(aPointerEvent);
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+                    }
+#endif
+
 #if defined(BRDO_SEARCH_INTEGRATION_FF)
                 iEditor->RemoveFlagFromUserFlags( CEikEdwin::EAvkonDisableVKB);
 #endif

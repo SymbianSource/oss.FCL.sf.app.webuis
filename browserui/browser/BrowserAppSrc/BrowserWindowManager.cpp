@@ -544,6 +544,7 @@ LOG_ENTERFN("WindowManager::DeleteWindowL");
             {
             // sets the window status
             windowQue->iStatus |= CBrowserWindowQue::EWindowDeleted;
+            windowQue->iWindow->BrCtlInterface().HandleCommandL((TInt)TBrCtlDefs::ECommandNotifyPluginFocusChangeEvent + (TInt)TBrCtlDefs::ECommandIdBase);
             windowQue->iWindow->DeactivateL();
             // maintain deleted windows' count
             ++iDeletedWindowCount;
@@ -557,6 +558,7 @@ LOG_ENTERFN("WindowManager::DeleteWindowL");
             {
             // sets the window status
             windowQue->iStatus |= CBrowserWindowQue::EWindowDeleted;
+            windowQue->iWindow->BrCtlInterface().HandleCommandL((TInt)TBrCtlDefs::ECommandNotifyPluginFocusChangeEvent + (TInt)TBrCtlDefs::ECommandIdBase);
             windowQue->iWindow->DeactivateL();
             // maintain deleted windows' count
             ++iDeletedWindowCount;
@@ -589,6 +591,7 @@ BROWSER_LOG( ( _L( "error: %d" ), error ) );
         if( windowQue != iCurrentWindow )
             {
             wdnSwitching = ETrue;
+            iCurrentWindow->iWindow->BrCtlInterface().HandleCommandL((TInt)TBrCtlDefs::ECommandNotifyPluginFocusChangeEvent + (TInt)TBrCtlDefs::ECommandIdBase);
             iCurrentWindow->iWindow->DeactivateL();
             iCurrentWindow = windowQue;
             }
@@ -597,6 +600,7 @@ BROWSER_LOG( ( _L( "error: %d" ), error ) );
         //is a background redirection
         if(!iCurrentWindow->iWindow->IsWindowActive() && (!iContentView->IsHistoryViewUp() || wdnSwitching))
            {
+           iCurrentWindow->iWindow->BrCtlInterface().HandleCommandL((TInt)TBrCtlDefs::ECommandNotifyPluginFocusChangeEvent + (TInt)TBrCtlDefs::ECommandIdBase);
            iCurrentWindow->iWindow->ActivateL( aDraw );
            iContentView->UpdateCbaL();
            }

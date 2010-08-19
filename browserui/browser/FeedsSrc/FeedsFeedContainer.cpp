@@ -25,7 +25,7 @@
 #include <brctlinterface.h>
 #include <CharConv.H>
 #include <StringLoader.h>
-
+#include <AknToolbar.h>
 #ifdef __SERIES60_HELP
 // Context-Sensitve Help File
 #include <csxhelp/browser.hlp.hrh>
@@ -181,7 +181,14 @@ TKeyResponse CFeedsFeedContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEv
         }
 
     response = iBrowserControl->OfferKeyEventL(aKeyEvent, aType);
-
+    if(iBrowserControl->FocusedElementType() != TBrCtlDefs::EElementAnchor && iView->Toolbar() )
+        {
+        iView->Toolbar()->SetItemDimmed(EFeedsSeeFullStory, ETrue, ETrue);
+        }
+    else
+        {
+        iView->Toolbar()->SetItemDimmed(EFeedsSeeFullStory, EFalse, ETrue);
+        }
     // now "simulate" another key event for proper handling of middle-softkey
     if ( (aKeyEvent.iScanCode == EStdKeyDevice3) && (aType == EEventKeyDown) )
         {
@@ -543,7 +550,8 @@ void CFeedsFeedContainer::ShowNextItemL()
         {
         iCurrentItem = 0;
         }
-
+    if (iView->Toolbar())
+        iView->Toolbar()->SetItemDimmed(EFeedsSeeFullStory, EFalse, ETrue);
     ShowFeedItemL();
     }
 
@@ -569,7 +577,8 @@ void CFeedsFeedContainer::ShowPrevItemL()
         {
         iCurrentItem = iFeed->GetChildren().Count() - 1;
         }
-
+    if (iView->Toolbar())
+        iView->Toolbar()->SetItemDimmed(EFeedsSeeFullStory, EFalse, ETrue);
     ShowFeedItemL();
     }
 
@@ -1110,4 +1119,13 @@ TPtrC CFeedsFeedContainer::ExtractBrCtlParam
             }
         }
     return retParamValue;
+    }
+
+void CFeedsFeedContainer::HandlePointerEventL(const TPointerEvent& aPointerEvent)
+    {
+    iBrowserControl->HandlePointerEventL(aPointerEvent);
+    if(iBrowserControl->FocusedElementType()!= TBrCtlDefs::EElementAnchor && iView->Toolbar() )
+        {
+        iView->Toolbar()->SetItemDimmed(EFeedsSeeFullStory, ETrue, ETrue);
+        }
     }

@@ -29,11 +29,13 @@
 #include <eikenv.h>
 #include <centralrepository.h>
 #include <favouritesdb.h>
+#include <SysUtil.h>
 
 // CONSTANTS
 const TInt KBrowserAppUid = 0x10008D39;
 const TInt KBrowserSeamlessParamLength = 20;
 _LIT( KBookmarkStarterString, "1 " );
+const TInt KMinimumCDriveDiskSpace = 512 * 1024;
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -229,7 +231,19 @@ void CBrowserLauncher::LaunchBrowserEmbeddedL
     LOG_WRITE_FORMAT(" aExitObserver: 0x%x", aExitObserver);
     LOG_WRITE_FORMAT(" aSettings: 0x%x", aSettings);
 
-    TInt folderUid = 0;
+    // Check for ciritical disk space if starts as embeded
+    RFs fs;
+	User::LeaveIfError(fs.Connect());
+	TInt drive( EDriveC );
+	TBool isSpace( EFalse );
+	TInt err( KErrNone );
+	TRAP( err, isSpace = !SysUtil::DiskSpaceBelowCriticalLevelL(&fs, KMinimumCDriveDiskSpace, drive ));
+	fs.Close();
+	if (!isSpace)
+		User::Leave(KErrDiskFull);
+	
+	
+	TInt folderUid = 0;
     TInt folderPreferredUid = 0;
     
     // keep a local ptr to aSettings

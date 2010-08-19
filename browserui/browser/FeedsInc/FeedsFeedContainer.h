@@ -78,6 +78,12 @@ class CFeedsFeedContainer : public CCoeControl, public MBrCtlSpecialLoadObserver
         */
         virtual TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode aType);
 
+        /**
+        * HandlePointerEventL
+        * From CCoeControl
+        *
+        */
+        void HandlePointerEventL(const TPointerEvent& aPointerEvent);
 #ifdef __SERIES60_HELP
         /**
         * Get help context for the control.

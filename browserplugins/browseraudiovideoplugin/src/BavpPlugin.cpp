@@ -46,7 +46,8 @@ CBavpPlugin::CBavpPlugin()
     iMimeType( NULL ), 
     iPauseState ( EFalse ), 
     iIsForeGround ( ETrue ), 
-    iPauseInBackground (EFalse)
+    iPauseInBackground (EFalse),
+    iPlayFromFile(EFalse)
     {
     
     }
@@ -188,6 +189,7 @@ void CBavpPlugin::SetWindowL( MPluginAdapter *aPluginAdapter,
 // -----------------------------------------------------------------------------
 void CBavpPlugin::OpenAndPlayFileL( const TDesC& aFilename, const HBufC* originalFileName )
     {
+    iPlayFromFile = ETrue;
     Log( EFalse, _L("CBavpPlugin::OpenAndPlayFileL"), (TInt)this );
 
     if ( !iBavpView )
@@ -261,6 +263,7 @@ void CBavpPlugin::OpenAndPlayFileL( const TDesC& aFilename, const HBufC* origina
 // -----------------------------------------------------------------------------
 void CBavpPlugin::OpenAndPlayUrlL( const TDesC& aUrl )
     {
+    iPlayFromFile = EFalse;
     Log( EFalse, _L("CBavpPlugin::OpenAndPlayUrlL"), (TInt)this );
 
     if ( iBavpController )
@@ -415,6 +418,19 @@ TInt CBavpPlugin::NotifyL( TNotificationType aCallType, void* aParam )
                 iBavpController->PlayL(); 
                 }
 				break; 
+        case EAccesPointChanged : 
+            if (iBavpController && !iPlayFromFile) {
+                bool state = (iBavpController->State() == EBavpPaused ||
+                              iBavpController->State() == EBavpPlaying ||
+                              iBavpController->State() == EBavpBuffering ||
+                              iBavpController->State() == EBavpFastForwarding ||
+                              iBavpController->State() == EBavpRewinding );
+                iBavpController->Stop();
+                if (state)
+                    iBavpController->PlayL();
+            }
+            break;
+            
         default:
             // Not implemented
             break;

@@ -281,6 +281,7 @@ class CBavpPlugin : public CBase,
         TBool iPauseState; 
         TBool iIsForeGround;
         TBool iPauseInBackground;
+        TBool iPlayFromFile;
     };
 
 /**

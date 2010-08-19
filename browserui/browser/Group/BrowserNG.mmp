@@ -70,6 +70,8 @@ END
 LIBRARY cmmanager.lib
 LIBRARY browserengine.lib
 LIBRARY       edbms.lib
+LIBRARY       hal.lib 
+
 
 #ifdef BRDO_APP_GALLERY_SUPPORTED_FF
 LIBRARY   MGXMediaFileAPI.lib

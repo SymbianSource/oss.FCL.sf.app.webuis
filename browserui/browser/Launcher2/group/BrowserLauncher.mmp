@@ -57,7 +57,8 @@ LIBRARY         APPARC.lib
 LIBRARY         eikcore.lib
 LIBRARY         estor.lib
 LIBRARY         servicehandler.lib
-LIBRARY centralrepository.lib
+LIBRARY         centralrepository.lib
+LIBRARY         sysutil.lib
 
 #if defined( I__BROWSER_LOG_ENABLED )
 LIBRARY    flogger.lib

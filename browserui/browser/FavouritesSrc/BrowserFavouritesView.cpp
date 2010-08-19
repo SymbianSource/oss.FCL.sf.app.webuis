@@ -579,7 +579,7 @@ void CBrowserFavouritesView::DoDeactivate()
         TInt tempUid( KFavouritesNullUid );
 
         temp = new CBrowserFavouritesListboxState;
-        if ( temp!=NULL )
+        if ( iContainer && temp!=NULL  )
             {
             delete iSavedListboxState;
             iSavedListboxState = temp;

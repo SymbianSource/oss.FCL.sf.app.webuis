@@ -794,6 +794,7 @@ TInt CBrowserFavouritesModel::AddUpdateL
                     }
 
                 case KFavouritesNullUid:
+                default: 
                     {
                     // Check first if the item added has the same name as any of the special folders
                     
@@ -831,15 +832,11 @@ TInt CBrowserFavouritesModel::AddUpdateL
                     else
                         {
                         // New item addition.
-                        err = iDb.Add( aItem, aRenameMode == EAutoRename );                        
+                        if ( aUid == KFavouritesNullUid)
+                            err = iDb.Add( aItem, aRenameMode == EAutoRename );
+                        else  // Existing item update.
+                            err = iDb.Update( aItem, aUid, aRenameMode == EAutoRename );                            
                         }
-                    break;
-                    }
-
-                default:
-                    {
-                    // Existing item update.
-                    err = iDb.Update( aItem, aUid, aRenameMode == EAutoRename );
                     break;
                     }
                 }

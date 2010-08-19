@@ -333,6 +333,7 @@ void CBrowserShortcutKeyMap::InitCellDataL()
     for(TInt i = 0; i < KNumCells; i++)
         {
         TKeymapCellData* cellData = new (ELeave) TKeymapCellData();
+        CleanupStack::PushL(cellData);
 
         TInt shortcutAssign;
 
@@ -409,8 +410,8 @@ void CBrowserShortcutKeyMap::InitCellDataL()
         // add to the data array
         iCellData.Append(cellData);
 
-        // remove keytext, linetext from stack
-        CleanupStack::Pop(2);
+        // remove cellData, keytext, linetext from stack
+        CleanupStack::Pop(3);
         }
     }
 

@@ -289,8 +289,14 @@ PERFLOG_STOPWATCH_START;
 #else 
     BaseConstructL( EAknEnableSkin | EAknEnableMSK );
 #endif
+
+
     if ( !IsEmbeddedModeOn( ) )
     	{
+        // This is for handling low phone memory (c:) condition. Just leave in case phone memory is not sufficient.        
+        TBool lowdisk = SysUtil::DiskSpaceBelowCriticalLevelL(&(CCoeEnv::Static()->FsSession()), KMinimumCDriveDiskSpace, EDriveC );
+        if (lowdisk)   User::Leave(KErrDiskFull);
+        
 #ifdef BRDO_PERF_IMPROVEMENTS_ENABLED_FF     
         InitBookmarksL();
 #else
@@ -531,16 +537,7 @@ TBool CBrowserAppUi::CompleteDelayedInit()
 void CBrowserAppUi::DelayedInitL()
     {
     LOG_ENTERFN("CBrowserAppUi::DelayedInitL");
-    // Check for ciritical disk space
-    RFs fs;
-    User::LeaveIfError(fs.Connect());
-    TInt drive( EDriveC );
-    TBool isSpace( EFalse );
-    TInt err( KErrNone );
-    TRAP( err, isSpace = !SysUtil::DiskSpaceBelowCriticalLevelL(&fs, KMinimumCDriveDiskSpace, drive ));
-    fs.Close();
-    if (!isSpace)  User::Leave(KErrDiskFull);
-
+    
     // Create Favengine session
     User::LeaveIfError( iFavouritesSess.Connect() );
         
@@ -1119,6 +1116,11 @@ void CBrowserAppUi::SetRequestedAP( TInt aAp )
 //
 TBool CBrowserAppUi::IsPageLoaded()
     {
+#ifdef BRDO_PERF_IMPROVEMENTS_ENABLED_FF    
+    if(!iStartedUp) // ContentView/WindowMgr is not yet up => no page loaded
+        return EFalse;
+#endif
+    
     TBool ret( EFalse );
     TInt winCount( WindowMgr().WindowCount() );
 
@@ -1155,7 +1157,12 @@ TBool CBrowserAppUi::Fetching() const
 	// use load obs., remove ifetchstate from this class and use from loadobs.
 	// iLoadState
     //return ( iFetchState == MFetchObserver::ELoadStart );
-	return ( LoadObserver().LoadState() != CBrowserLoadObserver::ELoadStateIdle );
+#ifdef BRDO_PERF_IMPROVEMENTS_ENABLED_FF    
+    if (!iStartedUp)  // ContentView is not yet started up, so we are not fetching   
+        return EFalse;
+    else
+#endif        
+        return ( LoadObserver().LoadState() != CBrowserLoadObserver::ELoadStateIdle );
     }
 // -----------------------------------------------------------------------------
 // CBrowserAppUi::ContentDisplayed()
@@ -1683,7 +1690,7 @@ void CBrowserAppUi::ExitBrowser( TBool aUserInitiated )
     // if browser is embedded, should not call Exit(),
     // just delete the object, otherwise leave occurs.
     if( ( IsEmbeddedInOperatorMenu() || IsEmbeddedModeOn() ) &&
-            !ExitInProgress() &&
+            !ExitInProgress() && iStartedUp &&
              ((LoadObserver().LoadUrlType() == CBrowserLoadObserver::ELoadUrlTypeEmbeddedBrowserWithUrl) ||
              (LoadObserver().LoadUrlType() == CBrowserLoadObserver::ELoadUrlTypeOther)   ) )
                // ELoadUrlTypeEmbeddedBrowserWithUrl is typical for load via Phonebook, MMS, OperatorMenu
@@ -1721,13 +1728,10 @@ void CBrowserAppUi::ExitBrowser( TBool aUserInitiated )
                 } 
 #endif
     		}
-        if (SpecialLoadObserver().IsConnectionStarted()) 
+        if (iStartedUp && SpecialLoadObserver().IsConnectionStarted()) 
             {
-            if ( iWindowManager ) 
-               {
                BROWSER_LOG( ( _L( " iWindowManager->SetUserExit( iUserExit )" ) ) );
                iWindowManager->SetUserExit( iUserExit );
-               }
                delete iWindowManager;
                BROWSER_LOG( ( _L( " User::Exit(KErrNone)" ) ) );
                User::Exit(KErrNone);
@@ -1755,7 +1759,7 @@ void CBrowserAppUi::ExitBrowser( TBool aUserInitiated )
                 }
 #endif
     		}
-    	if (SpecialLoadObserver().IsConnectionStarted()) // If Connection request is in processing calling CAknAppUI::Exit() causes crash (JSAA-84RG9R)
+    	if (iStartedUp && SpecialLoadObserver().IsConnectionStarted()) // If Connection request is in processing calling CAknAppUI::Exit() causes crash (JSAA-84RG9R)
     	    {                                               
     	    //ensure that the params are saved in BrCtl            
     	    if ( iWindowManager ) 
@@ -2124,6 +2128,7 @@ TBool CBrowserAppUi::ProcessCommandParametersL( TApaCommand aCommand,
     // The browser is in embedded mode and it is not initialized yet
     if ( IsEmbeddedModeOn() && !iStartedUp)
     	{
+        EnableLocalScreenClearer( EFalse );
     	return EFalse;
     	}
 
@@ -2150,7 +2155,8 @@ TBool CBrowserAppUi::ProcessCommandParametersL( TApaCommand aCommand,
     	        
     	        HBufC* buf = HBufC::NewLC( KMaxHomePgUrlLength );  // cleanupstack
     	        TPtr ptr( buf->Des() );
-    	        
+    	        TInt pgFound( KErrNotFound );
+				pgFound = Preferences().HomePageUrlL( ptr );
     			HBufC* searchScheme = HBufC::NewLC( KMaxHomePgUrlLength );  // cleanupstack
     			TPtr searchSchemePtr( searchScheme->Des() );
     			
@@ -2321,7 +2327,7 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                 else  
                     {
                     if (iStartedUp)
-                    ContentView()->SetFullScreenOffL();
+                        ContentView()->SetFullScreenOffL();
 
                     if ( !IsEmbeddedModeOn() )
                         {
@@ -2425,8 +2431,9 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                                 }                          
                             else
                                 {
-                                // Cancel history view, mini map, toolbar or any other active control on the current window 
-                                BrCtlInterface().HandleCommandL( TBrCtlDefs::ECommandCancel + TBrCtlDefs::ECommandIdBase );
+                                // Cancel history view, mini map, toolbar or any other active control on the current window
+                                if (iStartedUp)
+                                    BrCtlInterface().HandleCommandL( TBrCtlDefs::ECommandCancel + TBrCtlDefs::ECommandIdBase );
                                 TRAP( err, FetchL(  *url,
                                                             KNullDesC,
                                                             KNullDesC,
@@ -2488,8 +2495,9 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                             }
                             else
                                 {
-                                // Cancel history view, mini map, toolbar or any other active control on the current window 
-                                BrCtlInterface().HandleCommandL( TBrCtlDefs::ECommandCancel + TBrCtlDefs::ECommandIdBase );
+                                // Cancel history view, mini map, toolbar or any other active control on the current window
+                                if (iStartedUp)
+                                    BrCtlInterface().HandleCommandL( TBrCtlDefs::ECommandCancel + TBrCtlDefs::ECommandIdBase );
                                 TRAP( err, FetchL(  *url,
                                                             KNullDesC,
                                                             KNullDesC,
@@ -2545,8 +2553,9 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
 	                                }
 	                            else
 	                            	{
-    	                            // Cancel history view, mini map, toolbar or any other active control on the current window 
-	                                BrCtlInterface().HandleCommandL( TBrCtlDefs::ECommandCancel + TBrCtlDefs::ECommandIdBase );
+    	                            // Cancel history view, mini map, toolbar or any other active control on the current window
+                                    if (iStartedUp)
+                                        BrCtlInterface().HandleCommandL( TBrCtlDefs::ECommandCancel + TBrCtlDefs::ECommandIdBase );
 	                            	TRAP( err, FetchBookmarkL( dataId ) );
 	                            	}    
 
@@ -3041,16 +3050,10 @@ void CBrowserAppUi::ClearHistoryWithPromptL()
 //
 void CBrowserAppUi::ClearHistoryL()
     {
-	if (iWindowManager)
+    if (iWindowManager)
         {
         iWindowManager->SendCommandToAllWindowsL(
         (TInt)TBrCtlDefs::ECommandClearHistory + (TInt)TBrCtlDefs::ECommandIdBase);
-        }
-    else
-        {
-        BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandClearHistory +
-                                         (TInt)TBrCtlDefs::ECommandIdBase );
-
         }
 
     if (!(Preferences().AdaptiveBookmarks()==EWmlSettingsAdaptiveBookmarksOff ))
@@ -3289,7 +3292,7 @@ LOG_ENTERFN("CBrowserAppUi::CloseContentViewL");
 		}
 	else
 		{
-        if ( ContentView()->GetPreviousViewID() == KUidBrowserBookmarksViewId )
+        if ( iStartedUp && ContentView()->GetPreviousViewID() == KUidBrowserBookmarksViewId )
             {
             if ( GetBookmarksView()->GetAdaptiveBookmarksFolderWasActive() )
                 {
@@ -3412,6 +3415,9 @@ TBool CBrowserAppUi::IsAppShutterActive() const
 void CBrowserAppUi::FetchHomePageL()
     {
 LOG_ENTERFN( "CBrowserAppUi::FetchHomePageL" );
+    if(!iStartedUp) // just in case, not done
+        CompleteDelayedInit();
+    
     if ( !Fetching() )
         {
         UpdateSoftKeys();

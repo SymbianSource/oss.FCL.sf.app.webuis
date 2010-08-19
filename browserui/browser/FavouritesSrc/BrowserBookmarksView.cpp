@@ -451,6 +451,9 @@ LOG_ENTERFN("BookmarksView::HandleCommandL");
 #ifdef __RSS_FEEDS
         case EWmlCmdOpenFeedsFolder:
             {
+            //complete remaining startup in Browser and then proceed
+            if ( !ApiProvider().StartedUp() )
+                ApiProvider().CompleteDelayedInit();
             ApiProvider().FeedsClientUtilities().ShowFolderViewL();
             break;
             }
@@ -930,8 +933,7 @@ void CBrowserBookmarksView::SetRSKDynL(TSKPair& aRsk,
         aRsk.setPair(EBrowserBookmarksCmdBack, R_BROWSER_BOOKMARKS_DYN_SK_TEXT_SOFTKEY_BACK);
 
         // OR, it could be exit under these conditions
-        if ( !ApiProvider().StartedUp() ||
-             (!iInAdaptiveBookmarksFolder && !ApiProvider().IsPageLoaded() && !ApiProvider().Fetching())  )
+        if ( (!iInAdaptiveBookmarksFolder && !ApiProvider().IsPageLoaded() && !ApiProvider().Fetching())  )
             {
             if ( iCurrentFolder == KFavouritesRootUid )
                 {
@@ -1215,7 +1217,7 @@ void CBrowserBookmarksView::HandleListBoxEventL(
             }
         }
 
-    if ( TheContainer()->Listbox()->CurrentItem()->IsFolder() )
+    if ( TheContainer()->Listbox()->CurrentItem() && TheContainer()->Listbox()->CurrentItem()->IsFolder() )
         {
         SetEmptyTextL();
         }
@@ -1360,7 +1362,7 @@ void CBrowserBookmarksView::DynInitMenuPaneL
         case R_GOTO_SUBMENU:
             {
             // back to page
-            if ( !ApiProvider().StartedUp() || (!ApiProvider().IsPageLoaded() && !ApiProvider().Fetching()))
+            if ( !ApiProvider().IsPageLoaded() && !ApiProvider().Fetching())
                 {
                 aMenuPane->SetItemDimmed( EWmlCmdBackToPage, ETrue );
                 }
@@ -2154,7 +2156,9 @@ PERFLOG_STOPWATCH_START
             }
         
         // complete remaining application launch process, aynchronously
-        iAsyncComplete  = CIdle::NewL( CActive::EPriorityIdle );
+        // complete remaining init as soon as possible, otherwise it can be dangerous (crash)
+        // since UI code (views) are interdependent
+        iAsyncComplete  = CIdle::NewL( CActive::EPriorityHigh );
         iAsyncComplete->Start( TCallBack( CompleteAppInitCallback, &iApiProvider ) );
         return;
         }
@@ -2244,7 +2248,8 @@ TInt CBrowserBookmarksView::CompleteAppInitCallback( TAny* aProvider )
 //
 void CBrowserBookmarksView::UpdateFavIconsL()
     {
-    Container()->Listbox()->UpdateFavIconsL();
+    if ( Container() && Container()->Listbox() )
+        Container()->Listbox()->UpdateFavIconsL();
     }
 
 

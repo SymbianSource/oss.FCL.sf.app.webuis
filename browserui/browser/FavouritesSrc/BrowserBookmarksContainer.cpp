@@ -743,26 +743,36 @@ void CBrowserBookmarksContainer::HandlePointerEventL(const TPointerEvent& aPoint
                 {
                  if( iGotoPane->Rect().Contains( aPointerEvent.iPosition) )
                      {
-                     if( iGotoPaneActive )
-                         {
-                         iGotoPane->HandlePointerEventL(aPointerEvent);
-                         }
-                     else
+                     if( !iGotoPaneActive )
                          {
                          SetGotoActiveL();
                          }
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+                     else
+                         {
+#endif
+                         iGotoPane->HandlePointerEventL(aPointerEvent);
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+                         }
+#endif
+                 
                      iGotoPane->SetVKBFlag( ETrue );
                      }
                  else if( iSearchPane->Rect().Contains( aPointerEvent.iPosition) )
                      {
-                     if( iSearchPaneActive )
+                     if( !iSearchPaneActive )
                          {
-                         iSearchPane->HandlePointerEventL(aPointerEvent);
+                         SetSearchActiveL();                  
                          }
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
                      else
                          {
-                         SetSearchActiveL();
+#endif
+                         iSearchPane->HandlePointerEventL(aPointerEvent);
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
                          }
+#endif
+                     
                      iSearchPane->SetVKBFlag( ETrue );
                      }
                  else

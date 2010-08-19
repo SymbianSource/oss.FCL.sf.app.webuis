@@ -705,9 +705,6 @@ void CBrowserBookmarksGotoPane::HandlePointerEventL(const TPointerEvent& aPointe
         if(iEditor && Rect().Contains(aPointerEvent.iPosition))
             {
             iEditor->HandlePointerEventL(aPointerEvent);
-#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
-            ActivateVkbL();
-#endif
             if ( !iEditing )
                 {
                 SetEditingL( ETrue );
@@ -719,8 +716,8 @@ void CBrowserBookmarksGotoPane::HandlePointerEventL(const TPointerEvent& aPointe
             {
                 if(aPointerEvent.iType == TPointerEvent::EButton1Down)
                 {
-                    // pointer outside of control
-                    CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
+                // pointer outside of control
+                CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
                 }
             }
         }

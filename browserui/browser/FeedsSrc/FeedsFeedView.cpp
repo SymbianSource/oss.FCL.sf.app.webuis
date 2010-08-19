@@ -309,13 +309,14 @@ void CFeedsFeedView::UpdateToolbarButtonsState()
     if ( iContainer->ItemCount()  > 1 )
         {
         Toolbar()->SetItemDimmed(EFeedsShowPrevItem, EFalse, ETrue);
-        Toolbar()->SetItemDimmed(EFeedsShowNextItem, EFalse, ETrue);     
+        Toolbar()->SetItemDimmed(EFeedsShowNextItem, EFalse, ETrue);
         }
     else
         {
         Toolbar()->SetItemDimmed(EFeedsShowPrevItem, ETrue, ETrue);
-        Toolbar()->SetItemDimmed(EFeedsShowNextItem, ETrue, ETrue);		
+        Toolbar()->SetItemDimmed(EFeedsShowNextItem, ETrue, ETrue);
         }
+    Toolbar()->SetItemDimmed(EFeedsSeeFullStory, EFalse, ETrue);
     }
     
 // ---------------------------------------------------------------------------

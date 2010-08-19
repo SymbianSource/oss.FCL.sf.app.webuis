@@ -541,16 +541,12 @@ void CBrowserContentViewContainer::SizeChanged()
             iApiProvider.BrCtlInterface().SetRect( TRect( oldRect.iTl, Size() ) );
             }
         }
-
-    if ( iFindKeywordPane->IsFocused() )
-        {
+    
+    if ( iFindKeywordPane->IsVisible() )
         iFindKeywordPane->HandleFindSizeChanged();
-        }
-    else
-        {
+    if ( iGotoPane->IsVisible() ) 
         iGotoPane->HandleFindSizeChanged();
-        }
-
+    
     }
 
 //---------------------------------------------------------------------------
