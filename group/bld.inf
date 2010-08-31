@@ -18,9 +18,6 @@
 /*
 *   Order is important
 */
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
 PRJ_PLATFORMS
 DEFAULT

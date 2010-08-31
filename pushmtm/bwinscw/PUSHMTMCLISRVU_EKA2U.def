@@ -1,4 +1,0 @@
-EXPORTS
-	?NewL@CPushMtmClient@@SAPAV1@AAVCRegisteredMtmDll@@AAVCMsvSession@@@Z @ 1 NONAME ; class CPushMtmClient * CPushMtmClient::NewL(class CRegisteredMtmDll &, class CMsvSession &)
-	?NewL@CPushMtmServer@@SAPAV1@AAVCRegisteredMtmDll@@PAVCMsvServerEntry@@@Z @ 2 NONAME ; class CPushMtmServer * CPushMtmServer::NewL(class CRegisteredMtmDll &, class CMsvServerEntry *)
-
