@@ -1,0 +1,105 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*      Browser Initial view resources
+
+*
+*/
+
+
+#ifndef BROWSER_INITIAL_RSSI
+#define BROWSER_INITIAL_RSSI
+
+//  INCLUDES
+
+#include "Browser.hrh"
+#include <wmlbrowser.loc>
+#include <browser.mbg>
+#include <bldvariant.hrh>
+
+//  RESOURCE DEFINITIONS 
+
+//----------------------------------------------------
+//   
+//    r_browserinitial_view
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_browserinitial_view
+    {
+    menubar = r_browserinitial_menubar_view;  
+    cba = R_AVKON_SOFTKEYS_EMPTY;   // CBA commands are set dynamically
+    }
+
+//----------------------------------------------------
+//   
+//    r_browserinitial_cba_options_exit
+//
+//----------------------------------------------------
+//
+RESOURCE CBA r_browserinitial_cba_options_exit
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdCloseBrowser; txt = text_softkey_exit; }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_browserinitial_menubar_view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_browserinitial_menubar_view
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_browserinitial_view_menu; txt = " "; }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_browserinitial_view_menu
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_browserinitial_view_menu
+    {
+    items =
+        {
+        MENU_ITEM { command = EWmlCmdUserExit; txt = qtn_options_exit; }        
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_browserinitial_app_menu
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_browserinitial_app_menu
+    {
+    items =
+        {
+        MENU_ITEM { command = EAknCmdExit; txt = qtn_options_exit; }
+        };
+    }
+
+RESOURCE TBUF r_browser_initial_view_title { buf = qtn_apps_browserng_grid; }
+
+#endif
+// End of File

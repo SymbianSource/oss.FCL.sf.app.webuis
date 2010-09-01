@@ -11,22 +11,13 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  Declarations of constants of VideoServices
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+#ifndef VIDEOSERVICES_HRH
+#define VIDEOSERVICES_HRH
 
-PRJ_EXPORTS
 
-PRJ_MMPFILES
-
-PRJ_TESTMMPFILES
+#endif      // VIDEOSERVICES_HRH

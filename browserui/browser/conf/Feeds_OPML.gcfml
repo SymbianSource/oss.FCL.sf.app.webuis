@@ -1,0 +1,26 @@
+<file xmlns="http://www.s60.com/xml/genconfml/1" name="default_feeds.xml" target="private\1020728E\">
+	<setting ref="Header/*"/>
+	<setting ref="OutLines/OutLine"/>
+	<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/TR/xhtml1/strict">
+		<xsl:output method="xml" encoding="UTF-16" indent="yes"/>
+			<xsl:template match="configuration/data">
+				<opml version="1.1">
+					<head>
+						<title><xsl:value-of select="Header/Title"/></title>
+						<dateCreated><xsl:value-of select="Header/DateCreated"/></dateCreated>
+						<ownerName><xsl:value-of select="Header/OwnerName"/></ownerName>
+					</head>
+					<body>
+					<xsl:for-each select="OutLines/OutLine">
+						<outline>
+							<xsl:attribute name="title"><xsl:value-of select="Title"/></xsl:attribute>
+							<xsl:attribute name="text"><xsl:value-of select="Text"/></xsl:attribute>
+							<xsl:attribute name="type"><xsl:value-of select="Type"/></xsl:attribute>
+							<xsl:attribute name="xmlUrl"><xsl:value-of select="XmlUrl"/></xsl:attribute>
+						</outline>
+					</xsl:for-each>
+					</body>
+				</opml>
+			</xsl:template>
+	</xsl:stylesheet>
+</file>

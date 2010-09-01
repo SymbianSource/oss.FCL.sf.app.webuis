@@ -11,22 +11,25 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  localisation strings for Video Services
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+// LOCALISATION STRINGS
 
-PRJ_EXPORTS
+//d: Caption strings for Video Services in list view
+//l: list_single_large_graphic_pane_t1
+//w:
+//r: 3.1
+//
+#define qtn_apps_video_list "Video Services"
 
-PRJ_MMPFILES
+//d: Caption strings for Video Services in grid view
+//l: cell_app_pane_t1
+//w:
+//r: 3.1
+//
+#define qtn_apps_video_grid "Video Services"
 
-PRJ_TESTMMPFILES
+// End of File

@@ -1,0 +1,147 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file
+*
+*/
+
+#include <platform_paths.hrh>
+#include <platform/mw/browser_platform_variant.hrh>
+
+TARGET          PushMtmPushContentHandler.dll
+TARGETTYPE      PLUGIN
+
+// UIDs - 2nd UID specifies an ECom dll,
+// 3rd UID is unique identifier
+// (EUidPushContentHandlerDll in PushContentHandlerDef.hrh).
+UID             0x10009D8D 0x101F854C
+
+CAPABILITY      CAP_ECOM_PLUGIN
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../PushContentHandler
+START RESOURCE      101F854C.rss
+#ifdef __S60_32__
+LANG sc 
+#else
+LANGUAGE_IDS 
+#endif
+TARGET      PushMtmPushContentHandler.rsc
+END // RESOURCE
+
+USERINCLUDE     ../PushContentHandler
+USERINCLUDE     ../../Inc
+USERINCLUDE     ../../MtmUtilInc
+USERINCLUDE     ../../MtmUiInc
+
+/* todo: to be removed once push header are updated */
+USERINCLUDE     /epoc32/include/push
+
+APP_LAYER_SYSTEMINCLUDE
+OS_LAYER_ESTLIB_SYSTEMINCLUDE
+#if defined(__PLATFORM_VERSION_32__)
+SYSTEMINCLUDE   APP_LAYER_PUBLIC_EXPORT_PATH(push)
+SYSTEMINCLUDE   APP_LAYER_PUBLIC_EXPORT_PATH(ecom)
+#endif
+
+SOURCEPATH      ../PushContentHandler
+SOURCE          CCOContentHandler.cpp
+SOURCE          CMultiPartMixedContentHandler.cpp
+SOURCE          CMultiPartRelAndAltContentHandler.cpp
+SOURCE          CPushContentHandlerBase.cpp
+SOURCE          CUnknownContentHandler.cpp
+SOURCE          CSIContentHandler.cpp
+SOURCE          CSLContentHandler.cpp
+SOURCE          PushContentHandlerGroupProxy.cpp
+SOURCE          PushContentHandlerPanic.cpp
+SOURCE          PushContentHandlerUtils.cpp
+SOURCE          PushMtmAutoFetchOperation.cpp
+SOURCE          PushMtmFetchOperation.cpp
+SOURCE		      PushMtmCacheSupply.cpp
+SOURCE		      PushMtmCacheDataSupplier.cpp
+SOURCE          si_dict.c
+SOURCE          sl_dict.c
+SOURCE          StringResourceReader.cpp
+
+// Define the following __TEST_LOG_MMP macro if logging is required.
+// Uncomment it if you want logging. This macro is used only in the mmp file.
+// In the source files use __TEST_LOG__.
+//#define __TEST_LOG_MMP
+
+#if defined __TEST_LOG_MMP
+MACRO           __TEST_LOG__
+#endif
+
+LIBRARY	apengine.lib
+
+LIBRARY         apgrfx.lib
+LIBRARY         apmime.lib
+
+LIBRARY         bafl.lib
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         Bifu.lib
+LIBRARY         BioDB.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         CharConv.lib
+
+LIBRARY         commdb.lib
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         commonui.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         ECom.lib
+LIBRARY         efsrv.lib
+
+LIBRARY         esock.lib
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         etext.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         euser.lib
+#ifdef __TEST_LOG_MMP
+DEBUGLIBRARY         flogger.lib
+#endif
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         gsmu.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         http.lib
+LIBRARY         BrowserCache.lib
+LIBRARY         HttpFilterCommon.lib
+LIBRARY         inetprotutil.lib
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         MiscPushMsgUtils.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         msgs.lib
+LIBRARY         PushMsgEntry.lib
+LIBRARY         PushMtmUtil.lib
+LIBRARY         SISLPushMsgUtils.lib
+
+#ifdef __SERIES60_PUSH_SP
+LIBRARY         smcm.lib
+#endif // __SERIES60_PUSH_SP
+
+LIBRARY         WapPushUtils.lib
+
+LIBRARY			ws32.lib
+
+LIBRARY         cXmlParser.lib
+LIBRARY         CENTRALREPOSITORY.lib
+LIBRARY         featmgr.lib

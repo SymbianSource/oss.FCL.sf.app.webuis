@@ -11,22 +11,17 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  The resource iby file contains resource that needs to be localized for 
+*                BrowserAudioVideoPlugin
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+#ifndef BROWSERAUDIOVIDEOPLUGINRESOURCES_IBY
+#define BROWSERAUDIOVIDEOPLUGINRESOURCES_IBY
 
-PRJ_EXPORTS
+data=ZRESOURCE\BrowserAudioVideoPlugin.rsc	RESOURCE_FILES_DIR\BrowserAudioVideoPlugin.rsc
 
-PRJ_MMPFILES
+#endif  // BROWSERAUDIOVIDEOPLUGINRESOURCES_IBY
 
-PRJ_TESTMMPFILES
+//  End of File

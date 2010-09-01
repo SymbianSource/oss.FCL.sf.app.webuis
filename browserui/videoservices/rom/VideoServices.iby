@@ -11,22 +11,18 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  IBY file for VideoServices
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+#ifndef __VideoServices_IBY__
+#define __VideoServices_IBY__
 
-PRJ_EXPORTS
+#ifdef __VIDEO_MENU
+S60_APP_EXE(VideoServices)
+S60_APP_AIF_ICONS(VideoServices)
+S60_UPGRADABLE_APP_REG_RSC(VideoServices)
+#endif
 
-PRJ_MMPFILES
-
-PRJ_TESTMMPFILES
+#endif

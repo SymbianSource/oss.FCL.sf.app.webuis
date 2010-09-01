@@ -11,22 +11,19 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  Logging support for Bavp
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+#ifndef BAVPLOGGER_H
+#define BAVPLOGGER_H
 
-PRJ_EXPORTS
 
-PRJ_MMPFILES
+// Logging methods for Bavp
+void Log( TBool aWrite, TPtrC aData );
+void Log( TBool aWrite, TPtrC aData, TInt aInt );
+void Log( TBool aWrite, const TPtrC s, const TPtrC p);
+void Log( TBool aWrite, const TPtrC8 s, const TPtrC8 p);
 
-PRJ_TESTMMPFILES
+#endif BAVPLOGGER_H

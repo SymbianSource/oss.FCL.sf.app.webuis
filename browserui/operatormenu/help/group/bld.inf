@@ -1,0 +1,32 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+* 
+* 
+* Description:
+* Export help related files.
+*
+*/
+
+#include <platform_paths.hrh>
+#include "../../../../../../mw/web/web_plat/browser_platform_api/inc/browser_platform_variant.hrh"
+			
+#if !defined(__PLATFORM_VERSION_32__) && !defined(__PLATFORM_VERSION_5250__) && !defined(__PLATFORM_VERSION_S60_50__)
+				
+PRJ_EXPORTS
+:zip ../data/xhtml.zip   /epoc32/data/z/resource/ overwrite
+:zip ../data/xhtml.zip   /epoc32/winscw/c/resource/ overwrite
+
+../inc/ope.hlp.hrh	APP_LAYER_PLATFORM_EXPORT_PATH(csxhelp/ope.hlp.hrh)
+../rom/operatormenuhelps_variant.iby		CUSTOMER_APP_LAYER_IBY_EXPORT_PATH(operatormenuhelps_variant.iby)
+
+#endif

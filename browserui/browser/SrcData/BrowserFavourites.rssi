@@ -1,0 +1,450 @@
+/*
+* Copyright (c) 2002-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*       Common resources for browser views
+*
+*
+*/
+
+
+#ifndef BROWSER_FAVOURITES_RSSI
+#define BROWSER_FAVOURITES_RSSI
+
+#include "Browser.hrh"           // Data definitions
+#include <browser.mbg>
+
+// TABS
+
+// tabgroup common to all views.
+RESOURCE TAB_GROUP r_browser_views_tab_group
+    {
+    tabs =
+        {
+        TAB
+            {
+            id = EWmlTabFavouritesBookmarks;
+            bmpfile = "Z:"APP_RESOURCE_DIR"\\browser.mbm"; // bitmap file
+            bmpid = EMbmBrowserQgn_prop_wml_pages_tab2;
+            bmpmask = EMbmBrowserQgn_prop_wml_pages_tab2_mask;
+            }
+        };
+    }
+
+RESOURCE IMAGE r_browser_icon_prop_folder
+    {
+    bmpfile = "Z:"APP_RESOURCE_DIR"\\browser.mbm"; // bitmap file
+    bmpid = EMbmBrowserQgn_prop_folder_tab1;
+    bmpmask = EMbmBrowserQgn_prop_folder_tab1_mask;
+    }
+
+// MENU PANES
+
+// OK-Options menu for the favourites views
+RESOURCE MENU_PANE r_browser_favourites_menu_pane_ok
+    {
+    items =
+        {
+        // Dummy menu pane; its resource id is used to refer to the common
+        // menu items in bookmarks view.
+        };
+    }
+
+// Normal Options menu for the favourites views 
+RESOURCE MENU_PANE r_browser_favourites_menu_pane
+    {
+    items =
+        {
+        // Dummy menu pane; its resource id is used to refer to the common
+        // menu items in bookmarks view.
+        };
+    }
+
+// sub-menu pane for favourites views
+RESOURCE MENU_PANE r_browser_favourites_menu_pane_mark_unmark
+    {
+    items =
+        {
+        MENU_ITEM { command = EWmlCmdMark; txt = qtn_options_list_mark_one; },
+        MENU_ITEM { command = EWmlCmdUnmark; txt = qtn_options_list_unmark_one; },
+        MENU_ITEM { command = EWmlCmdMarkAll; txt = qtn_options_list_mark_all; },
+        MENU_ITEM { command = EWmlCmdUnmarkAll; txt = qtn_options_list_unmark_all; }
+        };
+    }
+
+// sub-menu pane for favourites views
+RESOURCE MENU_PANE r_browser_favourites_menu_pane_info
+    {
+    items =
+        {
+        MENU_ITEM { command = EWmlCmdPageInfo; txt = qtn_browser_list_page_info;},
+        MENU_ITEM { command = EWmlCmdInfoSession; txt = qtn_wml_opt_smenu_session; },
+        MENU_ITEM { command = EWmlCmdInfoSecurity; txt = qtn_wml_opt_smenu_security; }
+        };
+    }
+
+// 'Advanced functions' submenu when Small Screen support is available
+RESOURCE MENU_PANE r_browser_favourites_advanced_submenu
+    {
+    items =
+        {
+		MENU_ITEM { command = EWmlCmdChangeConnection; txt = qtn_wml_list_change_connection; },
+        MENU_ITEM { command = EWmlCmdDisconnect; txt = qtn_wml_list_dconn; }
+        };
+    }
+// CBA-s
+
+RESOURCE CBA r_browser_favourites_cba_options_exit
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EAknSoftkeyExit; txt = text_softkey_exit; }
+        };
+    }
+    
+RESOURCE CBA r_browser_favourites_cba_options_exit_open_item
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EAknSoftkeyExit; txt = text_softkey_exit; },
+        CBA_BUTTON { id = EWmlCmdOpenItem; txt = qtn_msk_open; }
+        };
+    }
+    
+RESOURCE CBA r_browser_favourites_cba_options_exit_context_menu
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EAknSoftkeyExit; txt = text_softkey_exit; },
+        CBA_BUTTON { id = EAknSoftkeyContextOptions; txt = text_softkey_option; }
+        };
+    }
+    
+RESOURCE CBA r_browser_favourites_cba_options_back_options
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdFavourites; txt = text_softkey_back; },
+        CBA_BUTTON { id = EWmlNoCmd; txt = text_softkey_empty; }        
+        };
+    }    
+
+RESOURCE CBA r_browser_favourites_cba_options_back_context_menu
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdFavourites; txt = text_softkey_back; },
+        CBA_BUTTON { id = EAknSoftkeyContextOptions; txt = text_softkey_option; }
+        };
+    }         
+    
+    
+RESOURCE CBA r_browser_favourites_cba_options_backtopage
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdBackToPage; txt = text_softkey_back; }
+        };
+    }
+    
+    
+RESOURCE CBA r_browser_favourites_cba_options_backtopage_open_item
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdBackToPage; txt = text_softkey_back; },
+        CBA_BUTTON { id = EWmlCmdOpenItem; txt = qtn_msk_open; }
+        };
+    }
+    
+RESOURCE CBA r_browser_favourites_cba_options_backtopage_context_menu
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdBackToPage; txt = text_softkey_back; },
+        CBA_BUTTON { id = EAknSoftkeyContextOptions; txt = text_softkey_option; }
+        };
+    }    
+    
+RESOURCE CBA r_browser_favourites_cba_move_okcancel_ok
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EWmlCmdMoveOk; txt = text_softkey_ok; },
+        CBA_BUTTON { id = EWmlCmdMoveCancel; txt = text_softkey_cancel; },
+        CBA_BUTTON { id = EWmlCmdMoveOk; txt = text_softkey_ok; }
+        };
+    }
+
+RESOURCE CBA r_browser_favourites_cba_options_backfromfolder
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdBackFromFolder; txt = text_softkey_back; },
+        CBA_BUTTON { id = EAknSoftkeyForwardKeyEvent; txt = text_softkey_empty; }
+        };
+    }
+    
+RESOURCE CBA r_browser_favourites_cba_options_backfromfolder_goto
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdBackFromFolder; txt = text_softkey_back; },
+        CBA_BUTTON { id = EWmlCmdGoToAddress; txt = qtn_browser_msk_goto; }
+        };
+    }
+
+RESOURCE CBA r_browser_favourites_cba_options_backfromfolder_addbm
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdBackFromFolder; txt = text_softkey_back; },
+        CBA_BUTTON { id = EWmlCmdAddBookmark; txt = qtn_msk_add; }
+        };
+    }
+
+RESOURCE CBA r_browser_favourites_cba_options_backfromfolder_options
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdBackFromFolder; txt = text_softkey_back; },
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; }
+        };
+    }
+ 
+     
+RESOURCE CBA r_browser_favourites_cba_options_backfromfolder_open_item
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdBackFromFolder; txt = text_softkey_back; },
+        CBA_BUTTON { id = EWmlCmdOpenItem; txt = qtn_msk_open; }
+        };
+    }    
+   
+RESOURCE CBA r_browser_favourites_cba_options_backfromfolder_context_menu
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EWmlCmdBackFromFolder; txt = text_softkey_back; },
+        CBA_BUTTON { id = EAknSoftkeyContextOptions; txt = text_softkey_option; }
+        };
+    }       
+
+RESOURCE CBA r_browser_favourites_cba_movetofolder_movecancel_move
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EAknSoftkeyOk; txt = text_softkey_move; },
+        CBA_BUTTON { id = EAknSoftkeyCancel; txt = text_softkey_cancel; },
+        CBA_BUTTON { id = EAknSoftkeyOk; txt = text_softkey_move; }
+        };
+    }
+    
+// DIALOGS
+
+RESOURCE DIALOG r_wmlbrowser_favourites_note_moving
+    {
+    flags = EAknWaitNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EWmlControlIncrementalNote;
+            control = AVKON_NOTE 
+                { 
+                layout = EWaitLayout;
+                singular_label = qtn_fldr_moving_wait_note;
+                imagefile = AVKON_BITMAP_FILE; // bitmap file
+                imageid = EMbmAvkonQgn_note_move;
+                imagemask = EMbmAvkonQgn_note_move_mask;
+                animation = R_QGN_GRAF_WAIT_BAR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_wmlbrowser_favourites_note_deleting
+    {
+    flags = EAknWaitNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EWmlControlIncrementalNote;
+            control = AVKON_NOTE 
+                { 
+                layout = EWaitLayout;
+                singular_label = qtn_fldr_deleting_wait_note;
+                imagefile = AVKON_BITMAP_FILE; // bitmap file
+                imageid = EMbmAvkonQgn_note_erased;
+                imagemask = EMbmAvkonQgn_note_erased_mask;
+                animation = R_QGN_GRAF_WAIT_BAR_ANIM;
+                };
+            }
+        };
+    }
+
+// ICONARRAYS
+RESOURCE AKN_ICON_ARRAY_ARRAY r_browser_favourites_folder_listbox_icons
+    {
+    iconarrays =
+        {		
+        AKN_ICON_ARRAY
+            {
+            bmpfile = AVKON_BITMAP_FILE;
+            icons =
+                {
+                AKN_ICON { iconId = EMbmAvkonQgn_indi_marked_add; maskId = EMbmAvkonQgn_indi_marked_add_mask; },
+				AKN_ICON { iconId = EMbmAvkonQgn_prop_folder_small; maskId = EMbmAvkonQgn_prop_folder_small_mask; },
+				AKN_ICON { iconId = EMbmAvkonQgn_indi_level_back; maskId = EMbmAvkonQgn_indi_level_back_mask; }
+                };
+            },
+        AKN_ICON_ARRAY
+            {
+            bmpfile = "Z:"APP_RESOURCE_DIR"\\browser.mbm"; // bitmap file
+            icons =
+                {
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_home; maskId = EMbmBrowserQgn_prop_wml_home_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_bm_last; maskId = EMbmBrowserQgn_prop_wml_bm_last_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_bm; maskId = EMbmBrowserQgn_prop_wml_bm_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_indi_wml_csd_add; maskId = EMbmBrowserQgn_indi_wml_csd_add_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_indi_wml_hscsd_add; maskId = EMbmBrowserQgn_indi_wml_hscsd_add_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_indi_wml_gprs_add; maskId = EMbmBrowserQgn_indi_wml_gprs_add_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_folder_link_seamless; maskId = EMbmBrowserQgn_prop_wml_folder_link_seamless_mask; }
+                };
+            }
+        };
+    }
+
+
+RESOURCE DIALOG r_browser_favourites_name_query_ok_cancel
+    {
+    flags = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+            control = AVKON_DATA_QUERY
+                {
+                layout = EDataLayout;
+                label = "";
+                control = EDWIN
+                    {
+                    flags = EEikEdwinNoHorizScrolling | EEikEdwinAutoSelection | EEikEdwinNoWrap; 
+                    maxlength = KFavouritesMaxBookmarkNameDefine;
+                    width = 6;
+                    lines = 1;
+                    };
+                };
+            }
+        };
+    }
+
+// STRINGS
+
+RESOURCE TBUF r_browser_favourites_text_cant_delete_item
+                { buf = qtn_fldr_cant_delete_item; }
+
+RESOURCE TBUF r_browser_favourites_text_cant_delete_items
+                { buf = qtn_fldr_cant_delete_items; }
+
+RESOURCE TBUF r_browser_favourites_text_fldr_name_default
+                { buf = qtn_fldr_name_default; }
+
+RESOURCE TBUF r_browser_favourites_text_fldr_name_prmpt
+                { buf = qtn_fldr_name_prmpt; }
+
+RESOURCE TBUF r_browser_favourites_text_fldr_item_name_prmpt
+                { buf = qtn_fldr_item_name_prmpt; }
+RESOURCE TBUF r_browser_favourites_text_fldr_name_already_used
+                { buf = qtn_fldr_name_already_used; }
+
+RESOURCE TBUF r_browser_favourites_text_fldr_names_in_use_rename
+                { buf = qtn_fldr_names_in_use_rename; }
+
+RESOURCE TBUF r_browser_favourites_text_query_common_conf_delete
+                { buf = qtn_query_common_conf_delete; }
+
+RESOURCE TBUF r_browser_favourites_text_del_items_query
+                { buf = qtn_fldr_del_items_query; }
+
+RESOURCE TBUF r_browser_favourites_text_del_full_fldrs_query
+                { buf = qtn_fldr_del_full_fldrs_query; }
+
+RESOURCE TBUF r_browser_favourites_text_item_cannot_be_moved
+                { buf = qtn_fldr_item_cannot_be_moved; }
+
+RESOURCE TBUF r_browser_favourites_text_some_items_cant_move
+                { buf = qtn_fldr_some_items_cant_move; }
+
+// RESOURCE TBUF r_browser_favourites_text_no_folders_exist
+//                { buf = qtn_fldr_no_folders_exist; }
+
+RESOURCE TBUF r_browser_favourites_text_cannot_access_db
+                { buf = qtn_wmlbm_err_db_inaccessible; }
+
+RESOURCE TBUF r_browser_favourites_text_fldr_root_level
+                { buf = qtn_fldr_root_level; }
+
+RESOURCE TBUF r_browser_favourites_text_move_to_prmpt
+                { buf = qtn_fldr_move_to_prmpt; }
+
+RESOURCE TBUF r_browser_favourites_text_prmpt_edit_name
+                { buf = qtn_wml_prmpt_edit_name; }
+
+RESOURCE TBUF r_browser_favourites_text_prmpt_illegal_char
+                { buf = qtn_fldr_illegal_characters; }
+
+RESOURCE TBUF r_browser_favourites_text_prmpt_cant_rename
+                { buf = qtn_fldr_cant_rename_item; }
+
+
+RESOURCE TBUF r_browserbm_folder_download_applications { buf = qtn_browserbm_folder_download_applications; }
+RESOURCE TBUF r_browserbm_folder_download_images { buf = qtn_browserbm_folder_download_images; }
+RESOURCE TBUF r_browserbm_folder_download_tones { buf = qtn_browserbm_folder_download_tones; }
+RESOURCE TBUF r_browserbm_folder_download_videos { buf = qtn_browserbm_folder_download_videos; }
+RESOURCE TBUF r_browserbm_folder_download_skins { buf = qtn_browserbm_folder_download_skins; }
+RESOURCE TBUF r_browserbm_folder_download_music { buf = qtn_browserbm_folder_download_music; }
+
+RESOURCE TBUF r_browserbm_folder_title_download_applications { buf = qtn_browserbm_folder_title_download_applications; }
+RESOURCE TBUF r_browserbm_folder_title_download_images { buf = qtn_browserbm_folder_title_download_images; }
+RESOURCE TBUF r_browserbm_folder_title_download_tones { buf = qtn_browserbm_folder_title_download_tones; }
+RESOURCE TBUF r_browserbm_folder_title_download_videos { buf = qtn_browserbm_folder_title_download_videos; }
+RESOURCE TBUF r_browserbm_folder_title_download_skins { buf = qtn_browserbm_folder_title_download_skins; }
+RESOURCE TBUF r_browserbm_folder_title_download_music { buf = qtn_browserbm_folder_title_download_music; }
+
+#endif
+// End of File
+

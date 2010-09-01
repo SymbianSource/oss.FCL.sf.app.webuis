@@ -1,0 +1,626 @@
+/*
+* Copyright (c) 2002-2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*      Resources for browser bookmarks view
+*
+*
+*/
+
+
+#ifndef BROWSER_BOOKMARKS_RSSI
+#define BROWSER_BOOKMARKS_RSSI
+
+#include "BrowserFavourites.rssi"		// Components common to all favourites views
+#include "Browser.hrh"					// Data definitions
+#include <wmlbrowser.loc>               // Localization constants
+#include <browser.mbg>
+#include <bldvariant.hrh>
+#include "bookmark_toolbar.rssi"
+
+// VIEWS
+
+// Bookmarks view
+RESOURCE AVKON_VIEW r_browser_bookmarks_view
+	{
+	menubar = r_browser_bookmarks_menu_bar;
+	cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;   // CBA commands are set dynamically
+    toolbar = r_bookmark_view_toolbar; 	
+	}
+
+// MENUBARS
+
+// Normal Options menubar for the bookmarks view
+RESOURCE MENU_BAR r_browser_bookmarks_menu_bar
+	{
+	titles =
+		{
+		MENU_TITLE { menu_pane = r_browser_bookmarks_menu_pane; }
+		};
+	}
+
+// OK-Options menubar for the bookmarks view
+RESOURCE MENU_BAR r_browser_bookmarks_menu_bar_ok
+	{
+	titles =
+		{
+		MENU_TITLE { menu_pane = r_browser_bookmarks_menu_pane_ok; }
+		};
+	}
+
+// MENU PANES
+
+
+// Normal Options menu pane for bookmarks
+RESOURCE MENU_PANE  r_browser_bookmarks_menu_pane
+    {
+    items =
+        {
+        MENU_ITEM 
+            { 
+            command = EWmlCmdDownloads; 
+            txt = qtn_browser_list_downloads;
+            },
+        MENU_ITEM
+            {
+            cascade = r_goto_submenu;
+            txt = qtn_browser_options_goto;
+            },
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF       
+        MENU_ITEM
+            {
+            command = EWmlCmdAddBookmark;
+            txt = text_wmlbm_option_enter_new;
+            },
+        
+        MENU_ITEM 
+            { 
+            command = EWmlCmdNewFolder; 
+            txt = qtn_options_org_new_folder; 
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdSendAddressViaUnifiedMessage; 
+            txt = qtn_options_send_via; 
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdSendBookmarkViaUnifiedMessage; 
+            txt = qtn_options_send_via; 
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdSetAsHomePage; 
+            txt = qtn_browserbm_list_set_as_home_page_sm; 
+            flags = EEikMenuItemSpecific;
+            },
+#endif
+        MENU_ITEM
+            {
+            cascade = r_bmactions_submenu;
+            command = EWmlCmdBmActions;
+            txt = qtn_browser_options_bmactions;
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF	    
+	    flags = EEikMenuItemSpecific;
+#endif	    
+            },
+        MENU_ITEM
+            {
+            cascade = r_bookmarks_edit_submenu;
+            command = EWmlCmdManageBookmarks;
+            txt = qtn_wmlbm_manage_bm;
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF	    
+	    flags = EEikMenuItemSpecific;
+#endif	    
+            },
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF	   
+        MENU_ITEM
+            {
+            cascade = r_browser_favourites_menu_pane_mark_unmark;
+            command = EWmlCmdMarkUnmark;
+            txt = qtn_browser_options_markunmark;
+            },
+#else
+        MENU_ITEM 
+            { 
+            command = EWmlCmdDelete; 
+            txt = qtn_fldr_delete; 
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdMove; 
+            txt = qtn_options_org_move; 
+            flags = EEikMenuItemSpecific;
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdMoveToFolder; 
+            txt = qtn_options_org_move_to_folder; 
+            flags = EEikMenuItemSpecific;
+            },
+        
+#endif            
+        MENU_ITEM 
+            { 
+            cascade = r_clear_submenu; 
+            command = EWmlCmdPrivacy; 
+            txt = qtn_browser_options_clear;
+            },
+        MENU_ITEM
+            {
+            command = EWmlCmdPreferences;
+            txt = qtn_wmls_browser_opt_sett;
+            },       
+        MENU_ITEM
+            {
+            cascade = r_help_submenu;
+            command = EWmlCmdHelpMenu;
+            txt = qtn_browser_options_help;
+            },
+        MENU_ITEM
+            {
+            command = EWmlCmdUserExit;
+            txt = qtn_options_exit;
+            }
+		};
+	}
+	
+// OK-Options menu pane for bookmarks
+RESOURCE MENU_PANE r_browser_bookmarks_menu_pane_ok
+	{
+    items =
+		{
+		MENU_ITEM { command = EWmlCmdAddBookmark; txt = text_wmlbm_option_enter_new; },
+		MENU_ITEM { command = EWmlCmdDelete; txt = qtn_fldr_delete; },
+		MENU_ITEM { command = EWmlCmdMove; txt = qtn_options_org_move; },
+		MENU_ITEM { command = EWmlCmdMoveToFolder; txt = qtn_options_org_move_to_folder; },
+		MENU_ITEM { command = EWmlCmdNewFolder; txt = qtn_options_org_new_folder; },
+        MENU_ITEM { command = EWmlCmdCopyToBookmarks; txt = qtn_browserbm_options_copy_to_bookmarks; },
+        MENU_ITEM { command = EWmlCmdSwitchToGotoActive; txt = text_wml_option_goto; },
+		MENU_ITEM { cascade = r_browser_favourites_menu_pane_mark_unmark; command = EWmlCmdMarkUnmark; txt = qtn_browser_options_markunmark; }
+		};
+	}
+
+// Edit submenu 
+RESOURCE MENU_PANE r_bookmarks_edit_submenu
+    {
+    items =
+        {
+        MENU_ITEM
+            {
+            command = EWmlCmdEditBookmark;
+            txt = qtn_wmlbm_edit_bm;
+            },
+        MENU_ITEM
+            {
+            command = EWmlCmdRename;
+            txt = qtn_fldr_rename;
+            }
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+            ,
+        MENU_ITEM
+            {
+            command = EWmlCmdDelete;
+            txt = qtn_fldr_delete;
+            },
+		MENU_ITEM
+            {
+            command = EWmlCmdMove;
+            txt = qtn_options_org_move; 
+            },
+        MENU_ITEM
+            {
+            command = EWmlCmdMoveToFolder;
+            txt = qtn_options_org_move_to_folder;
+            },
+        MENU_ITEM 
+            { 
+            command = EWmlCmdNewFolder; 
+            txt = qtn_options_org_new_folder; 
+            }
+#endif	    
+         };
+    }
+
+//----------------------------------------------------
+//
+//    r_bmactions_submenu
+//    Cascading menu for bookmark actions menu items
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_bmactions_submenu
+    {
+    items =
+        {
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF                
+		MENU_ITEM { command = EWmlCmdSendAddressViaUnifiedMessage; txt=qtn_options_send_via; },
+		MENU_ITEM { command = EWmlCmdSendBookmarkViaUnifiedMessage; txt =qtn_options_send_via; },
+		MENU_ITEM { command = EWmlCmdSetAsHomePage; txt=qtn_browserbm_list_set_as_home_page_sm; },
+        MENU_ITEM { command = EWmlCmdAddBookmark; txt = text_wmlbm_option_enter_new; },
+#endif	
+        MENU_ITEM { command = EWmlCmdCopyToBookmarks; txt = qtn_browserbm_options_copy_to_bookmarks_sm; },
+        MENU_ITEM { command = EWmlCmdSetPreferredBookmark; txt = qtn_browserbm_list_set_as_preferred; },
+        MENU_ITEM { command = EWmlCmdSetUnPreferredBookmark; txt = qtn_browserbm_list_unset_from_preferred; }
+        };
+    }
+
+// sub-menu pane for bookmarks help form
+RESOURCE MENU_PANE r_browser_bookmarks_menu_pane_edit_bookmark
+    {
+	items =
+		{
+#ifdef __SERIES60_HELP
+		MENU_ITEM { command = EAknCmdHelp; txt=qtn_browser_options_help;},
+#endif
+		MENU_ITEM { command = EAknCmdExit; txt = qtn_options_exit; }
+		};
+	}
+
+RESOURCE MENU_PANE r_browser_bookmarks_menu_pane_download_page
+    {
+    items = 
+        {
+        MENU_ITEM { command = EWmlCmdDownloadPage;          txt = qtn_browserbm_options_download_page; },
+        MENU_ITEM { command = EWmlCmdDownloadPageNewWindow; txt = qtn_browserbm_options_download_in_new_window; }
+        };
+    }
+
+// CBA-s
+
+RESOURCE CBA r_browser_bookmarks_cba_goto_pane_goto_cancel   // TEMP
+    {
+	flags = EAknCBAFlagRespondWhenInvisible;
+    buttons =
+	    {
+	    CBA_BUTTON { id = EWmlCmdGotoPaneGoTo; txt = qtn_wml_softk_go; },
+	    CBA_BUTTON { id = EWmlCmdGotoPaneCancel; txt = text_softkey_cancel; },
+  	    CBA_BUTTON { id = EWmlCmdGotoPaneGoTo; txt = qtn_wml_softk_go; }
+	    };
+    }
+// No need for separate search command, active search editor is checked.
+RESOURCE CBA r_browser_bookmarks_cba_search_pane_search_cancel   
+    {
+    flags = EAknCBAFlagRespondWhenInvisible;
+    buttons =
+        {
+        CBA_BUTTON { id = EWmlCmdGotoPaneGoTo; txt = qtn_is_softkey_search; },
+        CBA_BUTTON { id = EWmlCmdGotoPaneCancel; txt = text_softkey_cancel; },
+        CBA_BUTTON { id = EWmlCmdGotoPaneGoTo; txt = qtn_is_softkey_search; }
+        };
+    }
+
+//adaptive popuplist needs it
+RESOURCE CBA r_browser_bookmarks_cba_goto_pane_opendir_cancel   // TEMP
+    {
+	flags = EAknCBAFlagRespondWhenInvisible;
+    buttons =
+	    {
+	    CBA_BUTTON { id = EWmlCmdOpenFolder; txt = text_softkey_open; },
+	    CBA_BUTTON { id = EWmlCmdGotoPaneCancel; txt = text_softkey_cancel; },
+   	    CBA_BUTTON { id = EWmlCmdOpenFolder; txt = text_softkey_open; }
+	    };
+    }
+    
+// Adaptive popuplist needs it
+RESOURCE CBA r_browser_bookmarks_cba_goto_pane_select_cancel   // TEMP
+    {
+    flags = EAknCBAFlagRespondWhenInvisible;
+    buttons =
+	    {
+	    CBA_BUTTON { id = EWmlCmdGotoPaneSelect; txt = text_softkey_select; },
+	    CBA_BUTTON { id = EWmlCmdGotoPaneCancel; txt = text_softkey_cancel; },
+   	    CBA_BUTTON { id = EWmlCmdGotoPaneSelect; txt = text_softkey_select; }
+	    };
+    }
+
+/*
+RESOURCE DIALOG r_processing_wait_note
+    {
+    flags = EAknWaitNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EWmlControlIdProcessingPage;
+            control = AVKON_NOTE 
+                { 
+                layout = EWaitLayout;
+                singular_label = qtn_gen_note_processing;
+                animation = R_QGN_GRAF_WAIT_BAR_ANIM;
+                };
+            }
+        };
+    }
+*/
+
+// LISTBOXES
+
+RESOURCE DIALOG r_browser_bookmarks_dialog_edit
+	{
+	flags =	EEikDialogFlagNoDrag | EEikDialogFlagFillAppClientRect |
+			EEikDialogFlagButtonsRight | EEikDialogFlagNoTitleBar |
+			EEikDialogFlagCbaButtons | EEikDialogFlagWait
+			/*| EEikDialogFlagModeless */;
+	buttons =  r_browser_cba_options_back_change ;
+	form = r_browser_bookmarks_form_edit;
+	} 
+
+RESOURCE DIALOG r_browser_bookmarks_dialog_edit_apac // Dummy resource to fix compatibility break
+    {
+    }
+
+RESOURCE FORM r_browser_bookmarks_form_edit
+	{
+	flags = EEikFormEditModeOnly | EEikFormUseDoubleSpacedFormat;
+	items =
+		{
+		DLG_LINE
+			{
+			type = EEikCtEdwin;
+			prompt = qtn_wmlbm_flabel_bmtitle;
+			id = EWmlControlEditBmEditTitle;
+			control = EDWIN
+                {
+                maxlength = KFavouritesMaxBookmarkNameDefine;
+                width = 10;
+                lines = 1;
+                max_view_height_in_lines = 5;
+                base_line_delta = 21;
+                default_input_mode = EAknEditorTextInputMode;
+                flags = EEikEdwinAllowUndo | EEikEdwinNoHorizScrolling | EEikEdwinResizable | EEikEdwinAutoSelection | EAknEditorNumericInputMode;
+                };
+			},
+
+		DLG_LINE
+			{
+			type = EEikCtEdwin;
+			prompt = qtn_wmlbm_flabel_bmadrs;
+			id = EWmlControlEditBmEditAddress;
+			control = EDWIN
+                {
+                maxlength = KFavouritesMaxUrlDefine;
+                width = 10;
+                lines = 1;
+                max_view_height_in_lines = 5;
+                base_line_delta = 21;
+                default_case = EAknEditorLowerCase;
+				allowed_case_modes = EAknEditorLowerCase | EAknEditorUpperCase;
+                default_input_mode = EAknEditorTextInputMode;
+                allowed_input_modes = EAknEditorTextInputMode | EAknEditorNumericInputMode;
+				flags = EEikEdwinAllowUndo | EEikEdwinNoHorizScrolling | EEikEdwinResizable | EEikEdwinNoLineOrParaBreaks | EAknEditorNumericInputMode ;
+                special_character_table = R_AVKON_URL_SPECIAL_CHARACTER_TABLE_DIALOG;
+                avkon_flags = EAknEditorFlagLatinInputModesOnly;
+                };
+			},
+
+        DLG_LINE
+            {
+            type = EAknCtPopupField;
+            prompt = qtn_wmlbm_flabel_wapap;
+            id = EWmlControlEditBmWapApSelector;
+            itemflags = EEikDlgItemTakesEnterKey | EEikDlgItemOfferAllHotKeys;
+            control = POPUP_FIELD 
+                { 
+                flags = 0;
+                width = KBrowserMaxWapApName;
+                other = "x";   // unused, but dialog panics if empty.
+                emptynote = r_browser_bookmarks_info_no_valid_ap;
+                empty = qtn_wmlbm_text_ap_none;
+				invalid = qtn_wmlbm_text_ap_invalid;
+                };
+            },
+
+		DLG_LINE
+			{
+			type = EEikCtEdwin;
+			prompt = qtn_wmlbm_flabel_username;
+			id = EWmlControlEditBmEditUsername;
+			control = EDWIN
+                {
+                maxlength = KFavouritesMaxUsernameDefine;
+                width = 10;
+                lines = 1;
+                max_view_height_in_lines = 5;
+                base_line_delta = 21;
+//                default_case = EAknEditorLowerCase;
+                default_input_mode = EAknEditorTextInputMode;
+                flags = EEikEdwinAllowUndo | EEikEdwinNoHorizScrolling | EEikEdwinResizable | EEikEdwinAutoSelection | EAknEditorNumericInputMode;
+                avkon_flags = EAknEditorFlagLatinInputModesOnly;
+				};
+			},
+
+		DLG_LINE
+			{
+			type = EEikCtSecretEd;
+			prompt = qtn_wmlbm_flabel_passwd;
+			id = EWmlControlEditBmEditPassword;
+			control = SECRETED
+                {
+                num_letters = KFavouritesMaxPasswordDefine;
+                };
+			}
+		};
+	} 
+
+RESOURCE DIALOG r_browser_bookmarks_info_no_valid_ap
+    {
+    flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons | EEikDialogFlagWait;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EAknPopupFieldEmptyListNote;
+            control = AVKON_NOTE 
+                { 
+                layout = EGeneralLayout;
+                singular_label = qtn_wmlbm_info_no_valid_ap;
+                plural_label = "";
+                animation = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+
+RESOURCE FORM r_browser_bookmarks_form_edit_apac // Dummy resource to fix compatibility break
+    {
+    }
+
+
+// ICONARRAYS
+/*
+RESOURCE AKN_ICON_ARRAY_ARRAY r_browser_bookmarks_listbox_icons
+    {
+    iconarrays =
+        {
+        AKN_ICON_ARRAY
+            {
+            bmpfile = "Z:"APP_RESOURCE_DIR"\\browser.mbm"; // bitmap file
+            icons =
+                {
+                AKN_ICON { iconId = EMbmAvkonQgn_indi_marked_add; maskId = EMbmAvkonQgn_indi_marked_add_mask; },
+                AKN_ICON { iconId = EMbmAvkonQgn_prop_folder_small; maskId = EMbmAvkonQgn_prop_folder_small_mask; }
+                };
+            },
+        AKN_ICON_ARRAY
+            {
+            bmpfile = "Z:"APP_RESOURCE_DIR"\\browser.mbm"; // bitmap file
+            icons =
+                {
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_home; maskId = EMbmBrowserQgn_prop_wml_home_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_bm_last; maskId = EMbmBrowserQgn_prop_wml_bm_last_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_bm; maskId = EMbmBrowserQgn_prop_wml_bm_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_indi_wml_csd_add; maskId = EMbmBrowserQgn_indi_wml_csd_add_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_indi_wml_hscsd_add; maskId = EMbmBrowserQgn_indi_wml_hscsd_add_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_indi_wml_gprs_add; maskId = EMbmBrowserQgn_indi_wml_gprs_add_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_folder_link_seamless; maskId = EMbmBrowserQgn_prop_wml_folder_link_seamless_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_folder_adap; maskId = EMbmBrowserQgn_prop_wml_folder_adap_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_wml_bm_adap; maskId = EMbmBrowserQgn_prop_wml_bm_adap_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_psln_active; maskId = EMbmBrowserQgn_prop_psln_active_mask; },
+                AKN_ICON { iconId = EMbmBrowserQgn_prop_folder_rss; maskId = EMbmBrowserQgn_prop_folder_rss_mask; }                
+                };
+            }
+        };
+    }
+*/
+RESOURCE TBUF r_browser_option_bookmarks
+                { buf = text_wml_option_bookmarks; }
+
+RESOURCE TBUF r_browser_bookmarks_text_no_bookmarks
+                { buf = text_wml_no_bookmarks; }
+
+RESOURCE TBUF r_browser_bookmarks_text_default_bm_title
+                { buf = qtn_wmlbm_default_bm_title; }
+
+RESOURCE TBUF r_browser_bookmarks_text_bm_not_saved
+                { buf = qtn_wmlbm_bm_not_saved; }
+
+RESOURCE TBUF r_browser_bookmarks_text_bm_saved
+                { buf = text_wml_bm_saved; }
+
+RESOURCE TBUF r_browser_bookmarks_text_query_address
+                { buf = qtn_wmlbm_query_address; }
+
+RESOURCE TBUF r_browser_bookmarks_name_already_used
+                { buf = qtn_wmlbm_name_already_used; }
+
+// RESOURCE TBUF r_browser_bokmarks_text_ap_none
+//                { buf = qtn_wmlbm_text_ap_none; }
+
+RESOURCE TBUF r_browser_bokmarks_text_default_wapap
+                { buf = qtn_wmlbm_default_wapap; }
+
+// RESOURCE TBUF r_browser_bokmarks_text_invalid_wapap
+//                { buf = qtn_wmlbm_text_ap_invalid; }
+
+// RESOURCE TBUF r_browser_bokmarks_text_info_no_valid_ap
+//                { buf = qtn_wmlbm_info_no_valid_ap; }
+
+RESOURCE TBUF r_browser_adaptive_bookmarks_folder
+				{buf= qtn_browserbm_folder_adaptive_bookmarks;}
+
+RESOURCE TBUF r_browser_adaptive_bookmarks_no_adaptive_bookmarks
+                { buf = qtn_browserbm_no_adaptive_bookmarks; }
+
+RESOURCE TBUF r_browser_adaptive_bookmarks_delete_all_adaptive_bookmarks
+                { buf = qtn_browserbm_query_delete_adap_bookmarks;}
+
+RESOURCE TBUF r_browser_adaptive_bookmarks_adaptive_bookmark_copied
+			{ buf= qtn_browserbm_note_adaptive_bookmark_copied;}
+
+RESOURCE TBUF r_browser_adaptive_bookmarks_adaptive_bookmarks_copied
+			{ buf= qtn_browserbm_note_adaptive_bookmarks_copied;}
+
+RESOURCE TBUF r_browser_apps_feeds_list
+				{buf= qtn_apps_feeds_list;}
+				
+RESOURCE TBUF r_browser_adaptive_bookmarks_title
+                { buf = qtn_browserbm_title_adaptive_bookmarks; }
+				
+
+// These are SK string resources for dynamic softkey assignment in Bookmarks View
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_qtn_browser_msk_goto
+        { buf = qtn_browser_msk_goto; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_qtn_msk_add
+        { buf = qtn_msk_add; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_qtn_msk_open
+        { buf = qtn_msk_open; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_qtn_wml_softk_go
+        { buf = qtn_wml_softk_go; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_qtn_is_softk_search
+        { buf = qtn_is_softkey_search; }
+	
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_back
+        { buf = text_softkey_back; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_cancel
+        { buf = text_softkey_cancel; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_empty
+        { buf = text_softkey_empty; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_exit
+        { buf = text_softkey_exit; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_ok
+        { buf = text_softkey_ok; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_open
+        { buf = text_softkey_open; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_option
+        { buf = text_softkey_option; }
+
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_stop
+        { buf = text_softkey_stop; }
+        
+RESOURCE TBUF r_browser_bookmarks_dyn_sk_text_softkey_select
+        { buf = text_softkey_select; }
+        
+
+#endif
+// End of File

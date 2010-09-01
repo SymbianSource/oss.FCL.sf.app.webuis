@@ -1,0 +1,41 @@
+/*
+* Copyright (c) 2002-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     Main browser resource file
+*     
+*
+*/
+
+#include "Browser.rss"
+#include "BrowserWindowSelection.rssi"
+#include "BrowserInitial.rssi"
+#include <Avkon.loc>
+#ifdef __RSS_FEEDS
+#include "Feeds.rssi"
+#endif  // __RSS_FEEDS
+
+//----------------------------------------------------
+//   
+//   Find keyword strings
+//   
+//----------------------------------------------------
+//
+
+RESOURCE TBUF r_qtn_browser_keyword_find_no_matches 	        { buf = qtn_browser_keyword_find_no_matches; }
+RESOURCE TBUF r_qtn_browser_keyword_find_wraparound 	        { buf = qtn_browser_keyword_find_wraparound; }
+RESOURCE TBUF r_qtn_browser_keyword_find_all_content_searched 	{ buf = qtn_browser_keyword_find_all_content_searched; }
+
+// Misc dialogs
+RESOURCE TBUF r_qtn_browser_dialog_oom { buf=qtn_memlo_ram_out_of_mem; } 
+RESOURCE TBUF r_qtn_OK_button { buf= text_softkey_ok; } 

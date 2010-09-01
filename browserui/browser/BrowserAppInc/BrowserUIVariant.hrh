@@ -1,0 +1,150 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  
+*      This file contains all the declarations to variate locally 
+*      whole Messaging subsystem
+*               
+*
+*/
+
+
+#ifndef BROWSERUIVARIANT_HRH
+#define BROWSERUIVARIANT_HRH
+
+
+/* 
+*  Comment the meaning of the each setting value here well !!
+*  What is the SD file and setting used for values, e.g.
+*/
+
+// BrowserUI related values are in 0x101F861B.ini
+//setting "R-BrUi1"
+
+//
+// Feature to allow Multiple Windows to be available
+//
+#define KBrowserMultipleWindows   0x01
+
+//
+// Feature which allows a URL to be defined for searching the web
+// ON = 1
+//
+#define KBrowserUiSearchWeb   0x02
+
+
+//
+// Feature which determines whether the user can modify the Search URL.
+// Writable = 1
+// 
+#define KBrowserUiSearchWebWritable   0x04
+
+
+//
+// Feature to use HomePageSetting in Browser
+//
+#define KBrowserUiHomePageSetting    0x08
+
+//
+// Feature to limit functionality of Multiple Windows for midrange phones
+// 0 = Full functionality, 1 = Minimal functionality
+//
+#define  KBrowserMinimalMultipleWindows    0x10
+
+//
+// Feature to enable Page Overview and Graphical History
+// After 9.2 TB, This feature is used only to enable page overview
+//
+#ifdef BRDO_MULTITOUCH_ENABLED_FF
+    #define  KBrowserGraphicalPage    0x00
+#else
+    #define  KBrowserGraphicalPage    0x20
+#endif
+//
+// Feature to enable Auto Form Fill and Password Management options
+//
+#define  KBrowserAutoFormFill    0x40
+
+//
+// Feature to enable Graphical History 
+// (Page Overview must be on for Graphical History to be on)
+//
+#define  KBrowserGraphicalHistory    0x80
+
+//
+// Local variation flags for CDMA Browser UI shared data key "R-BrUI2" in 0x101F861B.ini.
+//
+enum TBrUI2LocalVariantFlags
+    {
+    //
+    // Show/hide the Restart feature
+    //
+    EBrowserLVRestart = 0x01,
+
+    //
+    // Disable the connection manager dialogs to use NAI.
+    //
+    EBrowserLVNAIConnection = 0x02,
+
+    //
+    // Show/hide the Query Exit feature
+    //
+    EBrowserLVQueryExit = 0x04,
+	//
+	// Send/Don't send the Referrer Header
+	//
+	EBrowserLVSendReferrerHeader = 0x08,
+
+    //
+    // Show/hide Dynamic Lable feature
+    //
+    EBrowserLVDynamicLabel = 0x10
+    };
+
+// If, for some good reason, you need compile time variation per
+// release use the release flags. This file is the only place to use the
+// release flags ! However, think hard why you can not use SD setting !!!
+//
+#if defined (__SERIES60_20__)
+//const TInt KSomeCompileTimeConstantValue = 1;
+#elif defined (____SERIES60_21__)
+//const TInt KSomeCompileTimeConstantValue = 2;
+#endif
+
+#endif // BROWSERUIVARIANT_HRH
+
+
+//--------------------- in CPP code --------------------------------
+
+/**
+* How to use: 
+*     TInt featureBitmask = 0;
+*     if ( sharedDataClient.Assign( KSDUidBrowserLV ) == KErrNone )
+*         {
+*         if ( sharedDataClient.GetInt( 
+*             KBrowserUiLV1, featureBitmask ) != KErrNone )
+*             {
+*             featureBitmask = 0; // if problems reading shared data, assume everything is off
+*             } 
+*        }
+*        
+*        //
+*        // Get the value once and save it for later use.
+*        // No need always to access shared data every time when a value is needed
+* 
+*        // Use the local feature flags at run-time for different behaviour per release
+*        if  ( featureBitmask & KBrowserOnScreenScrollBar  )
+*           {
+*           //on screen scrollbar is supported, cache this fact here
+*           }
+*/

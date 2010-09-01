@@ -11,22 +11,11 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  This file contains all the strings for resources
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
-
-PRJ_EXPORTS
-
-PRJ_MMPFILES
-
-PRJ_TESTMMPFILES
+rls_string STRING_r_browser_gps_plugin "npGpsPlugin.dll;Browser GPS Plugin"
+rls_string STRING_r_browser_gps_desc "GPS Plugin for S60 Browser"
+rls_string STRING_r_mime_gps "application/x-gps-widget"

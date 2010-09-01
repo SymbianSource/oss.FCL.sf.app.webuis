@@ -11,22 +11,18 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  The iby file contains all data that must be included in image for 
+*                BrowserAudioVideoPlugin
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+#ifndef BROWSERAUDIOVIDEOPLUGIN_IBY
+#define BROWSERAUDIOVIDEOPLUGIN_IBY
 
-PRJ_EXPORTS
+ECOM_PLUGIN(npbrowseraudiovideoplugin.dll, 0x10282810.rsc)
+S60_APP_AIF_ICONS(browseraudiovideoplugin)
 
-PRJ_MMPFILES
+#endif  // BROWSERAUDIOVIDEOPLUGIN_IBY
 
-PRJ_TESTMMPFILES
+//  End of File  

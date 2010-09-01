@@ -11,22 +11,14 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  This file contains all the strings for resources
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+rls_string STRING_r_browser_system_info_plugin "npSystemInfoPlugin.dll;Browser System Info Plugin"
+rls_string STRING_r_browser_system_info_desc "System Information Plugin for S60 Browser"
+rls_string STRING_r_mime_system_info "application/x-systeminfo-widget"
 
-PRJ_EXPORTS
 
-PRJ_MMPFILES
 
-PRJ_TESTMMPFILES

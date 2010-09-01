@@ -1,0 +1,61 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is the .mmp for building Ecom style Browser Gps Plugin
+*
+*/
+
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+#include <platform/mw/browser_platform_variant.hrh>
+
+TARGET npGpsPlugin.dll
+TARGETTYPE PLUGIN
+
+UID 0x10009D8D 0x1028286f
+
+EPOCALLOWDLLDATA
+CAPABILITY CAP_ECOM_PLUGIN
+VENDORID VID_DEFAULT
+
+SOURCEPATH ../data
+
+START RESOURCE  1028286f.rss
+TARGET npGpsPlugin.rsc
+END
+
+APP_LAYER_SYSTEMINCLUDE
+
+USERINCLUDE ../inc
+SOURCEPATH  ../src
+
+SOURCE GpsObserver.cpp
+SOURCE GpsApi.cpp
+SOURCE GpsPluginEcomMain.cpp
+SOURCE GpsPlugin.cpp
+
+LIBRARY euser.lib
+LIBRARY ecom.lib
+
+#ifdef __S60_32__
+LIBRARY     JavaScriptCore.lib
+#else
+LIBRARY			npscript.lib
+#endif
+
+LIBRARY lbs.lib
+LIBRARY SatInfo.lib
+LIBRARY flogger.lib
+
+DEFFILE npGpsPlugin.def
+NOSTRICTDEF

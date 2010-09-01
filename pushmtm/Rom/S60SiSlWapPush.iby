@@ -1,0 +1,30 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*
+*/
+#ifndef __S60SISLWAPPUSH_IBY__
+#define __S60SISLWAPPUSH_IBY__
+
+REM This iby file puts Symbian components to ROM. It replaces sislwappush.iby.
+REM It does not put some components to ROM, that are put by sislwappush.iby.
+
+file=ABI_DIR\BUILD_DIR\sislpushmsgutils.dll	System\Libs\sislpushmsgutils.dll	
+
+data=ZRESOURCE\wappush\si.dtd			RESOURCE\wappush\si.dtd
+data=ZRESOURCE\wappush\sl.dtd			RESOURCE\wappush\sl.dtd
+data=ZRESOURCE\wappush\si10.tok			RESOURCE\wappush\si10.tok
+data=ZRESOURCE\wappush\sl10.tok			RESOURCE\wappush\sl10.tok
+
+#endif // __S60SISLWAPPUSH_IBY__

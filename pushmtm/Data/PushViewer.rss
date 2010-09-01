@@ -1,0 +1,172 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This file contains all the resources for the PushViewer.app.
+*
+*/
+
+
+
+//  RESOURCE IDENTIFIER
+
+NAME    PSHV
+
+//  INCLUDES
+
+#include "PushViewer.hrh"
+#include <pushviewer.loc>
+#include <pushmtmui.loc>
+#include <uikon.rh>
+#include <eikon.rh>
+#include <avkon.rh>
+#include <avkon.hrh>
+#include <avkon.rsg>
+#include <MsgEditor.mbg>
+#include <avkon.loc>
+#include <bldvariant.hrh>
+#include <data_caging_paths_strings.hrh>
+
+//  RESOURCE DEFINITIONS 
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; } // This is not a file based application
+
+RESOURCE EIK_APP_INFO
+    {
+    menubar = r_pushviewer_menu;
+    cba = r_pushviewer_softkeys_open;
+    status_pane = r_pushviewer_status_pane;
+    }
+
+#include <appinfo.rh>
+
+RESOURCE LOCALISABLE_APP_INFO r_pushviewer_localisable_app_info
+    {
+    }
+
+RESOURCE STATUS_PANE_APP_MODEL r_pushviewer_status_pane
+	{
+	panes =
+		{
+		SPANE_PANE
+			{
+			id = EEikStatusPaneUidTitle;
+			type = EAknCtTitlePane;
+			resource = r_pushviewer_title_pane;
+			}
+		};
+	}
+
+RESOURCE TITLE_PANE r_pushviewer_title_pane
+	{
+	txt = qtn_wml_push_title_viewer;
+	}
+
+RESOURCE IMAGE r_pushviewer_navi_image
+    {
+    bmpfile = APP_BITMAP_DIR"\\msgeditor.mbm";
+    bmpid = EMbmMsgeditorQgn_prop_folder_sms_tab1;
+    bmpmask = EMbmMsgeditorQgn_prop_folder_sms_tab1_mask;
+    }
+
+RESOURCE CBA r_pushviewer_softkeys
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EPushViewerCmdOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EPushViewerCmdBack; txt = text_softkey_back; },
+        CBA_BUTTON { id = EAknSoftkeyEmpty; txt = text_softkey_empty; }
+        };
+    }
+
+RESOURCE CBA r_pushviewer_softkeys_open
+    {
+    buttons =
+        {
+        CBA_BUTTON { id = EPushViewerCmdOptions; txt = text_softkey_option; },
+        CBA_BUTTON { id = EPushViewerCmdBack; txt = text_softkey_back; },
+        CBA_BUTTON { id = EPushViewerCmdLoadService; txt = qtn_mce_inbox_open; }
+        };
+    }
+
+RESOURCE MENU_BAR r_pushviewer_menu
+    {
+    titles=
+        {
+        MENU_TITLE { menu_pane = r_pushviewer_options_menu_pane; }
+        };
+    }
+
+RESOURCE MENU_PANE r_pushviewer_options_menu_pane
+	{
+    items=
+        {
+        MENU_ITEM
+            {
+			command = EPushViewerCmdLoadService;
+            txt = qtn_mce_inbox_fetch;
+            },
+		MENU_ITEM
+			{
+			command = EPushViewerCmdDelete;
+			txt = qtn_wml_push_cmd_delete;
+			},
+		MENU_ITEM
+			{
+			command = EPushViewerCmdMessageInfo;
+			txt = qtn_wml_push_cmd_info;
+			},
+#ifdef __SERIES60_HELP
+		MENU_ITEM
+			{
+			command = EPushViewerCmdHelp;
+			txt = qtn_options_help;
+			},
+#endif //__SERIES60_HELP
+		MENU_ITEM
+			{
+			command = EPushViewerCmdAknExit;
+			txt = qtn_wml_push_cmd_exit;
+			}
+		};
+	}
+
+RESOURCE TBUF r_pushviewer_mainpane_text { buf = qtn_service_inbox_push_viewer_view_text; }
+
+RESOURCE DIALOG r_pushviewer_entry_delete_confirm
+	{
+	flags = EGeneralQueryFlags;
+	buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+   	items =
+		{
+		DLG_LINE
+			{
+			type = EAknCtQuery;
+			id = EGeneralQuery;
+			control = AVKON_CONFIRMATION_QUERY 
+				{ 
+				layout = EConfirmationLayout;
+				label = qtn_wml_push_view_query_del;
+				};
+			}
+		};
+	}
+
+RESOURCE TBUF r_pushviewer_expired_note { buf = qtn_wml_push_note_msg_expired; }
+
+// Deleting message & replacement info notes.
+RESOURCE TBUF r_pushviewer_info_deleted { buf = qtn_wml_push_note_msg_expired; }
+RESOURCE TBUF r_pushviewer_info_replaced { buf = qtn_service_inbox_updating_message_received; }
+
+// End of file.

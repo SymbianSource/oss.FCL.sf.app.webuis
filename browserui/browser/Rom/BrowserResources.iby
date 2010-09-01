@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of the License "Eclipse Public License v1.0"
@@ -11,22 +11,17 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description: 
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
+#ifndef __BROWSERRESOURCES_IBY__
+#define __BROWSERRESOURCES_IBY__
 
-PRJ_PLATFORMS
-DEFAULT
+S60_APP_CAPTION(Browser)
 
-PRJ_EXPORTS
+data=DATAZ_\RESOURCE_FILES_DIR\BrowserTelService.rsc    	RESOURCE_FILES_DIR\BrowserTelService.rsc
 
-PRJ_MMPFILES
+S60_APP_RESOURCE(BrowserNG)
 
-PRJ_TESTMMPFILES
+#endif

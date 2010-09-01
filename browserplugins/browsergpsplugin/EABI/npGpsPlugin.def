@@ -1,0 +1,5 @@
+EXPORTS
+	_Z24ImplementationGroupProxyRi @ 1 NONAME
+	_Z12NPP_Shutdownv @ 2 NONAME
+	_Z15InitializeFuncsP14_NPPluginFuncs @ 3 NONAME
+

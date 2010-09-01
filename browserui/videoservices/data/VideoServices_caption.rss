@@ -11,22 +11,16 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  Caption file for VideoServices
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+#include "videoservices.loc"
+#include <apcaptionfile.rh>
 
-PRJ_EXPORTS
-
-PRJ_MMPFILES
-
-PRJ_TESTMMPFILES
+RESOURCE CAPTION_DATA
+{
+    caption=qtn_apps_video_list;
+    shortcaption=qtn_apps_video_grid;
+}

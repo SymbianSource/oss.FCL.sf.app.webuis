@@ -1,0 +1,580 @@
+/*
+* Copyright (c) 2002-2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     Resource file for the content view's toolbar
+*
+*
+*/
+
+
+#include <browser_platform_variant.hrh>
+
+#ifdef BRDO_AVKON_EXT_TB_FF
+
+//  RESOURCE IDENTIFIER
+
+#include <eikon.hrh>
+#include "BrowserToolbar.hrh"
+
+// Common toolbar resource 
+RESOURCE AVKON_TOOLBAR r_content_view_toolbar
+    {
+    flags = KAknToolbarFixed | KAknToolbarWithoutCba;
+    items =
+        {
+        TBAR_CTRL
+            {
+            type=EAknCtToolbarExtension;
+			id= EWmlCmdToolbarExtensionContentView;
+
+            control = AVKON_TOOLBAR_EXTENSION
+                {
+                helptxt = qtn_browser_ext_tb_tt;
+                items =
+                    {
+#ifndef BRDO_SINGLE_CLICK_ENABLED_FF		    
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdFavourites;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {                      
+                                    txt     = qtn_browser_ext_tb_bm;  
+                                    helptxt = qtn_browser_ext_tb_bm_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_bm;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_bm_mask;   
+                                    extension = r_browser_ext_qgn_indi_browser_tb_bm;
+                                    }
+                                };
+                            };
+                        },
+#endif
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdLaunchHomePage;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_home;  
+                                    helptxt = qtn_browser_ext_tb_home_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_home;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_home_mask;   
+                                    extension = r_browser_ext_qgn_indi_browser_tb_home;
+                                    }
+                                };
+                            };
+                        },
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdSaveAsBookmark;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_save_bookmark;  
+                                    helptxt = qtn_browser_ext_tb_save_bookmark_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_save_bm;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_save_bm_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_savebm;
+                                    }
+                                };
+                            };
+                        },
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdFindKeyword;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_find_keyword;  
+                                    helptxt = qtn_browser_ext_tb_find_keyword_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_find_kw;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_find_kw_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_findkw;
+                                    }
+                                };
+                            };
+                        },
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdReload;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_reload;  
+                                    helptxt = qtn_browser_ext_tb_reload_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_reload;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_reload_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_reload;
+                                    }
+                                };
+                            };
+                        },
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EAknCmdHelp;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_help;  
+                                    helptxt = qtn_browser_ext_tb_help_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_help;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_help_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_help;
+                                    }
+                                };
+                            };
+                        },
+#ifndef BRDO_MULTITOUCH_ENABLED_FF	                        
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdShowMiniature;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_miniature_show;  
+                                    helptxt = qtn_browser_ext_tb_miniature_show_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_page;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_page_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_pages;
+                                    }
+                                };
+                            };
+                        },
+#else
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdDownloads;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_list_downloads;  
+                                    helptxt = qtn_browser_list_downloads;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_downloads;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_downloads_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_downloads;
+                                    }
+                                };
+                            };
+                        },
+#endif                        
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdPreferences;     
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_settings;  
+                                    helptxt = qtn_browser_ext_tb_settings_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_settings;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_settings_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_settings;
+                                    }
+                                };
+                            };
+                        },
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdOpenFeedsFolder;
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_view_feeds;
+                                    helptxt = qtn_browser_ext_tb_view_feeds_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_feeds;
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_feeds_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_feeds;
+                                    }
+                                };
+                            };
+                        },
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdShowSubscribeList;
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_subscribe_list;
+                                    helptxt = qtn_browser_ext_tb_subscribe_list_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_rss;
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_rss_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_rss;
+                                    }
+                                };
+                            };
+                        },
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdSwitchWindow;
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_switch_win;
+                                    helptxt = qtn_browser_ext_tb_switch_win_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_switch_win;         
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_switch_win_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_switch_win;
+                                    }
+                                };
+                            };
+                        },
+                    TBAR_CTRL
+                        {
+                        type = EAknCtButton;
+                        id = EWmlCmdSendAddressViaUnifiedMessage;
+                        
+                        control = AVKON_BUTTON
+                            {
+                            flags = KAknButtonRequestExitOnButtonUpEvent;
+                            states =
+                                {
+                                AVKON_BUTTON_STATE
+                                    {
+                                    txt     = qtn_browser_ext_tb_send_url;
+                                    helptxt = qtn_browser_ext_tb_send_url_tt;
+                                    bmpfile = "\\Resource\\apps\\browser.mif";
+                                    bmpid   = EMbmBrowserQgn_indi_browser_tb_send_url;
+                                    bmpmask = EMbmBrowserQgn_indi_browser_tb_send_url_mask;
+                                    extension = r_browser_ext_qgn_indi_browser_tb_send_url;
+                                    }
+                                };
+                            };
+	#ifndef BRDO_SINGLE_CLICK_ENABLED_FF
+			}
+	#else
+			},
+						
+		TBAR_CTRL
+                       {
+                       type = EAknCtButton;
+                       id = EWmlCmdUserExit;
+                       
+                       control = AVKON_BUTTON
+                           {
+                           flags = KAknButtonRequestExitOnButtonUpEvent;
+                           states =
+                               {
+                               AVKON_BUTTON_STATE
+                                   {
+                                   txt     = qtn_options_exit; //qtn_browser_list_close_window;
+                                   helptxt = qtn_options_exit; //qtn_browser_list_close_window;
+                                   bmpfile = "\\Resource\\apps\\browser.mif";
+                                   bmpid   = EMbmBrowserQgn_indi_browser_tb_exit;         
+                                   bmpmask = EMbmBrowserQgn_indi_browser_tb_exit_mask;
+                                   extension = r_browser_ext_qgn_indi_browser_tb_exit;
+                                   }
+                               };
+                           };
+                       }     
+	#endif
+                      
+                    };
+                };
+            },
+            
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdGoToAddress;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_browser_tb_gotoaddress_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_goto;         
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_goto_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_goto;
+                        }
+                    };
+                };
+            }, 
+         TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdGoToAddressAndSearch;     
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_is_tooltip_goto_search;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_goto_and_search;         
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_goto_and_search_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_goto_and_search;
+                        }
+                    };
+                };
+            },  
+         TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdHistoryBack;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_browser_tb_history_back_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_history_back;      
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_history_back_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_history_back;
+                        }
+                    };
+                };
+            },
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdFindPrevious;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_browser_tb_findprevious_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_find_kw_prev;         
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_find_kw_prev_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_findkw_prev;
+                        }
+                    };
+                };
+            },
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlNoCmd;     
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = "";
+                     //   bmpfile = ;
+                     //   bmpid   = ;         
+                     //   bmpmask = ;
+                        extension = r_browser_ext_qgn_indi_browser_tb_blank;
+                        }
+                    };
+                };
+            },
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdFindNext;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_browser_tb_findnext_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_find_kw_next;         
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_find_kw_next_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_findkw_next;
+                        }
+                    };
+                };
+            },
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdHistoryForward;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_browser_tb_history_forward_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_history_fw;         
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_history_fw_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_history_fw;
+                        }
+                    };
+                };
+            },
+	    
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+
+	TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdFavourites;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {                      
+                        txt     = "";  
+                        helptxt = qtn_browser_ext_tb_bm_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_bm;         
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_bm_mask;   
+                        extension = r_browser_ext_qgn_indi_browser_tb_bm;
+                        }
+                    };
+                };
+            }
+#else	    
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdZoomSliderShow;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_browser_tb_zoomshow_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_zoom_in;         
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_zoom_in_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_zoomin;
+                        }
+                    };
+                };
+            }
+#endif
+        };
+    }
+
+#else
+
+// Common toolbar resource 
+RESOURCE AVKON_TOOLBAR r_content_view_toolbar
+    {
+    }
+
+#endif

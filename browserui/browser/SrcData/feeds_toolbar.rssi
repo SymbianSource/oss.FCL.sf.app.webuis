@@ -1,0 +1,350 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     Resource file for the content view's toolbar
+*
+*
+*/
+
+
+#include <browser_platform_variant.hrh>
+
+#ifdef BRDO_AVKON_EXT_TB_FF
+
+//  RESOURCE IDENTIFIER
+
+#include <eikon.hrh>
+#include "BrowserToolbar.hrh"
+
+//
+// Feeds Views toolbars
+//
+// Common toolbar resource 
+
+RESOURCE AVKON_TOOLBAR r_feeds_folder_view_toolbar
+    {
+    flags = KAknToolbarFixed | KAknToolbarWithoutCba;
+    items =
+        {
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+		
+	TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsNewFeed;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_new_feed;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_prop_file_rss_new;
+                        bmpmask = EMbmBrowserQgn_prop_file_rss_new_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_feeds;
+                        }
+                    };
+                };
+            }, 
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsUpdateAll;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_folder_update_all_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_update_all;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_update_all_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_updateall;
+                        }
+                    };
+                };
+            },
+           
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EWmlCmdPreferences;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_browser_setting_settings;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_tb_settings;
+                        bmpmask = EMbmBrowserQgn_indi_browser_tb_settings_mask;
+                        extension = r_browser_ext_qgn_indi_browser_tb_settings;
+                        }
+                    };
+                };
+            }
+#else 	    		
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsUpdate;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_folder_update_selected_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_update;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_update_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_update;
+                        }
+                    };
+                };
+            }, 
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsUpdateAll;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_folder_update_all_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_update_all;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_update_all_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_updateall;
+                        }
+                    };
+                };
+            },
+           
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsOpen;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_folder_open_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_open_topic;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_open_topic_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_opentopic;
+                        }
+                    };
+                };
+            }
+#endif	    
+        };
+    }
+
+RESOURCE AVKON_TOOLBAR r_feeds_topic_view_toolbar
+    {
+    flags = KAknToolbarFixed | KAknToolbarWithoutCba;
+    items =
+        {
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsUpdate;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_topic_update_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_update;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_update_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_update;
+                        }
+                    };
+                };
+            }, 
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsBackToPage;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_topic_back_to_page_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_back_to_web;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_back_to_web_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_toweb;
+                        }
+                    };
+                };
+            },
+           
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsOpen;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_topic_open_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_open_detail;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_open_detail_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_opendetail;
+                        }
+                    };
+                };
+            }
+        };
+    }
+    
+    
+RESOURCE AVKON_TOOLBAR r_feeds_feed_view_toolbar
+    {
+    flags = KAknToolbarFixed | KAknToolbarWithoutCba;
+    items =
+        {
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsShowPrevItem;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_feed_previous_article_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_previous;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_previous_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_openprev;
+                        }
+                    };
+                };
+            }, 
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsSeeFullStory;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_feed_show_full_story_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_open_full;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_open_full_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_openfull;
+                        }
+                    };
+                };
+            },
+           
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EFeedsShowNextItem;     
+            
+            control = AVKON_BUTTON
+                {
+                flags = 0;
+                states = 
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        txt     = "";  //Icon should always be visible instead of this
+                        helptxt = qtn_feeds_feed_next_article_tt;
+                        bmpfile = "\\Resource\\apps\\browser.mif";
+                        bmpid   = EMbmBrowserQgn_indi_browser_feeds_tb_next;
+                        bmpmask = EMbmBrowserQgn_indi_browser_feeds_tb_next_mask;
+                        extension = r_browser_ext_qgn_indi_browser_feeds_tb_next;
+                        }
+                    };
+                };
+            }
+        };
+    }
+#else
+
+//
+// Feeds Views toolbars
+//
+// Common toolbar resource 
+
+RESOURCE AVKON_TOOLBAR r_feeds_folder_view_toolbar
+    {
+	}
+
+RESOURCE AVKON_TOOLBAR r_feeds_topic_view_toolbar
+    {
+	}
+
+RESOURCE AVKON_TOOLBAR r_feeds_feed_view_toolbar
+    {
+	}
+
+#endif

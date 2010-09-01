@@ -11,22 +11,20 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  Project build file for BrowserLocationPlugin
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
+
+#include <platform_paths.hrh>
 
 PRJ_PLATFORMS
 DEFAULT
 
 PRJ_EXPORTS
+../rom/BrowserGpsPlugin.iby	CORE_APP_LAYER_IBY_EXPORT_PATH(BrowserGpsPlugin.iby)
 
 PRJ_MMPFILES
+GpsPluginEcom.mmp    // Plugin mmp file
 
-PRJ_TESTMMPFILES
+//  End of File

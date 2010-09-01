@@ -1,0 +1,50 @@
+/*
+* Copyright (c) 2004 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     Browser hp resource file
+*     
+*
+*/
+
+
+// INCLUDES
+#include <browserhp.loc>
+
+//  RESOURCE IDENTIFIER
+RESOURCE TBUF r_lhp_title 	        { buf = qtn_lhp_title; }
+RESOURCE TBUF r_lhp_search_web      { buf = qtn_lhp_search_web; }
+RESOURCE TBUF r_lhp_search_images   { buf = qtn_lhp_search_images; }
+RESOURCE TBUF r_lhp_my_top 	        { buf = qtn_lhp_my_top; }
+RESOURCE TBUF r_lhp_shortcut_keys   { buf = qtn_lhp_shortcut_keys; }
+RESOURCE TBUF r_lhp_selection_key	{ buf = qtn_lhp_selection_key; }
+RESOURCE TBUF r_lhp_selection_key_label { buf = qtn_lhp_selection_key_label; }
+RESOURCE TBUF r_lhp_c_key_label 	{ buf = qtn_lhp_c_key_label; }
+RESOURCE TBUF r_lhp_1_key_label 	{ buf = qtn_lhp_1_key_label; }
+RESOURCE TBUF r_lhp_2_key_label     { buf = qtn_lhp_2_key_label; }
+RESOURCE TBUF r_lhp_3_key_label     { buf = qtn_lhp_3_key_label; }
+RESOURCE TBUF r_lhp_4_key_label 	{ buf = qtn_lhp_unused_key_label; }
+RESOURCE TBUF r_lhp_5_key_label 	{ buf = qtn_lhp_5_key_label; }
+RESOURCE TBUF r_lhp_6_key_label 	{ buf = qtn_lhp_unused_key_label; }
+RESOURCE TBUF r_lhp_7_key_label 	{ buf = qtn_lhp_unused_key_label; }
+RESOURCE TBUF r_lhp_8_key_label 	{ buf = qtn_lhp_8_key_label; }
+RESOURCE TBUF r_lhp_9_key_label 	{ buf = qtn_lhp_9_key_label; }
+RESOURCE TBUF r_lhp_0_key_label     { buf = qtn_lhp_0_key_label; }
+RESOURCE TBUF r_lhp_star_key_label 	{ buf = qtn_lhp_star_key_label; }
+RESOURCE TBUF r_lhp_hash_key_label  { buf = qtn_lhp_hash_key_label; }
+RESOURCE TBUF r_lhp_note 	        { buf = qtn_lhp_note; }
+RESOURCE TBUF r_lhp_shortcut_unavailable { buf = qtn_lhp_shortcut_unavailable; }
+RESOURCE TBUF r_lhp_browser_forum   { buf = qtn_lhp_browser_forum; }
+RESOURCE TBUF r_lhp_join_discussion_1 { buf = qtn_lhp_join_discussion_1; }
+RESOURCE TBUF r_lhp_join_discussion_2 { buf = qtn_lhp_join_discussion_2; }
+// end of file

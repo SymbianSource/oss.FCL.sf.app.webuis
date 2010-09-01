@@ -1,0 +1,274 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resources for the Mtm Ui Data
+*
+*/
+
+
+
+NAME PMTM
+
+//  INCLUDES
+#include <browser_platform_variant.hrh>
+#include "PushMtmCommands.hrh"
+#include "PushMtmUi.hrh"
+#include <pushmtmui.loc>
+#include <eikon.rh>
+#include <uikon.rh>
+#include <uikon.hrh>
+#include <avkon.rh>
+#include <avkon.rsg>
+#include <avkon.loc>
+#include <mtud.rh>
+#include <MTMExtendedCapabilities.hrh>
+#include <bldvariant.hrh>
+#include <Muiu.mbg>
+
+
+//  RESOURCE DEFINITIONS 
+
+RESOURCE RSS_SIGNATURE { }
+
+//=============================================================================
+//
+// MTM UI Data framework related resources
+//
+//=============================================================================
+
+RESOURCE MTUD_FUNCTION_ARRAY r_push_mtm_ui_data_function_array
+    {
+    functions =
+        {
+        MTUD_FUNCTION
+            {
+            functiontext = qtn_mce_fetch;
+            command = EPushMtmCmdLoadService;
+            flags = EMtudContextSpecific | EMtudAsynchronous | 
+			        EMtudCommandTransferReceive;
+            },
+        MTUD_FUNCTION 
+            {
+            functiontext = qtn_mce_info;
+            command = KMtmUiFunctionMessageInfo;
+            flags = EMtudContextSpecific | EMtudAsynchronous | 
+			        EMtudCommandTransferReceive;
+            },
+        MTUD_FUNCTION
+            {
+            functiontext = qtn_mce_settings_push;
+            command = KMtmUiMceSettings;
+            flags = EMtudCommandTransferReceive;
+            }
+        };
+    }
+
+//=============================================================================
+//
+// Push Settings Dialog related resources
+//
+//=============================================================================
+
+RESOURCE TITLE_PANE r_pushsd_title_pane
+	{
+	txt = qtn_mce_title_settings_push;
+	}
+
+RESOURCE CBA r_pushsd_softkeys
+    {
+    buttons =
+		{
+		CBA_BUTTON { id = EPushSettingsDialogCmdOptions; txt = text_softkey_option; },
+		CBA_BUTTON { id = EPushSettingsDialogCmdBack; txt = text_softkey_back; },
+		CBA_BUTTON { id = EPushSettingsDialogCmdChangeWithoutSettingPage; txt = qtn_msk_change; }
+		};
+    }
+
+RESOURCE MENU_BAR r_pushsd_menu
+    {
+    titles=
+        {
+        MENU_TITLE { menu_pane = r_pushsd_options_menu_pane; }
+        };
+    }
+
+RESOURCE MENU_PANE r_pushsd_options_menu_pane
+    {
+    items=
+        {
+        MENU_ITEM
+            {
+            command = EPushSettingsDialogCmdChange;
+            txt = qtn_mce_settings_change;
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF    
+            flags = EEikMenuItemAction;
+#endif         
+            },
+#ifdef __SERIES60_HELP
+        MENU_ITEM
+            {
+            command = EPushSettingsDialogCmdHelp;
+            txt = qtn_options_help;
+            },
+#endif //__SERIES60_HELP
+        MENU_ITEM
+            {
+            command = EPushSettingsDialogCmdAknExit;
+            txt = qtn_mce_settings_exit;
+            }
+        };
+    }
+
+RESOURCE ARRAY r_pushsd_listboxarray
+	{
+	items=
+		{
+		LBUF { txt = " \tIgnore this\t\tIgnore this"; }
+		};
+	}
+
+RESOURCE DIALOG r_pushsd_dialog
+	{
+	flags = EGeneralQueryFlags | EEikDialogFlagFillAppClientRect;
+	buttons = r_pushsd_softkeys;
+   	items =
+		{
+		DLG_LINE
+			{
+			type = EAknCtSettingListBox;
+			itemflags = EEikDlgItemTakesEnterKey | EEikDlgItemOfferAllHotKeys;
+			id = EPushSettingsDialogCntrlListBox;
+			control = LISTBOX
+				{
+				flags = 0;
+				height = 3;
+				width = 80;
+				array_id = r_pushsd_listboxarray;
+				};
+			}
+		};
+	}
+
+RESOURCE TBUF r_pushsd_recept { buf = qtn_mce_settings_push_recept; }
+RESOURCE TBUF r_pushsd_recep_on { buf = qtn_wml_push_setting_recep_on; }
+RESOURCE TBUF r_pushsd_recep_off { buf = qtn_wml_push_setting_recep_off; }
+
+RESOURCE TBUF r_pushsd_loading { buf = qtn_mce_settings_push_loading; }
+RESOURCE TBUF r_pushsd_load_autom { buf = qtn_wml_push_setting_load_autom; }
+RESOURCE TBUF r_pushsd_load_man { buf = qtn_wml_push_setting_load_man; }
+
+RESOURCE LISTBOX r_pushsd_sp_radiobutton_listbox 
+    {
+    flags = EEikListBoxMultipleSelection;
+    }
+
+RESOURCE AVKON_SETTING_PAGE r_pushsd_sp_radiobutton
+    { 
+    type = EAknSetListBox;
+    softkey_resource = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    menubar = R_AVKON_MENUPANE_EMPTY;
+    editor_resource_id = r_pushsd_sp_radiobutton_listbox;
+    }
+
+RESOURCE DIALOG r_pushsd_autoload_sett_confirm
+	{
+	flags = EGeneralQueryFlags;
+	buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+   	items =
+		{
+		DLG_LINE
+			{
+			type = EAknCtQuery;
+			id = EGeneralQuery;
+			control = AVKON_CONFIRMATION_QUERY 
+				{ 
+				layout = EConfirmationLayout;
+				label = qtn_wml_push_sttng_autom_conf_q;
+				};
+			}
+		};
+	}
+
+//=============================================================================
+//
+// Push Message Info Dialog related resources
+//
+//=============================================================================
+
+RESOURCE TBUF r_pushmid_title { buf = qtn_wml_push_title_msginfo; }
+RESOURCE TBUF r_pushmid_from { buf = qtn_wml_push_msginfo_from; }
+RESOURCE TBUF r_pushmid_url { buf = qtn_wml_push_msginfo_url; }
+RESOURCE TBUF r_pushmid_body { buf = qtn_wml_push_msginfo_body; }
+RESOURCE TBUF r_pushmid_type { buf = qtn_wml_push_msginfo_type; }
+RESOURCE TBUF r_pushmid_type_str { buf = qtn_wml_push_msgnfo_type_srv_msg; }
+RESOURCE TBUF r_pushmid_content_type { buf = qtn_wml_push_msg_content_type; }
+RESOURCE TBUF r_pushmid_created { buf = qtn_wml_push_msginfo_created; }
+RESOURCE TBUF r_pushmid_expires { buf = qtn_wml_push_msginfo_expires; }
+RESOURCE TBUF r_pushmid_size { buf = qtn_wml_push_msginfo_size; }
+RESOURCE TBUF r_pushmid_rcvd { buf = qtn_wml_push_msginfo_rcvd; }
+
+//=============================================================================
+//
+// Push Load Service related resources
+//
+//=============================================================================
+
+RESOURCE TBUF r_pushls_expired_note { buf = qtn_wml_push_note_msg_expired; }
+
+RESOURCE DIALOG r_pushls_sl_not_auth
+    {
+    flags = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items = 
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout = EConfirmationQueryLayout;
+                label = qtn_service_inbox_sl_not_trusted;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_pushls_sl_cache_not_auth
+    {
+    flags = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items = 
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout = EConfirmationQueryLayout;
+                label = qtn_service_inbox_sl_cache_not_trusted;
+                };
+            }
+        };
+    }
+
+//=============================================================================
+//
+// Misc
+//
+//=============================================================================
+
+RESOURCE TBUF r_pushmisc_unk_sender { buf = qtn_mce_push_inbox_sender_unkw; }
+RESOURCE TBUF r_pushmisc_inbox_serv_msg { buf = qtn_mce_push_inbox_message; }
+RESOURCE TBUF r_pushmisc_info_replaced { buf = qtn_service_inbox_updating_message_received; }

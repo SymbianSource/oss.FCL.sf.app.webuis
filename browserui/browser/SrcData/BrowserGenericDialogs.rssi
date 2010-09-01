@@ -1,0 +1,325 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*      browser generic dialog resources
+*
+*
+*/
+
+
+#ifndef WML_BROWSER_GENERIC_DIALOGS_RSSI
+#define WML_BROWSER_GENERIC_DIALOGS_RSSI
+
+#include "browser.hrh"       // Data definitions
+#include <wmlbrowser.loc>
+
+RESOURCE DIALOG r_browser_confirm_query
+    {
+    flags = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtQuery;
+            id = EGeneralQuery;
+			control= AVKON_CONFIRMATION_QUERY 
+				{ 
+					layout = EConfirmationLayout;
+					label = "";
+				};
+			}
+        };
+    }
+
+RESOURCE DIALOG r_browser_clearformpasswddata_query
+	{
+	flags=EGeneralQueryFlags;
+	buttons=R_AVKON_SOFTKEYS_YES_NO__YES;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_CONFIRMATION_QUERY 
+				{ 
+				layout = EConfirmationLayout;
+				label = qtn_browser_form_data_delete_all;
+				};
+			}
+		};
+	}
+	
+	
+RESOURCE DIALOG r_browser_clearpasswddata_query
+	{
+	flags=EGeneralQueryFlags;
+	buttons=R_AVKON_SOFTKEYS_YES_NO__YES;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_CONFIRMATION_QUERY 
+				{ 
+				layout = EConfirmationLayout;
+				label = qtn_browser_form_data_delete_password;
+				};
+			}
+		};
+	}
+	
+	
+RESOURCE DIALOG r_browser_clearprivacydata_query
+	{
+	flags=EGeneralQueryFlags;
+	buttons=R_AVKON_SOFTKEYS_YES_NO__YES;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_CONFIRMATION_QUERY 
+				{ 
+				layout = EConfirmationLayout;
+				label = qtn_browser_privacy_delete_all;
+				};
+			}
+		};
+	}
+
+RESOURCE DIALOG r_browser_clearhistorydata_query
+	{
+	flags=EGeneralQueryFlags;
+	buttons=R_AVKON_SOFTKEYS_YES_NO__YES;
+    items=
+		{
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_CONFIRMATION_QUERY 
+				{ 
+				layout = EConfirmationLayout;
+				label = qtn_browser_privacy_query_clear_history;
+				};
+			}
+		};
+	}
+
+// Use this with TbrowserDialogs::InfoNoteL(...); set prompt there.
+RESOURCE DIALOG r_browser_info_note
+    {
+    flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons | EEikDialogFlagWait;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EGeneralNote;
+            control = AVKON_NOTE 
+                { 
+                layout = EGeneralLayout;
+                singular_label = "";
+                plural_label = "";
+                animation = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+// Use this with TbrowserDialogs::InfoNoteL(...); set prompt there.
+RESOURCE DIALOG r_browser_ok_note
+    {
+    flags = EEikDialogFlagNoDrag | EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons | EEikDialogFlagWait;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EGeneralNote;
+            control = AVKON_NOTE 
+                { 
+                layout = EGeneralLayout;
+                singular_label = "";
+                plural_label = "";
+                animation = R_QGN_NOTE_OK_ANIM;
+                };
+            }
+        };
+    }
+
+/*
+//----------------------------------------------------
+//   
+//    r_wml_wim_dialog_list
+//    WIM ListSelect dialog
+//
+//----------------------------------------------------
+
+RESOURCE AVKON_LIST_QUERY r_wml_wim_dialog_list
+    {
+    softkeys = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items = 
+	    {
+	    AVKON_LIST_QUERY_DLG_LINE 
+	        {
+			//type = EAknCtListQueryControl;
+			//id = EListControl;
+	        control = AVKON_LIST_QUERY_CONTROL
+		        {
+		        listtype = EAknCtSinglePopupMenuListBox;
+		        listbox = AVKON_LIST_QUERY_LIST
+		            {
+		            array_id=0;
+		            };
+		        heading = "title";
+				
+		        };
+	        }
+	    };
+    }
+*/
+//----------------------------------------------------
+//   
+//    r_wim_query_with_heading
+//    WIM InputPrompt dialog (edwin)
+//
+//----------------------------------------------------
+
+RESOURCE DIALOG r_wim_query_with_heading
+	{
+	flags=EGeneralQueryFlags;
+	buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+		{
+        DLG_LINE 
+	        {
+			type = EAknCtPopupHeadingPane;
+			id = EAknMessageQueryHeaderId;
+			control = AVKON_HEADING
+	            {
+                bmpfile = AVKON_BITMAP_FILE; // bitmap file
+                bmpid = EMbmAvkonQgn_indi_checkbox_on;
+	            bmpmask = EMbmAvkonQgn_indi_checkbox_on_mask;
+				};
+			},
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_DATA_QUERY 
+				{ 
+				layout = EDataLayout;
+				control = EDWIN
+			        { 
+					//allowed_input_modes=EAknEditorTextInputMode | EAknEditorNumericInputMode;
+					default_input_mode=EAknEditorTextInputMode;
+					//avkon_flags = EAknEditorFlagNoT9;
+ 					//num_letters=4;
+					};
+
+				};
+			}
+
+		};
+	}
+//----------------------------------------------------
+//   
+//    r_wim_query_with_hidetext
+//    WIM InputPrompt dialog (secreteditor)
+//
+//----------------------------------------------------
+
+RESOURCE DIALOG r_wim_query_with_hidetext
+	{
+	flags=EGeneralQueryFlags;
+	buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items=
+		{
+        DLG_LINE 
+	        {
+			type = EAknCtPopupHeadingPane;
+			id = EAknMessageQueryHeaderId;
+			control = AVKON_HEADING
+	            {
+                bmpfile = AVKON_BITMAP_FILE; // bitmap file
+                bmpid = EMbmAvkonQgn_indi_checkbox_on;
+	            bmpmask = EMbmAvkonQgn_indi_checkbox_on_mask;
+				};
+			},
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_DATA_QUERY 
+				{ 
+				layout = EPinLayout;
+				control = SECRETED
+			        { 
+ 					num_letters=4;
+					};
+
+				};
+			}
+
+		};
+	}
+
+//----------------------------------------------------
+//   
+//    r_wim_prompt_dialog
+//    WIM Prompt dialog
+//
+//----------------------------------------------------
+
+RESOURCE DIALOG r_wim_prompt_dialog
+	{
+	flags=EGeneralQueryFlags;
+	buttons=R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+	items=
+		{
+		DLG_LINE 
+	        {
+			type = EAknCtPopupHeadingPane;
+			id = EAknMessageQueryHeaderId;
+			control = AVKON_HEADING
+	            {
+                //label=qtn_wmlsec_query_hdr_secwarn;
+				//headinglayout = R_AVKON_WML_SIGN_QUERY_HEADING_PANE;
+				};
+			},
+
+		DLG_LINE
+			{
+			type=EAknCtQuery;
+			id=EGeneralQuery;
+			control= AVKON_CONFIRMATION_QUERY 
+				{ 
+					layout = EConfirmationLayout;
+					label = "";
+				};
+			}
+		};
+	}
+
+
+#endif
+// End of File

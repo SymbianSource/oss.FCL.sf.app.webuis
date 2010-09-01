@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of the License "Eclipse Public License v1.0"
@@ -11,22 +11,15 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  Generic definition file. Internal usage only.
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
 
-PRJ_EXPORTS
+#ifndef PUSHMTMUTILDEF_H
+#define PUSHMTMUTILDEF_H
 
-PRJ_MMPFILES
+#endif // PUSHMTMUTILDEF_H
 
-PRJ_TESTMMPFILES
+//  End of File

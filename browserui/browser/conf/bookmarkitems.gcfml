@@ -1,0 +1,11 @@
+<file xmlns="http://www.s60.com/xml/genconfml/1" name="BookmarkImportSample.txt" target="data\">
+	<setting ref="BookmarkItems/BookmarkItem"/>
+	<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/TR/xhtml1/strict">
+		<xsl:output method="text" encoding="UTF-16"/>
+		<xsl:template match="configuration/data">
+			<xsl:for-each select="BookmarkItems/BookmarkItem">
+				<xsl:value-of select="Type"/>,<xsl:value-of select="Name"/>,<xsl:value-of select="ParentFolderName"/>,<xsl:value-of select="URL"/>,<xsl:value-of select="AccessPoint"/>,<xsl:value-of select="UserName"/>,<xsl:value-of select="Password"/>,<xsl:value-of select="ReadOnly"/>,<xsl:value-of select="FactoryItem"/>,<xsl:value-of select="ContextId"/>,<xsl:value-of select="Hidden"/>,<xsl:value-of select="Preferred"/><xsl:text>&#xA;</xsl:text>
+			</xsl:for-each>
+		</xsl:template>
+	</xsl:stylesheet>
+</file>

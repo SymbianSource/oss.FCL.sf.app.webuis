@@ -1,0 +1,114 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is a localisation file for BAVP
+*
+*/
+
+
+// LOCALISATION STRINGS
+
+//d:Invalid clip information note.
+//d:Shown when media could not be opened.
+//w:
+//l:popup_note_window
+//r:2.8
+//
+#define qtn_mp_note_invalid_clip 					"Invalid Clip. Operation canceled."
+
+//d:Menu item for Video option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.1
+#define qtn_video_plugin_video						"Video"
+
+
+//d:Menu item for Video play option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.1
+#define qtn_video_plugin_play						"Play"
+
+//d:Menu item for Video stop option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.1
+#define qtn_video_plugin_stop						"Stop"
+
+//d:Menu item for Video pause option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.1
+#define qtn_video_plugin_pause						"Pause"
+
+//d:Menu item for Video fullscreen option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.1
+#define qtn_video_plugin_fullscreen					"FullScreen"
+
+//d:Menu item for Video volume change option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.1
+#define qtn_video_plugin_volume_down				"Volume Down"
+
+//d:Menu item for Video volume change option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.1
+#define qtn_video_plugin_volume_up					"Volume Up"
+
+//d:Menu item for Video Fast Forward option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//
+#define qtn_video_plugin_fast_forward				"Fast Forward"
+
+//d:Menu item for Video Rewind option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//	
+#define qtn_video_plugin_rewind						"Rewind"
+
+//d:Menu item for Video Skip Forward option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//
+#define qtn_video_plugin_skip_forward				"Skip Forward"
+
+//d:Menu item for Video Skip Backward option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//
+#define qtn_video_plugin_skip_backward				"Skip Backward"
+
+//d:Menu item for Video volume mute option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//
+#define qtn_video_plugin_mute					    "Mute"
+
+//d:Menu item for Video Full Screen option menu text
+//l:list_single_pane_t1_cp2
+//w:
+//r:3.2
+//
+#define qtn_video_plugin_full_screen				"Full Screen"
+
+// End of File

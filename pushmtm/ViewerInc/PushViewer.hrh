@@ -1,0 +1,59 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  hrh file. Enums and defines.
+*
+*/
+
+
+
+#ifndef PUSHVIEWER_HRH
+#define PUSHVIEWER_HRH
+
+#include <uikon.hrh>
+#include <avkon.hrh>
+#include <MsgEditor.hrh>
+#include <bldvariant.hrh>
+
+
+enum TPushViewerCommand
+	{
+	// Application specific command ids.
+	//
+	EPushViewerCmdLoadService = 1,			// The value 0 doesn't work, because it is EEikCmdCanceled.
+	EPushViewerCmdDelete,
+	EPushViewerCmdMessageInfo,
+	EPushViewerCmdPreviousMessage,
+	EPushViewerCmdNextMessage,
+	//
+	// Ui framework defined command ids.
+	//
+	EPushViewerCmdOptions			= EAknSoftkeyOptions,// = 3000
+#ifdef __SERIES60_HELP
+    EPushViewerCmdHelp              = EAknCmdHelp,      // = 4003
+#endif //__SERIES60_HELP
+	EPushViewerCmdBack				= EAknSoftkeyBack,	// = 3001
+	EPushViewerCmdExit				= EEikCmdExit,		// = 0x100. Use in HandleCommanL.
+	EPushViewerCmdAknExit			= EAknCmdExit		// = 4011. Use in resources.
+	};
+
+enum TPushViewerControl
+	{
+	EPushViewerCntrlTab,
+    EMyMsgComponentIdBody = EMsgComponentIdFirstFreeEditorSpecificId
+	};
+
+
+#endif // PUSHVIEWER_HRH
+
+// End of File

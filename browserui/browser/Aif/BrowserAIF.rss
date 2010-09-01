@@ -1,0 +1,94 @@
+/*
+* Copyright (c) 2002-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*      aif resources
+*  
+*
+*/
+
+#include <aiftool.rh>
+
+RESOURCE AIF_DATA
+    {
+    app_uid=0x10008D39;
+
+
+    // icons
+    num_icons=2;
+
+    // capabilities
+    embeddability= KAppEmbeddable;
+    hidden=KAppNotHidden;
+
+    // MIME types
+    datatype_list= 
+        {
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="application/vnd.wap.wmlc";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="application/wml+xml";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="application/xhtml+xml";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="application/vnd.wap.xhtml+xml";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="application/vnd.wap.wml";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="text/vnd.wap.wml";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="text/html";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="application/vnd.wap.wmlscriptc";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="application/vnd.wap.wmlscript";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="application/vnd.wap.wbxml";
+        },
+        DATATYPE
+        {
+        priority=EDataTypePriorityHigh;
+        type="text/x-opml";
+        }
+        }; 
+    }
+

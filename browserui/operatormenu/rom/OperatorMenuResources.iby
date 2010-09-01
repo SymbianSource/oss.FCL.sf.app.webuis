@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of the License "Eclipse Public License v1.0"
@@ -11,22 +11,14 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  IBY file for those parts of Operatormenu that needs localization 
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+#ifndef __OPERATORMENU_RESOURCES_IBY__
+#define __OPERATORMENU_RESOURCES_IBY__
 
-PRJ_EXPORTS
-
-PRJ_MMPFILES
-
-PRJ_TESTMMPFILES
+S60_APP_CAPTION(Operatormenu)
+S60_APP_RESOURCE(Operatormenu)
+#endif

@@ -11,22 +11,14 @@
 *
 * Contributors:
 *
-* Description:  Project build file for webuis
+* Description:  IBY file for those parts of VideoServices that needs localization 
 *
 */
 
-/*
-*   Order is important
-*/
-#include "../browserui/group/bld.inf"
-#include "../browserplugins/group/bld.inf"
-#include "../pushmtm/group/bld.inf"
 
-PRJ_PLATFORMS
-DEFAULT
+#ifndef __VideoServices_RESOURCES_IBY__
+#define __VideoServices_RESOURCES_IBY__
 
-PRJ_EXPORTS
-
-PRJ_MMPFILES
-
-PRJ_TESTMMPFILES
+S60_APP_CAPTION(VideoServices)
+S60_APP_RESOURCE(VideoServices)
+#endif

@@ -1,0 +1,41 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Macro definitions and enums for the Push Content Handlers.
+*
+*/
+
+
+
+#ifndef PUSHCONTENTHANDLERDEF_HRH
+#define PUSHCONTENTHANDLERDEF_HRH
+
+
+/// PushContentHandler DLL.
+#define EUidPushContentHandlerDll 0x101F854C
+
+/// Implementation UIDs.
+#define EUidPushUnknownContentHandler 0x101F854D
+#define EUidPushSIContentHandler 0x101F854E
+#define EUidPushSLContentHandler 0x101F854F
+#define EUidPushCOContentHandler 0x10008D47
+#define EUidPushMultiPartMixedContentHandler 0x101F8550
+#define EUidPushMultiPartRelAndAltContentHandler 0x101F8551
+
+/** PushContentHandler Interface UID (defined by Symbian).
+* See CContentHandlerBase.h, KUidPushContentHandlerBase. */
+#define EUidPushContentHandlerBase 0x101F3E5E
+
+
+#endif // PUSHCONTENTHANDLERDEF_HRH
+
