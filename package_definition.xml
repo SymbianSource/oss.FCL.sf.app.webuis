@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SystemDefinition schema="3.0.0" xmlns:qt="http://www.nokia.com/qt">
+ <package id="webuis" name="Web UI" levels="utils support ui">
+  <collection id="webuis_info" name="Web UI" level="ui">
+    <component id="webuis_build" name="WEB UIs Build" introduced="^4" filter="s60">
+      <unit bldFile="group"/>
+    </component>
+  </collection>
+ </package>
+</SystemDefinition>
