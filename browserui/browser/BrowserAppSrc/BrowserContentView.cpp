@@ -1119,8 +1119,8 @@ void CBrowserContentView::SetFullScreenOffL()
     TVwsViewId activeViewId;
     if ( AppUi()->GetActiveViewId( activeViewId ) == KErrNone )
         {
-        Cba()->MakeVisible( ETrue );
         UpdateCbaL();
+        Cba()->MakeVisible( ETrue ); 
         if ( Layout_Meta_Data::IsLandscapeOrientation() )
 	        StatusPane()->SwitchLayoutL(R_AVKON_STATUS_PANE_LAYOUT_USUAL);
         StatusPane()->ApplyCurrentSettingsL();

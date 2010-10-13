@@ -741,6 +741,8 @@ class CBrowserAppUi : public CAknViewAppUi,
         //Retry flags
         void SetRetryFlag(TBool flag);
         TBool GetRetryFlag();
+        void SetNewConnFlag(TBool flag);
+        TBool GetNewConnFlag();
 #endif
 
 	private:    
@@ -1106,6 +1108,8 @@ class CBrowserAppUi : public CAknViewAppUi,
 #ifdef BRDO_OCC_ENABLED_FF
         CPeriodic *iRetryConnectivity;
         TBool reConnectivityFlag;
+        //Required for setting new conn flag in Special load observer when ap roaming happens
+        TBool iNewConnFlag;
 #endif		
 
 #ifdef BRDO_IAD_UPDATE_ENABLED_FF		

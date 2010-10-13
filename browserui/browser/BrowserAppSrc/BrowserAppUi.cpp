@@ -164,6 +164,10 @@ iOverriddenLaunchContextId( EBrowserContextIdNormal ),
 iBrowserAlreadyRunning (EFalse),
 iSameWinApp( EFalse ),
 iFeedsClientUtilities( 0 )
+#ifdef BRDO_OCC_ENABLED_FF  
+        ,
+        iNewConnFlag( EFalse )
+#endif
     {
     iViewToBeActivatedIfNeeded.iUid = 0;
     iViewToReturnOnClose.iUid = 0;
@@ -285,6 +289,7 @@ PERFLOG_STOPWATCH_START;
 
 
 #ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+    EnableLocalScreenClearer( EFalse );
     BaseConstructL( EAknEnableSkin | EAknEnableMSK | EAknSingleClickCompatible);
 #else 
     BaseConstructL( EAknEnableSkin | EAknEnableMSK );
@@ -2576,8 +2581,8 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                                 {
                                 SetCalledFromAnotherApp( EFalse );
                                 iIsForeground = IsForeground();
+                                GetBookmarksView()->SetCurrentFolderId(dataId);
                                 CloseContentViewL();
-                                SetLastActiveViewId( KUidBrowserBookmarksViewId );
                                 break;
                                 }
                             default:
@@ -2730,6 +2735,25 @@ HBufC* CBrowserAppUi::CreateWindowInfoLC( const CBrowserWindow& aWindow )
 	
 #ifdef BRDO_OCC_ENABLED_FF
 // -----------------------------------------------------------------------------
+// CBrowserContentView::SetNewConnFlag
+// -----------------------------------------------------------------------------
+//
+void CBrowserAppUi::SetNewConnFlag(TBool flag)
+    {
+    LOG_ENTERFN("CBrowserAppUi::SetNewConnFlag");
+    iNewConnFlag = flag;
+    }
+
+// -----------------------------------------------------------------------------
+// CBrowserContentView::GetNewConnFlag
+// -----------------------------------------------------------------------------
+//
+TBool CBrowserAppUi::GetNewConnFlag()
+    {
+    LOG_ENTERFN("CBrowserAppUi::GetNewConnFlag");
+    return iNewConnFlag;
+    }
+// -----------------------------------------------------------------------------
 // CBrowserContentView::SetRetryFlag
 // -----------------------------------------------------------------------------
 //
@@ -2787,11 +2811,12 @@ TInt CBrowserAppUi::RetryInternetConnection()
        BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection UNSET retry flags " ) ) );
        TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandUnSetRetryConnectivityFlag + (TInt)TBrCtlDefs::ECommandIdBase ) );
        SetRetryFlag(EFalse);
-       
+       BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection Setting new conn flag " ) ) );
        TRAP_IGNORE(ConnNeededStatusL(err)); //Start the observer again
        TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandRetryTransactions + (TInt)TBrCtlDefs::ECommandIdBase ) );
        //Let download manager knows about this new connection
        TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandConnToDownloadManager + (TInt)TBrCtlDefs::ECommandIdBase ) );
+       SetNewConnFlag(ETrue);
        }
     else
         {
@@ -2800,7 +2825,6 @@ TInt CBrowserAppUi::RetryInternetConnection()
         TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandUnSetRetryConnectivityFlag + (TInt)TBrCtlDefs::ECommandIdBase ) );
         SetRetryFlag(EFalse);
         BROWSER_LOG( ( _L( "CBrowserAppUi::RetryInternetConnection clear queued transactions " ) ) );
-        TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandClearQuedTransactions + (TInt)TBrCtlDefs::ECommandIdBase ) );
         Display().StopProgressAnimationL(); //Stop Progress animation
         if ( Fetching() )
             {
@@ -2809,6 +2833,7 @@ TInt CBrowserAppUi::RetryInternetConnection()
             }
         iDialogsProvider->UploadProgressNoteL(0, 0, ETrue, (MBrowserDialogsProviderObserver *)this ); //Close the uploading dialog.
         iDialogsProvider->CancelAll(); //connection has been lost, so cancel the authentication dialog.
+        TRAP_IGNORE( BrCtlInterface().HandleCommandL( (TInt)TBrCtlDefs::ECommandClearQuedTransactions + (TInt)TBrCtlDefs::ECommandIdBase ) );
         }
     
     return err;

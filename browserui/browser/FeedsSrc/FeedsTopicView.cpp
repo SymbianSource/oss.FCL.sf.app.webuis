@@ -202,7 +202,8 @@ void CFeedsTopicView::DoActivateL(const TVwsViewId& /*aPrevViewId*/,
         }
 
     // Set the current feed.
-    iContainer->SetCurrentFeedL(*(iApiProvider.FeedsClientUtilities().CurrentFeed()), iInitialItem);
+    if(iInitialItem >= 0)
+        iContainer->SetCurrentFeedL(*(iApiProvider.FeedsClientUtilities().CurrentFeed()), iInitialItem);
     iApiProvider.SetLastActiveViewId(Id());
     UpdateToolbarButtonsState();
     }

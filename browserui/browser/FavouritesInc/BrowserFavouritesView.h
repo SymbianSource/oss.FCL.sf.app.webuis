@@ -233,6 +233,8 @@ class CBrowserFavouritesView:public CBrowserViewBase,
 
         inline void ShowNextFolerL(TBool aNext) { OpenNextFolderL(aNext); }
 
+        void SetCurrentFolderId(TInt aFolderId) { iCurrentFolder = aFolderId;}
+		
     protected:  // component retrieval
     
         /**

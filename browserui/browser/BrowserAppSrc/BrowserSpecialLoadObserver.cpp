@@ -143,6 +143,15 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
         *aConnectionPtr = (TInt) &iApiProvider->Connection().Connection();
         *aSockSvrHandle = iApiProvider->Connection().SocketServer().Handle();
         *aNewConn = EFalse;
+#ifdef BRDO_OCC_ENABLED_FF
+        TBool newConnFlag = CBrowserAppUi::Static()->GetNewConnFlag();
+        if( newConnFlag )
+            {
+            *aNewConn = ETrue;
+            BROWSER_LOG((_L("Resetting new conn flag to false")));
+            CBrowserAppUi::Static()->SetNewConnFlag(EFalse);
+            }
+#endif
         *aBearerType = iApiProvider->Connection().CurrentBearerTypeL();
         }
     else
