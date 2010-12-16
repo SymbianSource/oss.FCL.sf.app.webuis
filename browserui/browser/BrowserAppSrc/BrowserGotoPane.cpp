@@ -482,7 +482,7 @@ TKeyResponse CBrowserGotoPane::OfferKeyEventL
             }
 
         // For touch UI, handle enter key from VKB as a "GOTO"
-        if (AknLayoutUtils::PenEnabled() && aKeyEvent.iCode == EKeyEnter)
+        if (AknLayoutUtils::PenEnabled() && aKeyEvent.iCode == EKeyEnter && CBrowserAppUi::Static()->ActiveView())
             {
             CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneGoTo);
             return EKeyWasConsumed;
@@ -628,12 +628,12 @@ void CBrowserGotoPane::HandlePointerEventL(const TPointerEvent& aPointerEvent)
     else
         {
         // pointer outside of control
-        if ( iFindKeywordMode )
+        if ( iFindKeywordMode && CBrowserAppUi::Static()->ActiveView() )
             {
             CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdFindKeywordPaneClose);
             ResetPrevText();
             }
-        else
+        else if ( CBrowserAppUi::Static()->ActiveView() )
             {
             CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
             }

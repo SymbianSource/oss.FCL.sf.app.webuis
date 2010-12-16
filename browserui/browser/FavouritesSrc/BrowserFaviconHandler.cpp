@@ -134,12 +134,12 @@ void CBrowserFaviconHandler::RequestFavicons( CFavouritesItemList* aFavItems )
                         
             // Request Favicon from Engine  - there should be new API for request, but no har to use it
             if ( item.Url().Length() )
-                iFavicon = iApiProvider.BrCtlInterface().GetBitmapData(item.Url(), TBrCtlDefs::EBitmapFavicon );
+                favIcon = iApiProvider.BrCtlInterface().GetBitmapData(item.Url(), TBrCtlDefs::EBitmapFavicon );
 
             if ( favIcon )
                 {                
-                delete iFavicon;
-                iFavicon = NULL;
+                delete favIcon;
+                favIcon = NULL;
                 }
             count--;
         }

@@ -1235,19 +1235,37 @@ void CBrowserAppUi::FetchBookmarkL( TInt aBookmarkUid )
 //
 void CBrowserAppUi::FetchBookmarkL( const CFavouritesItem& aBookmarkItem )
     {
+    LOG_ENTERFN("CBrowserAppUi::FetchBookmarkL");
     // complete initialization if not done yet, can happen if user selects
     // a bookmark quickly after launch (within 1 second)
     if ( !iStartedUp )
         CompleteDelayedInit();
     
     SetViewToReturnOnClose( KUidBrowserBookmarksViewId );
+
+    //NOTE: This conversion need to be removed once CApSelect header is depricated in BrowserCommsModel.cpp
+    TFavouritesWapAp iapId; 
+    if ( aBookmarkItem.WapAp().IsNull() || aBookmarkItem.WapAp().IsDefault() )
+        {
+        BROWSER_LOG((_L("CBrowserAppUi::FetchBookmarkL NULL or DEFAULT")));
+        iapId = aBookmarkItem.WapAp();
+        }
+    else
+        {
+        BROWSER_LOG((_L("CBrowserAppUi::FetchBookmarkL NORMAL")));
+        TUint32 id = 0;
+        TRAP_IGNORE( id = Util::IapIdFromWapIdL(*this, aBookmarkItem.WapAp().ApId()) );
+        iapId.SetApId( id );
+        }
+    LOG_WRITE_FORMAT("CBrowserAppUi::FetchBookmarkL iapId: %d", iapId.ApId());
+
     if ( Util::CheckBookmarkApL( *this, aBookmarkItem.WapAp()) )
         FetchL
             (
             aBookmarkItem.Url() ,
             aBookmarkItem.UserName(),
             aBookmarkItem.Password(),
-            aBookmarkItem.WapAp(),
+            iapId, //This is required because, CApSelect selects all aps from wap table
             CBrowserLoadObserver::ELoadUrlTypeOther
             );
     else
@@ -1457,7 +1475,11 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
        TUint32 passedIap( 0 );
        if ( aAccessPoint.ApId() != KWmlNoDefaultAccessPoint )
            {
+#ifdef BRDO_OCC_ENABLED_FF
+           passedIap = aAccessPoint.ApId();
+#else
            passedIap = Util::IapIdFromWapIdL( *this, aAccessPoint.ApId());
+#endif
            BROWSER_LOG((_L("CBrowserAppUi::FetchL Passed Iap: %d"), passedIap));
            TUint32 connectedAp = iConnection->CurrentAPId();
            BROWSER_LOG((_L("CBrowserAppUi::FetchL Existing connected Iap: %d"), connectedAp));
@@ -1594,7 +1616,8 @@ LOG_ENTERFN("CBrowserAppUi::FetchL");
 	        }
 	    else
 	        {
-	        LoadObserver().DoStartLoad( aUrlType );
+	        if ( scheme.Length() == 0 || ( !scheme.Compare( KHttpScheme )  || !scheme.Compare( KFileScheme ) || !scheme.Compare( KDataScheme ) || !scheme.Compare( KHttpsScheme ) || !scheme.Compare(KAbout)))	            
+	            LoadObserver().DoStartLoad( aUrlType );
 	        BROWSER_LOG( ( _L( "PASSED IAP: %d" ), IAPid ) );
             TRAP( err, BrCtlInterface().LoadUrlL( resultUrlBuf->Des(), IAPid ) );
 	        }
@@ -2581,8 +2604,8 @@ void CBrowserAppUi::ParseAndProcessParametersL( const TDesC8& aDocumentName, TBo
                                 {
                                 SetCalledFromAnotherApp( EFalse );
                                 iIsForeground = IsForeground();
-                                GetBookmarksView()->SetCurrentFolderId(dataId);
                                 CloseContentViewL();
+                                SetLastActiveViewId( KUidBrowserBookmarksViewId );
                                 break;
                                 }
                             default:

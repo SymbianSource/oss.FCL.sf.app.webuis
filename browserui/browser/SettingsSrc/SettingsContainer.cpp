@@ -688,6 +688,7 @@ TBool CSettingsContainer::SettingsError()
 void CSettingsContainer::AppendDefaultAccessPointL( CDesCArray*& aItemArray,
                                                     TBuf<KWmlSettingsItemMaxLength>& aItemText )
     {
+    LOG_ENTERFN( "CSettingsContainer::AppendDefaultAccessPointL" );
     //get the connection identifier based on the connection type
     switch (ApiProvider().Preferences().AccessPointSelectionMode())
         {
@@ -764,6 +765,11 @@ void CSettingsContainer::AppendDefaultAccessPointL( CDesCArray*& aItemArray,
             TUint id = ApiProvider().Preferences().DefaultAccessPoint();
             if ( id != KWmlNoDefaultAccessPoint )
                 {
+            BROWSER_LOG( ( _L( "IAP id: %d" ), id ) );
+#ifdef BRDO_OCC_ENABLED_FF
+            id = Util::WapIdFromIapIdL( ApiProvider(), id );
+            BROWSER_LOG( ( _L( "WAP id: %d" ), id ) );
+#endif
                 TBuf< KCommsDbSvrMaxFieldLength > name;
                 CApUtils* au = CApUtils::NewLC( ApiProvider().CommsModel().CommsDb() );
                 au->NameL( id, name );
@@ -1952,7 +1958,11 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
                 case EConnectionMethod:
                     {
                     selection.iResult = EConnectionMethod;
+#ifdef BRDO_OCC_ENABLED_FF
+                    selection.iId = preferences.DefaultAccessPoint();
+#else
                     selection.iId = Util::IapIdFromWapIdL( ApiProvider(), preferences.DefaultAccessPoint() );
+#endif
                     break;
                     }
                 default:
@@ -1989,7 +1999,11 @@ void CSettingsContainer::ChangeItemL( TBool aSelectKeyWasPressed )
                         // CMManager gives us IAPid, need to translate to WAPid
                         if (selection.iId != 0)
                             {                           
-                            id = Util::WapIdFromIapIdL( ApiProvider(), selection.iId ); 
+#ifdef BRDO_OCC_ENABLED_FF
+                            id = selection.iId;
+#else
+                            id = Util::WapIdFromIapIdL( ApiProvider(), selection.iId );
+#endif
                             }                               
                         preferences.SetDefaultAccessPointL( id );
                         BROWSER_LOG( ( _L( " SetDefaultAccessPointL OK" ) ) );

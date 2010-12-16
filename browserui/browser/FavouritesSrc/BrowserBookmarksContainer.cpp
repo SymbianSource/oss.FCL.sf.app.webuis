@@ -777,7 +777,7 @@ void CBrowserBookmarksContainer::HandlePointerEventL(const TPointerEvent& aPoint
                      }
                  else
                      {
-                         if(aPointerEvent.iType == TPointerEvent::EButton1Down )
+                         if(aPointerEvent.iType == TPointerEvent::EButton1Down && CBrowserAppUi::Static()->ActiveView())
                          {
                              CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
                              SetGotoInactiveL();

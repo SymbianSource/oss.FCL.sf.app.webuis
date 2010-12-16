@@ -384,7 +384,8 @@ TKeyResponse CBrowserBookmarksGotoPane::OfferKeyEventL
                 // Handle EnterKey as "GOTO" for Touch, VKB's enter key
                 if ( AknLayoutUtils::PenEnabled() )
                         {
-                        CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneGoTo);
+                         if (CBrowserAppUi::Static()->ActiveView())
+                              CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneGoTo);
                         // In case of search feature, we need to pass EKeyWasConsumed for EKeyEnter
                         if ( iView->ApiProvider().Preferences().SearchFeature() )
                             {
@@ -464,6 +465,14 @@ TKeyResponse CBrowserBookmarksGotoPane::OfferKeyEventL
             // We'll consume the key event so it ends here
             response = EKeyWasConsumed;
 
+#ifdef BRDO_SINGLE_CLICK_ENABLED_FF
+            CEikButtonGroupContainer* cba = CEikButtonGroupContainer::Current();
+            CEikCba* eikCba = static_cast<CEikCba*>( cba->ButtonGroup() );
+            if( eikCba )
+                {
+                eikCba->EnableItemSpecificSoftkey( EFalse );
+                }
+#endif
             BeginEditingL();
 
             iEditor->SetCursorPosL( iEditor->TextLength(), EFalse );
@@ -714,10 +723,10 @@ void CBrowserBookmarksGotoPane::HandlePointerEventL(const TPointerEvent& aPointe
             }
         else
             {
-                if(aPointerEvent.iType == TPointerEvent::EButton1Down)
+                if(aPointerEvent.iType == TPointerEvent::EButton1Down && CBrowserAppUi::Static()->ActiveView())
                 {
-                // pointer outside of control
-                CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
+                 // pointer outside of control
+                 CBrowserAppUi::Static()->ActiveView()->HandleCommandL(EWmlCmdGotoPaneCancel);
                 }
             }
         }

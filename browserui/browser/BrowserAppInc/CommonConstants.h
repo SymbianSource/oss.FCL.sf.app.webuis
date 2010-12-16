@@ -56,13 +56,16 @@ _LIT( KWWWString,  "http://www." );
 #define KBrsrUnknownScheme                      -26026
 #define KBrsrWmlbrowserCardNotInDeck            -26144
 
-_LIT( KWmlValueHttpScheme, "http" );
+_LIT( KHttpScheme, "http" );
+_LIT( KFileScheme, "file" );
+_LIT( KDataScheme,"data" );
+_LIT( KHttpsScheme, "https");
+_LIT( KAbout, "about"); 
 
 #define KAvkonMbmPath KAvkonBitmapFile
 
 _LIT( KBrowserDirAndFile,"z:browser.mbm");
 
-_LIT( KWmlValueFile, "file" );
 _LIT( KWmlValueFileSlashSlashSlashStr, "file:///" );
 // _LIT( KWmlDefaultLocation, "c:" );
 // _LIT( KWmlDefaultLocationSlash, "c:/" );

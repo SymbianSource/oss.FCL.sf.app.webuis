@@ -2316,10 +2316,8 @@ LOG_ENTERFN("BookmarksView::GotoUrlInGotoPaneL");
             container->GotoPane()->CancelEditingL();
 
             ApiProvider().FetchL( iEnteredURL->Des(), CBrowserLoadObserver::ELoadUrlTypeOther );
-            if ( !ApiProvider().Fetching() )
-              {
-                  container->SetGotoInactiveL();
-              }
+			// cancel the gotopane after launching the 	url 
+        	container->SetGotoInactiveL();
             }
         }
     }

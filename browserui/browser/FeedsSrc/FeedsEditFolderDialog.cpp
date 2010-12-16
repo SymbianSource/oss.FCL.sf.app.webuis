@@ -228,7 +228,8 @@ void CFeedsEditFolderDialog::ProcessCommandL(TInt aCommandId)
             // Note that we respond to EAknCmdExit, not CEikCmdExit; it's
             // because we don't get it through the AppUi framework (instead,
             // we forward it there now).
-            CBrowserAppUi::Static()->ActiveView()->ProcessCommandL( aCommandId ); 
+            if ( CBrowserAppUi::Static()->ActiveView() )
+                CBrowserAppUi::Static()->ActiveView()->ProcessCommandL( aCommandId ); 
             break;
             }
                     

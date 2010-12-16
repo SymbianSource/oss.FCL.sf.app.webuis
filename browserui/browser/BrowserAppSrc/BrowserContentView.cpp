@@ -1728,7 +1728,9 @@ void CBrowserContentView::GotoUrlInGotoPaneL()
             if( ApiProvider().Connection().CurrentAPId() )
                 {
                 TUint apId = ApiProvider().Connection().CurrentAPId();
+#ifndef BRDO_OCC_ENABLED_FF
                 apId = Util::WapIdFromIapIdL( ApiProvider(), apId );
+#endif
                 accessPoint.SetApId( apId );
                 }
             else

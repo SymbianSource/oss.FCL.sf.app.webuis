@@ -188,9 +188,13 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
                 if ( iApiProvider->RequestedAp() != KWmlNoDefaultAccessPoint )
                     {
                     #ifndef __WINS__
+#ifdef BRDO_OCC_ENABLED_FF
+                                        ap = iApiProvider->RequestedAp();
+#else
                                         ap = Util::IapIdFromWapIdL(
-                                            *iApiProvider, iApiProvider->RequestedAp() );
-				                        BROWSER_LOG((_L("ap: %d"), ap));
+                                            *iApiProvider, iApiProvider->RequestedAp() ); 
+#endif
+                                        BROWSER_LOG((_L("EDestination ap: %d"), ap));
                     #else  // __WINS__
                                         // On WINS no need to convert the AP ID
                                         ap = iApiProvider->RequestedAp();
@@ -222,9 +226,14 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
                 if( isValid )
                     {  // valid AP, get it
 #ifndef __WINS__
+
+#ifdef BRDO_OCC_ENABLED_FF
+                    ap = iApiProvider->RequestedAp();
+#else
                     ap = Util::IapIdFromWapIdL(
-                        *iApiProvider, iApiProvider->RequestedAp() );
-				    BROWSER_LOG((_L("ap: %d"), ap));
+                        *iApiProvider, iApiProvider->RequestedAp() ); 
+#endif
+                    BROWSER_LOG((_L("EConnectionMethod ap: %d"), ap));
 #else  // __WINS__
                     // On WINS no need to convert the AP ID
                     ap = iApiProvider->RequestedAp();
@@ -305,7 +314,11 @@ LOG_ENTERFN("CBrowserSpecialLoadObserver::NetworkConnectionNeededL");
                 //If bookmark has defined its AP, use it
                 if ( iApiProvider->RequestedAp() != KWmlNoDefaultAccessPoint )
                     {
+#ifdef BRDO_OCC_ENABLED_FF
+                    bookmarkIap = iApiProvider->RequestedAp();
+#else
                     bookmarkIap = Util::IapIdFromWapIdL( *iApiProvider, iApiProvider->RequestedAp() );
+#endif
                     BROWSER_LOG((_L("Bookmark Iap: %d"), bookmarkIap));
                     iApiProvider->Connection().SetRequestedAP( bookmarkIap );
                     iApiProvider->Connection().SetConnectionType( EConnectionMethod );

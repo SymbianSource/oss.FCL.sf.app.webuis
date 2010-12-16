@@ -1434,7 +1434,7 @@ TBool CBavpControllerVideo::HandleGesture(TGestureEvent *gesture)
                 if (IsClipFullScreen())
                     {
                     ToggleScreen();
-                    ret = ETrue;
+                    ret = EFalse;
                     }
                 break;
             }
